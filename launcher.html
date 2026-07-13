@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="home">
+<meta name="theme-color" content="#000000">
+<title>home</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    height: 100%;
+    background: #000;
+    color: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior: none;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    padding: calc(env(safe-area-inset-top) + 28px) 32px calc(env(safe-area-inset-bottom) + 28px);
+    overflow-y: auto;
+  }
+
+  #clock {
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    color: #fff;
+    margin-bottom: 56px;
+  }
+
+  #screen {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 60px;
+    font-size: 26px;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    cursor: pointer;
+  }
+
+  .row .label { flex: 1; padding: 14px 0; }
+
+  .row.dim { color: rgba(255,255,255,0.32); }
+
+  .remove {
+    font-size: 20px;
+    color: rgba(255,255,255,0.45);
+    padding: 14px 0 14px 24px;
+  }
+
+  #addrow {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    min-height: 60px;
+    margin-top: 8px;
+  }
+
+  #addrow input {
+    background: none;
+    border: none;
+    border-bottom: 1px solid rgba(255,255,255,0.25);
+    color: #fff;
+    font-family: inherit;
+    font-size: 17px;
+    padding: 8px 0;
+    outline: none;
+    -webkit-user-select: text;
+    user-select: text;
+    border-radius: 0;
+  }
+  #addrow input::placeholder { color: rgba(255,255,255,0.3); }
+  #addrow input:focus { border-bottom-color: rgba(255,255,255,0.6); }
+  #addrow .name { width: 34%; }
+  #addrow .scheme { flex: 1; }
+  #addrow .confirm {
+    font-size: 22px;
+    color: rgba(255,255,255,0.6);
+    padding: 8px 0 8px 12px;
+    cursor: pointer;
+  }
+
+  #editHint {
+    margin-top: 40px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.28);
+  }
+
+  /* wait screen */
+  #waitScreen {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  #waitWord { font-size: 26px; margin-bottom: 20px; }
+  #waitCount {
+    font-size: 15px;
+    color: rgba(255,255,255,0.4);
+    font-variant-numeric: tabular-nums;
+  }
+  #nevermind {
+    margin-top: 72px;
+    font-size: 15px;
+    color: rgba(255,255,255,0.25);
+    cursor: pointer;
+    padding: 12px 0;
+  }
+
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div id="clock"></div>
+<div id="screen"></div>
+
+<script>
+(function () {
+  // ---------- state ----------
+  var apps = [
+    { label: "phone",    url: "tel:" },
+    { label: "messages", url: "sms:" },
+    { label: "maps",     url: "maps://" },
+    { label: "calendar", url: "calshow://" },
+    { label: "notes",    url: "mobilenotes://" },
+    { label: "mail",     url: "mailto:" }
+  ];
+
+  var distractions = [
+    { label: "instagram", url: "instagram://" },
+    { label: "youtube",   url: "youtube://" },
+    { label: "x",         url: "twitter://" },
+    { label: "linkedin",  url: "linkedin://" }
+  ];
+
+  var editMode = false;
+  var view = "home"; // home | wait | else
+  var waitTimer = null;
+
+  var screen = document.getElementById("screen");
+  var clockEl = document.getElementById("clock");
+
+  // ---------- clock ----------
+  function tick() {
+    var d = new Date();
+    var h = d.getHours();
+    var m = d.getMinutes();
+    clockEl.textContent = (h < 10 ? "0" + h : h) + ":" + (m < 10 ? "0" + m : m);
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  // ---------- rendering ----------
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+
+  function open(url) {
+    if (editMode) return;
+    window.location.href = url;
+  }
+
+  function renderHome() {
+    view = "home";
+    screen.innerHTML = "";
+
+    apps.forEach(function (app, i) {
+      var row = el("div", "row");
+      var label = el("div", "label", app.label);
+      label.addEventListener("click", function () { open(app.url); });
+      row.appendChild(label);
+
+      if (editMode) {
+        var x = el("div", "remove", "\u00d7");
+        x.addEventListener("click", function (ev) {
+          ev.stopPropagation();
+          apps.splice(i, 1);
+          renderHome();
+        });
+        row.appendChild(x);
+      }
+      screen.appendChild(row);
+    });
+
+    if (editMode) {
+      var add = el("div", "");
+      add.id = "addrow";
+      var name = el("input", "name");
+      name.placeholder = "label";
+      name.setAttribute("autocapitalize", "none");
+      var scheme = el("input", "scheme");
+      scheme.placeholder = "url scheme";
+      scheme.setAttribute("autocapitalize", "none");
+      scheme.setAttribute("autocorrect", "off");
+      scheme.setAttribute("spellcheck", "false");
+      var confirm = el("div", "confirm", "add");
+      confirm.addEventListener("click", function () {
+        var l = name.value.trim().toLowerCase();
+        var u = scheme.value.trim();
+        if (!l || !u) return;
+        apps.push({ label: l, url: u });
+        renderHome();
+      });
+      add.appendChild(name);
+      add.appendChild(scheme);
+      add.appendChild(confirm);
+      screen.appendChild(add);
+
+      var hint = el("div", "", "long-press anywhere to finish editing");
+      hint.id = "editHint";
+      screen.appendChild(hint);
+    } else {
+      var everything = el("div", "row dim");
+      var lbl = el("div", "label", "everything else");
+      lbl.addEventListener("click", startWait);
+      everything.appendChild(lbl);
+      screen.appendChild(everything);
+    }
+  }
+
+  function startWait() {
+    if (editMode) return;
+    view = "wait";
+    screen.innerHTML = "";
+
+    var wrap = el("div", "");
+    wrap.id = "waitScreen";
+    var word = el("div", "", "wait.");
+    word.id = "waitWord";
+    var count = el("div", "", "30");
+    count.id = "waitCount";
+    var never = el("div", "", "never mind");
+    never.id = "nevermind";
+    never.addEventListener("click", function () {
+      clearInterval(waitTimer);
+      renderHome();
+    });
+
+    wrap.appendChild(word);
+    wrap.appendChild(count);
+    wrap.appendChild(never);
+    screen.appendChild(wrap);
+
+    var remaining = 30;
+    clearInterval(waitTimer);
+    waitTimer = setInterval(function () {
+      remaining--;
+      if (remaining <= 0) {
+        clearInterval(waitTimer);
+        renderElse();
+      } else {
+        count.textContent = String(remaining);
+      }
+    }, 1000);
+  }
+
+  function renderElse() {
+    view = "else";
+    screen.innerHTML = "";
+
+    distractions.forEach(function (app) {
+      var row = el("div", "row");
+      var label = el("div", "label", app.label);
+      label.addEventListener("click", function () { open(app.url); });
+      row.appendChild(label);
+      screen.appendChild(row);
+    });
+
+    var back = el("div", "row dim");
+    var lbl = el("div", "label", "back");
+    lbl.addEventListener("click", renderHome);
+    back.appendChild(lbl);
+    screen.appendChild(back);
+  }
+
+  // ---------- long-press to toggle edit ----------
+  var pressTimer = null;
+  var startX = 0, startY = 0;
+
+  document.addEventListener("pointerdown", function (e) {
+    if (e.target.tagName === "INPUT") return;
+    startX = e.clientX;
+    startY = e.clientY;
+    pressTimer = setTimeout(function () {
+      pressTimer = null;
+      if (view !== "home") return; // edit only applies to home list
+      editMode = !editMode;
+      renderHome();
+    }, 600);
+  });
+
+  document.addEventListener("pointermove", function (e) {
+    if (pressTimer && (Math.abs(e.clientX - startX) > 10 || Math.abs(e.clientY - startY) > 10)) {
+      clearTimeout(pressTimer);
+      pressTimer = null;
+    }
+  });
+
+  ["pointerup", "pointercancel"].forEach(function (ev) {
+    document.addEventListener(ev, function () {
+      if (pressTimer) {
+        clearTimeout(pressTimer);
+        pressTimer = null;
+      }
+    });
+  });
+
+  document.addEventListener("contextmenu", function (e) { e.preventDefault(); });
+
+  renderHome();
+})();
+</script>
+</body>
+</html>

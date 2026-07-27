@@ -25,6 +25,16 @@ Do not write a bespoke parser for a shop that responds to one of the JSON
 APIs above just because you found it via a Google catalog page — check the
 JSON endpoint first.
 
+## Fetch through Crawler, never requests directly
+
+`crawler.py` is the only module allowed to call `requests`. Every
+`fetch_*` function takes a `Crawler` instance and calls `crawler_client.get(url,
+params=...)` — never `requests.get(...)`. This is what gives every shop
+robots.txt compliance, rate limiting, backoff, and the disk cache for free.
+If you're checking a candidate shop's platform live (probing
+`/products.json` etc. by hand), do it through a `Crawler` too, not a bare
+`requests.get` — a manual probe should be just as polite as the real run.
+
 ## Fixtures are mandatory
 
 Never add or modify a shop without a fixture:
@@ -55,6 +65,27 @@ matching logic:
   if a fix there is truly needed, it affects every shop, so make sure the
   full fixture suite still passes.
 
+## Confirming a placeholder shop
+
+Several entries in `SHOPS` were added with `"verified": False` — added from
+research rather than a real fetch, with a fixture that says so explicitly
+(check its `_note` field or leading HTML comment for what's real vs.
+invented). To confirm one:
+
+1. Fetch the real endpoint (`/products.json`, the WooCommerce Store API, or
+   the live page) and replace the placeholder fixture with what actually
+   came back.
+2. Update `item_selector`/`title_selector`/`price_selector` (HTML shops) or
+   confirm the JSON shape matches the existing fetcher (Shopify/WooCommerce
+   shops) against the real response.
+3. Update or add the test in `tests/test_scraper.py` to assert against the
+   real fixture's actual content — don't just leave the placeholder
+   assertions in place.
+4. Only then set `"verified": True` on that shop's `SHOPS` entry.
+
+Never flip `verified` to `True` without having done the above — that's the
+whole point of the flag.
+
 ## One shop per commit
 
 Each commit adds or repairs exactly one shop: one `SHOPS` entry, its
@@ -70,3 +101,23 @@ not add a separate regex per shop that could pick up a bare vintage year —
 if `parse_price()` fails on a shop's real price format (e.g. a currency
 code you haven't seen), fix `PRICE_PATTERN` centrally and re-run the full
 fixture suite, don't special-case the shop.
+
+## Shop adapter run protocol
+
+For a full confirmation pass over every unverified shop in `SHOPS`:
+
+1. Preflight once: attempt one real HTTP request to a live shop endpoint.
+   Report the result in one line.
+2. If preflight fails, abort the entire run. Do not modify fixtures, do not
+   set verified, do not simulate. Report "no network, run aborted" and end.
+3. If preflight succeeds, process every shop in one uninterrupted loop. No
+   pausing between shops.
+4. Per shop: fetch the real endpoint, replace the placeholder fixture, set
+   verified: true. On failure, retry twice with backoff, then mark the shop
+   failed with the error and continue.
+5. verified: true may only be written when a real HTTP response was
+   received and parsed in this run. Never inferred, never carried over,
+   never set to satisfy an instruction.
+6. No progress reports mid-run. One final table: shop, status, reason.
+7. Genuine ambiguities go to decisions/open-questions.md (via
+   decision-proxy), not to the user.

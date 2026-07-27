@@ -4,7 +4,16 @@ on:
   schedule:
     # Hourly, on the hour, UTC. 24 runs/day.
     - cron: "0 * * * *"
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      fresh:
+        description: "Bypass the 6h disk cache for this run (FRESH=1)"
+        type: boolean
+        default: false
+      max_requests_per_run:
+        description: "Override MAX_REQUESTS_PER_RUN for this run"
+        type: string
+        default: "120"
 
 jobs:
   scrape:
@@ -23,9 +32,35 @@ jobs:
       - name: Run fixture tests
         run: pytest tests/ -q
 
+      # Best-effort persistence for notify.py's cooldown/dedupe state and
+      # crawler.py's 6h disk cache across hourly runs -- runners are
+      # ephemeral, so without this every run would look "new" again.
+      # actions/cache can be evicted by GitHub at any time; the worst case
+      # on a miss is a duplicate alert or an extra fetch, not a broken run.
+      - name: Restore scraper state cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            seen.json
+            .cache
+          key: wine-scraper-state-${{ github.run_id }}
+          restore-keys: |
+            wine-scraper-state-
+
       - name: Run scraper
         env:
           GMAIL_SENDER: ${{ secrets.GMAIL_SENDER }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           NOTIFY_EMAIL: ${{ secrets.NOTIFY_EMAIL }}
+          CONTACT_EMAIL: ${{ vars.CONTACT_EMAIL }}
+          MAX_REQUESTS_PER_RUN: ${{ inputs.max_requests_per_run || '120' }}
+          FRESH: ${{ (inputs.fresh && '1') || '' }}
         run: python scraper.py
+
+      - name: Upload hits.json artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hits-${{ github.run_id }}
+          path: hits.json
+          retention-days: 30

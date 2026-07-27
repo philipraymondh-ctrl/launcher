@@ -12,9 +12,11 @@ MAX_REQUESTS_PER_RUN, FRESH.
 import os
 import re
 import unicodedata
+from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
 
+import autoselect
 import crawler
 import evaluate
 import market
@@ -103,9 +105,15 @@ SHOPS = [
     # Re-run Probe Shops with apply to promote one; see its fixture and the
     # probe report for why it hasn't been promoted yet.
     {
+        # Hand-rolled PHP: no products.json, no Store API. The wines live at
+        # /vins.php (product pages are /vin-<id>-<region>_<colour>__<cuvee>_
+        # <vintage>_<producer>.html), so the landing page alone parses to
+        # nothing. Selectors below are the generic placeholders and are
+        # expected to miss -- autoselect reads the listing instead.
         "name": "leszinzinsduvin",
         "platform": "html",
         "url": "https://www.leszinzinsduvin.com",
+        "catalog_path": "vins.php",
         "item_selector": "div.product",
         "title_selector": "h2.product-title",
         "price_selector": "span.price",
@@ -118,6 +126,16 @@ SHOPS = [
         "item_selector": "div.product",
         "title_selector": "h2.product-title",
         "price_selector": "span.price",
+        "verified": False,
+    },
+    {
+        # Marée Haute, Saint-Pierre d'Oléron. Indexed URLs are
+        # /fr-eu/pages/..., /en/collections/tous-nos-vins -- locale prefix
+        # plus /collections/, which is Shopify's own shape. Still a guess
+        # until the probe fetches it.
+        "name": "mareehaute",
+        "platform": "shopify",
+        "url": "https://www.mareehaute.vin",
         "verified": False,
     },
     {
@@ -438,12 +456,17 @@ def fetch_woocommerce(shop, crawler_client):
     )
 
 
-def fetch_html(shop, crawler_client):
-    resp = crawler_client.get(shop["url"])
-    resp.raise_for_status()
-    if not resp.text.strip():
-        raise EmptyResponseError(shop["name"])
-    soup = BeautifulSoup(resp.text, "html.parser")
+def _parse_html_page(shop, html, page_url):
+    """Configured selectors first, auto-detection when they find nothing.
+
+    The selectors in SHOPS are generic guesses for every shop that has not
+    been probed, so on a real site they usually match zero elements.
+    Falling back to autoselect turns that from "shop needs hand-written
+    selectors" into a working adapter, and a shop whose markup later
+    changes degrades to auto-detection instead of silently reporting an
+    empty catalogue.
+    """
+    soup = BeautifulSoup(html, "html.parser")
     items = []
     for node in soup.select(shop["item_selector"]):
         title_node = node.select_one(shop["title_selector"])
@@ -451,7 +474,7 @@ def fetch_html(shop, crawler_client):
         title = title_node.get_text(strip=True) if title_node else ""
         price = parse_price(price_node.get_text(strip=True) if price_node else "")
         link_node = node.select_one("a[href]")
-        url = link_node["href"] if link_node else shop["url"]
+        url = urljoin(page_url, link_node["href"]) if link_node else page_url
         items.append({
             "text": f"{title} {node.get_text(' ', strip=True)}",
             "title": title,
@@ -459,6 +482,57 @@ def fetch_html(shop, crawler_client):
             "url": url,
             "variant_title": "",
         })
+    if items:
+        return items, "selectors"
+
+    return autoselect.find_products(html, page_url, PRICE_PATTERN, parse_price), "auto"
+
+
+def fetch_html(shop, crawler_client):
+    """Walk an HTML catalogue, following its own "next page" link.
+
+    A shop may list nothing on its landing page, so `catalog_path` points
+    at the catalogue when the two differ (leszinzinsduvin serves its wines
+    from /vins.php).
+    """
+    start = urljoin(shop["url"] + "/", shop["catalog_path"]) if shop.get("catalog_path") else shop["url"]
+
+    # Product URLs and page URLs are different namespaces -- checking a
+    # "next page" link against the product set would never match, and a
+    # self-referential pager would walk until the budget ran out.
+    items, seen_urls, visited, page_url, how = [], set(), {start}, start, None
+    for page in range(1, MAX_PAGES_PER_SHOP + 1):
+        try:
+            resp = crawler_client.get(page_url)
+        except crawler.BudgetExceeded:
+            print(f"[{shop['name']}] request budget exhausted after page {page - 1}; "
+                  f"catalogue TRUNCATED, later pages not checked")
+            break
+        resp.raise_for_status()
+        if not resp.text.strip():
+            if page == 1:
+                raise EmptyResponseError(shop["name"])
+            break
+
+        page_items, how = _parse_html_page(shop, resp.text, page_url)
+        fresh = [i for i in page_items if i["url"] not in seen_urls]
+        if not fresh:
+            break
+        seen_urls.update(i["url"] for i in fresh)
+        items.extend(fresh)
+
+        next_url = autoselect.find_next_page(resp.text, page_url)
+        if not next_url or next_url in visited:
+            break
+        visited.add(next_url)
+        page_url = next_url
+    else:
+        print(f"[{shop['name']}] hit MAX_PAGES_PER_SHOP ({MAX_PAGES_PER_SHOP}); "
+              f"catalogue may be TRUNCATED")
+
+    if items and how == "auto":
+        print(f"[{shop['name']}] no configured selector matched; "
+              f"read {len(items)} product(s) by auto-detection")
     return items
 
 

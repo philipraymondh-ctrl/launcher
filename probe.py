@@ -36,6 +36,7 @@ import json
 import os
 import re
 from pathlib import Path
+from urllib.parse import urljoin
 
 import apply_issue
 import crawler
@@ -79,10 +80,14 @@ class CannedCrawler:
 
 def candidate_endpoints(shop):
     base = shop["url"].rstrip("/")
+    # A shop may list nothing on its landing page. Probing the base URL
+    # then reports "responded, zero products" for a shop whose catalogue
+    # parses perfectly one path over.
+    catalogue = urljoin(base + "/", shop["catalog_path"]) if shop.get("catalog_path") else shop["url"]
     return [
         ("shopify", f"{base}/products.json", {"limit": 250}, "json"),
         ("woocommerce", f"{base}/wp-json/wc/store/v1/products", {"per_page": 100}, "json"),
-        ("html", shop["url"], None, "html"),
+        ("html", catalogue, None, "html"),
     ]
 
 
@@ -369,6 +374,14 @@ def main():
         if r["status"] != "ok":
             reasons = "; ".join(a.get("outcome", "?") for a in r["attempts"]) or "no attempts made"
             print(f"  FAILED {r['shop']}: {reasons}")
+            # The artifact holds the whole page, but artifacts are awkward to
+            # get at from a sandbox with no egress to blob storage. Echoing
+            # the snippet puts the one thing needed to diagnose a parse
+            # failure -- what the shop actually served -- into the job log.
+            for attempt in r["attempts"]:
+                snippet = attempt.get("body_snippet")
+                if snippet:
+                    print(f"    {attempt.get('platform', '?')} <- {snippet[:BODY_SNIPPET]}")
 
     print(f"\nRaw bodies and report.json written to {OUTPUT_DIR}/")
 

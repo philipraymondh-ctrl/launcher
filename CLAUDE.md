@@ -11,7 +11,7 @@ never a reason to idle waiting for one.
 
 ## Architecture
 
-No framework, no database, no queue — six plain files, each owning one
+No framework, no database, no queue — seven plain files, each owning one
 concern, wired together by `scraper.py`:
 
 1. **`crawler.py`** — the only module that calls `requests`. Every fetch
@@ -28,7 +28,21 @@ concern, wired together by `scraper.py`:
    a `Crawler` instance) that returns `{text, title, price, url,
    variant_title}` items, then runs `match_producers(text)` (accent/case-
    insensitive alias matching against `PRODUCERS`) to produce raw hits.
-3. **`market.py`** — where reference prices come from. One typed number
+3. **`autoselect.py`** — reads a catalogue nobody wrote selectors for.
+   Most HTML shops match none of the generic `div.product` guesses because
+   their markup is their own (leszinzinsduvin is hand-rolled PHP serving
+   `/vin-<id>-<region>_..._<producer>.html`), and nine bespoke selector
+   sets is nine things to maintain that each break silently on a restyle.
+   Instead the structure is derived: find elements whose own text holds a
+   currency-adjacent price, climb to the widest ancestor still describing
+   one product *and* holding a product link, group those by shared parent,
+   and take the busiest group. `fetch_html` uses configured selectors when
+   they match and falls back to this when they don't, walking pages via
+   `find_next_page` (`rel="next"`, then "next"/"suivant" links). Returns
+   `[]` rather than guessing when a page has no repeated priced structure.
+   An optional `catalog_path` on a SHOPS entry points at the catalogue when
+   the landing page isn't it.
+4. **`market.py`** — where reference prices come from. One typed number
    per producer cannot describe a producer selling a negoce cuvee at EUR 30
    and a domaine vin jaune at EUR 250, and the typing grows with producers
    x cuvees x vintages. So the reference is *observed*: every priced
@@ -43,14 +57,14 @@ concern, wired together by `scraper.py`:
    normalised to a per-750 equivalent; coffrets are only ever compared to
    other coffrets. Nothing here contacts a price aggregator -- the data is
    the crawl we already do.
-4. **`prices.yaml`** / **`pricebook.py`** — the optional manual override (per-producer `reference_750_eur`, optional per-cuvee
+5. **`prices.yaml`** / **`pricebook.py`** — the optional manual override (per-producer `reference_750_eur`, optional per-cuvee
    overrides, a `verified`/`last_verified` pair per producer) plus a CLI
    (`python pricebook.py --stale`) listing entries that are unverified or
    older than 180 days. No longer the primary source: a `verified: true`
    figure still wins over observed data, but leaving it blank is now the
    normal case. Nothing in this codebase fetches Wine-Searcher — that's
    blocked and against their terms.
-5. **`evaluate.py`** — turns a raw hit into a priced one: parses bottle
+6. **`evaluate.py`** — turns a raw hit into a priced one: parses bottle
    size from the title/variant (including the Jura 620ml clavelin, and
    defaulting to 750ml at low confidence if nothing matches), flags
    coffrets/cases as bundles whose per-bottle price is unknowable, detects
@@ -58,7 +72,7 @@ concern, wired together by `scraper.py`:
    multiplier × format multiplier`, and classifies `DEAL`/`FAIR`/`HIGH`/
    `NOREF`. Never drops a hit — an unverified reference or low size/tier
    confidence sets `caveat: true`, it doesn't suppress anything.
-6. **`notify.py`** — one digest email per run, never one per hit. State in
+7. **`notify.py`** — one digest email per run, never one per hit. State in
    `seen.json` (keyed by `sha256(shop + product_url + variant)`) drives a
    30-day per-item cooldown; a hit alerts only if it's new, its price
    dropped >10% since the last alert, or its classification improved to
@@ -129,6 +143,10 @@ this repo.
   when `verified: true`; an unverified one ranks below observed data on
   purpose, because a guessed number produces a confident wrong verdict
   where no number produces an honest `NOREF`.
+- A new HTML shop does not get hand-written selectors by default. Let
+  `autoselect` try first; only write per-shop selectors when the probe
+  shows it genuinely cannot read that page. Selectors are a maintenance
+  cost paid per shop, per restyle.
 - `market.py` must keep cuvee, vintage and format in the comparison key.
   Collapsing any of them re-creates the bug the module exists to fix: a
   EUR 30 negoce bottle scored against a EUR 70 domaine average reads as a

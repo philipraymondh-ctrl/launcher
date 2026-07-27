@@ -17,11 +17,15 @@ It saves the raw response body for every successful probe to
 probe_output/, so those bodies can become real fixtures, and writes
 probe_output/report.json summarising what was detected.
 
-It deliberately does NOT edit SHOPS or flip `verified`. Per
-decisions/standing-decisions.md, `verified: true` is only written once a
-real response has been received and parsed -- this run produces the
-evidence for that, and the fixture/flag change is made from the evidence
-afterwards, reviewably.
+By default it changes nothing: it reports, and leaves SHOPS alone.
+
+With `--apply` it also commits what it just observed -- saves the real
+response as the shop's fixture (trimmed, keeping every producer match),
+corrects the platform, and sets `verified: true`. That is allowed because
+the fetch, the parse and the flag all happen in the *same run* against a
+real response, which is exactly the condition
+decisions/standing-decisions.md sets. It is never inferred from a previous
+run, and a shop that failed to probe is always left unverified.
 
 All requests go through crawler.Crawler, so robots.txt, the per-host rate
 limit, backoff, the circuit breaker and the run budget all apply exactly
@@ -30,8 +34,10 @@ as they do in a real scrape.
 import argparse
 import json
 import os
+import re
 from pathlib import Path
 
+import apply_issue
 import crawler
 import scraper
 
@@ -190,10 +196,109 @@ def probe_shop(shop, crawler_client):
     return result
 
 
+# --- turning a probe result into committed config ----------------------------
+
+FIXTURE_SAMPLE = 25
+
+
+def trim_payload(platform, body, keep=FIXTURE_SAMPLE):
+    """Shrink a real response to a fixture-sized one, keeping every product
+    that matches a tracked producer plus a sample of the rest.
+
+    The result is still real data from the shop -- just fewer rows, so the
+    repo doesn't carry megabytes of catalogue. Keeping the matches means the
+    fixture still exercises real producer matching rather than only shape.
+    """
+    if platform == "shopify":
+        payload = json.loads(body)
+        products = payload.get("products", [])
+        text_of = lambda p: f"{p.get('title','')} {p.get('vendor','')} {p.get('body_html','')}"
+    elif platform == "woocommerce":
+        products = json.loads(body)
+        text_of = lambda p: f"{p.get('name','')} {p.get('short_description','')} {p.get('description','')}"
+    else:
+        return body, len(body)
+
+    matched = [p for p in products if scraper.match_producers(text_of(p))]
+    others = [p for p in products if p not in matched][: max(0, keep - len(matched))]
+    kept = matched + others
+    note = (
+        f"Real response from this shop, trimmed for the repo: {len(kept)} of "
+        f"{len(products)} products, keeping every tracked-producer match "
+        f"({len(matched)}) plus a sample. Captured by probe.py --apply."
+    )
+
+    if platform == "shopify":
+        return json.dumps({"_fixture_note": note, "products": kept}, indent=2) + "\n", len(products)
+    trimmed = list(kept)
+    if trimmed:
+        trimmed[0] = {"_fixture_note": note, **trimmed[0]}
+    return json.dumps(trimmed, indent=2) + "\n", len(products)
+
+
+def apply_result(result, src):
+    """Point a shop's SHOPS entry at what was actually observed, and mark it
+    verified -- only ever called for a response fetched and parsed in this
+    same run, which is what decisions/standing-decisions.md requires."""
+    name, platform = result["shop"], result["detected_platform"]
+    span = apply_issue.find_shop_block(src, name)
+    if span is None:
+        return src, False
+    block = src[span[0]:span[1]]
+
+    block = re.sub(r'("platform": ")[a-z]+(")', lambda m: m.group(1) + platform + m.group(2), block, count=1)
+    if platform == "html":
+        # HTML shops need selectors; a JSON shop must not carry stale ones.
+        if '"item_selector"' not in block:
+            block = re.sub(
+                r'(\n[ \t]*"url": "[^"]*",\n)',
+                lambda m: m.group(1)
+                + '        "item_selector": "div.product",\n'
+                  '        "title_selector": "h2.product-title",\n'
+                  '        "price_selector": "span.price",\n',
+                block, count=1,
+            )
+    else:
+        block = re.sub(r'\n[ \t]*"(?:item|title|price)_selector": "[^"]*",', "", block)
+
+    block = re.sub(r'("verified": )False', lambda m: m.group(1) + "True", block, count=1)
+    return src[:span[0]] + block + src[span[1]:], True
+
+
+def apply_results(results):
+    """Write real fixtures and flip verified for every shop probed OK."""
+    src = scraper_source_path().read_text()
+    applied, skipped = [], []
+    for result in results:
+        if result["status"] != "ok":
+            skipped.append(result["shop"])
+            continue
+        platform = result["detected_platform"]
+        raw = (OUTPUT_DIR / Path(result["saved_as"]).name).read_text()
+        trimmed, total = trim_payload(platform, raw)
+        ext = "html" if platform == "html" else "json"
+        fixtures = Path(__file__).parent / "tests" / "fixtures"
+        for stale in fixtures.glob(f"{result['shop']}.*"):
+            stale.unlink()
+        (fixtures / f"{result['shop']}.{ext}").write_text(trimmed)
+        src, ok = apply_result(result, src)
+        (applied if ok else skipped).append(result["shop"])
+    scraper_source_path().write_text(src)
+    return applied, skipped
+
+
+def scraper_source_path():
+    return Path(scraper.__file__)
+
+
 def main():
     parser = argparse.ArgumentParser(description="Probe shops' real endpoints.")
     parser.add_argument("--only", help="Comma-separated shop names to probe (default: all unverified)")
     parser.add_argument("--include-verified", action="store_true", help="Also probe already-verified shops")
+    parser.add_argument(
+        "--apply", action="store_true",
+        help="Save real fixtures, correct platforms and set verified:true for shops probed OK",
+    )
     args = parser.parse_args()
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -251,6 +356,16 @@ def main():
             print(f"  FAILED {r['shop']}: {reasons}")
 
     print(f"\nRaw bodies and report.json written to {OUTPUT_DIR}/")
+
+    if args.apply:
+        applied, skipped = apply_results(results)
+        print()
+        if applied:
+            print(f"APPLIED to {len(applied)} shop(s): real fixture saved, platform "
+                  f"corrected, verified:true -> {', '.join(applied)}")
+        if skipped:
+            print(f"Left unverified ({len(skipped)}): {', '.join(skipped)}")
+        print("Run the tests before trusting this; the workflow does that for you.")
 
 
 if __name__ == "__main__":

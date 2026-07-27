@@ -2,9 +2,13 @@ name: Probe Shops
 
 # Manual only -- never scheduled. This is the tool that gives shop-adapter
 # real network access: the dev sandbox has none, so shop verification has
-# to happen on a runner. It reads shops, writes nothing back to the repo;
-# the real responses come out as an artifact to be reviewed and turned
-# into fixtures.
+# to happen on a runner.
+#
+# Default run is read-only: it reports and uploads the real responses as an
+# artifact. With `apply` ticked it also commits what it just observed --
+# real fixture, corrected platform, verified:true -- but only for shops
+# that returned and parsed a real response in that same run, and only if
+# the full test suite then passes.
 on:
   workflow_dispatch:
     inputs:
@@ -16,6 +20,13 @@ on:
         description: "Request budget for this probe"
         type: string
         default: "150"
+      apply:
+        description: "Save real fixtures and set verified:true for shops that probe OK (commits to main)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
 
 jobs:
   probe:
@@ -41,11 +52,10 @@ jobs:
           # nothing new about whether the endpoint is live right now.
           FRESH: "1"
         run: |
-          if [ -n "${{ inputs.only }}" ]; then
-            python probe.py --only "${{ inputs.only }}"
-          else
-            python probe.py
-          fi
+          ARGS=""
+          [ -n "${{ inputs.only }}" ] && ARGS="$ARGS --only ${{ inputs.only }}"
+          [ "${{ inputs.apply }}" = "true" ] && ARGS="$ARGS --apply"
+          python probe.py $ARGS
 
       - name: Upload probe results
         if: always()
@@ -54,3 +64,31 @@ jobs:
           name: probe-results-${{ github.run_id }}
           path: probe_output/
           retention-days: 30
+
+      # Nothing is committed unless the suite is green against the new
+      # fixtures, so a shop can never go live on a response we can't parse.
+      - name: Run tests against the new fixtures
+        if: inputs.apply
+        run: pytest tests/ -q
+
+      - name: Rebuild dashboard
+        if: inputs.apply
+        run: python dashboard.py
+
+      - name: Commit verified shops
+        if: inputs.apply
+        run: |
+          rm -rf probe_output
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No shops changed state."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Verify shops from probe run ${{ github.run_id }}
+
+          Real responses fetched and parsed in this run; fixtures saved
+          (trimmed, keeping producer matches), platforms corrected and
+          verified set true. Tests passed before this commit."
+          git push

@@ -53,7 +53,10 @@ concern, wired together by `scraper.py`:
 
 Two more files exist for operating it rather than scraping:
 **`probe.py`** detects each shop's real platform from a runner (the dev
-sandbox has no egress) and **`dashboard.py`** generates `wine.html`, a
+sandbox has no egress); with `--apply` it also saves the real response as
+that shop's fixture, corrects the platform and sets `verified: true` --
+allowed only because the fetch, parse and flag happen in one run against a
+real response. **`dashboard.py`** generates `wine.html`, a
 static status page and control panel. `wine.html` is generated, never
 hand-edited -- change `dashboard.py` instead.
 
@@ -108,8 +111,11 @@ this repo.
   reorder the commit ahead of the tests.
 - Don't write tests that pin today's config state as an invariant ("every
   producer is unverified", "producer X does not exist"). The issue forms
-  change that state, and such a test turns the next legitimate edit into a
-  CI failure. Assert the rule, not the current data.
+  and `probe.py --apply` change that state, and such a test turns the next
+  legitimate edit into a CI failure. Assert the rule, not the current data.
+- No test may touch the network. `scraper.main()` fetches for real once any
+  shop is verified, so tests that call it must stub `crawler.Crawler` --
+  otherwise the suite hits live shops on every CI run.
 
 ## Subagents
 

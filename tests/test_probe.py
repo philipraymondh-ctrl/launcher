@@ -205,11 +205,94 @@ def test_zero_product_response_is_not_treated_as_success():
     assert any("zero products" in a["outcome"] for a in result["attempts"])
 
 
-def test_probe_never_mutates_shops_or_verified_flags():
+def test_probe_without_apply_never_mutates_shops():
+    # Deliberately not "no shop is ever verified" -- probe --apply is
+    # supposed to verify shops. What must hold is that the read-only path
+    # leaves SHOPS untouched.
     before = json.dumps(scraper.SHOPS, sort_keys=True)
     stub = StubCrawler({"/products.json": shopify_response()})
 
     probe.probe_shop(a_shop(), stub)
 
     assert json.dumps(scraper.SHOPS, sort_keys=True) == before
-    assert all(s.get("verified") is False for s in scraper.SHOPS)
+
+
+def test_apply_only_verifies_shops_that_actually_probed_ok(tmp_path, monkeypatch):
+    """The standing decision, exercised end to end: a shop that did not
+    return a real parsed response this run must never come out verified."""
+    monkeypatch.setattr(probe, "OUTPUT_DIR", tmp_path)
+    original_src = probe.scraper_source_path().read_text()
+    fixtures = tmp_path / "fixtures"
+    fixtures.mkdir()
+
+    # Redirect both the source file and the fixture directory into tmp so
+    # the real repo is untouched by this test.
+    sandbox_src = tmp_path / "scraper_copy.py"
+    sandbox_src.write_text(original_src)
+    monkeypatch.setattr(probe, "scraper_source_path", lambda: sandbox_src)
+    monkeypatch.setattr(probe, "__file__", str(tmp_path / "probe.py"))
+    (tmp_path / "tests").mkdir()
+    (tmp_path / "tests" / "fixtures").mkdir()
+
+    (tmp_path / "whynat.json").write_text(json.dumps({
+        "products": [{"title": "Real Wine 2020", "vendor": "V", "handle": "r",
+                      "body_html": "", "variants": [{"price": "30.00"}]}]
+    }))
+    results = [
+        {"shop": "whynat", "status": "ok", "detected_platform": "shopify",
+         "saved_as": "probe_output/whynat.json"},
+        {"shop": "vinibee", "status": "host_unreachable", "detected_platform": None,
+         "saved_as": None},
+        {"shop": "purovino", "status": "failed", "detected_platform": None, "saved_as": None},
+    ]
+
+    applied, skipped = probe.apply_results(results)
+
+    assert applied == ["whynat"]
+    assert set(skipped) == {"vinibee", "purovino"}
+
+    ns = {}
+    exec(compile(sandbox_src.read_text(), "<s>", "exec"), {"__name__": "notmain"}, ns)
+    shops = {s["name"]: s for s in ns["SHOPS"]}
+    assert shops["whynat"]["verified"] is True
+    assert shops["vinibee"]["verified"] is False
+    assert shops["purovino"]["verified"] is False
+    # The real repo's scraper.py must be untouched by this test.
+    assert probe.scraper_source_path() == sandbox_src
+
+
+def test_trim_keeps_every_producer_match():
+    products = [
+        {"title": f"Filler {i}", "vendor": "V", "handle": f"f{i}", "body_html": "",
+         "variants": [{"price": "10.00"}]}
+        for i in range(120)
+    ]
+    products[99] = {"title": "Domaine Ganevat Chardonnay 2020", "vendor": "Ganevat",
+                    "handle": "g", "body_html": "", "variants": [{"price": "80.00"}]}
+    products[110] = {"title": "Pierre Overnoy Ploussard 2019", "vendor": "Overnoy",
+                     "handle": "o", "body_html": "", "variants": [{"price": "300.00"}]}
+
+    trimmed, total = probe.trim_payload("shopify", json.dumps({"products": products}))
+
+    kept = json.loads(trimmed)["products"]
+    assert total == 120
+    assert len(kept) == probe.FIXTURE_SAMPLE
+    titles = " ".join(p["title"] for p in kept)
+    # Both matches were far past the sample cut-off, so a naive head-slice
+    # would have dropped them and made the fixture prove nothing.
+    assert "Ganevat" in titles and "Overnoy" in titles
+
+
+def test_trim_of_woocommerce_keeps_shape():
+    products = [
+        {"name": f"Wine {i}", "permalink": f"https://s/{i}", "short_description": "",
+         "description": "", "prices": {"price": "1000", "currency_minor_unit": 2}}
+        for i in range(60)
+    ]
+    products[50]["name"] = "Domaine Labet Chardonnay 2020"
+
+    trimmed, total = probe.trim_payload("woocommerce", json.dumps(products))
+
+    kept = json.loads(trimmed)
+    assert isinstance(kept, list) and total == 60
+    assert any("Labet" in p["name"] for p in kept)

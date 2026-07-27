@@ -114,77 +114,94 @@ def test_unverified_shops_are_skipped_by_main(monkeypatch, capsys, tmp_path):
     monkeypatch.setattr(notify, "STATE_PATH", tmp_path / "seen.json")
     monkeypatch.setattr(notify, "HITS_PATH", tmp_path / "hits.json")
 
+    # main() builds its own Crawler, so once any shop is verified this test
+    # would make live requests to real shops -- slow, flaky, and rude. Stub
+    # the crawl layer out entirely; this test is about the skip logic.
+    import crawler as crawler_mod
+
+    class NoNetwork:
+        request_count = 0
+        max_requests = 999
+
+        def get(self, url, params=None):
+            raise AssertionError(f"test must not hit the network: {url}")
+
+    monkeypatch.setattr(crawler_mod, "Crawler", lambda *a, **k: NoNetwork())
+
     scraper.main()
 
     out = capsys.readouterr().out
-    unverified_shops = [s for s in scraper.SHOPS if not s.get("verified", True)]
-    assert unverified_shops, "expected at least one unverified placeholder shop"
-    for shop in unverified_shops:
-        assert f"[{shop['name']}] skipped: unverified placeholder" in out
+    for shop in scraper.SHOPS:
+        if not shop.get("verified", True):
+            assert f"[{shop['name']}] skipped: unverified placeholder" in out
 
 
 REAL_SHOPS = [s for s in scraper.SHOPS if not s["name"].startswith("example-")]
+UNVERIFIED = [s for s in REAL_SHOPS if not s.get("verified")]
+VERIFIED = [s for s in REAL_SHOPS if s.get("verified")]
 
 
-@pytest.mark.parametrize(
-    "shop_name",
-    [s["name"] for s in REAL_SHOPS if s["platform"] == "html"],
-)
-def test_placeholder_html_fixture_parses_without_crashing(shop_name):
+def fixture_for(shop):
+    ext = "html" if shop["platform"] == "html" else "json"
+    return FIXTURES / f"{shop['name']}.{ext}"
+
+
+def crawler_for(shop):
+    path = fixture_for(shop)
+    if shop["platform"] == "html":
+        return FakeCrawler(FakeTextResponse(path.read_text()))
+    return FakeCrawler(FakeJSONResponse(json.loads(path.read_text())))
+
+
+@pytest.mark.parametrize("shop_name", [s["name"] for s in UNVERIFIED] or ["__none__"])
+def test_unverified_shop_fixture_parses_without_crashing(shop_name):
+    # Placeholder content, so this only proves the guessed selectors don't
+    # crash -- not that they're right. Verified shops are covered below,
+    # against their real fixtures.
+    if shop_name == "__none__":
+        pytest.skip("no unverified shops left")
     shop = shop_by_name(shop_name)
-    assert shop["verified"] is False
-    html = (FIXTURES / f"{shop_name}.html").read_text()
-
-    hits = scraper.check_shop(shop, FakeCrawler(FakeTextResponse(html)))
-
-    # Placeholder content deliberately contains no producer alias -- this
-    # only proves the guessed selectors don't crash, not that they're right.
-    assert hits == []
+    scraper.check_shop(shop, crawler_for(shop))
 
 
-@pytest.mark.parametrize(
-    "shop_name",
-    [s["name"] for s in REAL_SHOPS if s["platform"] in ("shopify", "woocommerce")],
-)
-def test_placeholder_json_fixture_parses_without_crashing(shop_name):
-    # These shops' platforms are confirmed by probe run 30255245592, but
-    # the fixture bodies are still placeholders, so this asserts the right
-    # fetcher runs cleanly -- not that the data is real.
+@pytest.mark.parametrize("shop_name", [s["name"] for s in VERIFIED] or ["__none__"])
+def test_verified_shop_fixture_yields_real_products(shop_name):
+    # A verified shop's fixture is a real saved response, so it must parse
+    # into actual products -- an empty parse means the adapter has drifted.
+    if shop_name == "__none__":
+        pytest.skip("no verified shops yet")
     shop = shop_by_name(shop_name)
-    assert shop["verified"] is False
-    data = load_json(f"{shop_name}.json")
-
-    scraper.check_shop(shop, FakeCrawler(FakeJSONResponse(data)))
+    items = scraper.FETCHERS[shop["platform"]](shop, crawler_for(shop))
+    assert items, f"{shop_name} is verified but its fixture parses to zero products"
+    assert any(i["title"] for i in items), f"{shop_name} fixture has no product titles"
 
 
 def test_every_shop_has_a_fixture_matching_its_platform():
     # Guards the drift that broke things when platforms were corrected:
     # a JSON shop must not be left holding an .html fixture.
     for shop in REAL_SHOPS:
-        ext = "html" if shop["platform"] == "html" else "json"
-        assert (FIXTURES / f"{shop['name']}.{ext}").exists(), (
-            f"{shop['name']} is platform={shop['platform']} but has no .{ext} fixture"
+        assert fixture_for(shop).exists(), (
+            f"{shop['name']} is platform={shop['platform']} but has no "
+            f"{fixture_for(shop).suffix} fixture"
         )
 
 
-def test_levinnaturel_placeholder_fixture_has_labet_hit():
+def test_verified_shops_do_not_carry_placeholder_fixtures():
+    # The whole point of `verified` is that the fixture is real. If a
+    # placeholder marker survives, the flag is lying.
+    for shop in VERIFIED:
+        body = fixture_for(shop).read_text()
+        assert "PLACEHOLDER" not in body.upper(), (
+            f"{shop['name']} is verified but its fixture is still a placeholder"
+        )
+
+
+def test_levinnaturel_fixture_has_labet_hit():
+    # Levinnaturel genuinely stocks Domaine Labet (confirmed by probe run
+    # 30255245592), so its fixture -- placeholder or real -- should show it.
     shop = shop_by_name("levinnaturel")
-    assert shop["verified"] is False
-    data = load_json("levinnaturel.json")
-
-    hits = scraper.check_shop(shop, FakeCrawler(FakeJSONResponse(data)))
-
+    hits = scraper.check_shop(shop, crawler_for(shop))
     assert any(h["producer"] == "Labet" for h in hits)
-
-
-def test_vinopura_placeholder_fixture_parses_without_crashing():
-    shop = shop_by_name("vinopura")
-    assert shop["verified"] is False
-    data = load_json("vinopura.json")
-
-    hits = scraper.check_shop(shop, FakeCrawler(FakeJSONResponse(data)))
-
-    assert hits == []
 
 
 class PagingCrawler:

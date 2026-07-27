@@ -491,6 +491,43 @@ def _parse_html_page(shop, html, page_url):
     return autoselect.find_products(html, page_url, PRICE_PATTERN, parse_price), "auto"
 
 
+def _fetch_via_producer_index(shop, index_url, crawler_client):
+    """Last resort for a shop with no crawlable catalogue.
+
+    leszinzinsduvin only exposes its wines through a POST search form, but
+    it lists its growers, and we watch growers. Follow the index entries
+    matching PRODUCERS and read those pages -- a dozen requests instead of
+    a full catalogue walk, aimed at exactly the bottles we care about.
+    """
+    try:
+        resp = crawler_client.get(index_url)
+        resp.raise_for_status()
+    except (crawler.BudgetExceeded, crawler.UpstreamError):
+        return []
+
+    targets = autoselect.find_producer_links(
+        resp.text, index_url, PRODUCERS, normalize)
+    if not targets:
+        return []
+
+    items = []
+    for producer, url in targets[:autoselect.MAX_INDEX_LINKS]:
+        try:
+            page = crawler_client.get(url)
+            page.raise_for_status()
+        except (crawler.BudgetExceeded, crawler.UpstreamError):
+            break
+        page_items, _ = _parse_html_page(shop, page.text, url)
+        for item in page_items:
+            # The grower's own page may not repeat their name on every row.
+            item["text"] = f"{producer} {item['text']}"
+        items.extend(page_items)
+    if items:
+        print(f"[{shop['name']}] no crawlable catalogue; read {len(items)} product(s) "
+              f"from {len(targets[:autoselect.MAX_INDEX_LINKS])} producer page(s)")
+    return items
+
+
 def fetch_html(shop, crawler_client):
     """Walk an HTML catalogue, following its own "next page" link.
 
@@ -532,6 +569,10 @@ def fetch_html(shop, crawler_client):
     else:
         print(f"[{shop['name']}] hit MAX_PAGES_PER_SHOP ({MAX_PAGES_PER_SHOP}); "
               f"catalogue may be TRUNCATED")
+
+    if not items:
+        items = _fetch_via_producer_index(shop, start, crawler_client)
+        how = "index" if items else how
 
     if items and how == "auto":
         print(f"[{shop['name']}] no configured selector matched; "

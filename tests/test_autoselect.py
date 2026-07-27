@@ -248,3 +248,62 @@ def test_an_empty_first_page_is_still_an_error():
     import pytest
     with pytest.raises(scraper.EmptyResponseError):
         scraper.fetch_html(SHOP, PagedCrawler({"https://shop.test": "   "}))
+
+
+# --- producer indexes --------------------------------------------------------
+
+DOMAINES_INDEX = """
+<html><body>
+ <a href="/index.php">Accueil</a>
+ <a href="/panier.php">Panier</a>
+ <a href="/domaine-4-31-Languedoc__Roussillon_MAS_COUTELOU.html">Mas Coutelou</a>
+ <a href="/domaine-14-58-Rhone_DOMAINE_GRAMENON.html">Gramenon</a>
+ <a href="/domaine-9-12-Jura_DOMAINE_GANEVAT.html">Domaine Ganevat</a>
+ <a href="/domaine-3-20-Loire_RICHARD_LEROY.html">Richard Leroy</a>
+</body></html>
+"""
+
+
+def test_finds_only_the_growers_we_watch():
+    found = autoselect.find_producer_links(
+        DOMAINES_INDEX, "https://z.test/domaines.php", scraper.PRODUCERS, scraper.normalize)
+    assert [p for p, _ in found] == ["Ganevat", "Richard Leroy"]
+    assert found[0][1] == "https://z.test/domaine-9-12-Jura_DOMAINE_GANEVAT.html"
+
+
+def test_the_cart_link_is_never_a_producer_page():
+    found = autoselect.find_producer_links(
+        DOMAINES_INDEX, "https://z.test/domaines.php", scraper.PRODUCERS, scraper.normalize)
+    assert all("/panier" not in u for _, u in found)
+
+
+def test_a_shop_with_no_crawlable_catalogue_falls_back_to_its_producer_index():
+    """leszinzinsduvin's /vins.php is a POST search form -- nothing to walk.
+    Its grower index is the way in."""
+    grower_page = ('<html><body><table>'
+                   '<tr><td><a href="/vin-1-a.html">Les Chalasses 2018</a></td><td>55,00 &euro;</td></tr>'
+                   '<tr><td><a href="/vin-2-b.html">Poulprix 2024</a></td><td>29,00 &euro;</td></tr>'
+                   '<tr><td><a href="/vin-3-c.html">Vin Jaune 2012</a></td><td>118,00 &euro;</td></tr>'
+                   '</table></body></html>')
+    crawler_client = PagedCrawler({
+        "https://shop.test/vins.php": DOMAINES_INDEX,
+        "https://shop.test/domaine-9-12-Jura_DOMAINE_GANEVAT.html": grower_page,
+        "https://shop.test/domaine-3-20-Loire_RICHARD_LEROY.html": grower_page,
+    })
+    shop = dict(SHOP, catalog_path="vins.php")
+    items = scraper.fetch_html(shop, crawler_client)
+
+    assert len(items) == 6, "both grower pages should be read"
+    # The grower's page need not repeat their name on every row, so the
+    # producer is carried over from the index entry.
+    assert any("Ganevat" in i["text"] for i in items)
+    assert any("Richard Leroy" in i["text"] for i in items)
+    assert scraper.match_producers(items[0]["text"]) == ["Ganevat"]
+
+
+def test_the_index_fallback_only_runs_when_the_catalogue_is_empty():
+    """It costs a request per grower, so a shop that parses normally must
+    never pay for it."""
+    crawler_client = PagedCrawler({"https://shop.test": page([1, 2, 3])})
+    scraper.fetch_html(SHOP, crawler_client)
+    assert crawler_client.requested == ["https://shop.test"]

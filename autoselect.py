@@ -156,11 +156,45 @@ CATALOGUE_PATHS = [
     # Hand-rolled PHP shops keep their catalogue behind a script name, and
     # a "promos" page is where a deal-hunting scraper most wants to look.
     "vins.php", "promos.php", "boutique.php", "catalogue.php", "promotions",
+    # Grower indexes: for a scraper watching named producers these are
+    # often a better way in than the catalogue, and sometimes the only one.
+    "domaines.php", "domaines", "producteurs", "vignerons", "nos-vignerons",
 ]
 
 
 def looks_like_catalogue(items):
     return len(items) >= MIN_BLOCKS
+
+
+# --- producer indexes ------------------------------------------------------
+
+# Some shops have no browsable catalogue at all. leszinzinsduvin's /vins.php
+# is a POST search form -- 132 filter options and no listing to fetch -- but
+# it also publishes /domaines.php, an index of growers linking to
+# /domaine-14-58-Rhone_DOMAINE_GRAMENON.html. Since this scraper watches a
+# named list of producers rather than whole catalogues, following only the
+# growers we care about is both the data we actually want and far politer
+# than walking a thousand-wine catalogue to find sixteen of them.
+MAX_INDEX_LINKS = 12
+
+
+def find_producer_links(html, base_url, producers, normalize_fn):
+    """[(producer, url)] for index links naming a producer we watch."""
+    soup = BeautifulSoup(html, "html.parser")
+    found, seen = [], set()
+    for anchor in soup.find_all("a", href=True):
+        href = anchor["href"].strip()
+        if not href or NON_PRODUCT_HREF.match(href) or NON_PRODUCT_PATH.search(href):
+            continue
+        haystack = normalize_fn(href + " " + anchor.get_text(" ", strip=True))
+        for canonical, aliases in producers.items():
+            if any(normalize_fn(a) in haystack for a in aliases):
+                url = urljoin(base_url, href)
+                if url not in seen:
+                    seen.add(url)
+                    found.append((canonical, url))
+                break
+    return found
 
 
 # --- pagination -------------------------------------------------------------

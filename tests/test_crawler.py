@@ -246,3 +246,52 @@ def test_crawl_delay_from_robots_overrides_min_delay(monkeypatch, tmp_cache):
 
     # Crawl-delay: 10 should be honoured over the default 3s minimum.
     assert any(abs(s - 8) < 0.01 for s in sleeps)
+
+
+# --- what counts as a host failure ------------------------------------------
+
+def test_a_404_is_not_a_host_failure():
+    """Catalogue discovery is mostly misses. Counting them tripped the
+    breaker after three tries, so the path that would have worked was
+    never reached."""
+    assert crawler_mod.Crawler._is_host_failure(404) is False
+    assert crawler_mod.Crawler._is_host_failure(410) is False
+    assert crawler_mod.Crawler._is_host_failure(400) is False
+
+
+def test_a_refusal_or_an_outage_is_a_host_failure():
+    assert crawler_mod.Crawler._is_host_failure(None) is True     # no connection
+    assert crawler_mod.Crawler._is_host_failure(500) is True
+    assert crawler_mod.Crawler._is_host_failure(503) is True
+    assert crawler_mod.Crawler._is_host_failure(429) is True      # slow down
+    assert crawler_mod.Crawler._is_host_failure(403) is True      # blocked
+
+
+def test_repeated_404s_never_open_the_circuit(monkeypatch):
+    client = crawler_mod.Crawler()
+    monkeypatch.setattr(client, "_allowed", lambda url: True)
+    monkeypatch.setattr(client, "_wait_for_host", lambda host: None)
+    monkeypatch.setattr(
+        client, "_attempt_with_retries",
+        lambda *a, **k: (_ for _ in ()).throw(crawler_mod.UpstreamError("HTTP 404", status_code=404)),
+    )
+    for _ in range(crawler_mod.CIRCUIT_BREAKER_THRESHOLD + 3):
+        with pytest.raises(crawler_mod.UpstreamError):
+            client.get("https://missing.example/nope")
+    # Still reachable: the host was answering the whole time.
+    assert client._consecutive_failures["missing.example"] == 0
+
+
+def test_repeated_outages_still_open_the_circuit(monkeypatch):
+    client = crawler_mod.Crawler()
+    monkeypatch.setattr(client, "_allowed", lambda url: True)
+    monkeypatch.setattr(client, "_wait_for_host", lambda host: None)
+    monkeypatch.setattr(
+        client, "_attempt_with_retries",
+        lambda *a, **k: (_ for _ in ()).throw(crawler_mod.UpstreamError("refused")),
+    )
+    for _ in range(crawler_mod.CIRCUIT_BREAKER_THRESHOLD):
+        with pytest.raises(crawler_mod.UpstreamError):
+            client.get("https://down.example/x")
+    with pytest.raises(crawler_mod.CircuitOpen):
+        client.get("https://down.example/y")

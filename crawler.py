@@ -183,6 +183,20 @@ class Crawler:
 
     # -- failure tracking / circuit breaker ------------------------------
 
+    # A 404 is a healthy server saying "no such page". The breaker exists
+    # for hosts that are down, refusing us, or rate-limiting -- counting
+    # 404s toward it meant catalogue discovery, which is mostly misses,
+    # tripped the breaker after three tries and never reached the page that
+    # would have worked. 401/403/407 do count: those are a host actively
+    # refusing, and hammering on is the rude thing to do.
+    HOST_FAILURE_STATUSES = frozenset({401, 403, 407, 429})
+
+    @classmethod
+    def _is_host_failure(cls, status_code):
+        if status_code is None:
+            return True          # the connection itself never succeeded
+        return status_code >= 500 or status_code in cls.HOST_FAILURE_STATUSES
+
     def _record_failure(self, host):
         self._consecutive_failures[host] += 1
         if self._consecutive_failures[host] >= CIRCUIT_BREAKER_THRESHOLD:
@@ -231,8 +245,13 @@ class Crawler:
             # backoff sequence is normal politeness, not 3 host failures.
             try:
                 result = self._attempt_with_retries(full_url, host, headers, cached)
-            except UpstreamError:
-                self._record_failure(host)
+            except UpstreamError as e:
+                if self._is_host_failure(e.status_code):
+                    self._record_failure(host)
+                else:
+                    # The host answered, so it is up; this path just is not
+                    # there. Not a strike against the host.
+                    self._record_success(host)
                 raise
             self._record_success(host)
             return result

@@ -1,0 +1,14 @@
+[
+  {
+    "name": "Domaine Labet Cotes du Jura Chardonnay 2020",
+    "permalink": "https://example-woo-shop.example.com/product/labet-chardonnay-2020",
+    "short_description": "Elegant Jura chardonnay from Domaine Labet.",
+    "prices": {"price": "3900", "currency_minor_unit": 2}
+  },
+  {
+    "name": "Generic Beaujolais 2021",
+    "permalink": "https://example-woo-shop.example.com/product/generic-beaujolais-2021",
+    "short_description": "A simple gamay.",
+    "prices": {"price": "1500", "currency_minor_unit": 2}
+  }
+]

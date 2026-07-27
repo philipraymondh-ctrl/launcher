@@ -144,6 +144,22 @@ def find_products(html, base_url, price_pattern, parse_price):
     return items
 
 
+# --- finding the catalogue --------------------------------------------------
+
+# A landing page is usually a shop window: a few featured bottles, or none.
+# winenot.fr's home page yields 6 products against a catalogue of far more,
+# and leszinzinsduvin's yields nothing at all. Rather than hand-record a
+# path per shop, the probe walks this list once and records what worked.
+CATALOGUE_PATHS = [
+    "", "boutique", "shop", "vins", "vins.php", "nos-vins", "les-vins",
+    "catalogue", "produits", "collections/all", "vin", "cave", "tous-nos-vins",
+]
+
+
+def looks_like_catalogue(items):
+    return len(items) >= MIN_BLOCKS
+
+
 # --- pagination -------------------------------------------------------------
 
 NEXT_WORDS = {"next", "suivant", "suivante", "volgende", "weiter", "›", "»", "→", ">"}

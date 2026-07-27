@@ -128,7 +128,14 @@ def test_http_404_does_not_stop_the_probe():
     result = probe.probe_shop(a_shop(), stub)
 
     assert result["status"] == "ok"
-    assert len(stub.calls) == 3
+    # The rule, not the endpoint count: a 404 means "host is up, wrong
+    # platform", so the probe must carry on past it to the HTML attempt.
+    # Pinning an exact number here just breaks when the candidate list
+    # grows, which is what catalogue discovery did.
+    assert "https://testshop.example/products.json" in stub.calls
+    assert "https://testshop.example" in stub.calls
+    assert stub.calls.index("https://testshop.example/products.json") < \
+        stub.calls.index("https://testshop.example")
 
 
 def test_saves_real_body_for_fixture_use(isolated_output):

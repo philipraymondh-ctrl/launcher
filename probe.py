@@ -38,7 +38,10 @@ import re
 from pathlib import Path
 from urllib.parse import urljoin
 
+from bs4 import BeautifulSoup
+
 import apply_issue
+import autoselect
 import crawler
 import scraper
 
@@ -52,6 +55,8 @@ EMPTY_PAGE = {"shopify": '{"products": []}', "woocommerce": "[]", "html": ""}
 
 # Enough of a failing body to tell a bot-block page from an API change.
 BODY_SNIPPET = 400
+# Under this many products an HTML page is a shop window, not a catalogue.
+BETTER_CATALOGUE_AT = 12
 
 
 class CannedCrawler:
@@ -78,17 +83,55 @@ class CannedCrawler:
         return self._response
 
 
+def describe_unparsed(body):
+    """Why a page that responded produced nothing.
+
+    The whole page is in the artifact, but artifacts sit behind blob
+    storage, so this has to be small enough to read in a job log and
+    specific enough to act on.
+    """
+    soup = BeautifulSoup(body, "html.parser")
+    text = soup.get_text(" ", strip=True)
+    prices = scraper.PRICE_PATTERN.findall(text)
+    links = [a.get("href", "") for a in soup.find_all("a", href=True)]
+    product_ish = [h for h in links if re.search(r"/(vin|produit|product|bouteille)", h, re.I)]
+    scripts = len(soup.find_all("script"))
+    counts = {}
+    for el in soup.find_all(True):
+        key = el.name + ("." + ".".join(el.get("class", [])) if el.get("class") else "")
+        counts[key] = counts.get(key, 0) + 1
+    common = sorted(counts.items(), key=lambda kv: -kv[1])[:6]
+    return (
+        f"{len(body)} bytes, {len(prices)} currency-adjacent price(s), "
+        f"{len(links)} link(s) of which {len(product_ish)} look like products, "
+        f"{scripts} script tag(s); commonest elements: "
+        + ", ".join(f"{k}x{v}" for k, v in common)
+        + (" | sample product links: " + ", ".join(product_ish[:3]) if product_ish else "")
+    )
+
+
 def candidate_endpoints(shop):
     base = shop["url"].rstrip("/")
     # A shop may list nothing on its landing page. Probing the base URL
     # then reports "responded, zero products" for a shop whose catalogue
     # parses perfectly one path over.
-    catalogue = urljoin(base + "/", shop["catalog_path"]) if shop.get("catalog_path") else shop["url"]
-    return [
+    endpoints = [
         ("shopify", f"{base}/products.json", {"limit": 250}, "json"),
         ("woocommerce", f"{base}/wp-json/wc/store/v1/products", {"per_page": 100}, "json"),
-        ("html", catalogue, None, "html"),
     ]
+    if shop.get("catalog_path"):
+        return endpoints + [("html", urljoin(base + "/", shop["catalog_path"]), None, "html")]
+    # No recorded path: try the landing page, then the handful of places a
+    # French/EU wine shop actually keeps its catalogue. Each miss costs one
+    # request; --apply writes the winner back so the hourly run only ever
+    # fetches the one that worked.
+    seen, paths = set(), []
+    for path in autoselect.CATALOGUE_PATHS:
+        url = urljoin(base + "/", path) if path else shop["url"]
+        if url not in seen:
+            seen.add(url)
+            paths.append(("html", url, None, "html"))
+    return endpoints + paths
 
 
 def try_parse(platform, shop, response):
@@ -121,7 +164,9 @@ def probe_shop(shop, crawler_client):
         "saved_as": None,
         "truncated": False,
         "attempts": [],
+        "catalog_path": shop.get("catalog_path"),
     }
+    best_html = {"count": 0, "body": None, "url": None, "items": []}
 
     for platform, url, params, kind in candidate_endpoints(shop):
         attempt = {"platform": platform, "url": url}
@@ -184,6 +229,17 @@ def probe_shop(shop, crawler_client):
             result["attempts"].append(attempt)
             continue
 
+        if platform == "html" and len(items) < BETTER_CATALOGUE_AT:
+            # A landing page's "featured wines" strip parses fine and is not
+            # the catalogue. Note it and keep looking; fall back to it only
+            # if nothing richer turns up.
+            attempt["outcome"] = f"parsed {len(items)} product(s) -- looks like a shop window, not a catalogue"
+            attempt["products"] = len(items)
+            result["attempts"].append(attempt)
+            if len(items) > best_html["count"]:
+                best_html.update(count=len(items), body=body, url=url, items=items)
+            continue
+
         ext = "json" if kind == "json" else "html"
         saved = OUTPUT_DIR / f"{shop['name']}.{ext}"
         saved.write_text(body)
@@ -210,10 +266,39 @@ def probe_shop(shop, crawler_client):
             producer_hits=hits,
             saved_as=str(saved.relative_to(OUTPUT_DIR.parent)),
             truncated=truncated,
+            catalog_path=_relative_path(shop, url),
         )
         return result
 
+    # Nothing rich turned up, so a thin page beats no page: six real
+    # products still catch a producer, and the alternative is a shop that
+    # stays dark.
+    if best_html["count"]:
+        saved = OUTPUT_DIR / f"{shop['name']}.html"
+        saved.write_text(best_html["body"])
+        hits = sorted({
+            producer
+            for item in best_html["items"]
+            for producer in scraper.match_producers(item["text"])
+        })
+        result.update(
+            detected_platform="html",
+            status="ok",
+            endpoint=best_html["url"],
+            products_parsed=best_html["count"],
+            producer_hits=hits,
+            saved_as=str(saved.relative_to(OUTPUT_DIR.parent)),
+            truncated=False,
+            catalog_path=_relative_path(shop, best_html["url"]),
+            thin=True,
+        )
     return result
+
+
+def _relative_path(shop, url):
+    """The catalogue path to record, relative to the shop's base URL."""
+    base = shop["url"].rstrip("/") + "/"
+    return url[len(base):] if url.startswith(base) and url != base else None
 
 
 # --- turning a probe result into committed config ----------------------------
@@ -280,6 +365,18 @@ def apply_result(result, src):
             )
     else:
         block = re.sub(r'\n[ \t]*"(?:item|title|price)_selector": "[^"]*",', "", block)
+
+    path = result.get("catalog_path")
+    if platform == "html" and path:
+        # Record where the catalogue actually was, so the hourly run fetches
+        # one page instead of rediscovering it every time.
+        if '"catalog_path"' in block:
+            block = re.sub(r'("catalog_path": ")[^"]*(")',
+                           lambda m: m.group(1) + path + m.group(2), block, count=1)
+        else:
+            block = re.sub(r'(\n[ \t]*"url": "[^"]*",\n)',
+                           lambda m: m.group(1) + f'        "catalog_path": "{path}",\n',
+                           block, count=1)
 
     block = re.sub(r'("verified": )False', lambda m: m.group(1) + "True", block, count=1)
     return src[:span[0]] + block + src[span[1]:], True

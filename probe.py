@@ -461,12 +461,37 @@ def main():
     parser.add_argument("--only", help="Comma-separated shop names to probe (default: all unverified)")
     parser.add_argument("--include-verified", action="store_true", help="Also probe already-verified shops")
     parser.add_argument(
+        "--capture",
+        help="Comma-separated URLs to fetch and save to probe_pages/ for inspection. "
+             "Diagnostic only: parses nothing, verifies nothing, commits no config.",
+    )
+    parser.add_argument(
         "--apply", action="store_true",
         help="Save real fixtures, correct platforms and set verified:true for shops probed OK",
     )
     args = parser.parse_args()
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+
+    if args.capture:
+        # There is no other way to see a page from here: the sandbox has no
+        # egress and run artifacts live behind blob storage it cannot reach.
+        # Committing a trimmed copy is the only channel back.
+        client = crawler.Crawler()
+        for url in [u.strip() for u in args.capture.split(",") if u.strip()]:
+            try:
+                resp = client.get(url)
+                resp.raise_for_status()
+            except Exception as e:
+                print(f"CAPTURE {url}: {type(e).__name__}: {e}")
+                continue
+            save_diagnostic_page("capture", url, resp.text)
+            items = autoselect.find_products(
+                resp.text, url, scraper.PRICE_PATTERN, scraper.parse_price)
+            print(f"CAPTURE {url}: {len(resp.text)} bytes, "
+                  f"autoselect reads {len(items)} product(s)")
+            print(f"         {describe_unparsed(resp.text)}")
+        return
 
     shops = [s for s in scraper.SHOPS if args.include_verified or not s.get("verified", True)]
     # The example-* entries point at reserved .example.com domains that

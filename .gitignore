@@ -4,3 +4,4 @@ __pycache__/
 .cache/
 seen.json
 hits.json
+probe_output/

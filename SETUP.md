@@ -98,6 +98,50 @@ Every shop in `SHOPS` has a saved fixture response under `tests/fixtures/`
 and a test asserting what it should match. Run these before committing any
 scraping change.
 
+## 7. The dashboard
+
+`wine.html` is a generated status page and control panel: current shops and
+their platforms, producers and reference prices, and buttons to run the
+workflows or add config. Regenerate locally with `python dashboard.py`; a
+workflow rebuilds it whenever `scraper.py`, `prices.yaml` or `dashboard.py`
+changes on `main`.
+
+If GitHub Pages is enabled for the repo it is served at
+`https://<user>.github.io/launcher/wine.html` (the existing `index.html`
+launcher app keeps the root path). It holds no credentials -- every button
+links out to GitHub, which handles sign-in.
+
+## 8. Changing config from a phone
+
+Two issue forms, linked from the dashboard. Each one adds, updates **and**
+removes -- there is no separate "edit" path to hunt for.
+
+**Producers** -- name, aliases, region, reference price.
+- Naming an existing producer *updates* it. Fill only what you want to
+  change; blank fields keep their current value. So correcting a price is
+  the same one-step action as adding a producer.
+- Ticking "checked myself" marks the price verified and stamps today's
+  date; you never type a date. It's refused if there's no price to vouch
+  for.
+- The bulk box adds several at once, one per line:
+  `Name | aliases | region | price` (region and price optional).
+- Ticking Remove in the danger zone deletes the producer instead.
+
+**Shops** -- short name and URL.
+- An existing name re-points that shop and resets it to `verified: false`,
+  since the old verification no longer applies. Re-probe it afterwards.
+- Ticking Remove deletes the shop and its fixture.
+
+Submitting a form runs `.github/workflows/apply-config.yml`, which
+validates the input, edits `scraper.py`/`prices.yaml`, rebuilds the
+dashboard, runs the full test suite, and only then commits to `main`. It
+comments the commit link on the issue and closes it. There is no pull
+request to merge -- if the tests fail nothing is committed, and every
+change is revertible through git.
+
+Only issues opened by the repo owner are processed -- the repo is public,
+so this gate stops a stranger from driving edits to `scraper.py`.
+
 ## Schedule
 
 Hourly at :00 UTC (`0 * * * *`), 24 runs/day. Each run also has a

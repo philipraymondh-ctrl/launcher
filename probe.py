@@ -38,16 +38,33 @@ import scraper
 OUTPUT_DIR = Path(os.environ.get("PROBE_OUTPUT_DIR", Path(__file__).parent / "probe_output"))
 
 
+# An exhausted-catalogue payload per platform, so a paginating fetcher
+# terminates after the single page the probe actually fetched instead of
+# replaying page 1 forever.
+EMPTY_PAGE = {"shopify": '{"products": []}', "woocommerce": "[]", "html": ""}
+
+
 class CannedCrawler:
     """Replays one already-fetched response into a real fetcher, so the
-    probe validates the actual parse path without a second network call."""
+    probe validates the actual parse path without a second network call.
 
-    def __init__(self, response):
+    The fetchers paginate, so only the first call gets the real body; every
+    later page reads as empty and ends the walk. The probe therefore
+    measures page one, which is all it fetched -- see `truncated` in the
+    report for whether more pages exist.
+    """
+
+    def __init__(self, response, platform):
         self._response = response
+        self._empty = crawler.FetchResult(200, EMPTY_PAGE.get(platform, ""))
+        self._served = False
         self.request_count = 0
         self.max_requests = 1
 
     def get(self, url, params=None):
+        if self._served:
+            return self._empty
+        self._served = True
         return self._response
 
 
@@ -70,7 +87,7 @@ def try_parse(platform, shop, response):
         probe_shop.setdefault("title_selector", "h2.product-title")
         probe_shop.setdefault("price_selector", "span.price")
     try:
-        items = scraper.FETCHERS[platform](probe_shop, CannedCrawler(response))
+        items = scraper.FETCHERS[platform](probe_shop, CannedCrawler(response, platform))
         return items, None
     except Exception as e:
         return None, f"{type(e).__name__}: {e}"
@@ -88,6 +105,7 @@ def probe_shop(shop, crawler_client):
         "products_parsed": 0,
         "producer_hits": [],
         "saved_as": None,
+        "truncated": False,
         "attempts": [],
     }
 
@@ -150,6 +168,12 @@ def probe_shop(shop, crawler_client):
             for producer in scraper.match_producers(item["text"])
         })
 
+        # The probe fetches exactly one page. A full page means the real
+        # catalogue is larger, so these producer_hits are a lower bound --
+        # the scraper paginates, but this report does not.
+        page_size = {"shopify": scraper.SHOPIFY_PAGE_SIZE, "woocommerce": scraper.WOO_PAGE_SIZE}
+        truncated = len(items) >= page_size.get(platform, len(items) + 1)
+
         attempt["outcome"] = f"ok, {len(items)} product(s)"
         result["attempts"].append(attempt)
         result.update(
@@ -159,6 +183,7 @@ def probe_shop(shop, crawler_client):
             products_parsed=len(items),
             producer_hits=hits,
             saved_as=str(saved.relative_to(OUTPUT_DIR.parent)),
+            truncated=truncated,
         )
         return result
 
@@ -208,9 +233,10 @@ def main():
     for r in results:
         hits = ", ".join(r["producer_hits"]) or "-"
         platform = r["detected_platform"] or "-"
+        count = f"{r['products_parsed']}{'+' if r.get('truncated') else ''}"
         print(
             f"{r['shop']:<{name_w}} | {r['status']:<{status_w}} | {platform:<12} | "
-            f"{r['products_parsed']:>8} | {hits}"
+            f"{count:>8} | {hits}"
         )
 
     ok = [r for r in results if r["status"] == "ok"]

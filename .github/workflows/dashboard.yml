@@ -1,0 +1,45 @@
+name: Rebuild Dashboard
+
+# Keeps wine.html in sync with SHOPS and prices.yaml. The page is a
+# generated artifact committed to the repo, so GitHub Pages can serve it
+# without a build step.
+on:
+  push:
+    branches: [main]
+    paths:
+      - scraper.py
+      - prices.yaml
+      - dashboard.py
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Regenerate wine.html
+        run: python dashboard.py
+
+      - name: Commit if changed
+        run: |
+          if git diff --quiet -- wine.html; then
+            echo "Dashboard already up to date."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add wine.html
+          git commit -m "Rebuild dashboard [skip ci]"
+          git push

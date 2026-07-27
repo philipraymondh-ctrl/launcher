@@ -21,6 +21,15 @@ import notify
 
 DRY_RUN = os.environ.get("DRY_RUN") == "1"
 
+# Catalogues are paged. Without walking the pages we only ever see the
+# newest ~250 products, so a producer sitting deeper in the catalogue
+# reads as "not in stock" -- a silent false negative that looks like a
+# clean run. MAX_PAGES_PER_SHOP bounds the cost; the crawler's own
+# MAX_REQUESTS_PER_RUN budget still applies on top.
+SHOPIFY_PAGE_SIZE = 250
+WOO_PAGE_SIZE = 100
+MAX_PAGES_PER_SHOP = 20
+
 # ---------------------------------------------------------------------------
 # Producers to watch for. Each canonical name maps to alias substrings that
 # are matched accent- and case-insensitively (see normalize()). A domaine
@@ -119,20 +128,14 @@ SHOPS = [
     },
     {
         "name": "lespeauxdevins",
-        "platform": "html",
+        "platform": "shopify",
         "url": "https://lespeauxdevins.com",
-        "item_selector": "div.product",
-        "title_selector": "h2.product-title",
-        "price_selector": "span.price",
         "verified": False,
     },
     {
         "name": "lacavedespapilles",
-        "platform": "html",
+        "platform": "shopify",
         "url": "https://www.lacavedespapilles.com",
-        "item_selector": "div.product",
-        "title_selector": "h2.product-title",
-        "price_selector": "span.price",
         "verified": False,
     },
     {
@@ -146,20 +149,14 @@ SHOPS = [
     },
     {
         "name": "whynat",
-        "platform": "html",
+        "platform": "shopify",
         "url": "https://www.whynat.fr",
-        "item_selector": "div.product",
-        "title_selector": "h2.product-title",
-        "price_selector": "span.price",
         "verified": False,
     },
     {
         "name": "vinibee",
-        "platform": "html",
+        "platform": "woocommerce",
         "url": "https://www.vinibee.com",
-        "item_selector": "div.product",
-        "title_selector": "h2.product-title",
-        "price_selector": "span.price",
         "verified": False,
     },
     {
@@ -173,11 +170,8 @@ SHOPS = [
     },
     {
         "name": "petitescaves",
-        "platform": "html",
+        "platform": "shopify",
         "url": "https://www.petitescaves.com",
-        "item_selector": "div.product",
-        "title_selector": "h2.product-title",
-        "price_selector": "span.price",
         "verified": False,
     },
     {
@@ -191,11 +185,8 @@ SHOPS = [
     },
     {
         "name": "bbn",
-        "platform": "html",
+        "platform": "shopify",
         "url": "https://biobiodynamienature.com",
-        "item_selector": "div.product",
-        "title_selector": "h2.product-title",
-        "price_selector": "span.price",
         "verified": False,
     },
     {
@@ -209,11 +200,8 @@ SHOPS = [
     },
     {
         "name": "amberbottleshop",
-        "platform": "html",
+        "platform": "shopify",
         "url": "https://amberbottleshop.com",
-        "item_selector": "div.product",
-        "title_selector": "h2.product-title",
-        "price_selector": "span.price",
         "verified": False,
     },
     {
@@ -245,20 +233,14 @@ SHOPS = [
     },
     {
         "name": "vinifine",
-        "platform": "html",
+        "platform": "woocommerce",
         "url": "https://www.vinifine.be",
-        "item_selector": "div.product",
-        "title_selector": "h2.product-title",
-        "price_selector": "span.price",
         "verified": False,
     },
     {
         "name": "zuiverwijnen",
-        "platform": "html",
+        "platform": "shopify",
         "url": "https://zuiverwijnen.nl",
-        "item_selector": "div.product",
-        "title_selector": "h2.product-title",
-        "price_selector": "span.price",
         "verified": False,
     },
     {
@@ -271,29 +253,20 @@ SHOPS = [
     },
     {
         "name": "volatilewines",
-        "platform": "html",
+        "platform": "woocommerce",
         "url": "https://volatilewines.com",
-        "item_selector": "div.product",
-        "title_selector": "h2.product-title",
-        "price_selector": "span.price",
         "verified": False,
     },
     {
         "name": "biowijnclub",
-        "platform": "html",
+        "platform": "woocommerce",
         "url": "https://www.biowijnclub.nl",
-        "item_selector": "div.product",
-        "title_selector": "h2.product-title",
-        "price_selector": "span.price",
         "verified": False,
     },
     {
         "name": "puurwijnshop",
-        "platform": "html",
+        "platform": "shopify",
         "url": "https://www.puurwijn.shop",
-        "item_selector": "div.product",
-        "title_selector": "h2.product-title",
-        "price_selector": "span.price",
         "verified": False,
     },
     {
@@ -345,53 +318,100 @@ def parse_price(text):
     return float(raw.replace(",", "."))
 
 
-def fetch_shopify(shop, crawler_client):
-    resp = crawler_client.get(f"{shop['url'].rstrip('/')}/products.json", params={"limit": 250})
-    resp.raise_for_status()
-    data = resp.json()
+def _paged(shop, crawler_client, url, params_for_page, page_size, extract):
+    """Walk a paged catalogue until it's exhausted, a short page arrives, or
+    a limit is hit. Returns whatever was collected -- a partial catalogue is
+    still real data, but truncation is logged loudly because it can turn a
+    genuine hit into a silent miss."""
     items = []
-    for product in data.get("products", []):
-        title = product.get("title", "")
-        text = f"{title} {product.get('vendor', '')} {product.get('body_html', '')}"
-        price = None
-        variants = product.get("variants") or []
-        variant_title = ""
-        if variants:
-            if variants[0].get("price"):
-                price = float(variants[0]["price"])
-            variant_title = variants[0].get("title", "") or ""
-        url = f"{shop['url'].rstrip('/')}/products/{product.get('handle', '')}"
-        items.append({
-            "text": text, "title": title, "price": price, "url": url,
-            "variant_title": variant_title,
-        })
+    for page in range(1, MAX_PAGES_PER_SHOP + 1):
+        try:
+            resp = crawler_client.get(url, params=params_for_page(page))
+        except crawler.BudgetExceeded:
+            print(
+                f"[{shop['name']}] request budget exhausted after page {page - 1}; "
+                f"catalogue TRUNCATED, later pages not checked"
+            )
+            break
+        resp.raise_for_status()
+        records = extract(resp.json())
+        if not records:
+            break
+        items.extend(records)
+        if len(records) < page_size:
+            break
+    else:
+        print(
+            f"[{shop['name']}] hit MAX_PAGES_PER_SHOP ({MAX_PAGES_PER_SHOP}); "
+            f"catalogue TRUNCATED, later pages not checked"
+        )
     return items
+
+
+def fetch_shopify(shop, crawler_client):
+    base = shop["url"].rstrip("/")
+
+    def parse_page(payload):
+        products = payload.get("products", [])
+        parsed = []
+        for product in products:
+            title = product.get("title", "")
+            text = f"{title} {product.get('vendor', '')} {product.get('body_html', '')}"
+            price = None
+            variants = product.get("variants") or []
+            variant_title = ""
+            if variants:
+                if variants[0].get("price"):
+                    price = float(variants[0]["price"])
+                variant_title = variants[0].get("title", "") or ""
+            parsed.append({
+                "text": text,
+                "title": title,
+                "price": price,
+                "url": f"{base}/products/{product.get('handle', '')}",
+                "variant_title": variant_title,
+            })
+        return parsed
+
+    return _paged(
+        shop, crawler_client,
+        f"{base}/products.json",
+        lambda page: {"limit": SHOPIFY_PAGE_SIZE, "page": page},
+        SHOPIFY_PAGE_SIZE,
+        parse_page,
+    )
 
 
 def fetch_woocommerce(shop, crawler_client):
-    resp = crawler_client.get(
-        f"{shop['url'].rstrip('/')}/wp-json/wc/store/v1/products", params={"per_page": 100}
+    base = shop["url"].rstrip("/")
+
+    def parse_page(payload):
+        parsed = []
+        for product in payload:
+            name = product.get("name", "")
+            text = f"{name} {product.get('short_description', '')} {product.get('description', '')}"
+            price = None
+            prices = product.get("prices") or {}
+            raw_price = prices.get("price")
+            if raw_price:
+                minor_unit = int(prices.get("currency_minor_unit", 2))
+                price = int(raw_price) / (10 ** minor_unit)
+            parsed.append({
+                "text": text,
+                "title": name,
+                "price": price,
+                "url": product.get("permalink", shop["url"]),
+                "variant_title": "",
+            })
+        return parsed
+
+    return _paged(
+        shop, crawler_client,
+        f"{base}/wp-json/wc/store/v1/products",
+        lambda page: {"per_page": WOO_PAGE_SIZE, "page": page},
+        WOO_PAGE_SIZE,
+        parse_page,
     )
-    resp.raise_for_status()
-    data = resp.json()
-    items = []
-    for product in data:
-        name = product.get("name", "")
-        text = f"{name} {product.get('short_description', '')} {product.get('description', '')}"
-        price = None
-        prices = product.get("prices") or {}
-        raw_price = prices.get("price")
-        if raw_price:
-            minor_unit = int(prices.get("currency_minor_unit", 2))
-            price = int(raw_price) / (10 ** minor_unit)
-        items.append({
-            "text": text,
-            "title": name,
-            "price": price,
-            "url": product.get("permalink", shop["url"]),
-            "variant_title": "",
-        })
-    return items
 
 
 def fetch_html(shop, crawler_client):

@@ -1,19 +1,22 @@
-name: Add a shop
-description: Add a wine shop for the scraper to monitor.
+name: Shop
+description: Add a shop to monitor, re-point it, or remove it.
 title: "[shop] "
 labels: ["add-shop"]
 body:
   - type: markdown
     attributes:
       value: |
-        Submitting this opens a pull request adding the shop to `SHOPS`,
-        set `verified: false`. Run the **Probe Shops** workflow afterwards to
-        detect its platform and confirm it before it goes live.
+        Applied automatically once submitted — tests run first, then it
+        commits to `main`. No pull request to merge.
+
+        New and re-pointed shops land as `verified: false`. Run the
+        **Probe Shops** workflow afterwards to detect the platform and
+        confirm the shop before it goes live.
   - type: input
     id: name
     attributes:
       label: Short name
-      description: Lowercase, no spaces. Used as the key and fixture filename.
+      description: Lowercase, no spaces. Existing name to update, new name to add.
       placeholder: lescaves
     validations:
       required: true
@@ -21,7 +24,11 @@ body:
     id: url
     attributes:
       label: Shop URL
-      description: The site's base address, no trailing slash.
+      description: Base address, https only. Not needed when removing.
       placeholder: https://example.com
-    validations:
-      required: true
+  - type: checkboxes
+    id: remove
+    attributes:
+      label: Danger zone
+      options:
+        - label: Remove this shop instead (uses the name above)

@@ -1,18 +1,21 @@
-name: Add a producer
-description: Track a new producer, with its aliases and reference price.
+name: Producer
+description: Add a producer, update its price, or remove it.
 title: "[producer] "
 labels: ["add-producer"]
 body:
   - type: markdown
     attributes:
       value: |
-        Submitting this opens a pull request updating `PRODUCERS` in
-        `scraper.py` and `prices.yaml`. Nothing goes live until you merge it.
+        Applied automatically once submitted — tests run first, then it
+        commits to `main`. No pull request to merge.
+
+        **Updating an existing producer?** Just put the name and the fields
+        you want to change. Anything left blank keeps its current value.
   - type: input
     id: name
     attributes:
       label: Producer name
-      description: The canonical name shown in alert emails.
+      description: Exact existing name to update it, or a new name to add it.
       placeholder: Domaine Roulot
     validations:
       required: true
@@ -21,30 +24,42 @@ body:
     attributes:
       label: Aliases
       description: >
-        Comma-separated spellings to match in shop listings. Accents are
-        handled automatically. Include second names a domaine trades under.
+        Comma-separated spellings to match in shop listings. Accents handled
+        automatically. Required for a new producer; leave blank to keep existing.
       placeholder: roulot, jean-marc roulot
-    validations:
-      required: true
   - type: dropdown
     id: region
     attributes:
       label: Region
-      description: Burgundy enables cru-tier price scaling; others use a flat reference.
-      options: [jura, burgundy, loire, beaujolais, rhone, alsace, champagne, other]
-    validations:
-      required: true
+      description: Burgundy enables cru-tier scaling. Leave blank to keep existing.
+      options: ["", jura, burgundy, loire, beaujolais, rhone, alsace, champagne, other]
   - type: input
     id: reference
     attributes:
       label: Reference price, EUR per 750ml
       description: >
-        For Burgundy, give the village-tier price — cru multipliers scale it.
-        Leave blank if unknown; hits still report, marked NOREF.
+        For Burgundy give the village-tier price. Leave blank to keep existing.
       placeholder: "120"
   - type: checkboxes
     id: verified
     attributes:
-      label: Price source
+      label: Price quality
       options:
-        - label: This figure is a real one I checked myself (leave unticked for a guess)
+        - label: This is a real figure I checked myself (stamps today's date)
+  - type: textarea
+    id: bulk
+    attributes:
+      label: Or add several at once
+      description: >
+        One per line — `Name | aliases | region | price`. Region and price
+        optional. Overrides the single-producer fields above.
+      placeholder: |
+        Domaine Roulot | roulot, jean-marc roulot | burgundy | 120
+        Coche-Dury | coche-dury, coche dury | burgundy | 400
+      render: text
+  - type: checkboxes
+    id: remove
+    attributes:
+      label: Danger zone
+      options:
+        - label: Remove this producer instead (uses the name above)

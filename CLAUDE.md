@@ -103,6 +103,13 @@ this repo.
   must keep rejecting quote/backslash injection, non-https URLs and unsafe
   shop names, and `apply-config.yml` must keep its `author_association ==
   'OWNER'` gate. Never put a token in `wine.html` -- it is world-readable.
+- `apply-config.yml` commits to `main` without a PR, so its test step is
+  the only thing standing between a bad edit and the default branch. Never
+  reorder the commit ahead of the tests.
+- Don't write tests that pin today's config state as an invariant ("every
+  producer is unverified", "producer X does not exist"). The issue forms
+  change that state, and such a test turns the next legitimate edit into a
+  CI failure. Assert the rule, not the current data.
 
 ## Subagents
 

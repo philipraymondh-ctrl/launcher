@@ -111,20 +111,36 @@ If GitHub Pages is enabled for the repo it is served at
 launcher app keeps the root path). It holds no credentials -- every button
 links out to GitHub, which handles sign-in.
 
-## 8. Adding producers and shops from a phone
+## 8. Changing config from a phone
 
-Two issue forms, linked from the dashboard:
+Two issue forms, linked from the dashboard. Each one adds, updates **and**
+removes -- there is no separate "edit" path to hunt for.
 
-- **Add a producer** -- name, aliases, region, reference price
-- **Add a shop** -- short name and URL
+**Producers** -- name, aliases, region, reference price.
+- Naming an existing producer *updates* it. Fill only what you want to
+  change; blank fields keep their current value. So correcting a price is
+  the same one-step action as adding a producer.
+- Ticking "checked myself" marks the price verified and stamps today's
+  date; you never type a date. It's refused if there's no price to vouch
+  for.
+- The bulk box adds several at once, one per line:
+  `Name | aliases | region | price` (region and price optional).
+- Ticking Remove in the danger zone deletes the producer instead.
 
-Submitting one runs `.github/workflows/apply-config.yml`, which validates
-the input, edits `scraper.py`/`prices.yaml`, runs the tests, and opens a
-pull request. Nothing takes effect until you merge it, and a new shop is
-always added `verified: false` so it can't go live before being probed.
+**Shops** -- short name and URL.
+- An existing name re-points that shop and resets it to `verified: false`,
+  since the old verification no longer applies. Re-probe it afterwards.
+- Ticking Remove deletes the shop and its fixture.
+
+Submitting a form runs `.github/workflows/apply-config.yml`, which
+validates the input, edits `scraper.py`/`prices.yaml`, rebuilds the
+dashboard, runs the full test suite, and only then commits to `main`. It
+comments the commit link on the issue and closes it. There is no pull
+request to merge -- if the tests fail nothing is committed, and every
+change is revertible through git.
 
 Only issues opened by the repo owner are processed -- the repo is public,
-so this gate stops a stranger from driving edits.
+so this gate stops a stranger from driving edits to `scraper.py`.
 
 ## Schedule
 

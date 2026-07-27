@@ -114,10 +114,10 @@ are not, and split into: nine that serve real HTML but match no selectors
 (naturavin), one serving ~200-byte stubs (vinopura), one whose domain no
 longer resolves (vinscheznous), and one answering 415 (vinnaturel).
 
-Secrets (`GMAIL_SENDER`, `GMAIL_APP_PASSWORD`, `NOTIFY_EMAIL`) plus one
-non-secret repo variable (`CONTACT_EMAIL`, used honestly in the crawler's
-User-Agent) are the only external configuration; everything else is in
-this repo.
+Secrets (`GMAIL_SENDER`, `GMAIL_APP_PASSWORD`, `NOTIFY_EMAIL`) are the
+only external configuration; everything else is in this repo. Those three
+reach Gmail's SMTP server and nothing else -- they are never put in an
+HTTP header or printed.
 
 ## Rules
 
@@ -136,6 +136,11 @@ this repo.
   data or low confidence — it classifies and flags a caveat instead. Don't
   add filtering there; that's exactly the behavior this scraper exists to
   avoid.
+- The crawler's User-Agent must never contain an email address. It is sent
+  to every shop on every request and printed into Actions logs, which are
+  world-readable on a public repo. `Crawler.__init__` raises on a contact
+  containing "@", and tests assert both that and that no workflow injects
+  one. Identify the bot with a URL people can reach the owner through.
 - Reference prices are observed from our own crawl (`market.py`), never
   fetched from a price aggregator. Wine-Searcher is blocked and against
   their terms -- never add code that fetches it. A hand-entered

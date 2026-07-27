@@ -6,7 +6,7 @@ Run modes:
   python scraper.py            normal run, sends a digest email via Gmail SMTP
   DRY_RUN=1 python scraper.py  skips SMTP, prints the would-be digest to stdout
 
-Env vars consumed by the crawl layer (see crawler.py): CONTACT_EMAIL,
+Env vars consumed by the crawl layer (see crawler.py): CONTACT_URL,
 MAX_REQUESTS_PER_RUN, FRESH.
 """
 import os

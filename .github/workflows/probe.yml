@@ -46,7 +46,6 @@ jobs:
 
       - name: Probe shops
         env:
-          CONTACT_EMAIL: ${{ vars.CONTACT_EMAIL }}
           MAX_REQUESTS_PER_RUN: ${{ inputs.max_requests_per_run || '150' }}
           # Always hit the network on a probe; a cached body tells us
           # nothing new about whether the endpoint is live right now.

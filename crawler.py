@@ -45,6 +45,9 @@ class Disallowed(FetchError):
     """robots.txt disallows this URL for our user-agent."""
 
 
+DEFAULT_CONTACT = "https://github.com/philipraymondh-ctrl/launcher"
+
+
 class CircuitOpen(FetchError):
     """This host had 3+ consecutive failures this run; it's being skipped."""
 
@@ -96,7 +99,7 @@ def _host_of(url):
 
 
 class Crawler:
-    def __init__(self, cache_dir=None, max_requests=None, contact_email=None, fresh=None):
+    def __init__(self, cache_dir=None, max_requests=None, contact=None, fresh=None):
         self.cache_dir = Path(cache_dir) if cache_dir else DEFAULT_CACHE_DIR
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self.max_requests = (
@@ -104,14 +107,21 @@ class Crawler:
             if max_requests is not None
             else int(os.environ.get("MAX_REQUESTS_PER_RUN", DEFAULT_MAX_REQUESTS_PER_RUN))
         )
-        self.contact_email = (
-            contact_email if contact_email is not None else os.environ.get("CONTACT_EMAIL", "")
-        )
-        self.user_agent = (
-            f"WineTrackerBot/1.0 (+{self.contact_email})"
-            if self.contact_email
-            else "WineTrackerBot/1.0"
-        )
+        # A polite crawler identifies a way to be contacted, but that does
+        # not have to be a person's mailbox. A repository URL reaches the
+        # owner through GitHub issues and exposes nothing personal, so it
+        # is what goes on the wire. An address passed here or set in
+        # CONTACT_EMAIL is deliberately NOT used: it was being sent as a
+        # header to every shop on every request, and echoed into public
+        # Actions logs.
+        self.contact = contact or os.environ.get("CONTACT_URL", "") or DEFAULT_CONTACT
+        if "@" in self.contact:
+            raise ValueError(
+                "The crawler's contact must not be an email address -- it is sent "
+                "to every shop in the User-Agent and printed in public run logs. "
+                "Use a URL."
+            )
+        self.user_agent = f"WineTrackerBot/1.0 (+{self.contact})"
         self.fresh = (os.environ.get("FRESH") == "1") if fresh is None else fresh
         self.request_count = 0
 

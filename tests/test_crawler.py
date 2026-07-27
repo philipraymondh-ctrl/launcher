@@ -24,7 +24,7 @@ def tmp_cache(tmp_path):
 
 
 def make_crawler(tmp_cache, **kwargs):
-    kwargs.setdefault("contact_email", "test@example.com")
+    kwargs.setdefault("contact", "https://example.com/bot")
     return crawler_mod.Crawler(cache_dir=tmp_cache, **kwargs)
 
 
@@ -219,9 +219,11 @@ def test_min_delay_enforced_between_requests_to_same_host(monkeypatch, tmp_cache
     assert any(abs(s - (crawler_mod.MIN_DELAY_SECONDS - 1)) < 0.01 for s in sleeps)
 
 
-def test_user_agent_includes_contact_email(tmp_cache):
-    c = crawler_mod.Crawler(cache_dir=tmp_cache, contact_email="me@example.com")
-    assert "me@example.com" in c.user_agent
+def test_user_agent_includes_a_contact_url(tmp_cache):
+    # Shops should be able to reach the operator; that contact is a URL,
+    # never a mailbox -- see the identity tests at the end of this file.
+    c = crawler_mod.Crawler(cache_dir=tmp_cache, contact="https://example.com/bot")
+    assert "https://example.com/bot" in c.user_agent
 
 
 def test_crawl_delay_from_robots_overrides_min_delay(monkeypatch, tmp_cache):
@@ -295,3 +297,38 @@ def test_repeated_outages_still_open_the_circuit(monkeypatch):
             client.get("https://down.example/x")
     with pytest.raises(crawler_mod.CircuitOpen):
         client.get("https://down.example/y")
+
+
+# --- the User-Agent must not carry anyone's identity -------------------------
+
+def test_the_user_agent_never_contains_an_email_address():
+    """It goes to every shop on every request and into public run logs."""
+    assert "@" not in crawler_mod.Crawler().user_agent
+
+
+def test_a_contact_email_in_the_environment_is_not_used(monkeypatch):
+    """CONTACT_EMAIL used to be interpolated straight into the header."""
+    monkeypatch.setenv("CONTACT_EMAIL", "someone@example.com")
+    agent = crawler_mod.Crawler().user_agent
+    assert "someone@example.com" not in agent
+    assert "@" not in agent
+
+
+def test_an_email_passed_as_the_contact_is_refused_loudly(monkeypatch):
+    with pytest.raises(ValueError, match="must not be an email"):
+        crawler_mod.Crawler(contact="someone@example.com")
+
+
+def test_the_default_contact_is_a_reachable_url():
+    agent = crawler_mod.Crawler().user_agent
+    assert "https://github.com/" in agent
+    assert agent.startswith("WineTrackerBot/")
+
+
+def test_no_workflow_puts_an_email_on_the_wire():
+    from pathlib import Path
+    workflows = Path(__file__).parent.parent / ".github" / "workflows"
+    for path in workflows.glob("*.yml"):
+        assert "CONTACT_EMAIL" not in path.read_text(), (
+            f"{path.name} still injects CONTACT_EMAIL into the crawler"
+        )

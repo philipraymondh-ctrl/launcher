@@ -36,7 +36,7 @@ import json
 import os
 import re
 from pathlib import Path
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlparse
 
 from bs4 import BeautifulSoup
 
@@ -87,6 +87,11 @@ DIAGNOSTIC_DIR = Path(__file__).parent / "probe_pages"
 DIAGNOSTIC_CAP = 300_000
 
 
+def _page_slug(url):
+    path = urlparse(url).path.strip("/") or "index"
+    return re.sub(r"[^a-z0-9]+", "-", path.lower()).strip("-")[:48]
+
+
 def save_diagnostic_page(name, url, body):
     """Commit a readable copy of a page that responded but parsed to nothing.
 
@@ -101,7 +106,7 @@ def save_diagnostic_page(name, url, body):
         tag.decompose()
     trimmed = soup.prettify()[:DIAGNOSTIC_CAP]
     DIAGNOSTIC_DIR.mkdir(parents=True, exist_ok=True)
-    (DIAGNOSTIC_DIR / f"{name}.html").write_text(
+    (DIAGNOSTIC_DIR / f"{name}.{_page_slug(url)}.html").write_text(
         f"<!-- {url}\n     {describe_unparsed(body)}\n"
         f"     Scripts/styles stripped, capped at {DIAGNOSTIC_CAP} bytes.\n"
         f"     Diagnostic only: delete once this shop parses. -->\n" + trimmed

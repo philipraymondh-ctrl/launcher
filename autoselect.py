@@ -153,6 +153,9 @@ def find_products(html, base_url, price_pattern, parse_price):
 CATALOGUE_PATHS = [
     "", "boutique", "shop", "vins", "vins.php", "nos-vins", "les-vins",
     "catalogue", "produits", "collections/all", "vin", "cave", "tous-nos-vins",
+    # Hand-rolled PHP shops keep their catalogue behind a script name, and
+    # a "promos" page is where a deal-hunting scraper most wants to look.
+    "vins.php", "promos.php", "boutique.php", "catalogue.php", "promotions",
 ]
 
 

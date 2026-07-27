@@ -13,6 +13,9 @@ FIXTURES = Path(__file__).parent / "fixtures"
 @pytest.fixture(autouse=True)
 def isolated_output(tmp_path, monkeypatch):
     monkeypatch.setattr(probe, "OUTPUT_DIR", tmp_path / "probe_output")
+    # Diagnostics land in a committed directory, so an unpatched test wrote
+    # testshop.html into the repo and a probe run committed it.
+    monkeypatch.setattr(probe, "DIAGNOSTIC_DIR", tmp_path / "probe_pages")
     probe.OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     return probe.OUTPUT_DIR
 
@@ -393,3 +396,21 @@ def test_a_recorded_path_is_not_tried_twice():
     urls = [url for _, url, _, _ in probe.candidate_endpoints(shop)]
     assert urls.count(urls[2]) == 1
     assert len(urls) == len(set(urls))
+
+
+def test_each_unparsed_page_is_kept_separately(monkeypatch, tmp_path):
+    """One file per shop meant the last failing page overwrote the one that
+    mattered -- the catalogue diagnostic was replaced by the home page."""
+    monkeypatch.setattr(probe, "DIAGNOSTIC_DIR", tmp_path)
+    body = "<html><body><p>rien</p></body></html>"
+    probe.save_diagnostic_page("zzzshop", "https://zzz.example/vins.php", body)
+    probe.save_diagnostic_page("zzzshop", "https://zzz.example/", body)
+    assert sorted(p.name for p in tmp_path.iterdir() if p.is_file()) == [
+        "zzzshop.index.html", "zzzshop.vins-php.html",
+    ]
+
+
+def test_diagnostics_never_land_in_the_repo_during_tests():
+    """The directory is committed, so a leaked test file gets pushed."""
+    stray = Path(__file__).parent.parent / "probe_pages" / "testshop.html"
+    assert not stray.exists(), "a test wrote a diagnostic into the repo"

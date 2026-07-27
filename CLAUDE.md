@@ -57,9 +57,15 @@ Two more files exist for operating it rather than scraping:
 sandbox has no egress); with `--apply` it also saves the real response as
 that shop's fixture, corrects the platform and sets `verified: true` --
 allowed only because the fetch, parse and flag happen in one run against a
-real response. **`dashboard.py`** generates `wine.html`, a
-static status page and control panel. `wine.html` is generated, never
-hand-edited -- change `dashboard.py` instead.
+real response. **`dashboard.py`** generates `wine.html`, a status page
+that also operates the scraper: its buttons call the GitHub REST API
+directly from the browser (`POST .../workflows/{file}/dispatches` to run
+the scraper or probe, polling `.../actions/runs` to show progress, `POST
+.../issues` to apply a config change), so nothing on it is a link out to
+the repo. The token that authorises this lives in the browser's
+`localStorage`, entered once per device -- never in the file.
+`wine.html` is generated, never hand-edited -- change `dashboard.py`
+instead.
 
 Runs hourly from `.github/workflows/scraper.yml`, which runs the fixture
 tests first, best-effort persists `seen.json`/`.cache` across runs via
@@ -121,6 +127,15 @@ this repo.
   must keep rejecting quote/backslash injection, non-https URLs and unsafe
   shop names, and `apply-config.yml` must keep its `author_association ==
   'OWNER'` gate. Never put a token in `wine.html` -- it is world-readable.
+  The page's own credential is read from `localStorage` at runtime and is
+  never written into the generated file; `tests/test_dashboard.py` asserts
+  that, and that the script only ever sends it to `api.github.com`.
+- `wine.html` builds issue-form bodies in JavaScript that `apply_issue.py`
+  parses in Python. Changing a form heading, its field order, or a checkbox
+  label breaks that seam silently -- change `.github/ISSUE_TEMPLATE/`,
+  `apply_issue.py` and `dashboard.JS` together. The node-backed tests in
+  `tests/test_dashboard.py` run the real JS through the real parser; keep
+  them working rather than reimplementing the format in the test.
 - `apply-config.yml` commits to `main` without a PR, so its test step is
   the only thing standing between a bad edit and the default branch. Never
   reorder the commit ahead of the tests.

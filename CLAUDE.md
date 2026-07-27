@@ -104,6 +104,10 @@ this repo.
   code that fetches Wine-Searcher.
 - `notify.py` sends at most one digest email per run. Don't reintroduce a
   per-hit email path.
+- `notify.py` persists `seen.json` only *after* the email is actually sent.
+  Marking an item alerted is what silences it for 30 days, so saving before
+  the send means a dry run or a failed send silently swallows a real find.
+  Never move `save_state` back above `send_email`.
 - A coffret/caisse is several bottles, so its price is not comparable to a
   per-bottle reference. `evaluate.py` must keep detecting bundles, applying
   no format multiplier, and always caveating them -- real listings like

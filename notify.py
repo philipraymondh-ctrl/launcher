@@ -140,7 +140,19 @@ def build_digest_body(alerting_hits):
     return "\n".join(lines).rstrip() + "\n"
 
 
+class NotConfigured(Exception):
+    """SMTP credentials are missing, so the digest cannot be delivered."""
+
+
 def send_email(body):
+    missing = [k for k in ("GMAIL_SENDER", "GMAIL_APP_PASSWORD", "NOTIFY_EMAIL") if not os.environ.get(k)]
+    if missing:
+        raise NotConfigured(
+            f"Cannot send the digest: {', '.join(missing)} not set. "
+            "Add them under Settings > Secrets and variables > Actions. "
+            "The hits are still in hits.json, and nothing has been marked "
+            "as alerted, so they will be re-reported on the next run."
+        )
     sender = os.environ["GMAIL_SENDER"]
     password = os.environ["GMAIL_APP_PASSWORD"]
     recipient = os.environ["NOTIFY_EMAIL"]
@@ -159,24 +171,37 @@ def write_hits_json(all_hits, path=None):
 
 
 def run_digest(all_hits, dry_run=False, state_path=None, hits_path=None):
-    """Full pipeline: decide alerts, persist cooldown state, write the full
-    hit set to hits.json, then send (or print) at most one digest email.
-    Returns the list of alerting hits."""
+    """Full pipeline: decide alerts, write the full hit set to hits.json,
+    send at most one digest email, and only then persist the cooldown state.
+    Returns the list of alerting hits.
+
+    Ordering matters. Marking an item "alerted" is what silences it for the
+    next 30 days, so it must happen only once the email has actually gone
+    out. Saving first meant a dry run consumed the alert -- the following
+    real run would find it in cooldown and say nothing -- and a failed send
+    (missing SMTP credentials, Gmail down) discarded the find entirely.
+    Both are silent misses, which is the failure this scraper exists to
+    avoid.
+    """
     state = load_state(state_path)
-    alerting, state = select_alerts(all_hits, state)
-    save_state(state, state_path)
+    alerting, updated_state = select_alerts(all_hits, state)
     write_hits_json(all_hits, hits_path)
 
     if not alerting:
+        # Nothing was alerted, so nothing is being silenced; persisting here
+        # just refreshes last_price for future drop comparisons.
+        save_state(updated_state, state_path)
         print("No newly alert-worthy hits this run (cooldown or no change) -- silent run is valid.")
         return alerting
 
     body = build_digest_body(alerting)
     if dry_run:
-        print("DRY_RUN=1 set, skipping SMTP send. Digest email would be:\n")
+        print("DRY_RUN=1 set, skipping SMTP send and leaving state untouched.")
+        print("Digest email would be:\n")
         print(body)
         return alerting
 
     send_email(body)
+    save_state(updated_state, state_path)
     print(f"Sent digest email with {len(alerting)} alert-worthy hit(s).")
     return alerting

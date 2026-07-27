@@ -167,3 +167,66 @@ def test_run_digest_writes_full_hit_set_regardless_of_alerting(tmp_path):
 
     written = json.loads(hits_path.read_text())
     assert len(written) == 2
+
+
+# --- an alert must not be silenced unless it was actually delivered ---------
+
+def test_dry_run_does_not_consume_the_alert(tmp_path, monkeypatch):
+    # A dry run that marked items alerted would silence the next real run
+    # for the whole cooldown window -- the find would be lost silently.
+    state_path, hits_path = tmp_path / "seen.json", tmp_path / "hits.json"
+    hit = make_hit(classification="DEAL")
+
+    notify.run_digest([hit], dry_run=True, state_path=state_path, hits_path=hits_path)
+
+    # Nothing persisted, so a subsequent real run still sees it as new.
+    sent = {}
+    monkeypatch.setattr(notify, "send_email", lambda body: sent.setdefault("body", body))
+    alerting = notify.run_digest([hit], dry_run=False, state_path=state_path, hits_path=hits_path)
+
+    assert len(alerting) == 1
+    assert "body" in sent, "the real run must still send after a dry run"
+
+
+def test_failed_send_does_not_mark_the_item_alerted(tmp_path, monkeypatch):
+    state_path, hits_path = tmp_path / "seen.json", tmp_path / "hits.json"
+    hit = make_hit(classification="DEAL")
+
+    def boom(body):
+        raise notify.NotConfigured("no credentials")
+
+    monkeypatch.setattr(notify, "send_email", boom)
+    with pytest.raises(notify.NotConfigured):
+        notify.run_digest([hit], state_path=state_path, hits_path=hits_path)
+
+    # The hits are still recorded, and the item is NOT in cooldown.
+    assert json.loads(hits_path.read_text())
+    state = notify.load_state(state_path)
+    assert state.get(notify.item_key(hit), {}).get("last_alerted_at") is None
+
+    sent = {}
+    monkeypatch.setattr(notify, "send_email", lambda body: sent.setdefault("body", body))
+    alerting = notify.run_digest([hit], state_path=state_path, hits_path=hits_path)
+    assert len(alerting) == 1 and "body" in sent
+
+
+def test_successful_send_does_mark_the_item_alerted(tmp_path, monkeypatch):
+    state_path, hits_path = tmp_path / "seen.json", tmp_path / "hits.json"
+    hit = make_hit(classification="DEAL")
+    monkeypatch.setattr(notify, "send_email", lambda body: None)
+
+    notify.run_digest([hit], state_path=state_path, hits_path=hits_path)
+    second = notify.run_digest([hit], state_path=state_path, hits_path=hits_path)
+
+    assert second == [], "an delivered alert must go into cooldown"
+
+
+def test_missing_credentials_raise_a_legible_error(monkeypatch):
+    for key in ("GMAIL_SENDER", "GMAIL_APP_PASSWORD", "NOTIFY_EMAIL"):
+        monkeypatch.delenv(key, raising=False)
+
+    with pytest.raises(notify.NotConfigured) as excinfo:
+        notify.send_email("body")
+
+    message = str(excinfo.value)
+    assert "GMAIL_SENDER" in message and "hits.json" in message

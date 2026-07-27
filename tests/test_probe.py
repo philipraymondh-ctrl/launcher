@@ -374,3 +374,22 @@ def test_zero_product_html_page_is_saved_for_selector_work(isolated_output):
     assert result["status"] == "failed"
     saved = isolated_output / "testshop.unparsed.html"
     assert saved.exists() and "Some Wine 2020" in saved.read_text()
+
+
+def test_a_guessed_catalog_path_does_not_replace_the_search():
+    """It goes first, but the rest of the list must still be tried -- short
+    -circuiting here meant the shop catalogue discovery was written for only
+    ever tried its one guessed path."""
+    shop = dict(a_shop(), catalog_path="vins.php")
+    urls = [url for _, url, _, _ in probe.candidate_endpoints(shop)]
+    html_urls = [u for u in urls if "products.json" not in u and "wp-json" not in u]
+    assert html_urls[0].endswith("/vins.php")
+    assert len(html_urls) > 1, "no other catalogue paths were tried"
+    assert any(u.endswith("/boutique") for u in html_urls)
+
+
+def test_a_recorded_path_is_not_tried_twice():
+    shop = dict(a_shop(), catalog_path="boutique")
+    urls = [url for _, url, _, _ in probe.candidate_endpoints(shop)]
+    assert urls.count(urls[2]) == 1
+    assert len(urls) == len(set(urls))

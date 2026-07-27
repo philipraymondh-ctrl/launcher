@@ -83,6 +83,31 @@ class CannedCrawler:
         return self._response
 
 
+DIAGNOSTIC_DIR = Path(__file__).parent / "probe_pages"
+DIAGNOSTIC_CAP = 300_000
+
+
+def save_diagnostic_page(name, url, body):
+    """Commit a readable copy of a page that responded but parsed to nothing.
+
+    The full body goes to the run artifact, but artifacts live behind blob
+    storage that the dev sandbox has no route to, so the only way this
+    evidence reaches the person writing the parser is through git. Scripts
+    and styles are stripped -- they are most of the bytes and none of the
+    structure.
+    """
+    soup = BeautifulSoup(body, "html.parser")
+    for tag in soup(["script", "style", "noscript", "svg"]):
+        tag.decompose()
+    trimmed = soup.prettify()[:DIAGNOSTIC_CAP]
+    DIAGNOSTIC_DIR.mkdir(parents=True, exist_ok=True)
+    (DIAGNOSTIC_DIR / f"{name}.html").write_text(
+        f"<!-- {url}\n     {describe_unparsed(body)}\n"
+        f"     Scripts/styles stripped, capped at {DIAGNOSTIC_CAP} bytes.\n"
+        f"     Diagnostic only: delete once this shop parses. -->\n" + trimmed
+    )
+
+
 def describe_unparsed(body):
     """Why a page that responded produced nothing.
 
@@ -119,14 +144,14 @@ def candidate_endpoints(shop):
         ("shopify", f"{base}/products.json", {"limit": 250}, "json"),
         ("woocommerce", f"{base}/wp-json/wc/store/v1/products", {"per_page": 100}, "json"),
     ]
-    if shop.get("catalog_path"):
-        return endpoints + [("html", urljoin(base + "/", shop["catalog_path"]), None, "html")]
-    # No recorded path: try the landing page, then the handful of places a
-    # French/EU wine shop actually keeps its catalogue. Each miss costs one
-    # request; --apply writes the winner back so the hourly run only ever
-    # fetches the one that worked.
+    # A recorded catalog_path goes first, but must not *replace* the search:
+    # the path may be a guess, and short-circuiting here meant the one shop
+    # catalogue discovery was written for only ever tried its guessed path.
+    # The hourly run still fetches the single recorded page; only the probe
+    # explores.
+    candidates = ([shop["catalog_path"]] if shop.get("catalog_path") else []) + autoselect.CATALOGUE_PATHS
     seen, paths = set(), []
-    for path in autoselect.CATALOGUE_PATHS:
+    for path in candidates:
         url = urljoin(base + "/", path) if path else shop["url"]
         if url not in seen:
             seen.add(url)
@@ -226,6 +251,8 @@ def probe_shop(shop, crawler_client):
                 unparsed = OUTPUT_DIR / f"{shop['name']}.unparsed.html"
                 unparsed.write_text(body)
                 attempt["saved_unparsed"] = unparsed.name
+                attempt["structure"] = describe_unparsed(body)
+                save_diagnostic_page(shop["name"], url, body)
             result["attempts"].append(attempt)
             continue
 

@@ -48,7 +48,10 @@ PRODUCERS = {
     "Thomas Popy": ["thomas popy", "popy"],
     "Roumier": ["roumier"],
     "Alice Fahrenkrug": ["alice fahrenkrug"],
-    "Jules Brochet": ["jules brochet", "brochet"],
+    # Not a bare "brochet": Emmanuel Brochet is a different
+    # Champagne grower, and mareehaute stocks him -- the bare
+    # surname reported his bottles as this producer.
+    "Jules Brochet": ["jules brochet"],
     "Bruyere Houillon": ["bruyere houillon", "bruyere-houillon"],
     "Allante et Boulanger": ["allante et boulanger", "allante boulanger", "allante"],
     "Domaine des Murmures": ["domaine des murmures", "murmures"],

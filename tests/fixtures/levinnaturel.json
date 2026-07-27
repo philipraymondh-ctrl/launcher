@@ -1,19 +1,1721 @@
 {
-  "_note": "UNVERIFIED fixture for Le Vin Naturel (https://levinnaturel.com). Not a live fetch -- this environment has no general internet egress. Platform=shopify is fairly confident (the site's indexed URLs follow Shopify conventions: /en/collections, /en/products/<handle>, /en/cart, /password). Product/collection names below (Domaine Labet, the Pif 2022 handle) are real, drawn from publicly indexed search snippets of the live site -- but the surrounding JSON fields (vendor, body_html, price) are invented placeholders, not observed values. Confirm via shop-adapter against a real GET https://levinnaturel.com/products.json before setting verified=True.",
+  "_fixture_note": "Real response from this shop, trimmed for the repo: 25 of 140 products, keeping every tracked-producer match (5) plus a sample. Captured by probe.py --apply.",
   "products": [
     {
-      "title": "Domaine Amelie Vuillet et Sebastien Jacques 'Pif' 2022 Rouge",
-      "vendor": "Domaine Amelie Vuillet et Sebastien Jacques",
-      "handle": "domaine-amelie-vuillet-et-sebastien-jacques-pif-2022-rouge",
-      "body_html": "<p>Natural wine from Jura, part of the Le Vin Naturel catalog.</p>",
-      "variants": [{"price": "0.00"}]
+      "id": 16154856718671,
+      "title": "COFFRET ANNIVERSAIRE LABET",
+      "handle": "coffret-anniversaire-labet",
+      "body_html": "<p><em><strong>Un coffret anniversaire from Labet dans toute sa libert\u00e9 : bulles fines de Cr\u00e9mant, chardonnays pr\u00e9cis et vibrants, cuv\u00e9e de mac\u00e9ration pleine de relief, et rouges d\u00e9licats et gourmands!</strong></em></p>\n<p><em><strong>Un voyage de vins vivants, artisanaux et sans compromis, pens\u00e9 pour les curieux comme pour les passionn\u00e9s. Et pour l'occasion, les frais de port de ce coffret sont offerts!</strong></em></p>\n<p><em>Veuillez noter que les bouteilles incluses dans ce coffret ne se cumulent pas avec les r\u00e8gles d'allocation, si vous souhaitez commander d'autres r\u00e9f\u00e9rences.</em></p>\n<p><br><br><br><br><br></p>",
+      "published_at": "2026-06-18T19:59:36+02:00",
+      "created_at": "2026-06-16T22:50:40+02:00",
+      "updated_at": "2026-07-27T16:12:43+02:00",
+      "vendor": "LEVINNATUREL.COM",
+      "product_type": "",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57944156766543,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "498.00",
+          "grams": 9000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16154856718671,
+          "created_at": "2026-06-16T22:50:40+02:00",
+          "updated_at": "2026-07-27T16:12:43+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 93782585704783,
+          "created_at": "2026-06-16T22:50:58+02:00",
+          "position": 1,
+          "updated_at": "2026-06-16T22:51:01+02:00",
+          "product_id": 16154856718671,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/WhatsAppImage2026-06-16at13.21.12.jpg?v=1781643061",
+          "width": 1536,
+          "height": 2048
+        },
+        {
+          "id": 93782585573711,
+          "created_at": "2026-06-16T22:50:58+02:00",
+          "position": 2,
+          "updated_at": "2026-06-16T22:51:01+02:00",
+          "product_id": 16154856718671,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/WhatsAppImage2026-06-16at13.21.12_4.jpg?v=1781643061",
+          "width": 1536,
+          "height": 2048
+        },
+        {
+          "id": 93782585606479,
+          "created_at": "2026-06-16T22:50:58+02:00",
+          "position": 3,
+          "updated_at": "2026-06-16T22:51:01+02:00",
+          "product_id": 16154856718671,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/WhatsAppImage2026-06-16at13.21.12_3.jpg?v=1781643061",
+          "width": 1536,
+          "height": 2048
+        },
+        {
+          "id": 93782585639247,
+          "created_at": "2026-06-16T22:50:58+02:00",
+          "position": 4,
+          "updated_at": "2026-06-16T22:51:01+02:00",
+          "product_id": 16154856718671,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/WhatsAppImage2026-06-16at13.21.12_2.jpg?v=1781643061",
+          "width": 1536,
+          "height": 2048
+        },
+        {
+          "id": 93782585672015,
+          "created_at": "2026-06-16T22:50:58+02:00",
+          "position": 5,
+          "updated_at": "2026-06-16T22:51:02+02:00",
+          "product_id": 16154856718671,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/WhatsAppImage2026-06-16at13.21.12_1.jpg?v=1781643062",
+          "width": 1536,
+          "height": 2048
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
     },
     {
-      "title": "Domaine Labet Cotes du Jura (placeholder -- real product name unconfirmed)",
-      "vendor": "Domaine Labet",
-      "handle": "domaine-labet-placeholder",
-      "body_html": "<p>Placeholder entry: the site's 'Domaine Labet' collection page is confirmed to exist (https://levinnaturel.com/fr-fr/collections/domaine-labet), but this specific product title/price was not observed and is invented for fixture purposes.</p>",
-      "variants": [{"price": "0.00"}]
+      "id": 16153464078671,
+      "title": "COFFRET ANNIVERSAIRE GANEVAT",
+      "handle": "coffret-ganevat",
+      "body_html": "<p><em><strong>Le Domaine Ganevat fait partie de ces noms qui font r\u00eaver les amateurs de grands vins naturels. Avec ce coffret anniversaire de 6 bouteilles, partez \u00e0 la rencontre de l'univers unique de Jean-Fran\u00e7ois Ganevat \u00e0 travers une s\u00e9lection de cuv\u00e9es rares et embl\u00e9matiques. Bulles de caract\u00e8re, blancs cisel\u00e9s et rouges d'une finesse remarquable composent cette box made in Rotalier! Un coffret exclusif pour d\u00e9couvrir \u2013 ou red\u00e9couvrir \u2013 l'un des vignerons les plus influents du vin naturel. Et pour l'occasion, les frais de port sont offerts. Alors let's go!</strong></em></p>",
+      "published_at": "2026-06-15T22:00:24+02:00",
+      "created_at": "2026-06-15T16:38:07+02:00",
+      "updated_at": "2026-07-27T16:12:43+02:00",
+      "vendor": "LEVINNATUREL.COM",
+      "product_type": "",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57927489552719,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "450.00",
+          "grams": 9000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16153464078671,
+          "created_at": "2026-06-15T16:38:08+02:00",
+          "updated_at": "2026-07-27T16:12:43+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 93717664203087,
+          "created_at": "2026-06-15T16:45:03+02:00",
+          "position": 1,
+          "updated_at": "2026-06-15T16:45:09+02:00",
+          "product_id": 16153464078671,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/IMG_9158.jpg?v=1781534709",
+          "width": 3024,
+          "height": 4032
+        },
+        {
+          "id": 91431574077775,
+          "created_at": "2026-04-15T18:24:41+02:00",
+          "position": 2,
+          "updated_at": "2026-04-15T18:24:46+02:00",
+          "product_id": 16153464078671,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/IMG_8725.jpg?v=1776270286",
+          "width": 3024,
+          "height": 4032
+        },
+        {
+          "id": 91431576699215,
+          "created_at": "2026-04-15T18:25:02+02:00",
+          "position": 3,
+          "updated_at": "2026-04-15T18:25:07+02:00",
+          "product_id": 16153464078671,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/IMG_8726.jpg?v=1776270307",
+          "width": 3024,
+          "height": 4032
+        },
+        {
+          "id": 93704669725007,
+          "created_at": "2026-06-15T12:52:31+02:00",
+          "position": 4,
+          "updated_at": "2026-06-15T12:52:35+02:00",
+          "product_id": 16153464078671,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/IMG_9105_1.jpg?v=1781520755",
+          "width": 750,
+          "height": 1000
+        },
+        {
+          "id": 93358667235663,
+          "created_at": "2026-06-08T14:51:58+02:00",
+          "position": 5,
+          "updated_at": "2026-06-08T14:52:01+02:00",
+          "product_id": 16153464078671,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/IMG_9100_1.jpg?v=1780923121",
+          "width": 750,
+          "height": 1000
+        },
+        {
+          "id": 93358670283087,
+          "created_at": "2026-06-08T14:52:16+02:00",
+          "position": 6,
+          "updated_at": "2026-06-08T14:52:19+02:00",
+          "product_id": 16153464078671,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/IMG_9101_1.jpg?v=1780923139",
+          "width": 750,
+          "height": 1000
+        },
+        {
+          "id": 93718386671951,
+          "created_at": "2026-06-15T17:11:12+02:00",
+          "position": 7,
+          "updated_at": "2026-06-15T17:11:16+02:00",
+          "product_id": 16153464078671,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/IMG_8462_ce6096ac-1907-4424-a53d-4b3c642cda53.jpg?v=1781536276",
+          "width": 3024,
+          "height": 4032
+        },
+        {
+          "id": 93718303703375,
+          "created_at": "2026-06-15T17:08:05+02:00",
+          "position": 8,
+          "updated_at": "2026-06-15T17:08:11+02:00",
+          "product_id": 16153464078671,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/IMG_8463_e94f6d78-4069-4396-8da7-e41ba8db8881.jpg?v=1781536091",
+          "width": 3024,
+          "height": 4032
+        },
+        {
+          "id": 93718375760207,
+          "created_at": "2026-06-15T17:10:50+02:00",
+          "position": 9,
+          "updated_at": "2026-06-15T17:10:54+02:00",
+          "product_id": 16153464078671,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/IMG_4766_999a09ff-c5bd-4ce7-8636-90f8f06d588c.jpg?v=1781536254",
+          "width": 2880,
+          "height": 4032
+        },
+        {
+          "id": 93718502048079,
+          "created_at": "2026-06-15T17:15:22+02:00",
+          "position": 10,
+          "updated_at": "2026-06-15T17:15:27+02:00",
+          "product_id": 16153464078671,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/IMG_4767_68898c93-7b2e-4d3e-8c7a-560e3963a35d.jpg?v=1781536527",
+          "width": 2880,
+          "height": 4032
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16109800194383,
+      "title": "Vin jaune, 2012, Jaune",
+      "handle": "vin-jaune-2014-jaune-copie",
+      "body_html": "<p><em><strong>Un sublime vin jaune 2012 de chez Ganevat version n\u00e9goce. Superbe \u00e0 d\u00e9guster d\u00e8s \u00e0 pr\u00e9sent. Une fine dentelle!</strong></em></p>",
+      "published_at": "2026-05-20T19:56:31+02:00",
+      "created_at": "2026-05-20T19:13:26+02:00",
+      "updated_at": "2026-07-27T16:12:43+02:00",
+      "vendor": "LEVINNATUREL.COM",
+      "product_type": "",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57743512994127,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "118.00",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16109800194383,
+          "created_at": "2026-05-20T19:13:26+02:00",
+          "updated_at": "2026-07-27T16:12:43+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 92546461237583,
+          "created_at": "2026-05-20T19:25:35+02:00",
+          "position": 1,
+          "updated_at": "2026-05-20T19:25:39+02:00",
+          "product_id": 16109800194383,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/IMG_8877_1.jpg?v=1779297939",
+          "width": 750,
+          "height": 1000
+        },
+        {
+          "id": 92546489319759,
+          "created_at": "2026-05-20T19:25:59+02:00",
+          "position": 2,
+          "updated_at": "2026-05-20T19:26:02+02:00",
+          "product_id": 16109800194383,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/IMG_8878_1.jpg?v=1779297962",
+          "width": 750,
+          "height": 1000
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16089682346319,
+      "title": "Les grands teppes VV, 2018, Blanc",
+      "handle": "les-grands-teppes-vv-2018-blanc",
+      "body_html": "<p><b><i><span dir=\"auto\" style=\"vertical-align: inherit;\"><span dir=\"auto\" style=\"vertical-align: inherit;\"><span dir=\"auto\" style=\"vertical-align: inherit;\"><span dir=\"auto\" style=\"vertical-align: inherit;\"><span dir=\"auto\" style=\"vertical-align: inherit;\"><span dir=\"auto\" style=\"vertical-align: inherit;\">Des vieilles vignes de Chardonnay plant\u00e9es en 1919. Mais attention car ici on vous propose une version unique de cette cuv\u00e9e les Grands teppes vieilles vignes 2018 du domaine Ganevat : En effet, ce vin a r\u00e9glement\u00e9 d'un \u00e9levage long de 84 mois : 4 ans d'\u00e9levage au domaine puis 3 ans d'\u00e9levage en bouteilles dans nos caves. D\u00e9collage assur\u00e9 !!</span></span></span></span></span></span></i></b></p>",
+      "published_at": "2026-05-05T19:18:17+02:00",
+      "created_at": "2026-05-05T18:49:43+02:00",
+      "updated_at": "2026-07-27T16:12:43+02:00",
+      "vendor": "LEVINNATUREL.COM",
+      "product_type": "Bouteille 75cl",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57631786598735,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "105.00",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16089682346319,
+          "created_at": "2026-05-05T18:49:43+02:00",
+          "updated_at": "2026-07-27T16:12:43+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 92057758237007,
+          "created_at": "2026-05-05T19:10:35+02:00",
+          "position": 1,
+          "updated_at": "2026-05-05T19:10:38+02:00",
+          "product_id": 16089682346319,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/grandsteppesVV2018.jpg?v=1778001038",
+          "width": 750,
+          "height": 1000
+        },
+        {
+          "id": 92057761612111,
+          "created_at": "2026-05-05T19:10:53+02:00",
+          "position": 2,
+          "updated_at": "2026-05-05T19:10:55+02:00",
+          "product_id": 16089682346319,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/contre_les_grands_teppes_VV_2018.jpg?v=1778001055",
+          "width": 750,
+          "height": 1000
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 14959666102607,
+      "title": "Les d\u00e9voil\u00e9s, 2012, Blanc",
+      "handle": "domaine-ganevat-les-devoiles-2012-blanc",
+      "body_html": "<p><em><strong>Une oxydation ma\u00eetris\u00e9e avec une \u00e9l\u00e9gance folle. Tout le style Ganevat!</strong></em></p>",
+      "published_at": "2024-12-06T18:27:45+01:00",
+      "created_at": "2024-12-06T18:27:46+01:00",
+      "updated_at": "2026-07-27T16:12:43+02:00",
+      "vendor": "LEVINNATUREL.COM",
+      "product_type": "Bouteille 75cl",
+      "tags": [],
+      "variants": [
+        {
+          "id": 53886423040335,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "120.00",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 14959666102607,
+          "created_at": "2024-12-06T18:27:46+01:00",
+          "updated_at": "2026-07-27T16:12:43+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 73337038537039,
+          "created_at": "2025-01-26T09:31:11+01:00",
+          "position": 1,
+          "updated_at": "2025-05-11T19:08:17+02:00",
+          "product_id": 14959666102607,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/IMG_4759.jpg?v=1746983297",
+          "width": 2880,
+          "height": 4032
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16238330642767,
+      "title": "Sels d'argent, 2023, Blanc",
+      "handle": "sels-dargent-2023-blanc",
+      "body_html": "<p><em><strong>L'unique vin blanc du domaine!</strong></em></p>",
+      "published_at": "2026-07-23T18:35:10+02:00",
+      "created_at": "2026-07-23T18:20:10+02:00",
+      "updated_at": "2026-07-27T16:12:43+02:00",
+      "vendor": "LEVINNATUREL.COM",
+      "product_type": "Bouteille 75cl",
+      "tags": [],
+      "variants": [
+        {
+          "id": 58292218364239,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "31.50",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16238330642767,
+          "created_at": "2026-07-23T18:20:10+02:00",
+          "updated_at": "2026-07-27T16:12:43+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 94507324768591,
+          "created_at": "2026-07-23T18:20:27+02:00",
+          "position": 1,
+          "updated_at": "2026-07-23T18:20:31+02:00",
+          "product_id": 16238330642767,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/IMG_9489_1_1.jpg?v=1784823631",
+          "width": 750,
+          "height": 1000
+        },
+        {
+          "id": 94507327586639,
+          "created_at": "2026-07-23T18:20:43+02:00",
+          "position": 2,
+          "updated_at": "2026-07-23T18:20:47+02:00",
+          "product_id": 16238330642767,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/IMG_9490_1.jpg?v=1784823647",
+          "width": 750,
+          "height": 1000
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16238322549071,
+      "title": "V\u00e9jade, 2025, Rouge",
+      "handle": "vejade-2025-rouge",
+      "body_html": "<p><em><strong>Une infusion de Mourv\u00e8dre, Grenache et Clairette rose dans le plus pur style de l'Anglore. Un fruit pur d'une grande buvabilit\u00e9. Quelle r\u00e9ussite!</strong></em></p>",
+      "published_at": "2026-07-23T18:34:26+02:00",
+      "created_at": "2026-07-23T18:08:29+02:00",
+      "updated_at": "2026-07-27T16:12:43+02:00",
+      "vendor": "LEVINNATUREL.COM",
+      "product_type": "Bouteille 75cl",
+      "tags": [],
+      "variants": [
+        {
+          "id": 58292169670991,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "27.50",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16238322549071,
+          "created_at": "2026-07-23T18:08:29+02:00",
+          "updated_at": "2026-07-27T16:12:43+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 94507188191567,
+          "created_at": "2026-07-23T18:08:48+02:00",
+          "position": 1,
+          "updated_at": "2026-07-23T18:08:52+02:00",
+          "product_id": 16238322549071,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/IMG_9487_1.jpg?v=1784822932",
+          "width": 750,
+          "height": 1000
+        },
+        {
+          "id": 94507191075151,
+          "created_at": "2026-07-23T18:09:03+02:00",
+          "position": 2,
+          "updated_at": "2026-07-23T18:09:06+02:00",
+          "product_id": 16238322549071,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/IMG_9488_1.jpg?v=1784822946",
+          "width": 750,
+          "height": 1000
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16236144722255,
+      "title": "Prima, 2025, Ros\u00e9",
+      "handle": "prima-2025-rose",
+      "body_html": "<p><em><strong>Comment faire venir le soleil dans votre verre et rester \u00e0 l'ombre.</strong></em></p>",
+      "published_at": "2026-07-21T19:21:29+02:00",
+      "created_at": "2026-07-21T19:10:38+02:00",
+      "updated_at": "2026-07-27T16:12:43+02:00",
+      "vendor": "LEVINNATUREL.COM",
+      "product_type": "Bouteille 75cl",
+      "tags": [],
+      "variants": [
+        {
+          "id": 58277951963471,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "26.00",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16236144722255,
+          "created_at": "2026-07-21T19:10:38+02:00",
+          "updated_at": "2026-07-27T16:12:43+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 94482815189327,
+          "created_at": "2026-07-21T19:11:01+02:00",
+          "position": 1,
+          "updated_at": "2026-07-21T19:11:04+02:00",
+          "product_id": 16236144722255,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/IMG_9452_1.jpg?v=1784653864",
+          "width": 750,
+          "height": 1000
+        },
+        {
+          "id": 94482818662735,
+          "created_at": "2026-07-21T19:11:17+02:00",
+          "position": 2,
+          "updated_at": "2026-07-21T19:11:20+02:00",
+          "product_id": 16236144722255,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/IMG_9453_1.jpg?v=1784653880",
+          "width": 750,
+          "height": 1000
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15643253571919,
+      "title": "Le ruisseau, 2023, Rouge",
+      "handle": "le-ruisseau-2023-rouge",
+      "body_html": "<p><em><strong>Un assemblage 70% Syrah et 30% grenache noir d\u00e9j\u00e0 d\u00e9licieux \u00e0 boire.</strong></em></p>",
+      "published_at": "2026-07-10T15:44:53+02:00",
+      "created_at": "2025-09-26T17:14:59+02:00",
+      "updated_at": "2026-07-27T16:12:43+02:00",
+      "vendor": "LEVINNATUREL.COM",
+      "product_type": "Bouteille 75cl",
+      "tags": [],
+      "variants": [
+        {
+          "id": 56017605984591,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "26.00",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15643253571919,
+          "created_at": "2025-09-26T17:14:59+02:00",
+          "updated_at": "2026-07-27T16:12:43+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 85618675777871,
+          "created_at": "2025-09-26T17:15:30+02:00",
+          "position": 1,
+          "updated_at": "2025-09-26T17:15:35+02:00",
+          "product_id": 15643253571919,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/6A22580B-8837-4D42-B018-888221A6A587.jpg?v=1758899735",
+          "width": 3024,
+          "height": 4032
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16136905687375,
+      "title": "VDF gringet, 2021, Blanc",
+      "handle": "vdf-gringet-2021-blanc",
+      "body_html": "<div class=\"x11i5rnm xat24cr x1mh8g0r x1vvkbs xtlvy1s x126k92a\">\n<div dir=\"auto\"><em><strong>Une cuv\u00e9e de n\u00e9goce de Gringet de Savoie from Belluard.</strong></em></div>\n</div>\n<div class=\"x11i5rnm xat24cr x1mh8g0r x1vvkbs xtlvy1s x126k92a\">\n<div dir=\"auto\"><em><strong>Un nez herbac\u00e9 avec des notes de caillou.</strong></em></div>\n</div>\n<div class=\"x11i5rnm xat24cr x1mh8g0r x1vvkbs xtlvy1s x126k92a\">\n<div dir=\"auto\"><em><strong>En bouche, une attaque riche et m\u00fbre aux ar\u00f4mes de fruits jaunes et de coing.</strong></em></div>\n<div dir=\"auto\"><em><strong>Belle mati\u00e8re \u00e0 la fois vive et complexe sur une trame min\u00e9rale bien tremp\u00e9e.</strong></em></div>\n<div dir=\"auto\"><em><strong>C\u2019est bon, \u00e7a se boit (trop) facilement!</strong></em></div>\n</div>",
+      "published_at": "2026-07-02T11:09:11+02:00",
+      "created_at": "2026-06-03T13:58:22+02:00",
+      "updated_at": "2026-07-27T16:12:43+02:00",
+      "vendor": "LEVINNATUREL.COM",
+      "product_type": "Bouteille 75cl",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57845701411151,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "45.00",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16136905687375,
+          "created_at": "2026-06-03T13:58:23+02:00",
+          "updated_at": "2026-07-27T16:12:43+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 93193225961807,
+          "created_at": "2026-06-03T13:58:38+02:00",
+          "position": 1,
+          "updated_at": "2026-06-03T13:58:42+02:00",
+          "product_id": 16136905687375,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/IMG_9062_1.jpg?v=1780487922",
+          "width": 750,
+          "height": 1000
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15828350730575,
+      "title": "L'\u00e9toile L\u00e0 bas, 2020, Blanc",
+      "handle": "letoile-la-bas-2020-blanc",
+      "body_html": "<p><em><strong>De L\u00e0 bas \u00e7a m\u00e9rite aussi le d\u00e9tour.</strong></em></p>\n<p><span style=\"color: #ff2a00;\">Attention : maximum d'une bouteille de cuv\u00e9e sous allocation par commande de trois bouteilles minimum.\u00a0</span></p>\n<p><span style=\"color: #ff2a00;\">Please note: no more than one bottle of allocated vintages per order of three bottles minimum.</span></p>",
+      "published_at": "2026-07-02T11:08:39+02:00",
+      "created_at": "2025-12-09T18:43:06+01:00",
+      "updated_at": "2026-07-27T16:12:43+02:00",
+      "vendor": "LEVINNATUREL.COM",
+      "product_type": "Bouteille 75cl",
+      "tags": [],
+      "variants": [
+        {
+          "id": 56584331166031,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "60.00",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15828350730575,
+          "created_at": "2025-12-09T18:43:06+01:00",
+          "updated_at": "2026-07-27T16:12:43+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 89924326162767,
+          "created_at": "2026-02-12T18:42:17+01:00",
+          "position": 1,
+          "updated_at": "2026-02-12T18:42:22+01:00",
+          "product_id": 15828350730575,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/CopiedeModeles_Vignettes_Vin_Naturel_2.png?v=1770918142",
+          "width": 1224,
+          "height": 1632
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15943809925455,
+      "title": "Les chazaux, 2023, rouge",
+      "handle": "les-chazaux-2023-rouge",
+      "body_html": "<p><em><strong><span style=\"vertical-align: inherit;\"><span style=\"vertical-align: inherit;\">Une vraie petite bombe de Poulsard!</span></span></strong></em></p>\n<p><span style=\"color: #ff2a00;\">Attention : maximum d'une bouteille de cuv\u00e9e sous allocation par commande de trois bouteilles minimum.\u00a0</span></p>\n<p><span style=\"color: #ff2a00;\">Please note: no more than one bottle of allocated vintages per order of three bottles minimum.</span></p>",
+      "published_at": "2026-07-02T11:08:22+02:00",
+      "created_at": "2026-02-12T17:42:06+01:00",
+      "updated_at": "2026-07-27T16:12:43+02:00",
+      "vendor": "LEVINNATUREL.COM",
+      "product_type": "Bouteille 75cl",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57018805911887,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "60.00",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15943809925455,
+          "created_at": "2026-02-12T17:42:06+01:00",
+          "updated_at": "2026-07-27T16:12:43+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 89920606798159,
+          "created_at": "2026-02-12T17:43:27+01:00",
+          "position": 1,
+          "updated_at": "2026-02-12T17:43:32+01:00",
+          "product_id": 15943809925455,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/CopiedeModeles_Vignettes_Vin_Naturel.png?v=1770914612",
+          "width": 1224,
+          "height": 1632
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16051141378383,
+      "title": "Fleur de savagnin, 2023, blanc",
+      "handle": "fleur-de-savagnin-2023-blanc",
+      "body_html": "<p><em><strong><span dir=\"auto\" style=\"vertical-align: inherit;\"><span dir=\"auto\" style=\"vertical-align: inherit;\">Un magnifique Savagnin tra\u00e7ant et tr\u00e8s aromatique avec ce petit plus d'\u00e9nergie.</span></span></strong></em></p>",
+      "published_at": "2026-07-02T11:07:52+02:00",
+      "created_at": "2026-04-13T19:55:29+02:00",
+      "updated_at": "2026-07-27T16:12:43+02:00",
+      "vendor": "LEVINNATUREL.COM",
+      "product_type": "Bouteille 75cl",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57456039166287,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "43.00",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16051141378383,
+          "created_at": "2026-04-13T19:55:29+02:00",
+          "updated_at": "2026-07-27T16:12:43+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 91359540019535,
+          "created_at": "2026-04-13T19:56:12+02:00",
+          "position": 1,
+          "updated_at": "2026-04-13T19:56:18+02:00",
+          "product_id": 16051141378383,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/IMG_8706.jpg?v=1776102978",
+          "width": 3024,
+          "height": 4032
+        },
+        {
+          "id": 91359558107471,
+          "created_at": "2026-04-13T19:56:42+02:00",
+          "position": 2,
+          "updated_at": "2026-04-13T19:56:47+02:00",
+          "product_id": 16051141378383,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/IMG_8707.jpg?v=1776103007",
+          "width": 3024,
+          "height": 4032
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16051250921807,
+      "title": "Au lever du rouge, 2024, rouge",
+      "handle": "au-lever-du-rouge-2024-rouge",
+      "body_html": "<p><em><strong>La finesse du Pinot noir avec les tanins du trousseau pour un vin frais et \u00e9l\u00e9gant! Si les levers pouvaient \u00eatre tous comme celui l\u00e0...</strong></em></p>",
+      "published_at": "2026-07-02T11:07:19+02:00",
+      "created_at": "2026-04-13T21:51:57+02:00",
+      "updated_at": "2026-07-27T16:12:43+02:00",
+      "vendor": "LEVINNATUREL.COM",
+      "product_type": "Bouteille 75cl",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57456758391119,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "36.00",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16051250921807,
+          "created_at": "2026-04-13T21:51:57+02:00",
+          "updated_at": "2026-07-27T16:12:43+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 91362972238159,
+          "created_at": "2026-04-13T21:52:12+02:00",
+          "position": 1,
+          "updated_at": "2026-04-13T21:52:17+02:00",
+          "product_id": 16051250921807,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/IMG_8710.jpg?v=1776109937",
+          "width": 3024,
+          "height": 4032
+        },
+        {
+          "id": 91362978431311,
+          "created_at": "2026-04-13T21:52:28+02:00",
+          "position": 2,
+          "updated_at": "2026-04-13T21:52:33+02:00",
+          "product_id": 16051250921807,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/IMG_8711.jpg?v=1776109953",
+          "width": 3024,
+          "height": 4032
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16127634047311,
+      "title": "Terre de gryph\u00e9es, 2020, Blanc",
+      "handle": "terre-de-gryphees-2020-blanc",
+      "body_html": "<p><em><strong>La cuv\u00e9e: Terre de gryph\u00e9es de la tournelle est un 100% Chardonnay ample et riche qui va puis\u00e9 une superbe tension min\u00e9rale. Un vin lumineux qui vous emm\u00e8nera loin!</strong></em></p>",
+      "published_at": "2026-07-02T11:06:47+02:00",
+      "created_at": "2026-05-30T14:27:16+02:00",
+      "updated_at": "2026-07-27T16:12:43+02:00",
+      "vendor": "LEVINNATUREL.COM",
+      "product_type": "Bouteille 75cl",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57820015984975,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "52.00",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16127634047311,
+          "created_at": "2026-05-30T14:27:16+02:00",
+          "updated_at": "2026-07-27T16:12:43+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 93024767410511,
+          "created_at": "2026-05-30T14:29:50+02:00",
+          "position": 1,
+          "updated_at": "2026-05-30T14:29:54+02:00",
+          "product_id": 16127634047311,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/IMG_9039_1.jpg?v=1780144194",
+          "width": 750,
+          "height": 1000
+        },
+        {
+          "id": 93024768655695,
+          "created_at": "2026-05-30T14:30:12+02:00",
+          "position": 2,
+          "updated_at": "2026-05-30T14:30:15+02:00",
+          "product_id": 16127634047311,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/IMG_9040_1.jpg?v=1780144215",
+          "width": 750,
+          "height": 1000
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16113226056015,
+      "title": "L'aide m\u00e9moire, 2018, Rouge",
+      "handle": "laide-memoire-2018-rouge",
+      "body_html": "<p><em><strong>L'aide m\u00e9moire du domaine Bornard: Pour ne pas oublier que le Pinot noir jurassien peut \u00eatre superbe! 2018 se d\u00e9guste tr\u00e8s bien actuellement.</strong></em></p>\n<p>\u00a0</p>\n<p>\u00a0</p>",
+      "published_at": "2026-05-22T18:47:29+02:00",
+      "created_at": "2026-05-22T15:51:11+02:00",
+      "updated_at": "2026-07-27T16:12:43+02:00",
+      "vendor": "LEVINNATUREL.COM",
+      "product_type": "Bouteille 75cl",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57758951473487,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "36.50",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16113226056015,
+          "created_at": "2026-05-22T15:51:11+02:00",
+          "updated_at": "2026-07-27T16:12:43+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 92629994864975,
+          "created_at": "2026-05-22T16:05:08+02:00",
+          "position": 1,
+          "updated_at": "2026-05-22T16:05:11+02:00",
+          "product_id": 16113226056015,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/IMG_8934_2.jpg?v=1779458711",
+          "width": 750,
+          "height": 1000
+        },
+        {
+          "id": 92630019539279,
+          "created_at": "2026-05-22T16:05:47+02:00",
+          "position": 2,
+          "updated_at": "2026-05-22T16:05:50+02:00",
+          "product_id": 16113226056015,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/IMG_8935_2.jpg?v=1779458750",
+          "width": 750,
+          "height": 1000
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16109812089167,
+      "title": "Vin jaune, 2012, jaune",
+      "handle": "vin-jaune-2012-jaune",
+      "body_html": "<p><strong><em>Un vin jaune 2012 made by Philippe Bornard, what else!</em></strong></p>",
+      "published_at": "2026-05-20T19:55:37+02:00",
+      "created_at": "2026-05-20T19:46:50+02:00",
+      "updated_at": "2026-07-27T16:12:43+02:00",
+      "vendor": "LEVINNATUREL.COM",
+      "product_type": "Bouteille 75cl",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57743628566863,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "120.00",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16109812089167,
+          "created_at": "2026-05-20T19:46:50+02:00",
+          "updated_at": "2026-07-27T16:12:43+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 92547588882767,
+          "created_at": "2026-05-20T19:48:05+02:00",
+          "position": 1,
+          "updated_at": "2026-05-20T19:48:08+02:00",
+          "product_id": 16109812089167,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/IMG_8875_1.jpg?v=1779299288",
+          "width": 750,
+          "height": 1000
+        },
+        {
+          "id": 92547613655375,
+          "created_at": "2026-05-20T19:48:27+02:00",
+          "position": 2,
+          "updated_at": "2026-05-20T19:48:30+02:00",
+          "product_id": 16109812089167,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/IMG_8876_1.jpg?v=1779299310",
+          "width": 750,
+          "height": 1000
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16074852991311,
+      "title": "Chemin de la brune, 2024, Ros\u00e9",
+      "handle": "chemin-de-la-brune-2024-rose-1",
+      "body_html": "<p><em><strong><span dir=\"auto\" style=\"vertical-align: inherit;\"><span dir=\"auto\" style=\"vertical-align: inherit;\">Au domaine de l'Anglore, quand le soleil se l\u00e8ve, les premiers rayons \u00e9clairent le chemin de la brune. Cette image impr\u00e8gne chaque gorg\u00e9e!</span></span></strong></em></p>",
+      "published_at": "2026-04-28T20:20:07+02:00",
+      "created_at": "2026-04-26T15:59:10+02:00",
+      "updated_at": "2026-07-27T16:12:43+02:00",
+      "vendor": "LEVINNATUREL.COM",
+      "product_type": "Bouteille 75cl",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57570999107919,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "24.50",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16074852991311,
+          "created_at": "2026-04-26T15:59:10+02:00",
+          "updated_at": "2026-07-27T16:12:43+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 91821535396175,
+          "created_at": "2026-04-26T16:02:18+02:00",
+          "position": 1,
+          "updated_at": "2026-04-26T16:02:22+02:00",
+          "product_id": 16074852991311,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/chemindelabrune2024.jpg?v=1777212142",
+          "width": 1125,
+          "height": 1500
+        },
+        {
+          "id": 91821780894031,
+          "created_at": "2026-04-26T16:09:02+02:00",
+          "position": 2,
+          "updated_at": "2026-04-26T16:09:05+02:00",
+          "product_id": 16074852991311,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/Contre_chemin_de_la_brune_2024.jpg?v=1777212545",
+          "width": 750,
+          "height": 1000
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16074923147599,
+      "title": "Tavel vaucrose, 2021, Ros\u00e9",
+      "handle": "tavel-vaucrose-2021-rose",
+      "body_html": "<p><em><strong><span dir=\"auto\" style=\"vertical-align: inherit;\"><span dir=\"auto\" style=\"vertical-align: inherit;\"><span dir=\"auto\" style=\"vertical-align: inherit;\"><span dir=\"auto\" style=\"vertical-align: inherit;\">Vaucrose 2021 est un tr\u00e8s grand Tavel du domaine de l'Anglore. Preuve en est que les tr\u00e8s grands ros\u00e9s existent !</span></span></span></span></strong></em></p>",
+      "published_at": "2026-04-28T20:19:02+02:00",
+      "created_at": "2026-04-26T16:22:19+02:00",
+      "updated_at": "2026-07-27T16:12:43+02:00",
+      "vendor": "LEVINNATUREL.COM",
+      "product_type": "Bouteille 75cl",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57571390947663,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "39.80",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16074923147599,
+          "created_at": "2026-04-26T16:22:19+02:00",
+          "updated_at": "2026-07-27T16:12:43+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 91822172995919,
+          "created_at": "2026-04-26T16:24:31+02:00",
+          "position": 1,
+          "updated_at": "2026-04-26T16:24:34+02:00",
+          "product_id": 16074923147599,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/Vaucrose2021.jpg?v=1777213474",
+          "width": 750,
+          "height": 1000
+        },
+        {
+          "id": 91822176600399,
+          "created_at": "2026-04-26T16:24:47+02:00",
+          "position": 2,
+          "updated_at": "2026-04-26T16:24:51+02:00",
+          "product_id": 16074923147599,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/contre_Vaucrose_2021.jpg?v=1777213491",
+          "width": 750,
+          "height": 1000
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16078827356495,
+      "title": "Tavel, 2024, Ros\u00e9",
+      "handle": "tavel-2024-rose",
+      "body_html": "<p><em><strong><span dir=\"auto\" style=\"vertical-align: inherit;\"><span dir=\"auto\" style=\"vertical-align: inherit;\">Ce Tavel du domaine de L'Anglore se distingue par son nez intense m\u00ealant fruits rouges frais (framboise, groseille), \u00e9pices douces et une touche florale. En bouche, il offre une belle fra\u00eecheur, une texture soyeuse et une fine structure tannique qui lui conf\u00e8re une profondeur remarquable. Un bijou de ros\u00e9!</span></span></strong></em></p>",
+      "published_at": "2026-04-28T20:17:58+02:00",
+      "created_at": "2026-04-28T20:07:37+02:00",
+      "updated_at": "2026-07-27T16:12:43+02:00",
+      "vendor": "LEVINNATUREL.COM",
+      "product_type": "Bouteille 75cl",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57586115641679,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "34.50",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16078827356495,
+          "created_at": "2026-04-28T20:07:37+02:00",
+          "updated_at": "2026-07-27T16:12:43+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 91888124133711,
+          "created_at": "2026-04-28T20:08:31+02:00",
+          "position": 1,
+          "updated_at": "2026-04-28T20:08:34+02:00",
+          "product_id": 16078827356495,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/Tavel2024.jpg?v=1777399714",
+          "width": 750,
+          "height": 1000
+        },
+        {
+          "id": 91888141828431,
+          "created_at": "2026-04-28T20:08:48+02:00",
+          "position": 2,
+          "updated_at": "2026-04-28T20:08:51+02:00",
+          "product_id": 16078827356495,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/contre_tavel_2024.jpg?v=1777399731",
+          "width": 750,
+          "height": 1000
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16061359423823,
+      "title": "Lazaro, 2023, Rouge",
+      "handle": "lazaro-2023-rouge",
+      "body_html": "<p><em><strong><span dir=\"auto\" style=\"vertical-align: inherit;\"><span dir=\"auto\" style=\"vertical-align: inherit;\">Une cuv\u00e9e dans la plus pure tradition du style Prieur\u00e9 Roch.</span></span></strong></em></p>",
+      "published_at": "2026-04-20T13:01:15+02:00",
+      "created_at": "2026-04-20T12:14:32+02:00",
+      "updated_at": "2026-07-27T16:12:43+02:00",
+      "vendor": "LEVINNATUREL.COM",
+      "product_type": "Bouteille 75cl",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57516237259087,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "59.50",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16061359423823,
+          "created_at": "2026-04-20T12:14:32+02:00",
+          "updated_at": "2026-07-27T16:12:43+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 91611945926991,
+          "created_at": "2026-04-20T12:29:52+02:00",
+          "position": 1,
+          "updated_at": "2026-04-20T12:29:57+02:00",
+          "product_id": 16061359423823,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/IMG_8763.jpg?v=1776680997",
+          "width": 3024,
+          "height": 4032
+        },
+        {
+          "id": 91611949039951,
+          "created_at": "2026-04-20T12:30:09+02:00",
+          "position": 2,
+          "updated_at": "2026-04-20T12:30:13+02:00",
+          "product_id": 16061359423823,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/IMG_8764.jpg?v=1776681013",
+          "width": 3024,
+          "height": 4032
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16061379051855,
+      "title": "Hautes-c\u00f4tes de nuits, 2023, Rouge",
+      "handle": "hautes-cotes-de-nuits-2023-rouge",
+      "body_html": "<p><em><strong><span dir=\"auto\" style=\"vertical-align: inherit;\"><span dir=\"auto\" style=\"vertical-align: inherit;\">Un sacr\u00e9 Pinot des Hautes-c\u00f4tes!</span></span></strong></em></p>",
+      "published_at": "2026-04-20T13:00:31+02:00",
+      "created_at": "2026-04-20T12:40:33+02:00",
+      "updated_at": "2026-07-27T16:12:43+02:00",
+      "vendor": "LEVINNATUREL.COM",
+      "product_type": "Bouteille 75cl",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57516547768655,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "68.00",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16061379051855,
+          "created_at": "2026-04-20T12:40:33+02:00",
+          "updated_at": "2026-07-27T16:12:43+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 91612228845903,
+          "created_at": "2026-04-20T12:42:18+02:00",
+          "position": 1,
+          "updated_at": "2026-04-20T12:42:23+02:00",
+          "product_id": 16061379051855,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/IMG_8765.jpg?v=1776681743",
+          "width": 3024,
+          "height": 4032
+        },
+        {
+          "id": 91612247785807,
+          "created_at": "2026-04-20T12:42:34+02:00",
+          "position": 2,
+          "updated_at": "2026-04-20T12:42:38+02:00",
+          "product_id": 16061379051855,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/IMG_8766.jpg?v=1776681758",
+          "width": 3024,
+          "height": 4032
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16061385572687,
+      "title": "Pommard, 2023, Rouge",
+      "handle": "savigny-les-beaune-2020-rouge-copie",
+      "body_html": "<p><em><strong><span dir=\"auto\" style=\"vertical-align: inherit;\"><span dir=\"auto\" style=\"vertical-align: inherit;\">Un petit J\u00e9sus en culotte de velours !</span></span></strong></em></p>",
+      "published_at": "2026-04-20T13:00:03+02:00",
+      "created_at": "2026-04-20T12:49:11+02:00",
+      "updated_at": "2026-07-27T16:12:43+02:00",
+      "vendor": "LEVINNATUREL.COM",
+      "product_type": "Bouteille 75cl",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57516573819215,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "96.00",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16061385572687,
+          "created_at": "2026-04-20T12:49:11+02:00",
+          "updated_at": "2026-07-27T16:12:43+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 91612561211727,
+          "created_at": "2026-04-20T12:50:26+02:00",
+          "position": 1,
+          "updated_at": "2026-04-20T12:50:31+02:00",
+          "product_id": 16061385572687,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/IMG_8767.jpg?v=1776682231",
+          "width": 3024,
+          "height": 4032
+        },
+        {
+          "id": 91612581495119,
+          "created_at": "2026-04-20T12:50:42+02:00",
+          "position": 2,
+          "updated_at": "2026-04-20T12:50:47+02:00",
+          "product_id": 16061385572687,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/IMG_8768.jpg?v=1776682247",
+          "width": 3024,
+          "height": 4032
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16051150225743,
+      "title": "Uva arbosia, 2024, rouge",
+      "handle": "uva-arbosia-2024-rouge",
+      "body_html": "<p><em><strong>Un magnifique Poulsard arboisien tout en d\u00e9licatesse et d'une buvabilit\u00e9 de dingue!</strong></em></p>",
+      "published_at": "2026-04-18T16:53:11+02:00",
+      "created_at": "2026-04-13T20:07:19+02:00",
+      "updated_at": "2026-07-27T16:12:43+02:00",
+      "vendor": "LEVINNATUREL.COM",
+      "product_type": "Bouteille 75cl",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57456074162511,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "32.50",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16051150225743,
+          "created_at": "2026-04-13T20:07:19+02:00",
+          "updated_at": "2026-07-27T16:12:43+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 91360050086223,
+          "created_at": "2026-04-13T20:09:53+02:00",
+          "position": 1,
+          "updated_at": "2026-04-13T20:09:58+02:00",
+          "product_id": 16051150225743,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/IMG_8708.jpg?v=1776103798",
+          "width": 3024,
+          "height": 4032
+        },
+        {
+          "id": 91360060145999,
+          "created_at": "2026-04-13T20:10:10+02:00",
+          "position": 2,
+          "updated_at": "2026-04-13T20:10:16+02:00",
+          "product_id": 16051150225743,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/IMG_8709.jpg?v=1776103816",
+          "width": 3024,
+          "height": 4032
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16050830704975,
+      "title": "Les chamois du paradis, 2019, blanc",
+      "handle": "les-chamois-du-paradis-2016-blanc-copie",
+      "body_html": "<p><em><strong><span dir=\"auto\" style=\"vertical-align: inherit;\"><span dir=\"auto\" style=\"vertical-align: inherit;\">Mill\u00e9sime difficile mais sublime dans le verre. Une cuv\u00e9e rare et mythique!</span></span></strong></em></p>",
+      "published_at": "2026-04-13T15:35:00+02:00",
+      "created_at": "2026-04-13T15:23:35+02:00",
+      "updated_at": "2026-07-27T16:12:43+02:00",
+      "vendor": "LEVINNATUREL.COM",
+      "product_type": "Bouteille 75cl",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57454622310735,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "95.00",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16050830704975,
+          "created_at": "2026-04-13T15:23:35+02:00",
+          "updated_at": "2026-07-27T16:12:43+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 91352755536207,
+          "created_at": "2026-04-13T15:26:43+02:00",
+          "position": 1,
+          "updated_at": "2026-04-13T15:26:47+02:00",
+          "product_id": 16050830704975,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/IMG_8704.jpg?v=1776086807",
+          "width": 3024,
+          "height": 4032
+        },
+        {
+          "id": 91352760189263,
+          "created_at": "2026-04-13T15:26:59+02:00",
+          "position": 2,
+          "updated_at": "2026-04-13T15:27:04+02:00",
+          "product_id": 16050830704975,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0895/4773/5375/files/IMG_8705.jpg?v=1776086824",
+          "width": 3024,
+          "height": 4032
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
     }
   ]
 }

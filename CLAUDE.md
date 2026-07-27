@@ -36,9 +36,10 @@ concern, wired together by `scraper.py`:
    that's blocked and against their terms; numbers come from manual entry
    only.
 4. **`evaluate.py`** — turns a raw hit into a priced one: parses bottle
-   size from the title/variant (defaulting to 750ml at low confidence if
-   nothing matches), detects Burgundy cru tier from the cuvee text for
-   `region: burgundy` producers, computes `expected = reference × tier
+   size from the title/variant (including the Jura 620ml clavelin, and
+   defaulting to 750ml at low confidence if nothing matches), flags
+   coffrets/cases as bundles whose per-bottle price is unknowable, detects
+   Burgundy cru tier from the cuvee text for `region: burgundy` producers, computes `expected = reference × tier
    multiplier × format multiplier`, and classifies `DEAL`/`FAIR`/`HIGH`/
    `NOREF`. Never drops a hit — an unverified reference or low size/tier
    confidence sets `caveat: true`, it doesn't suppress anything.
@@ -67,10 +68,15 @@ tests first, best-effort persists `seen.json`/`.cache` across runs via
 Every `SHOPS` entry also carries a `verified` flag. `main()` skips any shop
 with `"verified": False` before it ever makes a network call — this is for
 shops added from research/guesswork rather than a real observed response
-(platform assumed, selectors invented). Flip it to `True` only after
-`shop-adapter` has fetched a real response and replaced the placeholder
-fixture with it. As of this writing every shop in `SHOPS` is unverified;
-none of them run live yet.
+(platform assumed, selectors invented). It is set only by `probe.py
+--apply`, which fetches, parses and flags in a single run against a real
+response; never by hand.
+
+13 shops are currently verified and fetched on every run. The remaining 12
+are not, and split into: nine that serve real HTML but match no selectors
+(they need hand-written per-shop selectors), one blocking us with 403
+(naturavin), one serving ~200-byte stubs (vinopura), one whose domain no
+longer resolves (vinscheznous), and one answering 415 (vinnaturel).
 
 Secrets (`GMAIL_SENDER`, `GMAIL_APP_PASSWORD`, `NOTIFY_EMAIL`) plus one
 non-secret repo variable (`CONTACT_EMAIL`, used honestly in the crawler's
@@ -98,6 +104,15 @@ this repo.
   code that fetches Wine-Searcher.
 - `notify.py` sends at most one digest email per run. Don't reintroduce a
   per-hit email path.
+- `notify.py` persists `seen.json` only *after* the email is actually sent.
+  Marking an item alerted is what silences it for 30 days, so saving before
+  the send means a dry run or a failed send silently swallows a real find.
+  Never move `save_state` back above `send_email`.
+- A coffret/caisse is several bottles, so its price is not comparable to a
+  per-bottle reference. `evaluate.py` must keep detecting bundles, applying
+  no format multiplier, and always caveating them -- real listings like
+  "COFFRET ANNIVERSAIRE GANEVAT" at EUR 450 would otherwise be scored
+  against a ~EUR 70 bottle reference and shouted about.
 - Catalogues are paged. Any new fetcher must walk pages, not just read the
   first one -- seeing only page one turns a real hit into a silent miss,
   which is the exact failure this project exists to avoid.

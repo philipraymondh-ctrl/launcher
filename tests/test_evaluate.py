@@ -189,3 +189,67 @@ def test_evaluate_hits_never_drops_a_hit(pricebook):
 def test_price_parser_still_ignores_vintage_in_evaluate_context():
     import scraper
     assert scraper.parse_price("Chardonnay 2020 210,00 EUR") == pytest.approx(210.0)
+
+
+# --- formats and bundles seen in real listings -------------------------------
+# All of these titles are verbatim from probe run 30270766108, which fetched
+# real catalogues from levinnaturel and petitescaves.
+
+def test_vin_jaune_is_a_620ml_clavelin_not_a_750():
+    # Jura Vin Jaune ships in a clavelin. Scoring it as 750ml misprices it,
+    # and half the tracked producers are Jura.
+    assert evaluate.parse_size("Vin jaune, 2012, Jaune") == (620, "high")
+    assert evaluate.parse_size("Ganevat Clavelin 62cl") == (620, "high")
+
+
+@pytest.mark.parametrize("title", [
+    "COFFRET ANNIVERSAIRE GANEVAT",
+    'Coffret "Les Tête d\'Affiche"',
+    "Caisse de 6 bouteilles",
+    "Gift box assortiment",
+])
+def test_bundles_are_detected(title):
+    assert evaluate.is_bundle(title)
+
+
+@pytest.mark.parametrize("title", [
+    "Les grands teppes VV, 2018, Blanc",
+    "Domaine Labet Fleur de Marne 2019",
+    "Vin jaune, 2012, Jaune",
+])
+def test_single_bottles_are_not_bundles(title):
+    assert not evaluate.is_bundle(title)
+
+
+def test_coffret_is_labelled_and_always_caveated(pricebook):
+    # A multi-bottle box has no defensible per-bottle comparison, so it must
+    # never be silently scored as a 750ml at the producer's bottle price.
+    hit = {"producer": "Labet", "title": "COFFRET ANNIVERSAIRE LABET",
+           "price": 498.0, "shop": "levinnaturel", "url": "u"}
+    result = evaluate.evaluate_hit(hit, pricebook)
+
+    assert result["bundle"] is True
+    assert result["size_label"] == "coffret"
+    assert result["caveat"] is True
+    # No format multiplier is applied -- we don't know the bottle count.
+    assert result["expected_price"] == pytest.approx(result["reference_price"])
+
+
+def test_coffret_still_reported_never_suppressed(pricebook):
+    hit = {"producer": "Labet", "title": "Coffret Labet", "price": 498.0,
+           "shop": "s", "url": "u"}
+    result = evaluate.evaluate_hit(hit, pricebook)
+    assert result["classification"] in ("DEAL", "FAIR", "HIGH", "NOREF")
+
+
+def test_clavelin_uses_its_own_format_multiplier():
+    book = evaluate.load_pricebook()
+    assert 620 in {int(k) for k in book["defaults"]["format_multipliers"]}
+
+
+def test_size_label_present_for_plain_bottles(pricebook):
+    hit = {"producer": "Labet", "title": "Labet Chardonnay Magnum 2020",
+           "price": 100.0, "shop": "s", "url": "u"}
+    result = evaluate.evaluate_hit(hit, pricebook)
+    assert result["size_label"] == "1500ml"
+    assert result["bundle"] is False

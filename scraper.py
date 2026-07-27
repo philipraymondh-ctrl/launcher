@@ -84,12 +84,15 @@ SHOPS = [
         "verified": False,
     },
 
-    # --- Real shops, all UNVERIFIED placeholders -----------------------
-    # Added from web research, not a live fetch (this dev environment has
-    # no general internet egress). Platform/selectors below are guesses;
-    # each has a fixture in tests/fixtures/ documenting what's known vs.
-    # invented. shop-adapter must confirm each one against the real site
-    # before it's safe to flip "verified" to True.
+    # --- Real shops ----------------------------------------------------
+    # verified: True means probe.py --apply fetched and parsed this shop's
+    # real catalogue, saved it as the fixture, and set the platform from
+    # what was actually observed. Those shops are fetched on every run.
+    #
+    # verified: False means the opposite -- the entry came from research,
+    # its platform/selectors are guesses, and main() skips it entirely.
+    # Re-run Probe Shops with apply to promote one; see its fixture and the
+    # probe report for why it hasn't been promoted yet.
     {
         "name": "leszinzinsduvin",
         "platform": "html",
@@ -124,19 +127,19 @@ SHOPS = [
         "name": "levinnaturel",
         "platform": "shopify",
         "url": "https://levinnaturel.com",
-        "verified": False,
+        "verified": True,
     },
     {
         "name": "lespeauxdevins",
         "platform": "shopify",
         "url": "https://lespeauxdevins.com",
-        "verified": False,
+        "verified": True,
     },
     {
         "name": "lacavedespapilles",
         "platform": "shopify",
         "url": "https://www.lacavedespapilles.com",
-        "verified": False,
+        "verified": True,
     },
     {
         "name": "vinnaturel",
@@ -151,13 +154,13 @@ SHOPS = [
         "name": "whynat",
         "platform": "shopify",
         "url": "https://www.whynat.fr",
-        "verified": False,
+        "verified": True,
     },
     {
         "name": "vinibee",
         "platform": "woocommerce",
         "url": "https://www.vinibee.com",
-        "verified": False,
+        "verified": True,
     },
     {
         "name": "vinscheznous",
@@ -172,7 +175,7 @@ SHOPS = [
         "name": "petitescaves",
         "platform": "shopify",
         "url": "https://www.petitescaves.com",
-        "verified": False,
+        "verified": True,
     },
     {
         "name": "cavepurjus",
@@ -187,7 +190,7 @@ SHOPS = [
         "name": "bbn",
         "platform": "shopify",
         "url": "https://biobiodynamienature.com",
-        "verified": False,
+        "verified": True,
     },
     {
         "name": "purewijnen",
@@ -202,7 +205,7 @@ SHOPS = [
         "name": "amberbottleshop",
         "platform": "shopify",
         "url": "https://amberbottleshop.com",
-        "verified": False,
+        "verified": True,
     },
     {
         "name": "naturavin",
@@ -235,13 +238,13 @@ SHOPS = [
         "name": "vinifine",
         "platform": "woocommerce",
         "url": "https://www.vinifine.be",
-        "verified": False,
+        "verified": True,
     },
     {
         "name": "zuiverwijnen",
         "platform": "shopify",
         "url": "https://zuiverwijnen.nl",
-        "verified": False,
+        "verified": True,
     },
     {
         # Platform guess based on the site's Dutch WooCommerce-default URL
@@ -255,19 +258,19 @@ SHOPS = [
         "name": "volatilewines",
         "platform": "woocommerce",
         "url": "https://volatilewines.com",
-        "verified": False,
+        "verified": True,
     },
     {
         "name": "biowijnclub",
         "platform": "woocommerce",
         "url": "https://www.biowijnclub.nl",
-        "verified": False,
+        "verified": True,
     },
     {
         "name": "puurwijnshop",
         "platform": "shopify",
         "url": "https://www.puurwijn.shop",
-        "verified": False,
+        "verified": True,
     },
     {
         "name": "purovino",

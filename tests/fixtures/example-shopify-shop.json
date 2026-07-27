@@ -1,0 +1,18 @@
+{
+  "products": [
+    {
+      "title": "Domaine Ganevat 'Chardonnay Cuvee de Copains' 2019",
+      "vendor": "Domaine Ganevat",
+      "handle": "ganevat-chardonnay-cuvee-de-copains-2019",
+      "body_html": "<p>A skin-contact chardonnay from the Jura.</p>",
+      "variants": [{"price": "68.00"}]
+    },
+    {
+      "title": "Some Other Winery Pinot Noir 2020",
+      "vendor": "Some Other Winery",
+      "handle": "some-other-winery-pinot-noir-2020",
+      "body_html": "<p>Nothing special.</p>",
+      "variants": [{"price": "22.50"}]
+    }
+  ]
+}

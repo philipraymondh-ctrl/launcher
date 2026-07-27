@@ -346,3 +346,37 @@ def test_growers_we_do_not_watch_are_left_alone():
     found = autoselect.find_producer_links(
         REAL_INDEX, "https://www.leszinzinsduvin.com/domaines.php", scraper.match_producers)
     assert not any("Abate_Marino" in u for _, u in found)
+
+
+def test_the_index_route_uses_the_page_already_fetched():
+    """Re-fetching the index by URL wasted a request, and under the probe's
+    replay crawler it fetched a different page than the one just parsed --
+    so the index was never read and the shop could not be verified."""
+    grower = ('<html><body><table>'
+              '<tr><td><a href="/vin-1-x.html">Les Chalasses 2018</a></td><td>55,00 &euro;</td></tr>'
+              '<tr><td><a href="/vin-2-y.html">Poulprix 2024</a></td><td>29,00 &euro;</td></tr>'
+              '<tr><td><a href="/vin-3-z.html">Vin Jaune 2012</a></td><td>118,00 &euro;</td></tr>'
+              '</table></body></html>')
+
+    class OnceThenGrowers:
+        max_requests = 99
+
+        def __init__(self):
+            self.n = 0
+            self.urls = []
+
+        def get(self, url, params=None):
+            self.n += 1
+            self.urls.append(url)
+            return scraper.crawler.FetchResult(200, REAL_INDEX if self.n == 1 else grower)
+
+    client = OnceThenGrowers()
+    shop = dict(SHOP, catalog_path="vins.php")
+    items = scraper.fetch_html(shop, client)
+
+    assert items, "the grower index yielded nothing"
+    # The index page itself is fetched once, then one request per grower.
+    assert client.urls[0] == "https://shop.test/vins.php"
+    assert all("domaine-" in u for u in client.urls[1:])
+    producers = {p for i in items for p in scraper.match_producers(i["text"])}
+    assert "Ganevat" in producers and "Bruyere Houillon" in producers

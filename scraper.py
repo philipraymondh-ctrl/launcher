@@ -491,7 +491,7 @@ def _parse_html_page(shop, html, page_url):
     return autoselect.find_products(html, page_url, PRICE_PATTERN, parse_price), "auto"
 
 
-def _fetch_via_producer_index(shop, index_url, crawler_client):
+def _fetch_via_producer_index(shop, index_html, index_url, crawler_client):
     """Last resort for a shop with no crawlable catalogue.
 
     leszinzinsduvin only exposes its wines through a POST search form, but
@@ -499,13 +499,10 @@ def _fetch_via_producer_index(shop, index_url, crawler_client):
     matching PRODUCERS and read those pages -- a dozen requests instead of
     a full catalogue walk, aimed at exactly the bottles we care about.
     """
-    try:
-        resp = crawler_client.get(index_url)
-        resp.raise_for_status()
-    except (crawler.BudgetExceeded, crawler.UpstreamError):
-        return []
-
-    targets = autoselect.find_producer_links(resp.text, index_url, match_producers)
+    # The page is already in hand -- re-fetching it wasted a request, and
+    # under the probe's replay crawler it fetched a *different* page than
+    # the one just parsed, so the index was never actually read.
+    targets = autoselect.find_producer_links(index_html, index_url, match_producers)
     if not targets:
         return []
 
@@ -540,6 +537,7 @@ def fetch_html(shop, crawler_client):
     # "next page" link against the product set would never match, and a
     # self-referential pager would walk until the budget ran out.
     items, seen_urls, visited, page_url, how = [], set(), {start}, start, None
+    first_html, first_url = "", start
     for page in range(1, MAX_PAGES_PER_SHOP + 1):
         try:
             resp = crawler_client.get(page_url)
@@ -553,6 +551,8 @@ def fetch_html(shop, crawler_client):
                 raise EmptyResponseError(shop["name"])
             break
 
+        if page == 1:
+            first_html, first_url = resp.text, page_url
         page_items, how = _parse_html_page(shop, resp.text, page_url)
         fresh = [i for i in page_items if i["url"] not in seen_urls]
         if not fresh:
@@ -569,8 +569,8 @@ def fetch_html(shop, crawler_client):
         print(f"[{shop['name']}] hit MAX_PAGES_PER_SHOP ({MAX_PAGES_PER_SHOP}); "
               f"catalogue may be TRUNCATED")
 
-    if not items:
-        items = _fetch_via_producer_index(shop, start, crawler_client)
+    if not items and first_html:
+        items = _fetch_via_producer_index(shop, first_html, first_url, crawler_client)
         how = "index" if items else how
 
     if items and how == "auto":

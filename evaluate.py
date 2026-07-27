@@ -36,6 +36,9 @@ SIZE_PATTERNS = [
     (1500, re.compile(r"\b(?:magnum|mag\.?|1[.,]5\s*l|150\s*cl|1500\s*ml)\b", re.I)),
     (3000, re.compile(r"\b(?:double\s*magnum|jeroboam|3[.,]0?\s*l|300\s*cl|3000\s*ml)\b", re.I)),
     (750, re.compile(r"\b(?:75\s*cl|750\s*ml)\b", re.I)),
+    # Jura Vin Jaune ships in a 620ml clavelin. Half the tracked
+    # producers are Jura, so treating one as 750ml misprices it by ~20%.
+    (620, re.compile(r"\b(?:clavelin|62\s*cl|620\s*ml|vin\s+jaune)\b", re.I)),
 ]
 
 
@@ -47,6 +50,22 @@ def parse_size(text):
         if pattern.search(text):
             return size, "high"
     return 750, "low"
+
+
+# A coffret/case is several bottles in a box, so its price is not
+# comparable to a per-bottle reference at all. Real listings from
+# levinnaturel and petitescaves ("COFFRET ANNIVERSAIRE GANEVAT", EUR 450)
+# would otherwise be scored against a ~EUR 70 single-bottle reference and
+# shouted about as HIGH. Detect them and caveat instead of pretending.
+BUNDLE_RE = re.compile(
+    r"\b(?:coffret|caisse|carton|case\s+of|gift\s*(?:box|set)|"
+    r"(?:\d+)\s*(?:bouteilles|bottles)|assortiment|panach\w+)\b",
+    re.I,
+)
+
+
+def is_bundle(text):
+    return bool(BUNDLE_RE.search(normalize(text or "")))
 
 
 # --- Burgundy tier ----------------------------------------------------------
@@ -122,12 +141,21 @@ def evaluate_hit(hit, pricebook):
     fair_ceiling = defaults.get("fair_ceiling", 1.25)
 
     size_text = f"{hit.get('title', '')} {hit.get('variant_title', '')}"
+    bundle = is_bundle(size_text)
     size_ml, size_confidence = parse_size(size_text)
-    format_multiplier = format_multipliers.get(size_ml, 1.0)
+    if bundle:
+        # Unknown bottle count, so no format multiplier is defensible.
+        # Report it as a coffret and always caveat it.
+        size_confidence = "low"
+        format_multiplier = 1.0
+    else:
+        format_multiplier = format_multipliers.get(size_ml, 1.0)
 
     result = dict(hit)
     result["size_ml"] = size_ml
     result["size_confidence"] = size_confidence
+    result["bundle"] = bundle
+    result["size_label"] = "coffret" if bundle else f"{size_ml}ml"
     result["cuvee"] = derive_cuvee(hit.get("title", ""), hit.get("producer", ""))
 
     producer_entry = find_producer_entry(pricebook, hit.get("producer"))
@@ -178,7 +206,7 @@ def evaluate_hit(hit, pricebook):
             classification = "FAIR"
 
     low_confidence = size_confidence == "low" or tier_confidence == "low"
-    caveat = (not reference_verified) or low_confidence
+    caveat = (not reference_verified) or low_confidence or bundle
 
     result.update(
         tier=tier,

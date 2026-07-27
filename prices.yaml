@@ -23,6 +23,11 @@
 defaults:
   format_multipliers:
     375: 0.55
+    # Jura clavelin (Vin Jaune). This is the plain volume ratio, 620/750.
+    # Vin Jaune is a prestige bottling whose price is not volume-derived,
+    # so a real figure belongs in a per-cuvee override rather than here --
+    # this multiplier just stops a clavelin being scored as a full bottle.
+    620: 0.83
     750: 1.0
     1500: 2.30
     3000: 5.0

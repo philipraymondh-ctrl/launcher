@@ -49,6 +49,9 @@ OUTPUT_DIR = Path(os.environ.get("PROBE_OUTPUT_DIR", Path(__file__).parent / "pr
 # replaying page 1 forever.
 EMPTY_PAGE = {"shopify": '{"products": []}', "woocommerce": "[]", "html": ""}
 
+# Enough of a failing body to tell a bot-block page from an API change.
+BODY_SNIPPET = 400
+
 
 class CannedCrawler:
     """Replays one already-fetched response into a real fetcher, so the
@@ -156,11 +159,23 @@ def probe_shop(shop, crawler_client):
 
         items, parse_error = try_parse(platform, shop, response)
         if parse_error:
+            # Record what actually came back. Without this a failure like
+            # vinopura's ("not JSON") is undiagnosable from the report --
+            # the body is discarded because only successes are saved, and
+            # you cannot tell a bot-block page from a real API change.
             attempt["outcome"] = f"responded but parse failed: {parse_error}"
+            attempt["body_snippet"] = body[:BODY_SNIPPET].replace("\n", " ")
             result["attempts"].append(attempt)
             continue
         if not items:
             attempt["outcome"] = "responded and parsed, but zero products found"
+            attempt["body_snippet"] = body[:BODY_SNIPPET].replace("\n", " ")
+            if platform == "html":
+                # These are the shops needing real selectors, so keep the
+                # whole page -- selectors can't be written from a snippet.
+                unparsed = OUTPUT_DIR / f"{shop['name']}.unparsed.html"
+                unparsed.write_text(body)
+                attempt["saved_unparsed"] = unparsed.name
             result["attempts"].append(attempt)
             continue
 

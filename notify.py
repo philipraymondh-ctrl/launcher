@@ -106,7 +106,7 @@ def format_row(hit):
     status = hit.get("classification", "NOREF") + ("*" if hit.get("caveat") else "")
     price = f"EUR {hit['price']:.0f}" if hit.get("price") is not None else "EUR ?"
     ref = f"EUR {hit['expected_price']:.0f}" if hit.get("expected_price") is not None else "EUR ?"
-    size = f"{hit.get('size_ml', 750)}ml"
+    size = hit.get("size_label") or f"{hit.get('size_ml', 750)}ml"
     cuvee = hit.get("cuvee") or hit.get("title", "")
     producer = hit.get("producer", "")
     return f"{status:<5} | {producer} | {cuvee} | {size} | {price} | {ref} | {hit.get('url', '')}"

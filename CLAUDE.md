@@ -36,9 +36,10 @@ concern, wired together by `scraper.py`:
    that's blocked and against their terms; numbers come from manual entry
    only.
 4. **`evaluate.py`** — turns a raw hit into a priced one: parses bottle
-   size from the title/variant (defaulting to 750ml at low confidence if
-   nothing matches), detects Burgundy cru tier from the cuvee text for
-   `region: burgundy` producers, computes `expected = reference × tier
+   size from the title/variant (including the Jura 620ml clavelin, and
+   defaulting to 750ml at low confidence if nothing matches), flags
+   coffrets/cases as bundles whose per-bottle price is unknowable, detects
+   Burgundy cru tier from the cuvee text for `region: burgundy` producers, computes `expected = reference × tier
    multiplier × format multiplier`, and classifies `DEAL`/`FAIR`/`HIGH`/
    `NOREF`. Never drops a hit — an unverified reference or low size/tier
    confidence sets `caveat: true`, it doesn't suppress anything.
@@ -98,6 +99,11 @@ this repo.
   code that fetches Wine-Searcher.
 - `notify.py` sends at most one digest email per run. Don't reintroduce a
   per-hit email path.
+- A coffret/caisse is several bottles, so its price is not comparable to a
+  per-bottle reference. `evaluate.py` must keep detecting bundles, applying
+  no format multiplier, and always caveating them -- real listings like
+  "COFFRET ANNIVERSAIRE GANEVAT" at EUR 450 would otherwise be scored
+  against a ~EUR 70 bottle reference and shouted about.
 - Catalogues are paged. Any new fetcher must walk pages, not just read the
   first one -- seeing only page one turns a real hit into a silent miss,
   which is the exact failure this project exists to avoid.

@@ -296,3 +296,36 @@ def test_trim_of_woocommerce_keeps_shape():
     kept = json.loads(trimmed)
     assert isinstance(kept, list) and total == 60
     assert any("Labet" in p["name"] for p in kept)
+
+
+def test_parse_failure_records_a_body_snippet():
+    # Without the snippet a "not JSON" failure is undiagnosable from the
+    # report: the body is discarded because only successes are saved.
+    stub = StubCrawler({
+        "/products.json": crawler.FetchResult(200, "<html><body>Attention Required! Cloudflare</body></html>"),
+        "/wp-json/": not_found(),
+        "https://testshop.example": not_found(),
+    })
+
+    result = probe.probe_shop(a_shop(), stub)
+
+    shopify_attempt = next(a for a in result["attempts"] if a["platform"] == "shopify")
+    assert "parse failed" in shopify_attempt["outcome"]
+    assert "Cloudflare" in shopify_attempt["body_snippet"]
+
+
+def test_zero_product_html_page_is_saved_for_selector_work(isolated_output):
+    # The 9 html shops that return a real page but match no selectors are
+    # exactly the ones needing hand-written selectors -- keep their pages.
+    page = "<html><body><article class='card'>Some Wine 2020</article></body></html>"
+    stub = StubCrawler({
+        "/products.json": not_found(),
+        "/wp-json/": not_found(),
+        "https://testshop.example": crawler.FetchResult(200, page),
+    })
+
+    result = probe.probe_shop(a_shop(), stub)
+
+    assert result["status"] == "failed"
+    saved = isolated_output / "testshop.unparsed.html"
+    assert saved.exists() and "Some Wine 2020" in saved.read_text()

@@ -1,0 +1,17 @@
+{
+  "_note": "PLACEHOLDER fixture. Platform (shopify) is CONFIRMED -- probe run 30255245592 fetched and parsed this shop's real shopify endpoint. The product data below is NOT real; the actual response body is in that run's probe-results artifact and should replace this file before the shop is set verified:true.",
+  "products": [
+    {
+      "title": "PLACEHOLDER PRODUCT -- replace with a real listing",
+      "vendor": "Placeholder",
+      "handle": "placeholder",
+      "body_html": "<p>Placeholder.</p>",
+      "variants": [
+        {
+          "price": "0.00",
+          "title": "Default"
+        }
+      ]
+    }
+  ]
+}

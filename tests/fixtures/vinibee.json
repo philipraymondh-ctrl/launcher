@@ -1,0 +1,13 @@
+[
+  {
+    "_note": "PLACEHOLDER fixture. Platform (woocommerce) is CONFIRMED -- probe run 30255245592 fetched and parsed this shop's real woocommerce endpoint. The product data below is NOT real; the actual response body is in that run's probe-results artifact and should replace this file before the shop is set verified:true.",
+    "name": "PLACEHOLDER PRODUCT -- replace with a real listing",
+    "permalink": "https://example.invalid/placeholder",
+    "short_description": "Placeholder.",
+    "description": "",
+    "prices": {
+      "price": "0",
+      "currency_minor_unit": 2
+    }
+  }
+]

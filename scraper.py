@@ -44,6 +44,7 @@ PRODUCERS = {
     "Clemence Gerbet": ["clemence gerbet", "gerbet"],
     "Thomas Popy": ["thomas popy", "popy"],
     "Roumier": ["roumier"],
+    "Alice Fahrenkrug": ["alice fahrenkrug"],
 }
 
 # ---------------------------------------------------------------------------

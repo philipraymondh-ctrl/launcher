@@ -77,9 +77,13 @@ def _linked_elements(root):
 
 
 def _product_link(element):
+    # The element may *be* the link rather than contain one: a data-url
+    # card carries the destination on itself, and looking only at
+    # descendants made the whole card invisible to block detection.
+    if _link_target(element):
+        return element
     for candidate, _ in _linked_elements(element):
-        if candidate.name == "a" or candidate is not element:
-            return candidate
+        return candidate
     return None
 
 
@@ -149,7 +153,14 @@ def find_products(html, base_url, price_pattern, parse_price):
         anchor = _product_link(block)
         if anchor is None:
             continue
-        url = urljoin(base_url, anchor["href"].strip())
+        # Not anchor["href"]: since link detection learned to read data-url,
+        # this element may be a <div> with no href at all, and indexing it
+        # raised KeyError -- which the probe reported as "responded but
+        # parse failed" on the very grower index it was meant to read.
+        target = _link_target(anchor)
+        if not target:
+            continue
+        url = urljoin(base_url, target)
         if url in seen:
             continue
         seen.add(url)

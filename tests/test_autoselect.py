@@ -380,3 +380,28 @@ def test_the_index_route_uses_the_page_already_fetched():
     assert all("domaine-" in u for u in client.urls[1:])
     producers = {p for i in items for p in scraper.match_producers(i["text"])}
     assert "Ganevat" in producers and "Bruyere Houillon" in producers
+
+
+def test_a_product_grid_built_from_data_url_cards_parses():
+    """Regression: link detection learned to read data-url, but the product
+    path still indexed ["href"] and raised KeyError on those elements."""
+    html = ('<html><body><div class="grid">'
+            '<div class="card" data-url="/vin-1-a.html"><h3>Poulprix 2024</h3>'
+            '<span>29,00 &euro;</span></div>'
+            '<div class="card" data-url="/vin-2-b.html"><h3>Les Chalasses 2018</h3>'
+            '<span>55,00 &euro;</span></div>'
+            '<div class="card" data-url="/vin-3-c.html"><h3>Vin Jaune 2012</h3>'
+            '<span>118,00 &euro;</span></div>'
+            '</div></body></html>')
+    items = find(html)
+    assert len(items) == 3
+    assert items[0]["url"] == "https://shop.test/vin-1-a.html"
+    assert items[0]["price"] == 29.0
+
+
+def test_the_real_grower_index_does_not_crash_the_product_parser():
+    """The probe hit KeyError: 'href' on exactly this page."""
+    items = autoselect.find_products(
+        REAL_INDEX, "https://www.leszinzinsduvin.com/domaines.php",
+        scraper.PRICE_PATTERN, scraper.parse_price)
+    assert isinstance(items, list)   # no prices on an index: [] is correct

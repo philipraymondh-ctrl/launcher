@@ -126,7 +126,7 @@ SHOPS = [
         "item_selector": "div.product",
         "title_selector": "h2.product-title",
         "price_selector": "span.price",
-        "verified": False,
+        "verified": True,
     },
     {
         # Marée Haute, Saint-Pierre d'Oléron. Indexed URLs are
@@ -136,7 +136,7 @@ SHOPS = [
         "name": "mareehaute",
         "platform": "shopify",
         "url": "https://www.mareehaute.vin",
-        "verified": False,
+        "verified": True,
     },
     {
         "name": "vinnouveau",

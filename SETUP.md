@@ -22,13 +22,20 @@ In the repo's Settings → Secrets and variables → Actions, add:
 The workflow (`.github/workflows/scraper.yml`) reads these as environment
 variables at run time. It never prints their values.
 
-## 3. Add shops
+## 3. Add / confirm shops
 
 Shops live in the `SHOPS` list in `scraper.py`. Each entry needs a
-`platform` (`shopify`, `woocommerce`, or `html`) and the fields that
-platform's fetcher needs. See `CLAUDE.md` for the rules on adding a shop —
-use the `shop-adapter` agent, one shop per commit, with a fixture under
-`tests/fixtures/`.
+`platform` (`shopify`, `woocommerce`, or `html`), the fields that
+platform's fetcher needs, and a `verified` flag. `main()` skips any shop
+with `verified: False` before making a network call — as shipped, every
+shop in `SHOPS` is unverified (added from research, not a real fetch; see
+each fixture's `_note`/leading comment for what's real vs. guessed), so a
+normal run does nothing until shops are confirmed.
+
+To bring a shop online: use the `shop-adapter` agent to fetch the real
+endpoint, replace its placeholder fixture with the real response, update
+the test to assert against real content, and only then flip `verified` to
+`True`. One shop per commit. See `CLAUDE.md` for the full rules.
 
 ## 4. Run locally
 

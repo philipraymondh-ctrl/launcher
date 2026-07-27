@@ -85,3 +85,76 @@ def test_price_parser_ignores_bare_vintage_year():
     assert scraper.parse_price("2018 Domaine Ganevat Chardonnay") is None
     assert scraper.parse_price("Domaine Ganevat 2018 - 45,00€") == pytest.approx(45.00)
     assert scraper.parse_price("$89.99 (vintage 2019)") == pytest.approx(89.99)
+
+
+def shop_by_name(name):
+    return next(s for s in scraper.SHOPS if s["name"] == name)
+
+
+def test_unverified_shops_are_skipped_by_main(monkeypatch, capsys):
+    monkeypatch.setenv("DRY_RUN", "1")
+    monkeypatch.setattr(scraper, "DRY_RUN", True)
+    monkeypatch.setattr(
+        scraper.requests,
+        "get",
+        lambda *a, **k: (_ for _ in ()).throw(scraper.requests.RequestException("no network in test")),
+    )
+
+    scraper.main()
+
+    out = capsys.readouterr().out
+    unverified_shops = [s for s in scraper.SHOPS if not s.get("verified", True)]
+    assert unverified_shops, "expected at least one unverified placeholder shop"
+    for shop in unverified_shops:
+        assert f"[{shop['name']}] skipped: unverified placeholder" in out
+
+
+@pytest.mark.parametrize(
+    "shop_name",
+    [
+        s["name"]
+        for s in [
+            {"name": "leszinzinsduvin"}, {"name": "winenot"}, {"name": "vinnouveau"},
+            {"name": "lespeauxdevins"}, {"name": "lacavedespapilles"}, {"name": "vinnaturel"},
+            {"name": "whynat"}, {"name": "vinibee"}, {"name": "vinscheznous"},
+            {"name": "petitescaves"}, {"name": "cavepurjus"}, {"name": "bbn"},
+            {"name": "purewijnen"}, {"name": "amberbottleshop"}, {"name": "naturavin"},
+            {"name": "vinnaturelbe"}, {"name": "vinovivo"}, {"name": "vinifine"},
+            {"name": "zuiverwijnen"}, {"name": "volatilewines"}, {"name": "biowijnclub"},
+            {"name": "puurwijnshop"}, {"name": "purovino"},
+        ]
+    ],
+)
+def test_placeholder_html_fixture_parses_without_crashing(monkeypatch, shop_name):
+    shop = shop_by_name(shop_name)
+    assert shop["verified"] is False
+    html = (FIXTURES / f"{shop_name}.html").read_text()
+    monkeypatch.setattr(scraper.requests, "get", lambda *a, **k: FakeTextResponse(html))
+
+    hits = scraper.check_shop(shop)
+
+    # Placeholder content deliberately contains no producer alias -- this
+    # only proves the guessed selectors don't crash, not that they're right.
+    assert hits == []
+
+
+def test_levinnaturel_placeholder_fixture_has_labet_hit(monkeypatch):
+    shop = shop_by_name("levinnaturel")
+    assert shop["verified"] is False
+    data = load_json("levinnaturel.json")
+    monkeypatch.setattr(scraper.requests, "get", lambda *a, **k: FakeJSONResponse(data))
+
+    hits = scraper.check_shop(shop)
+
+    assert any(h["producer"] == "Labet" for h in hits)
+
+
+def test_vinopura_placeholder_fixture_parses_without_crashing(monkeypatch):
+    shop = shop_by_name("vinopura")
+    assert shop["verified"] is False
+    data = load_json("vinopura.json")
+    monkeypatch.setattr(scraper.requests, "get", lambda *a, **k: FakeJSONResponse(data))
+
+    hits = scraper.check_shop(shop)
+
+    assert hits == []

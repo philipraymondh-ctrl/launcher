@@ -1,0 +1,9 @@
+[
+  {
+    "_note": "UNVERIFIED fixture for VinoPura (https://vinopura.nl). Not a live fetch. Platform=woocommerce is a weak guess based on the site's URL slug '/product-categorie/natuurwijn/' -- 'product-categorie' is WooCommerce's default Dutch-locale category slug. Everything else in this record is an invented placeholder. Confirm via shop-adapter against a real GET https://vinopura.nl/wp-json/wc/store/v1/products before setting verified=True.",
+    "name": "PLACEHOLDER PRODUCT -- replace with a real listing from VinoPura",
+    "permalink": "https://vinopura.nl/",
+    "short_description": "Placeholder short description.",
+    "prices": {"price": "0", "currency_minor_unit": 2}
+  }
+]

@@ -15,6 +15,14 @@ Single file, `scraper.py`, no framework/database/queue. It:
 4. Runs hourly from `.github/workflows/scraper.yml`, which also runs the
    fixture tests before the scrape step.
 
+Every `SHOPS` entry carries a `verified` flag. `main()` skips any shop with
+`"verified": False` before it ever makes a network call — this is for
+shops added from research/guesswork rather than a real observed response
+(platform assumed, selectors invented). Flip it to `True` only after
+`shop-adapter` has fetched a real response and replaced the placeholder
+fixture with it. As of this writing every shop in `SHOPS` is unverified;
+none of them run live yet.
+
 Three secrets (`GMAIL_SENDER`, `GMAIL_APP_PASSWORD`, `NOTIFY_EMAIL`) are the
 only external configuration; everything else is in this file.
 

@@ -55,6 +55,27 @@ matching logic:
   if a fix there is truly needed, it affects every shop, so make sure the
   full fixture suite still passes.
 
+## Confirming a placeholder shop
+
+Several entries in `SHOPS` were added with `"verified": False` — added from
+research rather than a real fetch, with a fixture that says so explicitly
+(check its `_note` field or leading HTML comment for what's real vs.
+invented). To confirm one:
+
+1. Fetch the real endpoint (`/products.json`, the WooCommerce Store API, or
+   the live page) and replace the placeholder fixture with what actually
+   came back.
+2. Update `item_selector`/`title_selector`/`price_selector` (HTML shops) or
+   confirm the JSON shape matches the existing fetcher (Shopify/WooCommerce
+   shops) against the real response.
+3. Update or add the test in `tests/test_scraper.py` to assert against the
+   real fixture's actual content — don't just leave the placeholder
+   assertions in place.
+4. Only then set `"verified": True` on that shop's `SHOPS` entry.
+
+Never flip `verified` to `True` without having done the above — that's the
+whole point of the flag.
+
 ## One shop per commit
 
 Each commit adds or repairs exactly one shop: one `SHOPS` entry, its

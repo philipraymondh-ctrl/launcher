@@ -40,19 +40,27 @@ PRODUCERS = {
 # API, and only shops that support neither fall back to "html" with CSS
 # selectors. See CLAUDE.md and the shop-adapter agent before adding a shop.
 #
-# The three entries below are worked examples (with fixtures in
-# tests/fixtures/) showing each adapter shape. Replace with real shops.
+# Every entry needs "verified": True before main() will actually query it.
+# A shop with "verified": False is skipped at run time with a log line --
+# this is the case for a fixture built from a guess (platform assumed, or
+# selectors invented) rather than a real saved response. Flip it to True
+# only after shop-adapter has confirmed real markup/JSON and replaced the
+# fixture with an actual saved response. Never flip it by hand without that.
 # ---------------------------------------------------------------------------
 SHOPS = [
+    # Worked examples (fixtures in tests/fixtures/) showing each adapter
+    # shape. Placeholder domains -- not real shops, not meant to run live.
     {
         "name": "example-shopify-shop",
         "platform": "shopify",
         "url": "https://example-shopify-shop.example.com",
+        "verified": False,
     },
     {
         "name": "example-woo-shop",
         "platform": "woocommerce",
         "url": "https://example-woo-shop.example.com",
+        "verified": False,
     },
     {
         "name": "example-html-shop",
@@ -61,6 +69,238 @@ SHOPS = [
         "item_selector": "div.product",
         "title_selector": "h2.product-title",
         "price_selector": "span.price",
+        "verified": False,
+    },
+
+    # --- Real shops, all UNVERIFIED placeholders -----------------------
+    # Added from web research, not a live fetch (this dev environment has
+    # no general internet egress). Platform/selectors below are guesses;
+    # each has a fixture in tests/fixtures/ documenting what's known vs.
+    # invented. shop-adapter must confirm each one against the real site
+    # before it's safe to flip "verified" to True.
+    {
+        "name": "leszinzinsduvin",
+        "platform": "html",
+        "url": "https://www.leszinzinsduvin.com",
+        "item_selector": "div.product",
+        "title_selector": "h2.product-title",
+        "price_selector": "span.price",
+        "verified": False,
+    },
+    {
+        "name": "winenot",
+        "platform": "html",
+        "url": "https://winenot.fr",
+        "item_selector": "div.product",
+        "title_selector": "h2.product-title",
+        "price_selector": "span.price",
+        "verified": False,
+    },
+    {
+        "name": "vinnouveau",
+        "platform": "html",
+        "url": "https://vinnouveau.fr",
+        "item_selector": "div.product",
+        "title_selector": "h2.product-title",
+        "price_selector": "span.price",
+        "verified": False,
+    },
+    {
+        # Platform guess is more confident here: indexed URLs follow
+        # Shopify conventions (/en/collections, /en/products/<handle>,
+        # /en/cart, /password). Still unverified -- see fixture notes.
+        "name": "levinnaturel",
+        "platform": "shopify",
+        "url": "https://levinnaturel.com",
+        "verified": False,
+    },
+    {
+        "name": "lespeauxdevins",
+        "platform": "html",
+        "url": "https://lespeauxdevins.com",
+        "item_selector": "div.product",
+        "title_selector": "h2.product-title",
+        "price_selector": "span.price",
+        "verified": False,
+    },
+    {
+        "name": "lacavedespapilles",
+        "platform": "html",
+        "url": "https://www.lacavedespapilles.com",
+        "item_selector": "div.product",
+        "title_selector": "h2.product-title",
+        "price_selector": "span.price",
+        "verified": False,
+    },
+    {
+        "name": "vinnaturel",
+        "platform": "html",
+        "url": "https://www.vinnaturel.fr",
+        "item_selector": "div.product",
+        "title_selector": "h2.product-title",
+        "price_selector": "span.price",
+        "verified": False,
+    },
+    {
+        "name": "whynat",
+        "platform": "html",
+        "url": "https://www.whynat.fr",
+        "item_selector": "div.product",
+        "title_selector": "h2.product-title",
+        "price_selector": "span.price",
+        "verified": False,
+    },
+    {
+        "name": "vinibee",
+        "platform": "html",
+        "url": "https://www.vinibee.com",
+        "item_selector": "div.product",
+        "title_selector": "h2.product-title",
+        "price_selector": "span.price",
+        "verified": False,
+    },
+    {
+        "name": "vinscheznous",
+        "platform": "html",
+        "url": "https://www.vinscheznous.com",
+        "item_selector": "div.product",
+        "title_selector": "h2.product-title",
+        "price_selector": "span.price",
+        "verified": False,
+    },
+    {
+        "name": "petitescaves",
+        "platform": "html",
+        "url": "https://www.petitescaves.com",
+        "item_selector": "div.product",
+        "title_selector": "h2.product-title",
+        "price_selector": "span.price",
+        "verified": False,
+    },
+    {
+        "name": "cavepurjus",
+        "platform": "html",
+        "url": "https://www.cavepurjus.com",
+        "item_selector": "div.product",
+        "title_selector": "h2.product-title",
+        "price_selector": "span.price",
+        "verified": False,
+    },
+    {
+        "name": "bbn",
+        "platform": "html",
+        "url": "https://biobiodynamienature.com",
+        "item_selector": "div.product",
+        "title_selector": "h2.product-title",
+        "price_selector": "span.price",
+        "verified": False,
+    },
+    {
+        "name": "purewijnen",
+        "platform": "html",
+        "url": "https://www.purewijnen.be",
+        "item_selector": "div.product",
+        "title_selector": "h2.product-title",
+        "price_selector": "span.price",
+        "verified": False,
+    },
+    {
+        "name": "amberbottleshop",
+        "platform": "html",
+        "url": "https://amberbottleshop.com",
+        "item_selector": "div.product",
+        "title_selector": "h2.product-title",
+        "price_selector": "span.price",
+        "verified": False,
+    },
+    {
+        "name": "naturavin",
+        "platform": "html",
+        "url": "https://www.naturavin.be",
+        "item_selector": "div.product",
+        "title_selector": "h2.product-title",
+        "price_selector": "span.price",
+        "verified": False,
+    },
+    {
+        "name": "vinnaturelbe",
+        "platform": "html",
+        "url": "https://vin-naturel.be",
+        "item_selector": "div.product",
+        "title_selector": "h2.product-title",
+        "price_selector": "span.price",
+        "verified": False,
+    },
+    {
+        "name": "vinovivo",
+        "platform": "html",
+        "url": "https://vinovivo.be",
+        "item_selector": "div.product",
+        "title_selector": "h2.product-title",
+        "price_selector": "span.price",
+        "verified": False,
+    },
+    {
+        "name": "vinifine",
+        "platform": "html",
+        "url": "https://www.vinifine.be",
+        "item_selector": "div.product",
+        "title_selector": "h2.product-title",
+        "price_selector": "span.price",
+        "verified": False,
+    },
+    {
+        "name": "zuiverwijnen",
+        "platform": "html",
+        "url": "https://zuiverwijnen.nl",
+        "item_selector": "div.product",
+        "title_selector": "h2.product-title",
+        "price_selector": "span.price",
+        "verified": False,
+    },
+    {
+        # Platform guess based on the site's Dutch WooCommerce-default URL
+        # slug ("/product-categorie/"). Weak evidence, still unverified.
+        "name": "vinopura",
+        "platform": "woocommerce",
+        "url": "https://vinopura.nl",
+        "verified": False,
+    },
+    {
+        "name": "volatilewines",
+        "platform": "html",
+        "url": "https://volatilewines.com",
+        "item_selector": "div.product",
+        "title_selector": "h2.product-title",
+        "price_selector": "span.price",
+        "verified": False,
+    },
+    {
+        "name": "biowijnclub",
+        "platform": "html",
+        "url": "https://www.biowijnclub.nl",
+        "item_selector": "div.product",
+        "title_selector": "h2.product-title",
+        "price_selector": "span.price",
+        "verified": False,
+    },
+    {
+        "name": "puurwijnshop",
+        "platform": "html",
+        "url": "https://www.puurwijn.shop",
+        "item_selector": "div.product",
+        "title_selector": "h2.product-title",
+        "price_selector": "span.price",
+        "verified": False,
+    },
+    {
+        "name": "purovino",
+        "platform": "html",
+        "url": "https://www.purovino.be",
+        "item_selector": "div.product",
+        "title_selector": "h2.product-title",
+        "price_selector": "span.price",
+        "verified": False,
     },
 ]
 
@@ -219,7 +459,12 @@ def send_email(body):
 def main():
     all_hits = []
     error_count = 0
+    skipped_count = 0
     for shop in SHOPS:
+        if not shop.get("verified", True):
+            skipped_count += 1
+            print(f"[{shop['name']}] skipped: unverified placeholder, needs shop-adapter confirmation")
+            continue
         try:
             hits = check_shop(shop)
             all_hits.extend(hits)
@@ -238,6 +483,8 @@ def main():
         print("No producer matches this run.")
         if error_count:
             print(f"{error_count} shop(s) had errors this run.")
+        if skipped_count:
+            print(f"{skipped_count} shop(s) skipped as unverified placeholders.")
         return
 
     body = build_email_body(all_hits)

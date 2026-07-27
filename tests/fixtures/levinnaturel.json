@@ -1,0 +1,19 @@
+{
+  "_note": "UNVERIFIED fixture for Le Vin Naturel (https://levinnaturel.com). Not a live fetch -- this environment has no general internet egress. Platform=shopify is fairly confident (the site's indexed URLs follow Shopify conventions: /en/collections, /en/products/<handle>, /en/cart, /password). Product/collection names below (Domaine Labet, the Pif 2022 handle) are real, drawn from publicly indexed search snippets of the live site -- but the surrounding JSON fields (vendor, body_html, price) are invented placeholders, not observed values. Confirm via shop-adapter against a real GET https://levinnaturel.com/products.json before setting verified=True.",
+  "products": [
+    {
+      "title": "Domaine Amelie Vuillet et Sebastien Jacques 'Pif' 2022 Rouge",
+      "vendor": "Domaine Amelie Vuillet et Sebastien Jacques",
+      "handle": "domaine-amelie-vuillet-et-sebastien-jacques-pif-2022-rouge",
+      "body_html": "<p>Natural wine from Jura, part of the Le Vin Naturel catalog.</p>",
+      "variants": [{"price": "0.00"}]
+    },
+    {
+      "title": "Domaine Labet Cotes du Jura (placeholder -- real product name unconfirmed)",
+      "vendor": "Domaine Labet",
+      "handle": "domaine-labet-placeholder",
+      "body_html": "<p>Placeholder entry: the site's 'Domaine Labet' collection page is confirmed to exist (https://levinnaturel.com/fr-fr/collections/domaine-labet), but this specific product title/price was not observed and is invented for fixture purposes.</p>",
+      "variants": [{"price": "0.00"}]
+    }
+  ]
+}

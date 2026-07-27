@@ -1,15 +1,2052 @@
 {
-  "_note": "PLACEHOLDER fixture. Platform (shopify) is CONFIRMED -- probe run 30255245592 fetched and parsed this shop's real shopify endpoint. The product data below is NOT real; the actual response body is in that run's probe-results artifact and should replace this file before the shop is set verified:true.",
+  "_fixture_note": "Real response from this shop, trimmed for the repo: 25 of 250 products, keeping every tracked-producer match (0) plus a sample. Captured by probe.py --apply.",
   "products": [
     {
-      "title": "PLACEHOLDER PRODUCT -- replace with a real listing",
-      "vendor": "Placeholder",
-      "handle": "placeholder",
-      "body_html": "<p>Placeholder.</p>",
+      "id": 9858450915675,
+      "title": "Topitopo, 2023 - Manuel Pineau",
+      "handle": "vin-orange-naturel-topitopo-2023-manuel-pineau-vin-de-france-vallee-du-rhone",
+      "body_html": "",
+      "published_at": "2026-05-08T15:05:08+02:00",
+      "created_at": "2025-04-16T13:56:49+02:00",
+      "updated_at": "2026-07-27T16:14:15+02:00",
+      "vendor": "Whynat.fr",
+      "product_type": "vin",
+      "tags": [
+        "2 - 5 ans",
+        "2023",
+        "75 cl",
+        "Entre 15 et 25 \u20ac",
+        "Epic\u00e9",
+        "Floral",
+        "France",
+        "manuel-pineau",
+        "Orange",
+        "Sans sulfites ajout\u00e9s",
+        "Vall\u00e9e du Rh\u00f4ne",
+        "vin",
+        "Vin droit",
+        "Vin tranquille",
+        "Vins pour toutes les tables"
+      ],
       "variants": [
         {
-          "price": "0.00",
-          "title": "Default"
+          "id": 50440623128923,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "22.00",
+          "grams": 1250,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 9858450915675,
+          "created_at": "2025-04-16T13:56:49+02:00",
+          "updated_at": "2026-07-27T16:14:15+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 61076359151963,
+          "created_at": "2025-04-16T14:34:31+02:00",
+          "position": 1,
+          "updated_at": "2025-04-16T14:34:33+02:00",
+          "product_id": 9858450915675,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/vin-nature-orange-topitopo-manuel-pineau-2023.jpg?v=1744806873",
+          "width": 1080,
+          "height": 1620
+        },
+        {
+          "id": 61076360233307,
+          "created_at": "2025-04-16T14:34:40+02:00",
+          "position": 2,
+          "updated_at": "2025-04-16T14:34:42+02:00",
+          "product_id": 9858450915675,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/etiquette-vin-nature-orange-topitopo-manuel-pineau-2023.jpg?v=1744806882",
+          "width": 1080,
+          "height": 1730
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 9858450850139,
+      "title": "Les Gafarots, 2023 - Manuel Pineau",
+      "handle": "vin-blanc-naturel-les-gafarots-2023-manuel-pineau-vin-de-france-vallee-du-rhone",
+      "body_html": "",
+      "published_at": "2026-05-08T15:05:08+02:00",
+      "created_at": "2025-04-16T13:56:47+02:00",
+      "updated_at": "2026-07-27T16:14:15+02:00",
+      "vendor": "Whynat.fr",
+      "product_type": "vin",
+      "tags": [
+        "2 - 5 ans",
+        "2023",
+        "75 cl",
+        "Blanc",
+        "Entre 15 et 25 \u20ac",
+        "Floral",
+        "Frais et l\u00e9ger",
+        "France",
+        "manuel-pineau",
+        "Sans sulfites ajout\u00e9s",
+        "Sec",
+        "Vall\u00e9e du Rh\u00f4ne",
+        "vin",
+        "Vin d'\u00e9t\u00e9",
+        "Vin droit",
+        "Vin tranquille",
+        "Vins pour toutes les tables"
+      ],
+      "variants": [
+        {
+          "id": 50440623063387,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "20.00",
+          "grams": 1250,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 9858450850139,
+          "created_at": "2025-04-16T13:56:47+02:00",
+          "updated_at": "2026-07-27T16:14:15+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 61079424958811,
+          "created_at": "2025-04-16T16:27:33+02:00",
+          "position": 1,
+          "updated_at": "2025-04-16T16:27:42+02:00",
+          "product_id": 9858450850139,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/vin-nature-blanc-les-gafarots-manuel-pineau-2022.jpg?v=1744813662",
+          "width": 1080,
+          "height": 1620
+        },
+        {
+          "id": 61079424827739,
+          "created_at": "2025-04-16T16:27:33+02:00",
+          "position": 2,
+          "updated_at": "2025-04-16T16:27:42+02:00",
+          "product_id": 9858450850139,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/etiquette-vin-nature-blanc-les-gafarots-manuel-pineau-2022_cf8a96e5-3494-4a51-aba3-d4add8466e14.jpg?v=1744813662",
+          "width": 1080,
+          "height": 1620
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 7933072146665,
+      "title": "Pause Canon Rouge, 2021 - Le Raisin et l'Ange",
+      "handle": "vin-rouge-naturel-pause-canon-rouge-2021-le-raisin-et-l-ange-vin-de-france-rhone",
+      "body_html": "",
+      "published_at": "2025-07-29T08:52:41+02:00",
+      "created_at": "2022-10-13T15:29:31+02:00",
+      "updated_at": "2026-07-27T16:14:15+02:00",
+      "vendor": "Whynat.fr",
+      "product_type": "vin",
+      "tags": [
+        "2 - 5 ans",
+        "2021",
+        "75 cl",
+        "Autres c\u00e9pages",
+        "Frais et l\u00e9ger",
+        "France",
+        "Fruit\u00e9",
+        "Gamay",
+        "Glouglou",
+        "grapeVarietiesTag",
+        "le-raisin-et-l-ange",
+        "Moins de 15 \u20ac",
+        "M\u00e9thode Nature",
+        "Rh\u00f4ne",
+        "Rouge",
+        "Sans sulfites ajout\u00e9s",
+        "Vall\u00e9e du Rh\u00f4ne",
+        "vin",
+        "Vin d'\u00e9t\u00e9",
+        "Vin tranquille",
+        "Vins qui osent tout"
+      ],
+      "variants": [
+        {
+          "id": 43822720876777,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "12.10",
+          "grams": 1250,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 7933072146665,
+          "created_at": "2022-10-13T15:29:32+02:00",
+          "updated_at": "2026-07-27T16:14:15+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 39160476139753,
+          "created_at": "2022-10-15T15:26:38+02:00",
+          "position": 1,
+          "updated_at": "2022-10-15T15:26:40+02:00",
+          "product_id": 7933072146665,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/products/rouge-pause-canon-le-raisin-et-l-ange-vin-naturel-whynat.jpg?v=1665840400",
+          "width": 720,
+          "height": 1080
+        },
+        {
+          "id": 39160476369129,
+          "created_at": "2022-10-15T15:26:43+02:00",
+          "position": 2,
+          "updated_at": "2022-10-15T15:26:44+02:00",
+          "product_id": 7933072146665,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/products/etiquette-rouge-pause-canon-le-raisin-et-l-ange-vin-naturel-whynat.jpg?v=1665840404",
+          "width": 719,
+          "height": 1079
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10008548049243,
+      "title": "Optik, 2024 - Terres du Gaugalin",
+      "handle": "vin-orange-naturel-optik-2024-terres-du-gaugalin-vin-de-france-rhone",
+      "body_html": "",
+      "published_at": "2025-07-21T09:40:30+02:00",
+      "created_at": "2025-07-16T22:32:08+02:00",
+      "updated_at": "2026-07-27T16:14:15+02:00",
+      "vendor": "Whynat.fr",
+      "product_type": "vin",
+      "tags": [
+        "2024",
+        "5 - 8 ans",
+        "75 cl",
+        "Entre 15 et 25 \u20ac",
+        "Epic\u00e9",
+        "France",
+        "Orange",
+        "Rh\u00f4ne",
+        "Sans sulfites ajout\u00e9s",
+        "terres-du-gaugalin",
+        "vin",
+        "Vin tranquille",
+        "Vins qui osent tout"
+      ],
+      "variants": [
+        {
+          "id": 50993344282971,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "25.00",
+          "grams": 1250,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 10008548049243,
+          "created_at": "2025-07-16T22:32:08+02:00",
+          "updated_at": "2026-07-27T16:14:15+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 64305863524699,
+          "created_at": "2025-07-20T20:32:40+02:00",
+          "position": 1,
+          "updated_at": "2025-07-20T20:36:05+02:00",
+          "product_id": 10008548049243,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/vin-nature-orange-optik-2024-les-raisins-suspendus-whynat.jpg?v=1753036565",
+          "width": 1079,
+          "height": 1620
+        },
+        {
+          "id": 64305863459163,
+          "created_at": "2025-07-20T20:32:40+02:00",
+          "position": 2,
+          "updated_at": "2025-07-20T20:36:05+02:00",
+          "product_id": 10008548049243,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/etiquette-vin-nature-orange-optik-2024-les-raisins-suspendus-whynat.jpg?v=1753036565",
+          "width": 1079,
+          "height": 1620
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10008547950939,
+      "title": "l'Ubac, 2024 - Les raisins suspendus",
+      "handle": "vin-blanc-naturel-l-ubac-2024-les-raisins-suspendus-vin-de-france-savoie",
+      "body_html": "",
+      "published_at": "2025-07-21T09:40:29+02:00",
+      "created_at": "2025-07-16T22:32:06+02:00",
+      "updated_at": "2026-07-27T16:14:15+02:00",
+      "vendor": "Whynat.fr",
+      "product_type": "vin",
+      "tags": [
+        "2024",
+        "5 - 8 ans",
+        "75 cl",
+        "Blanc",
+        "Frais et l\u00e9ger",
+        "France",
+        "les-raisins-suspendus",
+        "Plus de 25 \u20ac",
+        "Sans sulfites ajout\u00e9s",
+        "Savoie",
+        "vin",
+        "Vin tranquille",
+        "Vins qui osent tout"
+      ],
+      "variants": [
+        {
+          "id": 50993344217435,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "27.00",
+          "grams": 1250,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 10008547950939,
+          "created_at": "2025-07-16T22:32:06+02:00",
+          "updated_at": "2026-07-27T16:14:15+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 64305871421787,
+          "created_at": "2025-07-20T20:32:58+02:00",
+          "position": 1,
+          "updated_at": "2025-07-20T20:35:55+02:00",
+          "product_id": 10008547950939,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/vin-nature-blanc-ubac-2024-les-raisins-suspendus-whynat.jpg?v=1753036555",
+          "width": 1079,
+          "height": 1620
+        },
+        {
+          "id": 64305871618395,
+          "created_at": "2025-07-20T20:32:58+02:00",
+          "position": 2,
+          "updated_at": "2025-07-20T20:35:55+02:00",
+          "product_id": 10008547950939,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/etiquette-vin-nature-blanc-ubac-2024-les-raisins-suspendus-whynat.jpg?v=1753036555",
+          "width": 1079,
+          "height": 1620
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10008547918171,
+      "title": "Les d\u00e9ferlantes, 2023 - Terres du Gaugalin",
+      "handle": "vin-rouge-naturel-les-deferlantes-2023-terres-du-gaugalin-vin-de-france-vallee-du-rhone",
+      "body_html": "",
+      "published_at": "2025-07-21T09:40:28+02:00",
+      "created_at": "2025-07-16T22:32:03+02:00",
+      "updated_at": "2026-07-27T16:14:15+02:00",
+      "vendor": "Whynat.fr",
+      "product_type": "vin",
+      "tags": [
+        "2 - 5 ans",
+        "2023",
+        "75 cl",
+        "Entre 15 et 25 \u20ac",
+        "France",
+        "Fruit\u00e9",
+        "Rouge",
+        "Sans sulfites ajout\u00e9s",
+        "terres-du-gaugalin",
+        "Vall\u00e9e du Rh\u00f4ne",
+        "vin",
+        "Vin tranquille",
+        "Vins qui rassemblent"
+      ],
+      "variants": [
+        {
+          "id": 50993344184667,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "16.00",
+          "grams": 1250,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 10008547918171,
+          "created_at": "2025-07-16T22:32:03+02:00",
+          "updated_at": "2026-07-27T16:14:15+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 64305874436443,
+          "created_at": "2025-07-20T20:33:07+02:00",
+          "position": 1,
+          "updated_at": "2025-07-20T20:35:43+02:00",
+          "product_id": 10008547918171,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/vin-nature-rouge-les-deferlantes-2023-terres-du-gaugalin-whynat.jpg?v=1753036543",
+          "width": 1079,
+          "height": 1620
+        },
+        {
+          "id": 64305874731355,
+          "created_at": "2025-07-20T20:33:07+02:00",
+          "position": 2,
+          "updated_at": "2025-07-20T20:35:43+02:00",
+          "product_id": 10008547918171,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/etiquette-vin-nature-rouge-les-deferlantes-2023-terres-du-gaugalin-whynat.jpg?v=1753036543",
+          "width": 1079,
+          "height": 1620
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10008547852635,
+      "title": "La Grande Rando, 2022 - Terres du Gaugalin",
+      "handle": "vin-rouge-naturel-la-grande-rando-2022-terres-du-gaugalin-vin-de-france-vallee-du-rhone",
+      "body_html": "",
+      "published_at": "2025-07-21T09:40:28+02:00",
+      "created_at": "2025-07-16T22:32:01+02:00",
+      "updated_at": "2026-07-27T16:14:15+02:00",
+      "vendor": "Whynat.fr",
+      "product_type": "vin",
+      "tags": [
+        "2022",
+        "5 - 8 ans",
+        "75 cl",
+        "Entre 15 et 25 \u20ac",
+        "France",
+        "Fruit\u00e9",
+        "Puissant et intense",
+        "Rouge",
+        "Sans sulfites ajout\u00e9s",
+        "terres-du-gaugalin",
+        "Vall\u00e9e du Rh\u00f4ne",
+        "vin",
+        "Vin tranquille",
+        "Vins pour toutes les tables"
+      ],
+      "variants": [
+        {
+          "id": 50993344086363,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "20.00",
+          "grams": 1250,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 10008547852635,
+          "created_at": "2025-07-16T22:32:01+02:00",
+          "updated_at": "2026-07-27T16:14:15+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 64305878335835,
+          "created_at": "2025-07-20T20:33:16+02:00",
+          "position": 1,
+          "updated_at": "2025-07-20T20:35:35+02:00",
+          "product_id": 10008547852635,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/vin-nature-rouge-la-grande-rando-2022-terres-du-gaugalin-whynat.jpg?v=1753036535",
+          "width": 1079,
+          "height": 1620
+        },
+        {
+          "id": 64305878761819,
+          "created_at": "2025-07-20T20:33:16+02:00",
+          "position": 2,
+          "updated_at": "2025-07-20T20:35:35+02:00",
+          "product_id": 10008547852635,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/etiquette-vin-nature-rouge-la-grande-rando-2022-terres-du-gaugalin-whynat.jpg?v=1753036535",
+          "width": 1079,
+          "height": 1620
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10008547819867,
+      "title": "Embruns des cimes, 2023 - Les raisins suspendus",
+      "handle": "vin-rouge-naturel-embruns-des-cimes-2023-les-raisins-suspendus-vin-de-france-savoie",
+      "body_html": "",
+      "published_at": "2025-07-21T09:40:27+02:00",
+      "created_at": "2025-07-16T22:31:58+02:00",
+      "updated_at": "2026-07-27T16:14:15+02:00",
+      "vendor": "Whynat.fr",
+      "product_type": "vin",
+      "tags": [
+        "2 - 5 ans",
+        "2023",
+        "75 cl",
+        "Entre 15 et 25 \u20ac",
+        "Frais et l\u00e9ger",
+        "France",
+        "Fruit\u00e9",
+        "les-raisins-suspendus",
+        "Rouge",
+        "Sans sulfites ajout\u00e9s",
+        "Savoie",
+        "vin",
+        "Vin tranquille",
+        "Vins qui rassemblent"
+      ],
+      "variants": [
+        {
+          "id": 50993344053595,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "25.00",
+          "grams": 1250,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 10008547819867,
+          "created_at": "2025-07-16T22:31:58+02:00",
+          "updated_at": "2026-07-27T16:14:15+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 64305882497371,
+          "created_at": "2025-07-20T20:33:24+02:00",
+          "position": 1,
+          "updated_at": "2025-07-20T20:34:45+02:00",
+          "product_id": 10008547819867,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/vin-nature-rouge-embruns-des-cimes-2023-les-raisins-suspendus-whynat.jpg?v=1753036485",
+          "width": 1079,
+          "height": 1620
+        },
+        {
+          "id": 64305882005851,
+          "created_at": "2025-07-20T20:33:24+02:00",
+          "position": 2,
+          "updated_at": "2025-07-20T20:34:45+02:00",
+          "product_id": 10008547819867,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/etiquette-vin-nature-rouge-embruns-des-cimes-2023-les-raisins-suspendus-whynat.jpg?v=1753036485",
+          "width": 1079,
+          "height": 1620
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10008547787099,
+      "title": "Clair Obscur Blanc, 2023 - Terres du Gaugalin",
+      "handle": "vin-blanc-naturel-clair-obscur-blanc-2023-terres-du-gaugalin-vin-de-france-rhone",
+      "body_html": "",
+      "published_at": "2025-07-21T09:40:26+02:00",
+      "created_at": "2025-07-16T22:31:56+02:00",
+      "updated_at": "2026-07-27T16:14:15+02:00",
+      "vendor": "Whynat.fr",
+      "product_type": "vin",
+      "tags": [
+        "1 - 2 ans",
+        "2023",
+        "75 cl",
+        "Blanc",
+        "Entre 15 et 25 \u20ac",
+        "France",
+        "Fruit\u00e9",
+        "Pet'Nat",
+        "Rh\u00f4ne",
+        "Sans sulfites ajout\u00e9s",
+        "terres-du-gaugalin",
+        "vin",
+        "Vins qui rassemblent"
+      ],
+      "variants": [
+        {
+          "id": 50993344020827,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "24.00",
+          "grams": 1250,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 10008547787099,
+          "created_at": "2025-07-16T22:31:56+02:00",
+          "updated_at": "2026-07-27T16:14:15+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 64305885086043,
+          "created_at": "2025-07-20T20:33:33+02:00",
+          "position": 1,
+          "updated_at": "2025-07-20T20:34:51+02:00",
+          "product_id": 10008547787099,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/petnat-blanc-clair-obscur-2023-terres-du-gaugalin-whynat.jpg?v=1753036491",
+          "width": 1079,
+          "height": 1620
+        },
+        {
+          "id": 64305884823899,
+          "created_at": "2025-07-20T20:33:33+02:00",
+          "position": 2,
+          "updated_at": "2025-07-20T20:34:51+02:00",
+          "product_id": 10008547787099,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/etiquette-petnat-blanc-clair-obscur-2023-terres-du-gaugalin-whynat.jpg?v=1753036491",
+          "width": 1079,
+          "height": 1620
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10008547721563,
+      "title": "Clair Obscur Rouge, 2023 - Terres du Gaugalin",
+      "handle": "vin-rouge-naturel-clair-obscur-rouge-2023-terres-du-gaugalin-vin-de-france-rhone",
+      "body_html": "",
+      "published_at": "2025-07-21T09:40:25+02:00",
+      "created_at": "2025-07-16T22:31:53+02:00",
+      "updated_at": "2026-07-27T16:14:15+02:00",
+      "vendor": "Whynat.fr",
+      "product_type": "vin",
+      "tags": [
+        "1 - 2 ans",
+        "2023",
+        "75 cl",
+        "Entre 15 et 25 \u20ac",
+        "France",
+        "Fruit\u00e9",
+        "Pet'Nat",
+        "Rh\u00f4ne",
+        "Rouge",
+        "Sans sulfites ajout\u00e9s",
+        "terres-du-gaugalin",
+        "vin",
+        "Vins qui rassemblent"
+      ],
+      "variants": [
+        {
+          "id": 50993343955291,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "20.00",
+          "grams": 1250,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 10008547721563,
+          "created_at": "2025-07-16T22:31:54+02:00",
+          "updated_at": "2026-07-27T16:14:15+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 64306003870043,
+          "created_at": "2025-07-20T20:37:31+02:00",
+          "position": 1,
+          "updated_at": "2025-07-20T20:37:33+02:00",
+          "product_id": 10008547721563,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/vin-nature-rouge-clair-obscur-terres-du-gaugalin-2022-rhone.jpg?v=1753036653",
+          "width": 720,
+          "height": 1080
+        },
+        {
+          "id": 64306006065499,
+          "created_at": "2025-07-20T20:37:35+02:00",
+          "position": 2,
+          "updated_at": "2025-07-20T20:37:38+02:00",
+          "product_id": 10008547721563,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/etiquette-vin-nature-rouge-clair-obscur-terres-du-gaugalin-2022-rhone.jpg?v=1753036658",
+          "width": 720,
+          "height": 1080
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 9914628866395,
+      "title": "Les Astres Invisibles, 2022 - Vin des Fables",
+      "handle": "vin-rouge-naturel-les-astres-invisibles-2022-domaine-des-fables-vin-de-france-savoie",
+      "body_html": "",
+      "published_at": "2025-05-26T22:22:11+02:00",
+      "created_at": "2025-05-22T11:17:22+02:00",
+      "updated_at": "2026-07-27T16:14:15+02:00",
+      "vendor": "Whynat.fr",
+      "product_type": "vin",
+      "tags": [
+        "2022",
+        "75 cl",
+        "8 ans et plus",
+        "domaine-des-fables",
+        "Frais et l\u00e9ger",
+        "France",
+        "Fruit\u00e9",
+        "Plus de 25 \u20ac",
+        "Rouge",
+        "Sans sulfites ajout\u00e9s",
+        "Savoie",
+        "vin",
+        "Vin tranquille",
+        "Vins qui rassemblent"
+      ],
+      "variants": [
+        {
+          "id": 50621695492443,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "26.00",
+          "grams": 1250,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 9914628866395,
+          "created_at": "2025-05-22T11:17:22+02:00",
+          "updated_at": "2026-07-27T16:14:15+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 62178923315547,
+          "created_at": "2025-05-26T22:20:34+02:00",
+          "position": 1,
+          "updated_at": "2025-05-26T22:21:23+02:00",
+          "product_id": 9914628866395,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/vin-nature-rouge-les-astres-invisibles-2022-domaine-des-fables-whynat.jpg?v=1748290883",
+          "width": 1079,
+          "height": 1620
+        },
+        {
+          "id": 62178923282779,
+          "created_at": "2025-05-26T22:20:34+02:00",
+          "position": 2,
+          "updated_at": "2025-05-26T22:21:23+02:00",
+          "product_id": 9914628866395,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/etiquette-vin-nature-rouge-les-astres-invisibles-2022-domaine-des-fables-whynat.jpg?v=1748290883",
+          "width": 1079,
+          "height": 1620
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 9914628800859,
+      "title": "Les Chroniques de Gargantua, 2022 - Vin des Fables",
+      "handle": "vin-rouge-naturel-les-chroniques-de-gargantua-2022-vin-des-fables-vin-de-france-savoie",
+      "body_html": "",
+      "published_at": "2025-05-26T22:22:10+02:00",
+      "created_at": "2025-05-22T11:17:19+02:00",
+      "updated_at": "2026-07-27T16:14:15+02:00",
+      "vendor": "Whynat.fr",
+      "product_type": "vin",
+      "tags": [
+        "10 - 30 mg/L",
+        "2022",
+        "5 - 8 ans",
+        "75 cl",
+        "domaine-des-fables",
+        "Entre 15 et 25 \u20ac",
+        "Frais et l\u00e9ger",
+        "France",
+        "Fruit\u00e9",
+        "Rouge",
+        "Savoie",
+        "vin",
+        "Vin tranquille",
+        "Vins pour toutes les tables"
+      ],
+      "variants": [
+        {
+          "id": 50621695426907,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "25.00",
+          "grams": 1250,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 9914628800859,
+          "created_at": "2025-05-22T11:17:19+02:00",
+          "updated_at": "2026-07-27T16:14:15+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 62178931442011,
+          "created_at": "2025-05-26T22:20:49+02:00",
+          "position": 1,
+          "updated_at": "2025-05-26T22:21:26+02:00",
+          "product_id": 9914628800859,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/vin-nature-rouge-les-chroniques-de-gargantua-2022-domaine-des-fables-whynat.jpg?v=1748290886",
+          "width": 1079,
+          "height": 1620
+        },
+        {
+          "id": 62178932228443,
+          "created_at": "2025-05-26T22:20:49+02:00",
+          "position": 2,
+          "updated_at": "2025-05-26T22:21:26+02:00",
+          "product_id": 9914628800859,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/etiquette-vin-nature-rouge-les-chroniques-de-gargantua-2022-domaine-des-fables-whynat.jpg?v=1748290886",
+          "width": 1079,
+          "height": 1620
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 9914628702555,
+      "title": "Gamabumba, 2022 - Vin des Fables",
+      "handle": "vin-rouge-naturel-gamabumba-2022-vin-des-fables-vin-de-france-savoie",
+      "body_html": "",
+      "published_at": "2025-05-26T22:22:09+02:00",
+      "created_at": "2025-05-22T11:17:16+02:00",
+      "updated_at": "2026-07-27T16:14:15+02:00",
+      "vendor": "Whynat.fr",
+      "product_type": "vin",
+      "tags": [
+        "2022",
+        "5 - 8 ans",
+        "75 cl",
+        "domaine-des-fables",
+        "Entre 15 et 25 \u20ac",
+        "Frais et l\u00e9ger",
+        "France",
+        "Fruit\u00e9",
+        "Rouge",
+        "Sans sulfites ajout\u00e9s",
+        "Savoie",
+        "vin",
+        "Vin tranquille",
+        "Vins pour toutes les tables"
+      ],
+      "variants": [
+        {
+          "id": 50621695361371,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "20.00",
+          "grams": 1250,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 9914628702555,
+          "created_at": "2025-05-22T11:17:17+02:00",
+          "updated_at": "2026-07-27T16:14:15+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 62178937536859,
+          "created_at": "2025-05-26T22:21:02+02:00",
+          "position": 1,
+          "updated_at": "2025-05-26T22:21:29+02:00",
+          "product_id": 9914628702555,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/vin-nature-rouge-gama-bumba-2022-domaine-des-fables-whynat.jpg?v=1748290889",
+          "width": 1079,
+          "height": 1620
+        },
+        {
+          "id": 62178937176411,
+          "created_at": "2025-05-26T22:21:02+02:00",
+          "position": 2,
+          "updated_at": "2025-05-26T22:21:29+02:00",
+          "product_id": 9914628702555,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/etiquette-vin-nature-rouge-gama-bumba-2022-domaine-des-fables-whynat.jpg?v=1748290889",
+          "width": 1080,
+          "height": 1620
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 9914628604251,
+      "title": "Chatawak, 2022 - Vin des Fables",
+      "handle": "vin-rouge-naturel-chatawak-2022-vin-des-fables-vin-de-france-savoie",
+      "body_html": "",
+      "published_at": "2025-05-26T22:22:08+02:00",
+      "created_at": "2025-05-22T11:17:14+02:00",
+      "updated_at": "2026-07-27T16:14:15+02:00",
+      "vendor": "Whynat.fr",
+      "product_type": "vin",
+      "tags": [
+        "2 - 5 ans",
+        "2022",
+        "75 cl",
+        "domaine-des-fables",
+        "Entre 15 et 25 \u20ac",
+        "Frais et l\u00e9ger",
+        "France",
+        "Fruit\u00e9",
+        "Rouge",
+        "Sans sulfites ajout\u00e9s",
+        "Savoie",
+        "vin",
+        "Vin d'\u00e9t\u00e9",
+        "Vin tranquille",
+        "Vins qui rassemblent"
+      ],
+      "variants": [
+        {
+          "id": 50621695230299,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "20.00",
+          "grams": 1250,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 9914628604251,
+          "created_at": "2025-05-22T11:17:14+02:00",
+          "updated_at": "2026-07-27T16:14:15+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 62178954772827,
+          "created_at": "2025-05-26T22:21:22+02:00",
+          "position": 1,
+          "updated_at": "2025-05-26T22:21:32+02:00",
+          "product_id": 9914628604251,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/vin-nature-rouge-chatawak-2022-domaine-des-fables-whynat.jpg?v=1748290892",
+          "width": 1079,
+          "height": 1620
+        },
+        {
+          "id": 62178955002203,
+          "created_at": "2025-05-26T22:21:22+02:00",
+          "position": 2,
+          "updated_at": "2025-05-26T22:21:32+02:00",
+          "product_id": 9914628604251,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/etiquette-vin-nature-rouge-chatawak-2022-domaine-des-fables-whynat.jpg?v=1748290892",
+          "width": 1079,
+          "height": 1620
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 9906531139931,
+      "title": "Nimue, 2023 - Nicolas Suteau",
+      "handle": "vin-rouge-naturel-nimue-2023-nicolas-suteau-vin-de-france-loire",
+      "body_html": "",
+      "published_at": "2025-05-19T12:02:23+02:00",
+      "created_at": "2025-05-19T09:33:02+02:00",
+      "updated_at": "2026-07-27T16:14:15+02:00",
+      "vendor": "Whynat.fr",
+      "product_type": "vin",
+      "tags": [
+        "2023",
+        "5 - 8 ans",
+        "75 cl",
+        "Agriculture biologique",
+        "Entre 15 et 25 \u20ac",
+        "Frais et l\u00e9ger",
+        "France",
+        "Fruit\u00e9",
+        "Loire",
+        "M\u00e9thode Nature",
+        "nicolas-suteau",
+        "Rouge",
+        "Sans sulfites ajout\u00e9s",
+        "vin",
+        "Vin tranquille",
+        "Vins pour toutes les tables"
+      ],
+      "variants": [
+        {
+          "id": 50599436943707,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "15.00",
+          "grams": 1250,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 9906531139931,
+          "created_at": "2025-05-19T09:33:02+02:00",
+          "updated_at": "2026-07-27T16:14:15+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 61838469464411,
+          "created_at": "2025-05-19T11:59:57+02:00",
+          "position": 1,
+          "updated_at": "2025-05-19T11:59:59+02:00",
+          "product_id": 9906531139931,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/vin-nature-rouge-nimue-nicolas-suteau-whynat.jpg?v=1747648799",
+          "width": 1079,
+          "height": 1620
+        },
+        {
+          "id": 61838469824859,
+          "created_at": "2025-05-19T12:00:05+02:00",
+          "position": 2,
+          "updated_at": "2025-05-19T12:00:07+02:00",
+          "product_id": 9906531139931,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/etiquette-vin-nature-rouge-nimue-nicolas-suteau-whynat.jpg?v=1747648807",
+          "width": 1079,
+          "height": 1620
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 9906531107163,
+      "title": "Bohort, 2023 - Nicolas Suteau",
+      "handle": "vin-blanc-naturel-bohort-2023-nicolas-suteau-vin-de-france-loire",
+      "body_html": "",
+      "published_at": "2025-05-19T12:02:22+02:00",
+      "created_at": "2025-05-19T09:32:59+02:00",
+      "updated_at": "2026-07-27T16:14:15+02:00",
+      "vendor": "Whynat.fr",
+      "product_type": "vin",
+      "tags": [
+        "2023",
+        "5 - 8 ans",
+        "75 cl",
+        "Agriculture biologique",
+        "Blanc",
+        "France",
+        "Loire",
+        "Min\u00e9ral et tonic",
+        "Moins de 15 \u20ac",
+        "M\u00e9thode Nature",
+        "nicolas-suteau",
+        "Sans sulfites ajout\u00e9s",
+        "Sec",
+        "vin",
+        "Vin tranquille",
+        "Vins pour toutes les tables"
+      ],
+      "variants": [
+        {
+          "id": 50599436878171,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "14.00",
+          "grams": 1250,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 9906531107163,
+          "created_at": "2025-05-19T09:33:00+02:00",
+          "updated_at": "2026-07-27T16:14:15+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 61838471561563,
+          "created_at": "2025-05-19T12:00:26+02:00",
+          "position": 1,
+          "updated_at": "2025-05-19T12:01:22+02:00",
+          "product_id": 9906531107163,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/vin-nature-blanc-bohort-nicolas-suteau-whynat.jpg?v=1747648882",
+          "width": 1079,
+          "height": 1620
+        },
+        {
+          "id": 61838471594331,
+          "created_at": "2025-05-19T12:00:26+02:00",
+          "position": 2,
+          "updated_at": "2025-05-19T12:01:22+02:00",
+          "product_id": 9906531107163,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/etiquette-vin-nature-blanc-bohort-nicolas-suteau-whynat.jpg?v=1747648882",
+          "width": 1079,
+          "height": 1620
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 9906531041627,
+      "title": "Arzur, 2023 - Nicolas Suteau",
+      "handle": "vin-blanc-naturel-arzur-2023-nicolas-suteau-vin-de-france-loire",
+      "body_html": "",
+      "published_at": "2025-05-19T12:02:21+02:00",
+      "created_at": "2025-05-19T09:32:57+02:00",
+      "updated_at": "2026-07-27T16:14:15+02:00",
+      "vendor": "Whynat.fr",
+      "product_type": "vin",
+      "tags": [
+        "2023",
+        "5 - 8 ans",
+        "75 cl",
+        "Agriculture biologique",
+        "Blanc",
+        "France",
+        "Loire",
+        "Min\u00e9ral et tonic",
+        "Moins de 15 \u20ac",
+        "M\u00e9thode Nature",
+        "nicolas-suteau",
+        "Sans sulfites ajout\u00e9s",
+        "Sec",
+        "vin",
+        "Vin tranquille",
+        "Vins pour toutes les tables"
+      ],
+      "variants": [
+        {
+          "id": 50599436779867,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "14.00",
+          "grams": 1250,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 9906531041627,
+          "created_at": "2025-05-19T09:32:57+02:00",
+          "updated_at": "2026-07-27T16:14:15+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 61838474772827,
+          "created_at": "2025-05-19T12:00:43+02:00",
+          "position": 1,
+          "updated_at": "2025-05-19T12:01:25+02:00",
+          "product_id": 9906531041627,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/vin-nature-blanc-azur-nicolas-suteau-whynat.jpg?v=1747648885",
+          "width": 1079,
+          "height": 1620
+        },
+        {
+          "id": 61838474838363,
+          "created_at": "2025-05-19T12:00:43+02:00",
+          "position": 2,
+          "updated_at": "2025-05-19T12:01:25+02:00",
+          "product_id": 9906531041627,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/etiquette-vin-nature-blanc-azur-nicolas-suteau-whynat.jpg?v=1747648885",
+          "width": 1079,
+          "height": 1620
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 9899152015707,
+      "title": "Gamay, 2024 - P\u00e9touin et Enrag\u00e9",
+      "handle": "vin-rouge-naturel-gamay-2024-petouin-et-enrage-vin-de-france-loire",
+      "body_html": "",
+      "published_at": "2025-05-19T12:02:21+02:00",
+      "created_at": "2025-05-14T17:16:01+02:00",
+      "updated_at": "2026-07-27T16:14:15+02:00",
+      "vendor": "Whynat.fr",
+      "product_type": "vin",
+      "tags": [
+        "2024",
+        "5 - 8 ans",
+        "75 cl",
+        "Entre 15 et 25 \u20ac",
+        "Frais et l\u00e9ger",
+        "France",
+        "Fruit\u00e9",
+        "Loire",
+        "petouin-et-enrage",
+        "Rouge",
+        "Sans sulfites ajout\u00e9s",
+        "Sec",
+        "vin",
+        "Vin droit",
+        "Vin tranquille",
+        "Vins pour toutes les tables"
+      ],
+      "variants": [
+        {
+          "id": 50576963273051,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "16.00",
+          "grams": 1250,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 9899152015707,
+          "created_at": "2025-05-14T17:16:01+02:00",
+          "updated_at": "2026-07-27T16:14:15+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 61838475919707,
+          "created_at": "2025-05-19T12:00:52+02:00",
+          "position": 1,
+          "updated_at": "2025-05-19T12:01:28+02:00",
+          "product_id": 9899152015707,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/vin-nature-rouge-petouin-et-enrage-2024-petouin-whynat.jpg?v=1747648888",
+          "width": 1079,
+          "height": 1620
+        },
+        {
+          "id": 61838475952475,
+          "created_at": "2025-05-19T12:00:52+02:00",
+          "position": 2,
+          "updated_at": "2025-05-19T12:01:28+02:00",
+          "product_id": 9899152015707,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/etiquette-vin-nature-rouge-petouin-et-enrage-2024-petouin-whynat.jpg?v=1747648888",
+          "width": 1079,
+          "height": 1620
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 9899151884635,
+      "title": "Melon Folle, 2024 - P\u00e9touin et Enrag\u00e9",
+      "handle": "vin-blanc-naturel-melon-folle-2024-petouin-et-enrage-vin-de-france-loire",
+      "body_html": "",
+      "published_at": "2025-05-19T12:02:18+02:00",
+      "created_at": "2025-05-14T17:15:58+02:00",
+      "updated_at": "2026-07-27T16:14:15+02:00",
+      "vendor": "Whynat.fr",
+      "product_type": "vin",
+      "tags": [
+        "2024",
+        "5 - 8 ans",
+        "75 cl",
+        "Blanc",
+        "Entre 15 et 25 \u20ac",
+        "France",
+        "Loire",
+        "Min\u00e9ral et tonic",
+        "petouin-et-enrage",
+        "Sans sulfites ajout\u00e9s",
+        "Sec",
+        "vin",
+        "Vin d'\u00e9t\u00e9",
+        "Vin tranquille",
+        "Vins pour toutes les tables"
+      ],
+      "variants": [
+        {
+          "id": 50576960586075,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "19.50",
+          "grams": 1250,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 9899151884635,
+          "created_at": "2025-05-14T17:15:59+02:00",
+          "updated_at": "2026-07-27T16:14:15+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 61838476706139,
+          "created_at": "2025-05-19T12:01:04+02:00",
+          "position": 1,
+          "updated_at": "2025-05-19T12:01:31+02:00",
+          "product_id": 9899151884635,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/vin-nature-blanc-folle-petouin-et-enrage-2024-petouin-whynat.jpg?v=1747648891",
+          "width": 1079,
+          "height": 1620
+        },
+        {
+          "id": 61838476935515,
+          "created_at": "2025-05-19T12:01:04+02:00",
+          "position": 2,
+          "updated_at": "2025-05-19T12:01:31+02:00",
+          "product_id": 9899151884635,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/etiquette-vin-nature-blanc-folle-petouin-et-enrage-2024-petouin-whynat.jpg?v=1747648891",
+          "width": 1079,
+          "height": 1620
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 9899151819099,
+      "title": "Melon, 2024 - P\u00e9touin et Enrag\u00e9",
+      "handle": "vin-blanc-naturel-melon-2024-petouin-et-enrage-vin-de-france-loire",
+      "body_html": "",
+      "published_at": "2025-05-19T12:02:17+02:00",
+      "created_at": "2025-05-14T17:15:56+02:00",
+      "updated_at": "2026-07-27T16:14:15+02:00",
+      "vendor": "Whynat.fr",
+      "product_type": "vin",
+      "tags": [
+        "2024",
+        "5 - 8 ans",
+        "75 cl",
+        "Blanc",
+        "Entre 15 et 25 \u20ac",
+        "France",
+        "Loire",
+        "Min\u00e9ral et tonic",
+        "petouin-et-enrage",
+        "Sans sulfites ajout\u00e9s",
+        "Sec",
+        "vin",
+        "Vin d'\u00e9t\u00e9",
+        "Vin tranquille",
+        "Vins pour toutes les tables"
+      ],
+      "variants": [
+        {
+          "id": 50576960455003,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "18.50",
+          "grams": 1250,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 9899151819099,
+          "created_at": "2025-05-14T17:15:56+02:00",
+          "updated_at": "2026-07-27T16:14:15+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 61838479425883,
+          "created_at": "2025-05-19T12:01:16+02:00",
+          "position": 1,
+          "updated_at": "2025-05-19T12:01:34+02:00",
+          "product_id": 9899151819099,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/vin-nature-blanc-petouin-et-enrage-2024-petouin-whynat.jpg?v=1747648894",
+          "width": 1079,
+          "height": 1620
+        },
+        {
+          "id": 61838479622491,
+          "created_at": "2025-05-19T12:01:16+02:00",
+          "position": 2,
+          "updated_at": "2025-05-19T12:01:34+02:00",
+          "product_id": 9899151819099,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/etiquette-vin-nature-blanc-petouin-et-enrage-2024-petouin-whynat.jpg?v=1747648894",
+          "width": 1079,
+          "height": 1620
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 9899139760475,
+      "title": "Soupir, 2022 - Les chais du port de la Lune",
+      "handle": "vin-rouge-naturel-soupir-2022-les-chais-du-port-de-la-lune-vin-de-france-bordeaux",
+      "body_html": "",
+      "published_at": "2025-05-15T11:44:37+02:00",
+      "created_at": "2025-05-14T17:05:20+02:00",
+      "updated_at": "2026-07-27T16:14:15+02:00",
+      "vendor": "Whynat.fr",
+      "product_type": "vin",
+      "tags": [
+        "10 - 30 mg/L",
+        "2022",
+        "5 - 8 ans",
+        "75 cl",
+        "Agriculture biologique",
+        "Bordeaux",
+        "Entre 15 et 25 \u20ac",
+        "France",
+        "Fruit\u00e9",
+        "les-chais-du-port-de-la-lune",
+        "Rouge",
+        "Sec",
+        "vin",
+        "Vin tranquille",
+        "Vins pour toutes les tables"
+      ],
+      "variants": [
+        {
+          "id": 50576718692699,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "22.00",
+          "grams": 1250,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 9899139760475,
+          "created_at": "2025-05-14T17:05:20+02:00",
+          "updated_at": "2026-07-27T16:14:15+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 61672803402075,
+          "created_at": "2025-05-15T11:38:16+02:00",
+          "position": 1,
+          "updated_at": "2025-05-15T11:38:33+02:00",
+          "product_id": 9899139760475,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/vin-nature-rouge-soupir-2022-les-chais-du-port-de-la-lune-whynat.jpg?v=1747301913",
+          "width": 1079,
+          "height": 1620
+        },
+        {
+          "id": 61672803369307,
+          "created_at": "2025-05-15T11:38:16+02:00",
+          "position": 2,
+          "updated_at": "2025-05-15T11:38:33+02:00",
+          "product_id": 9899139760475,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/etiquette-vin-nature-rouge-soupir-2022-les-chais-du-port-de-la-lune-whynat.jpg?v=1747301913",
+          "width": 1079,
+          "height": 1620
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 9899139694939,
+      "title": "Rouge Terre, 2022 - Les chais du port de la Lune",
+      "handle": "vin-rouge-naturel-rouge-terre-2022-les-chais-du-port-de-la-lune-vin-de-france-bordeaux",
+      "body_html": "",
+      "published_at": "2025-05-15T11:44:36+02:00",
+      "created_at": "2025-05-14T17:05:18+02:00",
+      "updated_at": "2026-07-27T16:14:15+02:00",
+      "vendor": "Whynat.fr",
+      "product_type": "vin",
+      "tags": [
+        "10 - 30 mg/L",
+        "2022",
+        "5 - 8 ans",
+        "75 cl",
+        "Agriculture biologique",
+        "Bordeaux",
+        "France",
+        "Fruit\u00e9",
+        "les-chais-du-port-de-la-lune",
+        "Moins de 15 \u20ac",
+        "Rouge",
+        "Sec",
+        "vin",
+        "Vin tranquille",
+        "Vins pour toutes les tables"
+      ],
+      "variants": [
+        {
+          "id": 50576718135643,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "12.00",
+          "grams": 1250,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 9899139694939,
+          "created_at": "2025-05-14T17:05:18+02:00",
+          "updated_at": "2026-07-27T16:14:15+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 61672806515035,
+          "created_at": "2025-05-15T11:38:26+02:00",
+          "position": 1,
+          "updated_at": "2025-05-15T11:38:36+02:00",
+          "product_id": 9899139694939,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/vin-nature-rouge-rouge-terre-2022-les-chais-du-port-de-la-lune-whynat.jpg?v=1747301916",
+          "width": 1079,
+          "height": 1620
+        },
+        {
+          "id": 61672806646107,
+          "created_at": "2025-05-15T11:38:26+02:00",
+          "position": 2,
+          "updated_at": "2025-05-15T11:38:36+02:00",
+          "product_id": 9899139694939,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/etiquette-vin-nature-rouge-rouge-terre-2022-les-chais-du-port-de-la-lune-whynat.jpg?v=1747301916",
+          "width": 1079,
+          "height": 1620
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 9899139662171,
+      "title": "Forme, 2023 - Les chais du port de la Lune",
+      "handle": "vin-rouge-naturel-forme-2023-les-chais-du-port-de-la-lune-vin-de-france-bordeaux",
+      "body_html": "",
+      "published_at": "2025-05-15T11:44:35+02:00",
+      "created_at": "2025-05-14T17:05:16+02:00",
+      "updated_at": "2026-07-27T16:14:15+02:00",
+      "vendor": "Whynat.fr",
+      "product_type": "vin",
+      "tags": [
+        "10 - 30 mg/L",
+        "2023",
+        "5 - 8 ans",
+        "75 cl",
+        "Bordeaux",
+        "Entre 15 et 25 \u20ac",
+        "Epic\u00e9",
+        "France",
+        "Fruit\u00e9",
+        "les-chais-du-port-de-la-lune",
+        "Rouge",
+        "Sec",
+        "vin",
+        "Vin tranquille",
+        "Vins pour toutes les tables"
+      ],
+      "variants": [
+        {
+          "id": 50576713023835,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "19.90",
+          "grams": 1250,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 9899139662171,
+          "created_at": "2025-05-14T17:05:16+02:00",
+          "updated_at": "2026-07-27T16:14:15+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 61672873328987,
+          "created_at": "2025-05-15T11:43:03+02:00",
+          "position": 1,
+          "updated_at": "2025-05-15T11:43:08+02:00",
+          "product_id": 9899139662171,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/vin-nature-rouge-forme-2023-les-chais-du-port-de-la-lune-whynat.jpg?v=1747302188",
+          "width": 1079,
+          "height": 1620
+        },
+        {
+          "id": 61672873361755,
+          "created_at": "2025-05-15T11:43:03+02:00",
+          "position": 2,
+          "updated_at": "2025-05-15T11:43:08+02:00",
+          "product_id": 9899139662171,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/etiquette-vin-nature-rouge-forme-2023-les-chais-du-port-de-la-lune-whynat.jpg?v=1747302188",
+          "width": 1079,
+          "height": 1620
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 9899139531099,
+      "title": "Reverb, 2024 - Les chais du port de la Lune",
+      "handle": "vin-blanc-naturel-reverb-2024-les-chais-du-port-de-la-lune-vin-de-france-bordeaux",
+      "body_html": "",
+      "published_at": "2025-05-15T11:44:34+02:00",
+      "created_at": "2025-05-14T17:05:13+02:00",
+      "updated_at": "2026-07-27T16:14:15+02:00",
+      "vendor": "Whynat.fr",
+      "product_type": "vin",
+      "tags": [
+        "10 - 30 mg/L",
+        "2024",
+        "5 - 8 ans",
+        "75 cl",
+        "Agriculture biologique",
+        "Blanc",
+        "Bordeaux",
+        "Entre 15 et 25 \u20ac",
+        "France",
+        "Fruit\u00e9",
+        "les-chais-du-port-de-la-lune",
+        "Min\u00e9ral et tonic",
+        "Sec",
+        "vin",
+        "Vin tranquille",
+        "Vins pour toutes les tables"
+      ],
+      "variants": [
+        {
+          "id": 50576712532315,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "20.00",
+          "grams": 1250,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 9899139531099,
+          "created_at": "2025-05-14T17:05:13+02:00",
+          "updated_at": "2026-07-27T16:14:15+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 61672820736347,
+          "created_at": "2025-05-15T11:39:28+02:00",
+          "position": 1,
+          "updated_at": "2025-05-15T11:42:39+02:00",
+          "product_id": 9899139531099,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/vin-nature-blanc-reverb-2024-les-chais-du-port-de-la-lune-whynat.jpg?v=1747302159",
+          "width": 1079,
+          "height": 1620
+        },
+        {
+          "id": 61672821064027,
+          "created_at": "2025-05-15T11:39:28+02:00",
+          "position": 2,
+          "updated_at": "2025-05-15T11:42:39+02:00",
+          "product_id": 9899139531099,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/etiquette-vin-nature-blanc-reverb-2024-les-chais-du-port-de-la-lune-whynat.jpg?v=1747302159",
+          "width": 1079,
+          "height": 1620
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 9899139432795,
+      "title": "Pop, 2024 - Les chais du port de la Lune",
+      "handle": "vin-blanc-naturel-pop-2024-les-chais-du-port-de-la-lune-vin-de-france-sud-ouest",
+      "body_html": "",
+      "published_at": "2025-05-15T11:44:33+02:00",
+      "created_at": "2025-05-14T17:05:11+02:00",
+      "updated_at": "2026-07-27T16:14:15+02:00",
+      "vendor": "Whynat.fr",
+      "product_type": "vin",
+      "tags": [
+        "10 - 30 mg/L",
+        "2 - 5 ans",
+        "2024",
+        "75 cl",
+        "Agriculture biologique",
+        "Blanc",
+        "Entre 15 et 25 \u20ac",
+        "France",
+        "Fruit\u00e9",
+        "les-chais-du-port-de-la-lune",
+        "Min\u00e9ral et tonic",
+        "Sec",
+        "Sud-Ouest",
+        "vin",
+        "Vin tranquille",
+        "Vins pour toutes les tables"
+      ],
+      "variants": [
+        {
+          "id": 50576712466779,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "20.00",
+          "grams": 1250,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 9899139432795,
+          "created_at": "2025-05-14T17:05:11+02:00",
+          "updated_at": "2026-07-27T16:14:15+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 61672825553243,
+          "created_at": "2025-05-15T11:39:48+02:00",
+          "position": 1,
+          "updated_at": "2025-05-15T11:43:17+02:00",
+          "product_id": 9899139432795,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/vin-nature-blanc-pop-2024-les-chais-du-port-de-la-lune-whynat.jpg?v=1747302197",
+          "width": 1079,
+          "height": 1620
+        },
+        {
+          "id": 61672825651547,
+          "created_at": "2025-05-15T11:39:48+02:00",
+          "position": 2,
+          "updated_at": "2025-05-15T11:43:17+02:00",
+          "product_id": 9899139432795,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0549/9184/7601/files/etiquette-vin-nature-blanc-pop-2024-les-chais-du-port-de-la-lune-whynat.jpg?v=1747302197",
+          "width": 1079,
+          "height": 1620
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
         }
       ]
     }

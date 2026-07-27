@@ -1,15 +1,1352 @@
 {
-  "_note": "PLACEHOLDER fixture. Platform (shopify) is CONFIRMED -- probe run 30255245592 fetched and parsed this shop's real shopify endpoint. The product data below is NOT real; the actual response body is in that run's probe-results artifact and should replace this file before the shop is set verified:true.",
+  "_fixture_note": "Real response from this shop, trimmed for the repo: 25 of 250 products, keeping every tracked-producer match (0) plus a sample. Captured by probe.py --apply.",
   "products": [
     {
-      "title": "PLACEHOLDER PRODUCT -- replace with a real listing",
-      "vendor": "Placeholder",
-      "handle": "placeholder",
-      "body_html": "<p>Placeholder.</p>",
+      "id": 7651470704864,
+      "title": "Veelzijdig Rood box",
+      "handle": "behoorlijk-rood-box",
+      "body_html": "<p>\u00a0Bio, Biodynamisch of Vegan .. het is <strong>PUUR WIJN!</strong></p>\n<!-- split -->\n<h1>\u00a0De PuurWijn ROOD box :<br>\n</h1>\n<p><strong>TERROS\u00a0 TINTO, BODEGAS DE PINOSO </strong><strong>ALICANTE SPANJE\u00a0</strong><br>Gemaakt van Alicante Bouschet, Monastrell en Merlot. Alle drie apart gevinifieerd en daarna pas geassembleerd; vrijwel geen toegevoegd sulfiet en tres bio Elegante vriendelijke wijn met tonen van rood en zwart fruit peper een hint van bloemen en rijpe zachte tannines, \u201ca wine with a female touch\u201d. Finalist Proefschrift wijnconcours.<br><em>Schenktemperatuur: </em>16-18 \u00b0C<br><em>Serveren bij: </em>Lekker bij schol aubergine krokante polenta antiboise; blauwe vis; rood vlees; stoofgerechten; rode kool; lam varken kip veder-wild zachte romige kazen en pasta</p>\n<p>\u00a0</p>\n<p><strong>\u00a0l<span style=\"color: rgb(0, 0, 0);\">e Naturel </span></strong><span style=\"color: rgb(0, 0, 0);\"><b><span style=\"font-size: 10.5pt; font-family: Georgia, serif;\">Bodegas Aroa, Navarra Spanje <span style=\"mso-spacerun: yes;\">\u00a0 </span></span></b></span><b><span style=\"font-size: 10.5pt; font-family: 'Georgia',serif; color: #c00000;\">Bio &amp; zonder toegevoegd sulfiet</span></b><span style=\"font-size: 10.5pt; font-family: 'Georgia',serif; color: #c00000;\"> </span></p>\n<p class=\"MsoNormal\"><span style=\"font-size: 10.5pt; font-family: 'Aptos',sans-serif; mso-ascii-theme-font: minor-latin; mso-hansi-theme-font: minor-latin; color: black;\">PUUR Garnacha, gemaakt met lichte schilweking, zonder klaring of filtering en zonder toegevoegd sulfiet! Dus bedoeld om jong te drinken </span><span style=\"font-size: 10.5pt; font-family: 'Aptos',sans-serif; mso-ascii-theme-font: minor-latin; mso-hansi-theme-font: minor-latin;\">Helder kersenrood.\u00a0</span><span style=\"font-size: 10.5pt; font-family: 'Aptos',sans-serif; mso-ascii-theme-font: minor-latin; mso-hansi-theme-font: minor-latin;\">In de geur expressief rood fruit.\u00a0</span><span style=\"font-size: 10.5pt; font-family: 'Aptos',sans-serif; mso-ascii-theme-font: minor-latin; mso-hansi-theme-font: minor-latin;\">Smaak van fris zwarte bessensap met zoete toets van rijpe kersen, pruimen bramen kruidnagel, rode paprika en wat karamel.\u00a0</span><span style=\"font-size: 10.5pt; font-family: 'Aptos',sans-serif; mso-ascii-theme-font: minor-latin; mso-hansi-theme-font: minor-latin;\">Ook in de afdronk uitgesproken fris van karakter.</span><span style=\"font-size: 10.5pt; font-family: 'Aptos',sans-serif; mso-ascii-theme-font: minor-latin; mso-hansi-theme-font: minor-latin; color: black;\">Favoriet van Nicolaas Klei in Elsevier en ZIN magazine en van Harold Hamersma in het Parool </span><span style=\"font-size: 10.5pt; font-family: 'Aptos',sans-serif; mso-ascii-theme-font: minor-latin; mso-hansi-theme-font: minor-latin; color: black;\">Schenktemperatuur: 14 -16 \u00b0C </span><b style=\"mso-bidi-font-weight: normal;\"><span style=\"font-size: 10.5pt; font-family: 'Aptos',sans-serif; mso-ascii-theme-font: minor-latin; mso-hansi-theme-font: minor-latin; color: black; mso-themecolor: text1;\">Serveren bij:</span></b><span style=\"font-size: 10.5pt; font-family: 'Aptos',sans-serif; mso-ascii-theme-font: minor-latin; mso-hansi-theme-font: minor-latin; color: black; mso-themecolor: text1;\"> </span><span style=\"font-size: 10.5pt; font-family: 'Aptos',sans-serif; mso-ascii-theme-font: minor-latin; mso-hansi-theme-font: minor-latin; mso-bidi-font-family: 'Segoe UI'; color: black; mso-themecolor: text1; background: white;\">Gedroogde ham &amp; worst, gegrilde groenten</span>, <span style=\"font-size: 10.5pt; font-family: 'Aptos',sans-serif; mso-ascii-theme-font: minor-latin; mso-hansi-theme-font: minor-latin; color: black; mso-themecolor: text1;\">Pasta en deegware, <span style=\"mso-spacerun: yes;\">\u00a0</span>rood vlees, lam, varken, kip, konijn, (veder)wild, zachte romige kazen, harde kazen, nagel en komijn. </span></p>\n<p class=\"MsoNormal\"><span style=\"font-size: 10.5pt; font-family: 'Aptos',sans-serif; mso-ascii-theme-font: minor-latin; mso-hansi-theme-font: minor-latin; color: black; mso-themecolor: text1;\">\u00a0</span></p>\n<p class=\"MsoNormal\" style=\"text-autospace: none;\"><b><span lang=\"IT\" style=\"font-size: 11.0pt; font-family: 'Aptos',sans-serif; color: black; mso-ansi-language: IT;\">Arbino Rosso, Vinea, Nicolino Paolucci, Montepulciano d\u2019Abruzzo, Itali\u00eb\u00a0</span></b><b><span lang=\"IT\" style=\"font-size: 11.0pt; font-family: 'Aptos',sans-serif; color: gray; mso-ansi-language: IT;\"></span></b></p>\n<p class=\"MsoNormal\" style=\"text-autospace: none;\"><span style=\"font-size: 11.0pt; font-family: 'Aptos',sans-serif; color: black;\">Montepulciano d\u2019Abruzzo, geheel op RVS tanks gevinifieerd, dus op fruit</span></p>\n<p class=\"MsoNormal\" style=\"text-autospace: none;\"><span style=\"font-size: 11.0pt; font-family: 'Aptos',sans-serif; color: black;\">gemaakt. De gedeeltelijke <b>ripasso (ingedroogde druiven</b>) geeft volheid</span></p>\n<p class=\"MsoNormal\" style=\"text-autospace: none;\"><span style=\"font-size: 11.0pt; font-family: 'Aptos',sans-serif; color: black;\">en kracht. Zeer donker gekleurd. Rijk aroma van rijpe vruchten (pruimen),</span></p>\n<p class=\"MsoNormal\" style=\"text-autospace: none;\"><span style=\"font-size: 11.0pt; font-family: 'Aptos',sans-serif; color: black;\">rode bessen en viooltjes. In de smaak heel sappig met in de afdronk complexiteit,</span></p>\n<p class=\"MsoNormal\" style=\"text-autospace: none;\"><span style=\"font-size: 11.0pt; font-family: 'Aptos',sans-serif; color: black;\">zachtheid, verfijning en body.</span><b><span style=\"font-size: 11.0pt; font-family: 'Aptos',sans-serif; mso-bidi-font-family: 'Segoe UI'; color: #333333;\"> Schenktemperatuur:</span></b><span style=\"font-size: 11.0pt; font-family: 'Aptos',sans-serif; mso-bidi-font-family: 'Segoe UI'; color: #333333;\">\u00a014-16 \u00b0C\u00a0<b>Serveren bij</b></span><span style=\"font-size: 11.0pt; font-family: 'Aptos',sans-serif; mso-bidi-font-family: 'Segoe UI'; color: #303030;\">\u00a0</span><span style=\"font-size: 11.0pt; font-family: 'Aptos',sans-serif; color: black;\"></span></p>\n<p class=\"MsoNormal\" style=\"text-autospace: none;\"><span style=\"font-size: 11.0pt; font-family: 'Aptos',sans-serif; color: black;\">Konijn, lam, kip, pasta/deegwaren, rood vlees, vederwild, varkensvlees./ entrecote</span></p>\n<p>\u00a0</p>\n<p><strong>GALIL MOUNTAIN WINERY CABERNET SAUVIGNON, UPPER GALILEE, ISRAEL </strong>Finalist Proefschrift wijncompetitie! Wijn uit Israel: A bit of both worlds : Oude of Nieuwe Wereld - het heeft iets van allebei. Zalvend zacht, opvallend sappig fruit (rode bes,zwarte kers en bosbessen, rijpe pruimen) met delicaat op de achtergrond wat mint en tabak . Medium bodied, lekker verteerbaar met lange afdronk. Kosher. <em>Serveertemperatuur: </em>16\u00b0C<br><em>Serveren bij: </em>exotische gerechten, lam , rood vlees, kaas</p>\n<p>\u00a0</p>\n<p><strong>SPATBURGUNDER , GUSTAVSHOF, RHEINHESSEN, DUITSLAND\u00a0</strong></p>\n<div class=\"result-shield-container tlid-copy-target\" tabindex=\"0\"><span class=\"tlid-translation translation\" lang=\"nl\">Cuv\u00e9e Jomax combineert de positieve nuances van 80% Sp\u00e4tburgunder aangevuld met St Laurent en Potugieser, in een zeer toegankelijke wijn. De intense rijpe tannines van de Sp\u00e4tburgunder versmelten met het fruitige karakter van de St Laurent en de elegantie van de Portugieser tot een heerlijke biologische wijn. Hij is fruitig, sappig, kruidig en zacht.<br></span></div>\n<div class=\"result-shield-container tlid-copy-target\" tabindex=\"0\"><br></div>\n<div class=\"result-shield-container tlid-copy-target\" tabindex=\"0\">\n<span class=\"tlid-translation translation\" lang=\"nl\">De wijngaarden van deze wijn liggen in de beschutte zijdalen van de Kloppberg. Daar vind je kalkrijke mergelbodems, die een zeer positief effect hebben op het karakter van St Laurent.<span>\u00a0</span></span><span class=\"tlid-translation translation\" lang=\"nl\">De Sp\u00e4tburgunder Jomax werd zo genoemd ter ere van de zoon Johann Maximilian door wijnmaker Andreas Roll.</span>\n</div>\n<p><br>Biologisch-dynamisch en veganistisch\u00a0</p>\n<p><em>Schenktemperatuur: </em>14 - 16 \u00b0C.\u00a0\u00a0<em>Serveren bij: </em>wit vlees, rood vlees, lam, varken, kip, spicy Oosters, kazen zacht en romig, harde kazen</p>\n<p>\u00a0</p>\n<p><strong>BELCANTO CHIANTI CLASSICO NITTARDI TOSCANE ITALIE\u00a0</strong><br>Bio en vegan en ooit in bezit van Michelangelo wat je terugziet in de fraaie etiketten. Vol en fluwelig met rijp fruit, drop, kruiden en specerijen. Heerlijk zachte ronde tannines en lange afdronk. Een Chianti met een hoofdletter C, van op 450 en 700 m hoogte gelegen wijngaarden met bodem van klei en stenen. Stevig krachtig en vatgerijpt (12 mnd op gebruikt hout). Gemaakt van 8 druivenrassen: merendeel Sangiovese, aangevuld met pugnitello, colorino, foglia tonda, mammolo, canaiolo, ciliegiolo en malvasia nera\u00a0<strong>De Grote Hamersma - 9</strong>. Opwindend Romig rood, choco-kers, mandolinezuren, mollige kruiderij, tikje hout beschaafd en intrigerend.</p>\n<p><em>Schenktemperatuur: </em>16-18 \u00b0C</p>\n<p><em>Serveren bij: </em>Vederwild, konijn, pasta/deegwaren, rood vlees, harde kaas <em>Serveren bij: </em>wit vlees, rood vlees, lam, varken, kip, spicy Oosters, kazen zacht en romig, harde kazen</p>",
+      "published_at": "2026-07-02T12:59:40+02:00",
+      "created_at": "2022-04-30T15:50:53+02:00",
+      "updated_at": "2026-07-27T16:09:50+02:00",
+      "vendor": "puurwijn",
+      "product_type": "Boxen",
+      "tags": [
+        "Assorted red wines",
+        "Curated wine selection",
+        "Diverse red wines",
+        "Mixed red wine box",
+        "Premium red wines",
+        "Red wine sampler",
+        "Red wine selection",
+        "Veelzijdig Rood box",
+        "Wine box delivery",
+        "Wine collection",
+        "Wine discovery set",
+        "Wine enthusiasts",
+        "Wine gift box",
+        "Wine lovers gift",
+        "Wine regions assortment",
+        "Wine subscription box",
+        "Wine tasting experience",
+        "Wine tasting kit",
+        "Wine variety pack"
+      ],
       "variants": [
         {
+          "id": 42765472202976,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "X500018",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "89.50",
+          "grams": 0,
+          "compare_at_price": "83.70",
+          "position": 1,
+          "product_id": 7651470704864,
+          "created_at": "2022-04-30T15:50:53+02:00",
+          "updated_at": "2026-07-27T16:09:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 37024946684128,
+          "created_at": "2022-04-30T15:52:07+02:00",
+          "position": 1,
+          "updated_at": "2022-04-30T15:52:08+02:00",
+          "product_id": 7651470704864,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0627/9652/9888/products/sticker-nittardi-belcanto.jpg?v=1651326728",
+          "width": 480,
+          "height": 480
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10522908098907,
+      "title": "Alegra Ribera del Duero Reserva 2018",
+      "handle": "alegra-ribera-del-duero-reserva-2018",
+      "body_html": "",
+      "published_at": "2026-06-08T14:11:28+02:00",
+      "created_at": "2026-06-08T14:11:27+02:00",
+      "updated_at": "2026-07-27T16:09:50+02:00",
+      "vendor": "Alegra",
+      "product_type": "",
+      "tags": [
+        "Nieuw"
+      ],
+      "variants": [
+        {
+          "id": 53339116536155,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "S15E004",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
           "price": "0.00",
-          "title": "Default"
+          "grams": 0,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 10522908098907,
+          "created_at": "2026-06-08T14:11:27+02:00",
+          "updated_at": "2026-07-27T16:09:50+02:00"
+        }
+      ],
+      "images": [],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10522904887643,
+      "title": "Alegra Ribera del Duero Crianza 2020",
+      "handle": "alegra-ribera-del-duero-crianza-2020",
+      "body_html": "",
+      "published_at": "2026-06-08T14:10:31+02:00",
+      "created_at": "2026-06-08T14:10:30+02:00",
+      "updated_at": "2026-07-27T16:09:50+02:00",
+      "vendor": "Alegra",
+      "product_type": "",
+      "tags": [
+        "Nieuw"
+      ],
+      "variants": [
+        {
+          "id": 53339086127451,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "S15E003",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "0.00",
+          "grams": 0,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 10522904887643,
+          "created_at": "2026-06-08T14:10:30+02:00",
+          "updated_at": "2026-07-27T16:09:50+02:00"
+        }
+      ],
+      "images": [],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10522903445851,
+      "title": "Alegra Ribera del Duero Roble 2023",
+      "handle": "alegra-ribera-del-duero-roble-2023",
+      "body_html": "",
+      "published_at": "2026-06-08T14:10:01+02:00",
+      "created_at": "2026-06-08T14:10:00+02:00",
+      "updated_at": "2026-07-27T16:09:50+02:00",
+      "vendor": "Alegra",
+      "product_type": "",
+      "tags": [
+        "Nieuw"
+      ],
+      "variants": [
+        {
+          "id": 53339073118555,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "S15E002",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "0.00",
+          "grams": 0,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 10522903445851,
+          "created_at": "2026-06-08T14:10:00+02:00",
+          "updated_at": "2026-07-27T16:09:50+02:00"
+        }
+      ],
+      "images": [],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10522900300123,
+      "title": "Alegra Ribera del Duero Joven 2022",
+      "handle": "alegra-ribera-del-duero-joven-2022",
+      "body_html": "",
+      "published_at": "2026-06-08T14:08:29+02:00",
+      "created_at": "2026-06-08T14:08:27+02:00",
+      "updated_at": "2026-07-27T16:09:50+02:00",
+      "vendor": "Alegra",
+      "product_type": "",
+      "tags": [
+        "Nieuw"
+      ],
+      "variants": [
+        {
+          "id": 53339026325851,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "S15E001",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "0.00",
+          "grams": 0,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 10522900300123,
+          "created_at": "2026-06-08T14:08:27+02:00",
+          "updated_at": "2026-07-27T16:09:50+02:00"
+        }
+      ],
+      "images": [],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10518005154139,
+      "title": "Cantina Tollo 'Bellaretta' Montepulciano 2024",
+      "handle": "bellaretta-montepulciano-2024",
+      "body_html": "<h5>VERVANGER VAN DE PIETRAME MONTEPULCIANO</h5>",
+      "published_at": "2026-06-04T15:58:45+02:00",
+      "created_at": "2026-06-04T15:58:43+02:00",
+      "updated_at": "2026-07-27T16:09:50+02:00",
+      "vendor": "Cantina Tollo",
+      "product_type": "",
+      "tags": [
+        "Nieuw"
+      ],
+      "variants": [
+        {
+          "id": 53278642045275,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "I13E003",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "0.00",
+          "grams": 0,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 10518005154139,
+          "created_at": "2026-06-04T15:58:43+02:00",
+          "updated_at": "2026-07-27T16:09:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 73037487178075,
+          "created_at": "2026-06-08T15:05:38+02:00",
+          "position": 1,
+          "updated_at": "2026-06-08T15:05:44+02:00",
+          "product_id": 10518005154139,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0627/9652/9888/files/CTBellarettaMontepulciano-1def.png?v=1780923944",
+          "width": 2838,
+          "height": 3406
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10517986410843,
+      "title": "Cantina Tollo 'Bellaretta' Chardonnay 2025",
+      "handle": "bellaretta-chardonnay-2025",
+      "body_html": "",
+      "published_at": "2026-06-04T15:49:50+02:00",
+      "created_at": "2026-06-04T15:49:49+02:00",
+      "updated_at": "2026-07-27T16:09:50+02:00",
+      "vendor": "Cantina Tollo",
+      "product_type": "",
+      "tags": [
+        "Nieuw"
+      ],
+      "variants": [
+        {
+          "id": 53278599053659,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "I13B003",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "0.00",
+          "grams": 0,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 10517986410843,
+          "created_at": "2026-06-04T15:49:49+02:00",
+          "updated_at": "2026-07-27T16:09:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 73037754171739,
+          "created_at": "2026-06-08T15:18:49+02:00",
+          "position": 1,
+          "updated_at": "2026-06-08T15:18:54+02:00",
+          "product_id": 10517986410843,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0627/9652/9888/files/CTBellarettaChardonnay-1def.png?v=1780924734",
+          "width": 2827,
+          "height": 3392
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10517972975963,
+      "title": "Casar de Burbia 'Tebaida' Mencia 2023",
+      "handle": "casar-de-burbia-tebaida-mencia-2023",
+      "body_html": "",
+      "published_at": "2026-06-04T15:42:45+02:00",
+      "created_at": "2026-06-04T15:42:43+02:00",
+      "updated_at": "2026-07-27T16:09:50+02:00",
+      "vendor": "Casar de Burbia",
+      "product_type": "",
+      "tags": [
+        "Nieuw"
+      ],
+      "variants": [
+        {
+          "id": 53278558716251,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "S08E003",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "0.00",
+          "grams": 0,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 10517972975963,
+          "created_at": "2026-06-04T15:42:43+02:00",
+          "updated_at": "2026-07-27T16:09:50+02:00"
+        }
+      ],
+      "images": [],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10517962391899,
+      "title": "Casar de Burbia 'Hombros' Mencia BIO 2022",
+      "handle": "casar-de-burbia-hombros-mencia-bio-2022",
+      "body_html": "",
+      "published_at": "2026-06-04T15:38:45+02:00",
+      "created_at": "2026-06-04T15:38:44+02:00",
+      "updated_at": "2026-07-27T16:09:50+02:00",
+      "vendor": "Casar de Burbia",
+      "product_type": "",
+      "tags": [
+        "Nieuw"
+      ],
+      "variants": [
+        {
+          "id": 53278540562779,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "S08E002",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "0.00",
+          "grams": 0,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 10517962391899,
+          "created_at": "2026-06-04T15:38:44+02:00",
+          "updated_at": "2026-07-27T16:09:50+02:00"
+        }
+      ],
+      "images": [],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10517943812443,
+      "title": "Casar de Burbia Mencia BIO 2022",
+      "handle": "casar-de-burbia-mencia-bio-2022",
+      "body_html": "",
+      "published_at": "2026-06-04T15:33:18+02:00",
+      "created_at": "2026-06-04T15:33:16+02:00",
+      "updated_at": "2026-07-27T16:09:50+02:00",
+      "vendor": "Casar de Burbia",
+      "product_type": "",
+      "tags": [
+        "Nieuw"
+      ],
+      "variants": [
+        {
+          "id": 53278518411611,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "S08E001",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "0.00",
+          "grams": 0,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 10517943812443,
+          "created_at": "2026-06-04T15:33:16+02:00",
+          "updated_at": "2026-07-27T16:09:50+02:00"
+        }
+      ],
+      "images": [],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10517921792347,
+      "title": "Casar de Burbia Valdepi\u00f1ero Godello Barrica BIO 2023",
+      "handle": "casar-de-burbia-valdepinero-godello-barrica-bio-2023",
+      "body_html": "",
+      "published_at": "2026-06-04T15:26:45+02:00",
+      "created_at": "2026-06-04T15:26:44+02:00",
+      "updated_at": "2026-07-27T16:09:50+02:00",
+      "vendor": "Casar de Burbia",
+      "product_type": "",
+      "tags": [
+        "Nieuw"
+      ],
+      "variants": [
+        {
+          "id": 53278441177435,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "S08B002",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "0.00",
+          "grams": 0,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 10517921792347,
+          "created_at": "2026-06-04T15:26:44+02:00",
+          "updated_at": "2026-07-27T16:09:50+02:00"
+        }
+      ],
+      "images": [],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10517903507803,
+      "title": "Casar de Burbia Godello BIO 2025",
+      "handle": "casar-de-burbia-godello-bio-2025",
+      "body_html": "",
+      "published_at": "2026-06-04T15:17:57+02:00",
+      "created_at": "2026-06-04T15:17:55+02:00",
+      "updated_at": "2026-07-27T16:09:50+02:00",
+      "vendor": "Casar de Burbia",
+      "product_type": "",
+      "tags": [
+        "Nieuw"
+      ],
+      "variants": [
+        {
+          "id": 53278399103323,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "S08B001",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "0.00",
+          "grams": 0,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 10517903507803,
+          "created_at": "2026-06-04T15:17:56+02:00",
+          "updated_at": "2026-07-27T16:09:50+02:00"
+        }
+      ],
+      "images": [],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10514372395355,
+      "title": "Bodegas Mazas Garnacha Tinta 2023",
+      "handle": "bodegas-mazas-garnacha-tinta-2023",
+      "body_html": "<p>De Garnacha Tinta is mooi donkerrood van kleur met frisse tonen van rood fruit en een zeer aangenaam mondgevoel. Het is een lichte, expressieve en karaktervolle wijn, perfect gebalanceerd en vol van smaak zonder zwaar te zijn.</p>",
+      "published_at": "2026-06-02T12:55:02+02:00",
+      "created_at": "2026-06-02T12:55:01+02:00",
+      "updated_at": "2026-07-27T16:09:50+02:00",
+      "vendor": "Bodegas Mazas",
+      "product_type": "",
+      "tags": [
+        "Nieuw"
+      ],
+      "variants": [
+        {
+          "id": 53240629199195,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "S12E004",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "0.00",
+          "grams": 0,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 10514372395355,
+          "created_at": "2026-06-02T12:55:01+02:00",
+          "updated_at": "2026-07-27T16:09:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 72914348736859,
+          "created_at": "2026-06-02T15:30:53+02:00",
+          "position": 1,
+          "updated_at": "2026-06-02T15:30:58+02:00",
+          "product_id": 10514372395355,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0627/9652/9888/files/BMGarnachaTinta-1def.png?v=1780407058",
+          "width": 2748,
+          "height": 3297
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10514364825947,
+      "title": "Bodegas Mazas Petit Verdot 2023",
+      "handle": "bodegas-mazas-petit-verdot-2023",
+      "body_html": "<p>Deze Petit Verdot is een toegankelijke wijn met aroma's van donker fruit en een vleugje koffie. De wijn is rijk en smaakvol in de mond, met een aanhoudende, lange en heerlijke afdronk.</p>",
+      "published_at": "2026-06-02T12:51:19+02:00",
+      "created_at": "2026-06-02T12:51:18+02:00",
+      "updated_at": "2026-07-27T16:09:50+02:00",
+      "vendor": "Bodegas Mazas",
+      "product_type": "",
+      "tags": [
+        "Nieuw"
+      ],
+      "variants": [
+        {
+          "id": 53240606556507,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "S12E003",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "0.00",
+          "grams": 0,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 10514364825947,
+          "created_at": "2026-06-02T12:51:18+02:00",
+          "updated_at": "2026-07-27T16:09:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 72913362747739,
+          "created_at": "2026-06-02T15:13:52+02:00",
+          "position": 1,
+          "updated_at": "2026-06-02T15:13:57+02:00",
+          "product_id": 10514364825947,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0627/9652/9888/files/BMPetitVerdot-1def.png?v=1780406037",
+          "width": 2766,
+          "height": 3319
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10514358960475,
+      "title": "Bodegas Mazas 'Los Enoloz' Verdejo 2025",
+      "handle": "bodegas-mazas-los-enoloz-verdejo-2025",
+      "body_html": "",
+      "published_at": "2026-06-02T12:45:53+02:00",
+      "created_at": "2026-06-02T12:45:52+02:00",
+      "updated_at": "2026-07-27T16:09:50+02:00",
+      "vendor": "Bodegas Mazas",
+      "product_type": "",
+      "tags": [
+        "Nieuw"
+      ],
+      "variants": [
+        {
+          "id": 53240581783899,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "S12B001",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "0.00",
+          "grams": 0,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 10514358960475,
+          "created_at": "2026-06-02T12:45:52+02:00",
+          "updated_at": "2026-07-27T16:09:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 72912486367579,
+          "created_at": "2026-06-02T14:32:29+02:00",
+          "position": 1,
+          "updated_at": "2026-06-02T14:32:35+02:00",
+          "product_id": 10514358960475,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0627/9652/9888/files/BMVerdejo-1def.png?v=1780403555",
+          "width": 2827,
+          "height": 3392
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10514357748059,
+      "title": "Bodegas Mazas Cabernet Sauvignon 2022",
+      "handle": "bodegas-mazas-cabernet-sauvignon-2022",
+      "body_html": "<p>Een donkerpaarse Cabernet Sauvignon met blauwe accenten en aroma's van zwarte bessen, bosbessen en een vleugje peper. In de mond is de wijn krachtig, maar met een uitgesproken zuurgraad die de zachte, rijpe tannines versterkt, met een afdronk van bramen en een lichte toets van rode peper.</p>",
+      "published_at": "2026-06-02T12:43:27+02:00",
+      "created_at": "2026-06-02T12:43:26+02:00",
+      "updated_at": "2026-07-27T16:09:50+02:00",
+      "vendor": "Bodegas Mazas",
+      "product_type": "",
+      "tags": [
+        "Nieuw"
+      ],
+      "variants": [
+        {
+          "id": 53240577589595,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "S12E002",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "0.00",
+          "grams": 0,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 10514357748059,
+          "created_at": "2026-06-02T12:43:26+02:00",
+          "updated_at": "2026-07-27T16:09:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 72914525127003,
+          "created_at": "2026-06-02T15:42:03+02:00",
+          "position": 1,
+          "updated_at": "2026-06-02T15:42:11+02:00",
+          "product_id": 10514357748059,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0627/9652/9888/files/BMCabernetSauvignon-1def.png?v=1780407731",
+          "width": 2755,
+          "height": 3306
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10514356666715,
+      "title": "Bodegas Mazas Tinta de Toro 2022",
+      "handle": "bodegas-mazas-tinta-de-toro-2022",
+      "body_html": "",
+      "published_at": "2026-06-02T12:41:25+02:00",
+      "created_at": "2026-06-02T12:41:24+02:00",
+      "updated_at": "2026-07-27T16:09:50+02:00",
+      "vendor": "Bodegas Mazas",
+      "product_type": "",
+      "tags": [
+        "Nieuw"
+      ],
+      "variants": [
+        {
+          "id": 53240573657435,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "S12E001",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "0.00",
+          "grams": 0,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 10514356666715,
+          "created_at": "2026-06-02T12:41:24+02:00",
+          "updated_at": "2026-07-27T16:09:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 72912348741979,
+          "created_at": "2026-06-02T14:05:03+02:00",
+          "position": 1,
+          "updated_at": "2026-06-02T14:05:10+02:00",
+          "product_id": 10514356666715,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0627/9652/9888/files/BMTintadeToro-1def.png?v=1780401910",
+          "width": 2742,
+          "height": 3290
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10507243880795,
+      "title": "Briottet F\u00e8ve Tonka - 0,70L",
+      "handle": "briottet-feve-tonka-0-70l",
+      "body_html": "",
+      "published_at": "2026-05-29T10:15:45+02:00",
+      "created_at": "2026-05-29T10:15:44+02:00",
+      "updated_at": "2026-07-27T16:09:50+02:00",
+      "vendor": "Briottet",
+      "product_type": "",
+      "tags": [],
+      "variants": [
+        {
+          "id": 53162075488603,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "G01B038",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "0.00",
+          "grams": 0,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 10507243880795,
+          "created_at": "2026-05-29T10:15:44+02:00",
+          "updated_at": "2026-07-27T16:09:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 72823924195675,
+          "created_at": "2026-05-29T10:16:48+02:00",
+          "position": 1,
+          "updated_at": "2026-05-29T10:16:53+02:00",
+          "product_id": 10507243880795,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0627/9652/9888/files/EBFeveTonka70-1def_41e0502f-a4d5-48b6-9b32-6f32e96586e4.png?v=1780042613",
+          "width": 2830,
+          "height": 3396
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10467773219163,
+      "title": "Lucien Jacob Hautes-C\u00f4tes de Beaune 'La Come des Amoureuses' Blanc BIO 2024",
+      "handle": "lucien-jacob-hautes-cotes-de-beaune-blanc-bio-2024",
+      "body_html": "<p>Een licht gouden Chardonnay met zilveren reflecties en aroma's van citrus, vuursteen en wit fruit. In de smaak is hij rond en fris met wederom tonen van citrus en wit fruit en een mooie afdronk met een subtiele hint van sesam.</p>\n<p><strong>Prijs = netto</strong></p>",
+      "published_at": "2026-05-06T13:02:05+02:00",
+      "created_at": "2026-05-06T13:02:04+02:00",
+      "updated_at": "2026-07-27T16:09:50+02:00",
+      "vendor": "Domaine Lucien Jacob",
+      "product_type": "",
+      "tags": [
+        "BIO wijn",
+        "biologische wijn",
+        "Bourgogne Blanc",
+        "Chardonnay Bourgogne",
+        "Franse witte wijn",
+        "Nieuw"
+      ],
+      "variants": [
+        {
+          "id": 52924794765659,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "F22B001",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "0.00",
+          "grams": 0,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 10467773219163,
+          "created_at": "2026-05-06T13:02:04+02:00",
+          "updated_at": "2026-07-27T16:09:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 72282597065051,
+          "created_at": "2026-05-06T13:39:59+02:00",
+          "position": 1,
+          "updated_at": "2026-05-06T13:40:04+02:00",
+          "product_id": 10467773219163,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0627/9652/9888/files/LJBourgogneBlanc-1def2.png?v=1778067604",
+          "width": 2831,
+          "height": 3397
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10467768369499,
+      "title": "Lucien Jacon Vosne-Roman\u00e9e 'Les Cinq Terres' BIO 2023",
+      "handle": "lucien-jacob-vosne-romanee-les-cinq-terres-bio-2023",
+      "body_html": "<p>Deze robijnrode Pinot Noir heeft aroma's van rode bessen, kruiden, leer en subtiele houttonen afkomstig uit de Franse eikenhouten vaten waarin het 18 maanden heeft gerijpt. Dit levert een goed gestructureerde, frisse wijn op.</p>\n<p><meta charset=\"utf-8\"><strong>Prijs = netto</strong></p>",
+      "published_at": "2026-05-06T12:55:35+02:00",
+      "created_at": "2026-05-06T12:55:33+02:00",
+      "updated_at": "2026-07-27T16:09:50+02:00",
+      "vendor": "Domaine Lucien Jacob",
+      "product_type": "",
+      "tags": [
+        "BIO wijn",
+        "Franse rode wijn",
+        "Nieuw",
+        "Pinot Noir",
+        "rode Bourgogne wijn",
+        "Vosne-Roman\u00e9e"
+      ],
+      "variants": [
+        {
+          "id": 52924778742107,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "F22E004",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "0.00",
+          "grams": 0,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 10467768369499,
+          "created_at": "2026-05-06T12:55:33+02:00",
+          "updated_at": "2026-07-27T16:09:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 72285074686299,
+          "created_at": "2026-05-06T15:20:54+02:00",
+          "position": 1,
+          "updated_at": "2026-05-06T15:21:00+02:00",
+          "product_id": 10467768369499,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0627/9652/9888/files/LJVosne-Romanee-1def.png?v=1778073660",
+          "width": 2840,
+          "height": 3408
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10467741892955,
+      "title": "Lucien Jacob Meursault 'Sentier du Moulin' BIO 2023",
+      "handle": "lucien-jacob-meursault-sentier-du-moulin-bio-2023",
+      "body_html": "<p>Deze Chardonnay heeft een fantastische goudgele kleur en geeft aroma's van bloemen, amandel, hazelnoten, honing en rijp fruit. De wijn is fris, smakelijk en perfect gestructureerd met een lange aromatische afdronk.</p>\n<p><meta charset=\"utf-8\"><strong>Prijs = netto</strong></p>",
+      "published_at": "2026-05-06T12:36:34+02:00",
+      "created_at": "2026-05-06T12:36:33+02:00",
+      "updated_at": "2026-07-27T16:09:50+02:00",
+      "vendor": "Domaine Lucien Jacob",
+      "product_type": "",
+      "tags": [
+        "BIO wijn",
+        "Chardonnay",
+        "Franse witte wijn",
+        "Meursault",
+        "Nieuw",
+        "witte Bourgogne wijn"
+      ],
+      "variants": [
+        {
+          "id": 52924179415387,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "F22B003",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "0.00",
+          "grams": 0,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 10467741892955,
+          "created_at": "2026-05-06T12:36:33+02:00",
+          "updated_at": "2026-07-27T16:09:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 72284400255323,
+          "created_at": "2026-05-06T15:11:05+02:00",
+          "position": 1,
+          "updated_at": "2026-05-06T15:11:11+02:00",
+          "product_id": 10467741892955,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0627/9652/9888/files/LJMeursault-1def.png?v=1778073071",
+          "width": 2818,
+          "height": 3381
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10467734618459,
+      "title": "Lucien Jacob Hautes-C\u00f4tes de Beaune Rouge BIO 2023",
+      "handle": "lucien-jacob-hautes-cotes-de-beaune-rouge-bio-2023",
+      "body_html": "<p>Een robijnrode Pinot Noir met weelderige aroma's van kersen, frambozen en aardse tonen. De wijn is perfect gebalanceerd, met zijdezachte tannines en een prachtige aromastructuur.</p>\n<p><meta charset=\"utf-8\"><strong>Prijs = netto</strong></p>",
+      "published_at": "2026-05-06T12:23:46+02:00",
+      "created_at": "2026-05-06T12:23:45+02:00",
+      "updated_at": "2026-07-27T16:09:50+02:00",
+      "vendor": "Domaine Lucien Jacob",
+      "product_type": "",
+      "tags": [
+        "BIO wijn",
+        "Franse rode wijn",
+        "Hautes-C\u00f4tes de Beaune",
+        "Nieuw",
+        "Pinot Noir",
+        "rode Bourgogne wijn"
+      ],
+      "variants": [
+        {
+          "id": 52924142354779,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "F22E001",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "0.00",
+          "grams": 0,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 10467734618459,
+          "created_at": "2026-05-06T12:23:45+02:00",
+          "updated_at": "2026-07-27T16:09:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 72282693566811,
+          "created_at": "2026-05-06T13:53:24+02:00",
+          "position": 1,
+          "updated_at": "2026-05-06T13:53:29+02:00",
+          "product_id": 10467734618459,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0627/9652/9888/files/LJBourgogneRouge-1def.png?v=1778068409",
+          "width": 2823,
+          "height": 3388
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10467724067163,
+      "title": "Lucien Jacob Rully 'La Billeraine' BIO 2023",
+      "handle": "lucien-jacob-rully-la-billeraine-bio-2023",
+      "body_html": "<p>Een mooie goudgele Bourgogne die, na 12 maanden rijpen in Franse eikenhouten vaten, elegante aroma's geeft van steenfruit, citrus en witte bloemen. De wijn is evenwichtig en fris van smaak met een lange aromatische afdronk.</p>\n<p><meta charset=\"utf-8\"><strong>Prijs = netto</strong></p>",
+      "published_at": "2026-05-06T12:08:05+02:00",
+      "created_at": "2026-05-06T12:08:04+02:00",
+      "updated_at": "2026-07-27T16:09:50+02:00",
+      "vendor": "Domaine Lucien Jacob",
+      "product_type": "",
+      "tags": [],
+      "variants": [
+        {
+          "id": 52924111356251,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "F22B002",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "0.00",
+          "grams": 0,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 10467724067163,
+          "created_at": "2026-05-06T12:08:04+02:00",
+          "updated_at": "2026-07-27T16:09:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 72283712127323,
+          "created_at": "2026-05-06T15:01:56+02:00",
+          "position": 1,
+          "updated_at": "2026-05-06T15:02:01+02:00",
+          "product_id": 10467724067163,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0627/9652/9888/files/LJRully-1def.png?v=1778072521",
+          "width": 2833,
+          "height": 3399
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10460098167131,
+      "title": "Ca' da Roman Zero Max 0% Sparkling Bianco",
+      "handle": "ca-da-roman-zero-max-0-sparkling-bianco",
+      "body_html": "<p class=\"MsoNormal\">Een mousserende wijn gemaakt uit 'PIWI' druiven. Dit zijn druivenrassen die van nature resistent zijn tegen allerlei wijngaard ziekten. De Zero Max is een mousserende wijn waar de alcohol uit verwijderd is.<span style=\"font-size: 12.0pt; font-family: 'Aptos',sans-serif; mso-ascii-theme-font: minor-latin; mso-fareast-font-family: Aptos; mso-fareast-theme-font: minor-latin; mso-hansi-theme-font: minor-latin; mso-bidi-font-family: 'Times New Roman'; mso-bidi-theme-font: minor-bidi; mso-ansi-language: NL; mso-fareast-language: EN-US; mso-bidi-language: AR-SA;\"> </span></p>",
+      "published_at": "2026-04-29T08:47:52+02:00",
+      "created_at": "2026-04-29T08:47:50+02:00",
+      "updated_at": "2026-07-27T16:09:50+02:00",
+      "vendor": "Ca' da Roman",
+      "product_type": "",
+      "tags": [],
+      "variants": [
+        {
+          "id": 52892498624859,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "I012B001",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "0.00",
+          "grams": 0,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 10460098167131,
+          "created_at": "2026-04-29T08:47:51+02:00",
+          "updated_at": "2026-07-27T16:09:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 72105295806811,
+          "created_at": "2026-04-29T08:49:29+02:00",
+          "position": 1,
+          "updated_at": "2026-04-29T08:49:33+02:00",
+          "product_id": 10460098167131,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0627/9652/9888/files/WoW_4977d689-508c-442e-bd73-188e5e1227d2.png?v=1777445373",
+          "width": 2560,
+          "height": 3073
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10448390062427,
+      "title": "Maison Fontan 'Cuvee S' 2022",
+      "handle": "maison-fontan-cuvee-s-2022",
+      "body_html": "",
+      "published_at": "2026-04-22T10:09:35+02:00",
+      "created_at": "2026-04-22T10:09:33+02:00",
+      "updated_at": "2026-07-27T16:09:50+02:00",
+      "vendor": "Maison Fontan",
+      "product_type": "",
+      "tags": [
+        "Nieuw"
+      ],
+      "variants": [
+        {
+          "id": 52851735560539,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "F40E007",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "0.00",
+          "grams": 0,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 10448390062427,
+          "created_at": "2026-04-22T10:09:33+02:00",
+          "updated_at": "2026-07-27T16:09:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 72288934232411,
+          "created_at": "2026-05-06T16:16:57+02:00",
+          "position": 1,
+          "updated_at": "2026-05-06T16:17:03+02:00",
+          "product_id": 10448390062427,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0627/9652/9888/files/MFCuveeS-1def.png?v=1778077023",
+          "width": 2988,
+          "height": 3585
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
         }
       ]
     }

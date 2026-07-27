@@ -1,15 +1,1525 @@
 {
-  "_note": "PLACEHOLDER fixture. Platform (shopify) is CONFIRMED -- probe run 30255245592 fetched and parsed this shop's real shopify endpoint. The product data below is NOT real; the actual response body is in that run's probe-results artifact and should replace this file before the shop is set verified:true.",
+  "_fixture_note": "Real response from this shop, trimmed for the repo: 25 of 250 products, keeping every tracked-producer match (0) plus a sample. Captured by probe.py --apply.",
   "products": [
     {
-      "title": "PLACEHOLDER PRODUCT -- replace with a real listing",
-      "vendor": "Placeholder",
-      "handle": "placeholder",
-      "body_html": "<p>Placeholder.</p>",
+      "id": 16237166920015,
+      "title": "La Chim\u00e8re",
+      "handle": "la-chimere",
+      "body_html": "",
+      "published_at": "2026-07-22T17:21:00+02:00",
+      "created_at": "2026-07-22T17:11:35+02:00",
+      "updated_at": "2026-07-27T16:12:48+02:00",
+      "vendor": "La Cave Des Papilles",
+      "product_type": "",
+      "tags": [
+        "Blanc",
+        "bouteille",
+        "France",
+        "Vall\u00e9e du Rh\u00f4ne",
+        "Vins"
+      ],
       "variants": [
         {
-          "price": "0.00",
-          "title": "Default"
+          "id": 58285354582351,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "29.50",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16237166920015,
+          "created_at": "2026-07-22T17:11:36+02:00",
+          "updated_at": "2026-07-27T16:12:48+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 94494400119119,
+          "created_at": "2026-07-22T17:20:39+02:00",
+          "position": 1,
+          "updated_at": "2026-07-22T17:20:43+02:00",
+          "product_id": 16237166920015,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0943/1515/1695/files/chimere-23.png?v=1784733643",
+          "width": 560,
+          "height": 2000
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16237159743823,
+      "title": "Indigo",
+      "handle": "indigo",
+      "body_html": "",
+      "published_at": "2026-07-22T17:20:59+02:00",
+      "created_at": "2026-07-22T17:05:34+02:00",
+      "updated_at": "2026-07-27T16:12:48+02:00",
+      "vendor": "La Cave Des Papilles",
+      "product_type": "",
+      "tags": [
+        "bouteille",
+        "France",
+        "rouge",
+        "Vall\u00e9e du Rh\u00f4ne",
+        "Vins"
+      ],
+      "variants": [
+        {
+          "id": 58285222560079,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "31.50",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16237159743823,
+          "created_at": "2026-07-22T17:05:35+02:00",
+          "updated_at": "2026-07-27T16:12:48+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 94494383079759,
+          "created_at": "2026-07-22T17:19:14+02:00",
+          "position": 1,
+          "updated_at": "2026-07-22T17:19:17+02:00",
+          "product_id": 16237159743823,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0943/1515/1695/files/indigo-23.png?v=1784733557",
+          "width": 560,
+          "height": 2000
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16237154992463,
+      "title": "Cinsault",
+      "handle": "cinsault-1",
+      "body_html": "",
+      "published_at": "2026-07-22T17:20:59+02:00",
+      "created_at": "2026-07-22T17:02:37+02:00",
+      "updated_at": "2026-07-27T16:12:48+02:00",
+      "vendor": "La Cave Des Papilles",
+      "product_type": "",
+      "tags": [
+        "bouteille",
+        "France",
+        "rouge",
+        "Vall\u00e9e du Rh\u00f4ne",
+        "Vins"
+      ],
+      "variants": [
+        {
+          "id": 58285150372175,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "27.50",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16237154992463,
+          "created_at": "2026-07-22T17:02:38+02:00",
+          "updated_at": "2026-07-27T16:12:48+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 94494376067407,
+          "created_at": "2026-07-22T17:18:19+02:00",
+          "position": 1,
+          "updated_at": "2026-07-22T17:18:22+02:00",
+          "product_id": 16237154992463,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0943/1515/1695/files/cuvee-spe.png?v=1784733502",
+          "width": 560,
+          "height": 2000
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16237154271567,
+      "title": "Les Gravi\u00e8res",
+      "handle": "les-gravieres",
+      "body_html": "",
+      "published_at": "2026-07-22T17:02:07+02:00",
+      "created_at": "2026-07-22T17:02:06+02:00",
+      "updated_at": "2026-07-27T16:12:48+02:00",
+      "vendor": "La Cave Des Papilles",
+      "product_type": "",
+      "tags": [
+        "bouteille",
+        "France",
+        "rouge",
+        "Vall\u00e9e du Rh\u00f4ne",
+        "Vins"
+      ],
+      "variants": [
+        {
+          "id": 58285131137359,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "21.50",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16237154271567,
+          "created_at": "2026-07-22T17:02:07+02:00",
+          "updated_at": "2026-07-27T16:12:48+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 94494374166863,
+          "created_at": "2026-07-22T17:17:48+02:00",
+          "position": 1,
+          "updated_at": "2026-07-22T17:17:52+02:00",
+          "product_id": 16237154271567,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0943/1515/1695/files/gravieres-23.png?v=1784733472",
+          "width": 560,
+          "height": 2000
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16231196066127,
+      "title": "Minette",
+      "handle": "minette-1",
+      "body_html": "",
+      "published_at": "2026-07-16T13:23:42+02:00",
+      "created_at": "2026-07-16T12:45:54+02:00",
+      "updated_at": "2026-07-27T16:12:48+02:00",
+      "vendor": "La Cave Des Papilles",
+      "product_type": "",
+      "tags": [
+        "Auvergne",
+        "France",
+        "magnum",
+        "Magnums & J\u00e9roboams",
+        "rouge",
+        "Vins"
+      ],
+      "variants": [
+        {
+          "id": 58242933850447,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "82.00",
+          "grams": 3000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16231196066127,
+          "created_at": "2026-07-16T12:45:54+02:00",
+          "updated_at": "2026-07-27T16:12:48+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 94418653118799,
+          "created_at": "2026-07-16T13:23:13+02:00",
+          "position": 1,
+          "updated_at": "2026-07-16T13:23:16+02:00",
+          "product_id": 16231196066127,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0943/1515/1695/files/minette-mag.png?v=1784200996",
+          "width": 560,
+          "height": 2000
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16231192002895,
+      "title": "Jeu de Vin",
+      "handle": "jeu-de-vin-1",
+      "body_html": "",
+      "published_at": "2026-07-16T13:23:42+02:00",
+      "created_at": "2026-07-16T12:44:32+02:00",
+      "updated_at": "2026-07-27T16:12:48+02:00",
+      "vendor": "La Cave Des Papilles",
+      "product_type": "",
+      "tags": [
+        "Auvergne",
+        "France",
+        "magnum",
+        "Magnums & J\u00e9roboams",
+        "rouge",
+        "Vins"
+      ],
+      "variants": [
+        {
+          "id": 58242928640335,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "58.00",
+          "grams": 3000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16231192002895,
+          "created_at": "2026-07-16T12:44:32+02:00",
+          "updated_at": "2026-07-27T16:12:48+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 94418648432975,
+          "created_at": "2026-07-16T13:22:51+02:00",
+          "position": 1,
+          "updated_at": "2026-07-16T13:22:54+02:00",
+          "product_id": 16231192002895,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0943/1515/1695/files/mag-jeu-de-vin.png?v=1784200974",
+          "width": 560,
+          "height": 2000
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16231176667471,
+      "title": "Foin Foin",
+      "handle": "foin-foin",
+      "body_html": "",
+      "published_at": "2026-07-16T13:23:41+02:00",
+      "created_at": "2026-07-16T12:39:24+02:00",
+      "updated_at": "2026-07-27T16:12:48+02:00",
+      "vendor": "La Cave Des Papilles",
+      "product_type": "",
+      "tags": [
+        "Blanc",
+        "bouteille",
+        "France",
+        "Vins"
+      ],
+      "variants": [
+        {
+          "id": 58242904457551,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "31.00",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16231176667471,
+          "created_at": "2026-07-16T12:39:25+02:00",
+          "updated_at": "2026-07-27T16:12:48+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 94418643910991,
+          "created_at": "2026-07-16T13:22:30+02:00",
+          "position": 1,
+          "updated_at": "2026-07-16T13:22:33+02:00",
+          "product_id": 16231176667471,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0943/1515/1695/files/foin-foin.png?v=1784200953",
+          "width": 560,
+          "height": 2000
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16231173259599,
+      "title": "Sarment Pepper",
+      "handle": "sarment-pepper",
+      "body_html": "",
+      "published_at": "2026-07-16T13:23:41+02:00",
+      "created_at": "2026-07-16T12:38:15+02:00",
+      "updated_at": "2026-07-27T16:12:48+02:00",
+      "vendor": "La Cave Des Papilles",
+      "product_type": "",
+      "tags": [
+        "bouteille",
+        "France",
+        "rouge",
+        "Vins"
+      ],
+      "variants": [
+        {
+          "id": 58242899214671,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "31.00",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16231173259599,
+          "created_at": "2026-07-16T12:38:15+02:00",
+          "updated_at": "2026-07-27T16:12:48+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 94418637062479,
+          "created_at": "2026-07-16T13:22:06+02:00",
+          "position": 1,
+          "updated_at": "2026-07-16T13:22:09+02:00",
+          "product_id": 16231173259599,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0943/1515/1695/files/sarment.png?v=1784200929",
+          "width": 560,
+          "height": 2000
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16231167820111,
+      "title": "Minette",
+      "handle": "minette",
+      "body_html": "",
+      "published_at": "2026-07-16T13:23:41+02:00",
+      "created_at": "2026-07-16T12:36:29+02:00",
+      "updated_at": "2026-07-27T16:12:48+02:00",
+      "vendor": "La Cave Des Papilles",
+      "product_type": "",
+      "tags": [
+        "bouteille",
+        "France",
+        "rouge",
+        "Vins"
+      ],
+      "variants": [
+        {
+          "id": 58242889056591,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "37.00",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16231167820111,
+          "created_at": "2026-07-16T12:36:30+02:00",
+          "updated_at": "2026-07-27T16:12:48+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 94418633294159,
+          "created_at": "2026-07-16T13:21:44+02:00",
+          "position": 1,
+          "updated_at": "2026-07-16T13:21:47+02:00",
+          "product_id": 16231167820111,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0943/1515/1695/files/minette.png?v=1784200907",
+          "width": 560,
+          "height": 2000
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16231161135439,
+      "title": "V\u00e9nus",
+      "handle": "venus",
+      "body_html": "",
+      "published_at": "2026-07-16T13:23:40+02:00",
+      "created_at": "2026-07-16T12:34:26+02:00",
+      "updated_at": "2026-07-27T16:12:48+02:00",
+      "vendor": "La Cave Des Papilles",
+      "product_type": "",
+      "tags": [
+        "bouteille",
+        "France",
+        "rouge",
+        "Vins"
+      ],
+      "variants": [
+        {
+          "id": 58242877522255,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "31.00",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16231161135439,
+          "created_at": "2026-07-16T12:34:26+02:00",
+          "updated_at": "2026-07-27T16:12:48+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 94418628149583,
+          "created_at": "2026-07-16T13:21:22+02:00",
+          "position": 1,
+          "updated_at": "2026-07-16T13:21:25+02:00",
+          "product_id": 16231161135439,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0943/1515/1695/files/venus.png?v=1784200885",
+          "width": 560,
+          "height": 2000
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16231154057551,
+      "title": "Jus de vilain",
+      "handle": "jus-de-vilain",
+      "body_html": "",
+      "published_at": "2026-07-16T13:23:40+02:00",
+      "created_at": "2026-07-16T12:32:01+02:00",
+      "updated_at": "2026-07-27T16:12:48+02:00",
+      "vendor": "La Cave Des Papilles",
+      "product_type": "",
+      "tags": [
+        "bouteille",
+        "France",
+        "rouge",
+        "Vins"
+      ],
+      "variants": [
+        {
+          "id": 58242867888463,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "26.00",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16231154057551,
+          "created_at": "2026-07-16T12:32:01+02:00",
+          "updated_at": "2026-07-27T16:12:48+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 94418620973391,
+          "created_at": "2026-07-16T13:20:56+02:00",
+          "position": 1,
+          "updated_at": "2026-07-16T13:20:59+02:00",
+          "product_id": 16231154057551,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0943/1515/1695/files/jus-de-vilain.png?v=1784200859",
+          "width": 560,
+          "height": 2000
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16231149830479,
+      "title": "Jeu de Vin",
+      "handle": "jeu-de-vin",
+      "body_html": "",
+      "published_at": "2026-07-16T13:23:40+02:00",
+      "created_at": "2026-07-16T12:30:37+02:00",
+      "updated_at": "2026-07-27T16:12:48+02:00",
+      "vendor": "La Cave Des Papilles",
+      "product_type": "",
+      "tags": [
+        "bouteille",
+        "France",
+        "rouge",
+        "Vins"
+      ],
+      "variants": [
+        {
+          "id": 58242862514511,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "26.00",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16231149830479,
+          "created_at": "2026-07-16T12:30:37+02:00",
+          "updated_at": "2026-07-27T16:12:48+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 94418612715855,
+          "created_at": "2026-07-16T13:20:35+02:00",
+          "position": 1,
+          "updated_at": "2026-07-16T13:20:38+02:00",
+          "product_id": 16231149830479,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0943/1515/1695/files/jeu-de-vin.png?v=1784200838",
+          "width": 560,
+          "height": 2000
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16231146651983,
+      "title": "La Verticalit\u00e9 des Larmes",
+      "handle": "la-verticalite-des-larmes",
+      "body_html": "",
+      "published_at": "2026-07-16T13:23:39+02:00",
+      "created_at": "2026-07-16T12:29:30+02:00",
+      "updated_at": "2026-07-27T16:12:48+02:00",
+      "vendor": "La Cave Des Papilles",
+      "product_type": "",
+      "tags": [
+        "bouteille",
+        "France",
+        "rouge",
+        "Vins"
+      ],
+      "variants": [
+        {
+          "id": 58242857238863,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "21.00",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16231146651983,
+          "created_at": "2026-07-16T12:29:30+02:00",
+          "updated_at": "2026-07-27T16:12:48+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 94418602295631,
+          "created_at": "2026-07-16T13:20:12+02:00",
+          "position": 1,
+          "updated_at": "2026-07-16T13:20:15+02:00",
+          "product_id": 16231146651983,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0943/1515/1695/files/larmes.png?v=1784200815",
+          "width": 560,
+          "height": 2000
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16231107920207,
+      "title": "Zohra",
+      "handle": "zohra",
+      "body_html": "",
+      "published_at": "2026-07-16T13:23:39+02:00",
+      "created_at": "2026-07-16T12:16:41+02:00",
+      "updated_at": "2026-07-27T16:12:48+02:00",
+      "vendor": "La Cave Des Papilles",
+      "product_type": "",
+      "tags": [
+        "bouteille",
+        "France",
+        "rouge",
+        "Vins"
+      ],
+      "variants": [
+        {
+          "id": 58242796978511,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "21.00",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16231107920207,
+          "created_at": "2026-07-16T12:16:41+02:00",
+          "updated_at": "2026-07-27T16:12:48+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 94418593448271,
+          "created_at": "2026-07-16T13:19:49+02:00",
+          "position": 1,
+          "updated_at": "2026-07-16T13:19:52+02:00",
+          "product_id": 16231107920207,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0943/1515/1695/files/zohra.png?v=1784200792",
+          "width": 560,
+          "height": 2000
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16231097139535,
+      "title": "T\u00eate de Bulle",
+      "handle": "tete-de-bulle",
+      "body_html": "",
+      "published_at": "2026-07-16T13:23:38+02:00",
+      "created_at": "2026-07-16T12:13:15+02:00",
+      "updated_at": "2026-07-27T16:12:48+02:00",
+      "vendor": "La Cave Des Papilles",
+      "product_type": "",
+      "tags": [
+        "bouteille",
+        "effervescent",
+        "France",
+        "ros\u00e9",
+        "Vins",
+        "\u00e9ffervescents"
+      ],
+      "variants": [
+        {
+          "id": 58242780102991,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "26.00",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16231097139535,
+          "created_at": "2026-07-16T12:13:16+02:00",
+          "updated_at": "2026-07-27T16:12:48+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 94418585092431,
+          "created_at": "2026-07-16T13:19:29+02:00",
+          "position": 1,
+          "updated_at": "2026-07-16T13:19:32+02:00",
+          "product_id": 16231097139535,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0943/1515/1695/files/bulles_7ea409ce-c367-4ca8-b313-95e0a706a979.png?v=1784200772",
+          "width": 560,
+          "height": 2000
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15504844292431,
+      "title": "Poign\u00e9e de Raisins",
+      "handle": "poignee-de-raisins",
+      "body_html": "",
+      "published_at": "2026-07-16T11:44:54+02:00",
+      "created_at": "2025-07-24T12:59:21+02:00",
+      "updated_at": "2026-07-27T16:12:48+02:00",
+      "vendor": "la cave des papilles",
+      "product_type": "",
+      "tags": [
+        "bouteille",
+        "France",
+        "rouge",
+        "Vall\u00e9e du Rh\u00f4ne",
+        "Vins"
+      ],
+      "variants": [
+        {
+          "id": 55607480779087,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "14.80",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15504844292431,
+          "created_at": "2025-07-24T12:59:21+02:00",
+          "updated_at": "2026-07-27T16:12:48+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 94416896819535,
+          "created_at": "2026-07-16T11:44:37+02:00",
+          "position": 1,
+          "updated_at": "2026-07-16T11:44:40+02:00",
+          "product_id": 15504844292431,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0943/1515/1695/files/poignee.png?v=1784195080",
+          "width": 560,
+          "height": 2000
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16192932544847,
+      "title": "Aqueux 4",
+      "handle": "aqueux-4",
+      "body_html": "",
+      "published_at": "2026-07-10T20:27:31+02:00",
+      "created_at": "2026-07-02T16:27:49+02:00",
+      "updated_at": "2026-07-27T16:12:48+02:00",
+      "vendor": "La Cave Des Papilles",
+      "product_type": "",
+      "tags": [
+        "Auvergne",
+        "bouteille",
+        "France",
+        "rouge",
+        "Vins"
+      ],
+      "variants": [
+        {
+          "id": 58120564474191,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "29.00",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16192932544847,
+          "created_at": "2026-07-02T16:27:50+02:00",
+          "updated_at": "2026-07-27T16:12:48+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 94346226172239,
+          "created_at": "2026-07-10T20:27:24+02:00",
+          "position": 1,
+          "updated_at": "2026-07-10T20:27:28+02:00",
+          "product_id": 16192932544847,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0943/1515/1695/files/litre_6d0b4f88-6d6d-4226-b927-b1defb9624d6.png?v=1783708048",
+          "width": 560,
+          "height": 2000
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16192944406863,
+      "title": "Sunny-D",
+      "handle": "sunny-d",
+      "body_html": "",
+      "published_at": "2026-07-10T20:27:03+02:00",
+      "created_at": "2026-07-02T16:30:05+02:00",
+      "updated_at": "2026-07-27T16:12:48+02:00",
+      "vendor": "La Cave Des Papilles",
+      "product_type": "",
+      "tags": [
+        "Auvergne",
+        "bouteille",
+        "France",
+        "orange",
+        "Vins"
+      ],
+      "variants": [
+        {
+          "id": 58120577810767,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "25.00",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16192944406863,
+          "created_at": "2026-07-02T16:30:06+02:00",
+          "updated_at": "2026-07-27T16:12:48+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 94346222960975,
+          "created_at": "2026-07-10T20:26:56+02:00",
+          "position": 1,
+          "updated_at": "2026-07-10T20:27:00+02:00",
+          "product_id": 16192944406863,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0943/1515/1695/files/pet-2.png?v=1783708020",
+          "width": 560,
+          "height": 2000
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16192954433871,
+      "title": "Dayglow Colour Corp",
+      "handle": "dayglow-colour-corp",
+      "body_html": "",
+      "published_at": "2026-07-10T20:25:19+02:00",
+      "created_at": "2026-07-02T16:32:21+02:00",
+      "updated_at": "2026-07-27T16:12:48+02:00",
+      "vendor": "La Cave Des Papilles",
+      "product_type": "",
+      "tags": [
+        "Auvergne",
+        "bouteille",
+        "France",
+        "orange",
+        "Vins"
+      ],
+      "variants": [
+        {
+          "id": 58120595833167,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "22.00",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16192954433871,
+          "created_at": "2026-07-02T16:32:21+02:00",
+          "updated_at": "2026-07-27T16:12:48+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 94346200809807,
+          "created_at": "2026-07-10T20:25:01+02:00",
+          "position": 1,
+          "updated_at": "2026-07-10T20:25:04+02:00",
+          "product_id": 16192954433871,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0943/1515/1695/files/pet_e05e4644-2ec1-4b1a-88d7-9046d8d78572.png?v=1783707904",
+          "width": 560,
+          "height": 2000
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16192969343311,
+      "title": "Dayglow Colour Corp",
+      "handle": "dayglow-colour-corp-1",
+      "body_html": "",
+      "published_at": "2026-07-10T20:24:31+02:00",
+      "created_at": "2026-07-02T16:34:54+02:00",
+      "updated_at": "2026-07-27T16:12:48+02:00",
+      "vendor": "La Cave Des Papilles",
+      "product_type": "",
+      "tags": [
+        "Auvergne",
+        "France",
+        "magnum",
+        "Magnums & J\u00e9roboams",
+        "orange",
+        "Vins"
+      ],
+      "variants": [
+        {
+          "id": 58120620245327,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "46.00",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16192969343311,
+          "created_at": "2026-07-02T16:34:54+02:00",
+          "updated_at": "2026-07-27T16:12:48+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 94346193502543,
+          "created_at": "2026-07-10T20:24:14+02:00",
+          "position": 1,
+          "updated_at": "2026-07-10T20:24:18+02:00",
+          "product_id": 16192969343311,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0943/1515/1695/files/mag_5ebc2bd6-e9bb-4ebe-bbea-6800a866fa92.png?v=1783707858",
+          "width": 560,
+          "height": 2000
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16213843673423,
+      "title": "Les Graviers",
+      "handle": "les-graviers-2",
+      "body_html": "",
+      "published_at": "2026-07-10T20:22:57+02:00",
+      "created_at": "2026-07-10T20:21:58+02:00",
+      "updated_at": "2026-07-27T16:12:48+02:00",
+      "vendor": "la cave des papilles",
+      "product_type": "",
+      "tags": [
+        "Blanc",
+        "France",
+        "Jura",
+        "j\u00e9roboam",
+        "Magnums & J\u00e9roboams",
+        "Vins"
+      ],
+      "variants": [
+        {
+          "id": 58194718163279,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "219.00",
+          "grams": 6000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 16213843673423,
+          "created_at": "2026-07-10T20:21:58+02:00",
+          "updated_at": "2026-07-27T16:12:48+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 94346170532175,
+          "created_at": "2026-07-10T20:22:25+02:00",
+          "position": 1,
+          "updated_at": "2026-07-10T20:22:29+02:00",
+          "product_id": 16213843673423,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0943/1515/1695/files/jero-graviers.png?v=1783707749",
+          "width": 560,
+          "height": 2000
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15503110570319,
+      "title": "DD",
+      "handle": "dd",
+      "body_html": "",
+      "published_at": "2026-07-10T20:19:35+02:00",
+      "created_at": "2025-07-23T12:07:12+02:00",
+      "updated_at": "2026-07-27T16:12:48+02:00",
+      "vendor": "la cave des papilles",
+      "product_type": "",
+      "tags": [
+        "bouteille",
+        "France",
+        "Jura",
+        "rouge",
+        "Vins"
+      ],
+      "variants": [
+        {
+          "id": 55598237253967,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "28.80",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15503110570319,
+          "created_at": "2025-07-23T12:07:12+02:00",
+          "updated_at": "2026-07-27T16:12:48+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 94346132848975,
+          "created_at": "2026-07-10T20:19:25+02:00",
+          "position": 1,
+          "updated_at": "2026-07-10T20:19:28+02:00",
+          "product_id": 15503110570319,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0943/1515/1695/files/dd.png?v=1783707568",
+          "width": 560,
+          "height": 2000
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15503118074191,
+      "title": "Patchwork",
+      "handle": "patchwork",
+      "body_html": "",
+      "published_at": "2026-07-10T20:18:48+02:00",
+      "created_at": "2025-07-23T12:11:33+02:00",
+      "updated_at": "2026-07-27T16:12:48+02:00",
+      "vendor": "la cave des papilles",
+      "product_type": "",
+      "tags": [
+        "Blanc",
+        "bouteille",
+        "France",
+        "Jura",
+        "Vins"
+      ],
+      "variants": [
+        {
+          "id": 55598250393935,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "28.20",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15503118074191,
+          "created_at": "2025-07-23T12:11:34+02:00",
+          "updated_at": "2026-07-27T16:12:48+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 94346122559823,
+          "created_at": "2026-07-10T20:18:35+02:00",
+          "position": 1,
+          "updated_at": "2026-07-10T20:18:40+02:00",
+          "product_id": 15503118074191,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0943/1515/1695/files/patchwork_448ac7e2-bb2d-4df8-a628-533cd77663a8.png?v=1783707520",
+          "width": 560,
+          "height": 2000
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15503121482063,
+      "title": "Rose Massale",
+      "handle": "rose-massale",
+      "body_html": "",
+      "published_at": "2026-07-10T20:18:02+02:00",
+      "created_at": "2025-07-23T12:13:09+02:00",
+      "updated_at": "2026-07-27T16:12:48+02:00",
+      "vendor": "la cave des papilles",
+      "product_type": "",
+      "tags": [
+        "Blanc",
+        "bouteille",
+        "France",
+        "Jura",
+        "Vins"
+      ],
+      "variants": [
+        {
+          "id": 55598257242447,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "52.00",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15503121482063,
+          "created_at": "2025-07-23T12:13:09+02:00",
+          "updated_at": "2026-07-27T16:12:48+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 94346112663887,
+          "created_at": "2026-07-10T20:17:51+02:00",
+          "position": 1,
+          "updated_at": "2026-07-10T20:17:55+02:00",
+          "product_id": 15503121482063,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0943/1515/1695/files/massale_ceeb4c44-91b0-42bd-8e0d-887e2de9c636.png?v=1783707475",
+          "width": 560,
+          "height": 2000
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15503126888783,
+      "title": "Savagnin Ouill\u00e9",
+      "handle": "savagnin-ouille",
+      "body_html": "",
+      "published_at": "2026-07-10T20:17:21+02:00",
+      "created_at": "2025-07-23T12:17:20+02:00",
+      "updated_at": "2026-07-27T16:12:48+02:00",
+      "vendor": "la cave des papilles",
+      "product_type": "",
+      "tags": [
+        "Blanc",
+        "France",
+        "Jura",
+        "magnum",
+        "Vins"
+      ],
+      "variants": [
+        {
+          "id": 55598271070543,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "96.60",
+          "grams": 3000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15503126888783,
+          "created_at": "2025-07-23T12:17:20+02:00",
+          "updated_at": "2026-07-27T16:12:48+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 81712402956623,
+          "created_at": "2025-07-23T12:18:40+02:00",
+          "position": 1,
+          "updated_at": "2025-07-23T12:18:44+02:00",
+          "product_id": 15503126888783,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0943/1515/1695/files/SAV-OUILLE-20.png?v=1753265924",
+          "width": 280,
+          "height": 1000
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
         }
       ]
     }

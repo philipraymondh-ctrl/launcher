@@ -1,13 +1,4545 @@
 [
   {
-    "_note": "PLACEHOLDER fixture. Platform (woocommerce) is CONFIRMED -- probe run 30255245592 fetched and parsed this shop's real woocommerce endpoint. The product data below is NOT real; the actual response body is in that run's probe-results artifact and should replace this file before the shop is set verified:true.",
-    "name": "PLACEHOLDER PRODUCT -- replace with a real listing",
-    "permalink": "https://example.invalid/placeholder",
-    "short_description": "Placeholder.",
-    "description": "",
+    "_fixture_note": "Real response from this shop, trimmed for the repo: 25 of 100 products, keeping every tracked-producer match (0) plus a sample. Captured by probe.py --apply.",
+    "id": 37650,
+    "name": "Tre Pini Puglia Fiano Dom\u00e8",
+    "slug": "tre-pini-puglia-fiano-dome",
+    "parent": 0,
+    "type": "simple",
+    "variation": "",
+    "permalink": "https://www.biowijnclub.nl/wijnen/biologische-wijn/tre-pini-puglia-fiano-dome/",
+    "sku": "86925",
+    "short_description": "",
+    "description": "<p>Fiano, een wat onbekend druivenras uit zuidelijk Itali\u00eb. Maar de moeite waard! Met aroma&#8217;s die doen denken aan gele bloemen, honing, mediterrane struiken, gele pruimen. In de mond keren de geuren van de neus terug, vergezeld van levendige zuren en een fijne lengte.</p>",
+    "on_sale": false,
     "prices": {
-      "price": "0",
-      "currency_minor_unit": 2
+      "price": "1250",
+      "regular_price": "1250",
+      "sale_price": "1250",
+      "price_range": null,
+      "currency_code": "EUR",
+      "currency_symbol": "\u20ac",
+      "currency_minor_unit": 2,
+      "currency_decimal_separator": ",",
+      "currency_thousand_separator": ".",
+      "currency_prefix": "\u20ac",
+      "currency_suffix": ""
+    },
+    "price_html": "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&euro;</span>12,50</span>",
+    "average_rating": "0",
+    "review_count": 0,
+    "images": [
+      {
+        "id": 37653,
+        "src": "https://www.biowijnclub.nl/wp-content/uploads/Tre-Pini-Dome-Fiano-nieuw.webp",
+        "thumbnail": "https://www.biowijnclub.nl/wp-content/uploads/Tre-Pini-Dome-Fiano-nieuw.webp",
+        "srcset": "https://www.biowijnclub.nl/wp-content/uploads/Tre-Pini-Dome-Fiano-nieuw.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/Tre-Pini-Dome-Fiano-nieuw-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/Tre-Pini-Dome-Fiano-nieuw-89x200.webp 89w",
+        "sizes": "(max-width: 200px) 100vw, 200px",
+        "thumbnail_srcset": "https://www.biowijnclub.nl/wp-content/uploads/Tre-Pini-Dome-Fiano-nieuw.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/Tre-Pini-Dome-Fiano-nieuw-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/Tre-Pini-Dome-Fiano-nieuw-89x200.webp 89w",
+        "thumbnail_sizes": "(max-width: 200px) 100vw, 200px",
+        "name": "Tre Pini Dome Fiano nieuw",
+        "alt": ""
+      }
+    ],
+    "categories": [
+      {
+        "id": 57,
+        "name": "Witte wijnen",
+        "slug": "biologische-witte-wijnen",
+        "link": "https://www.biowijnclub.nl/wijn/biologische-witte-wijnen/"
+      }
+    ],
+    "tags": [
+      {
+        "id": 146,
+        "name": "Nieuw",
+        "slug": "nieuw",
+        "link": "https://www.biowijnclub.nl/product-tag/nieuw/"
+      }
+    ],
+    "brands": [],
+    "attributes": [
+      {
+        "id": 4,
+        "name": "Wijnhuis",
+        "taxonomy": "pa_wijnhuis",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 514,
+            "name": "Tre Pini",
+            "slug": "tre-pini"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "name": "Inhoud",
+        "taxonomy": "pa_inhoud",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 157,
+            "name": "750ml",
+            "slug": "750ml"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "name": "Afsluiting",
+        "taxonomy": "pa_afsluiting",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 156,
+            "name": "kurk",
+            "slug": "kurk"
+          }
+        ]
+      }
+    ],
+    "variations": [],
+    "grouped_products": [],
+    "has_options": false,
+    "is_purchasable": true,
+    "is_in_stock": true,
+    "is_on_backorder": false,
+    "low_stock_remaining": null,
+    "stock_availability": {
+      "text": "Op voorraad",
+      "class": "in-stock"
+    },
+    "sold_individually": false,
+    "weight": "",
+    "dimensions": {
+      "length": "",
+      "width": "",
+      "height": ""
+    },
+    "formatted_weight": "Niet beschikbaar",
+    "formatted_dimensions": "Niet beschikbaar",
+    "add_to_cart": {
+      "text": "In winkelmand",
+      "description": "Toevoegen aan winkelwagen: &ldquo;Tre Pini Puglia Fiano Dom\u00e8&ldquo;",
+      "url": "/wp-json/wc/store/v1/products?per_page=100&#038;add-to-cart=37650",
+      "single_text": "In winkelmand",
+      "minimum": 1,
+      "maximum": 95,
+      "multiple_of": 1
+    },
+    "is_password_protected": false,
+    "extensions": {
+      "woocommerce_google_analytics_integration": {
+        "identifier": "86925"
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products/37650",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products"
+        }
+      ],
+      "related": [
+        {
+          "embeddable": true,
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products?related=37650&per_page=10"
+        }
+      ]
+    }
+  },
+  {
+    "id": 37649,
+    "name": "Kleintje Tre Pini Crae Primitivo 375ml",
+    "slug": "kleintje-tre-pini-crae-primitivo-375ml",
+    "parent": 0,
+    "type": "simple",
+    "variation": "",
+    "permalink": "https://www.biowijnclub.nl/wijnen/biologische-wijn/kleintje-tre-pini-crae-primitivo-375ml/",
+    "sku": "62625h",
+    "short_description": "",
+    "description": "<p>Tre Pini is al generaties lang in handen van dezelfde familie. Op dit moment staat Rocco aan het roer, samen met zijn vrouw Giovanna. Verkochten ze vroeger de wijn aan andere wijnhuizen, sinds 2011 maken ze zelf hun wijn. De wijngaarden liggen in het wijngebied Gioia del Colle DOC, op een hoogte van zo&#8217;n 320 meter. Door het verschil tussen dag- en nachttemperatuur rijpen de druiven langzaam en rustig. Dit zorgt voor verfijnde aroma\u2019s en aangename zuren. Daarnaast kom je rood fruit, wat kruidnagel en zachte tannines tegen.</p>\n<p><strong>Let op: dit is een flesje van 375ml!</strong></p>",
+    "on_sale": false,
+    "prices": {
+      "price": "735",
+      "regular_price": "735",
+      "sale_price": "735",
+      "price_range": null,
+      "currency_code": "EUR",
+      "currency_symbol": "\u20ac",
+      "currency_minor_unit": 2,
+      "currency_decimal_separator": ",",
+      "currency_thousand_separator": ".",
+      "currency_prefix": "\u20ac",
+      "currency_suffix": ""
+    },
+    "price_html": "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&euro;</span>7,35</span>",
+    "average_rating": "0",
+    "review_count": 0,
+    "images": [
+      {
+        "id": 32809,
+        "src": "https://www.biowijnclub.nl/wp-content/uploads/CRAE-new-label-448-x-200.jpg",
+        "thumbnail": "https://www.biowijnclub.nl/wp-content/uploads/CRAE-new-label-448-x-200.jpg",
+        "srcset": "https://www.biowijnclub.nl/wp-content/uploads//CRAE-new-label-448-x-200.jpg 200w, https://www.biowijnclub.nl/wp-content/uploads//CRAE-new-label-448-x-200-134x300.jpg 134w, https://www.biowijnclub.nl/wp-content/uploads//CRAE-new-label-448-x-200-89x200.jpg 89w",
+        "sizes": "(max-width: 200px) 100vw, 200px",
+        "thumbnail_srcset": "https://www.biowijnclub.nl/wp-content/uploads//CRAE-new-label-448-x-200.jpg 200w, https://www.biowijnclub.nl/wp-content/uploads//CRAE-new-label-448-x-200-134x300.jpg 134w, https://www.biowijnclub.nl/wp-content/uploads//CRAE-new-label-448-x-200-89x200.jpg 89w",
+        "thumbnail_sizes": "(max-width: 200px) 100vw, 200px",
+        "name": "CRAE &#8211; new label 448 x 200",
+        "alt": ""
+      }
+    ],
+    "categories": [
+      {
+        "id": 570,
+        "name": "Kleine flesjes wijn",
+        "slug": "kleine-flesjes-wijn-biologisch",
+        "link": "https://www.biowijnclub.nl/wijn/kleine-flesjes-wijn-biologisch/"
+      },
+      {
+        "id": 59,
+        "name": "Rode wijnen",
+        "slug": "biologische-rode-wijnen",
+        "link": "https://www.biowijnclub.nl/wijn/biologische-rode-wijnen/"
+      }
+    ],
+    "tags": [],
+    "brands": [],
+    "attributes": [
+      {
+        "id": 4,
+        "name": "Wijnhuis",
+        "taxonomy": "pa_wijnhuis",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 514,
+            "name": "Tre Pini",
+            "slug": "tre-pini"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Jaargang",
+        "taxonomy": "pa_wijnjaar",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 682,
+            "name": "2025",
+            "slug": "2025"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "name": "Afsluiting",
+        "taxonomy": "pa_afsluiting",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 198,
+            "name": "schroefdop",
+            "slug": "schroefdop"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "name": "Inhoud",
+        "taxonomy": "pa_inhoud",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 168,
+            "name": "375ml",
+            "slug": "375ml"
+          }
+        ]
+      }
+    ],
+    "variations": [],
+    "grouped_products": [],
+    "has_options": false,
+    "is_purchasable": true,
+    "is_in_stock": true,
+    "is_on_backorder": false,
+    "low_stock_remaining": null,
+    "stock_availability": {
+      "text": "Op voorraad",
+      "class": "in-stock"
+    },
+    "sold_individually": false,
+    "weight": "",
+    "dimensions": {
+      "length": "",
+      "width": "",
+      "height": ""
+    },
+    "formatted_weight": "Niet beschikbaar",
+    "formatted_dimensions": "Niet beschikbaar",
+    "add_to_cart": {
+      "text": "In winkelmand",
+      "description": "Toevoegen aan winkelwagen: &ldquo;Kleintje Tre Pini Crae Primitivo 375ml&ldquo;",
+      "url": "/wp-json/wc/store/v1/products?per_page=100&#038;add-to-cart=37649",
+      "single_text": "In winkelmand",
+      "minimum": 1,
+      "maximum": 54,
+      "multiple_of": 1
+    },
+    "is_password_protected": false,
+    "extensions": {
+      "woocommerce_google_analytics_integration": {
+        "identifier": "62625h"
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products/37649",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products"
+        }
+      ],
+      "related": [
+        {
+          "embeddable": true,
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products?related=37649&per_page=10"
+        }
+      ]
+    }
+  },
+  {
+    "id": 37492,
+    "name": "Clos Troteligotte K-Libre CSbV",
+    "slug": "clos-troteligotte-k-libre-csbv",
+    "parent": 0,
+    "type": "simple",
+    "variation": "",
+    "permalink": "https://www.biowijnclub.nl/wijnen/biodynamische-wijn/clos-troteligotte-k-libre-csbv/",
+    "sku": "83524",
+    "short_description": "",
+    "description": "<p>Geen chenin blanc in deze K-Libre deze keer, maar een blend van de druiven chardonnay, sauvignon blanc en viognier. Ook dit is een Vin de France, want deze druiven zijn niet toegestaan in de appellatie Cahors.</p>\n<p>Tijdens de vinificatie wordt geen sulfiet toegevoegd, en er wordt gewerkt met druifeigen gisten.</p>\n<p>In de wijn tref je aroma&#8217;s van groene appel en citrus aan. De wijn is fris, mineraal, strak, maar vriendelijk.</p>\n<p>De Grote Hamersma: &#8220;&#8230; bij deze C.Sb.V-blend praten we over beroemde druiven die we wereldwijd overal aantreffen. De supermarkten staan er weliswaar vol mee. Maar dit is andere koek. Hier proef je de hand van de wijnmaker. In dit geval de rijzende ster van Cahors: Emmanuel Rybinski.\u00a0Deze biodynamische natuurwijn moet uiteraard worden gedeclasseerd tot het niveau van Vin de France. Maar wat maakt Emmanuel dat nou uit. Hij maakt liever wat hij lekker vindt. En daar zijn we hem dankbaar voor.\u00a0Een geheel eigen stijl. Kleine knipoog naar de Jura. Ziltig, mineralig, open. Rijk, fris, vriendelijk. Eigen, puur, zuiver. Als dit de toekomst van Cahors is, reserveer dan maar alvast een stoel voor ons.&#8221;</p>",
+    "on_sale": false,
+    "prices": {
+      "price": "1795",
+      "regular_price": "1795",
+      "sale_price": "1795",
+      "price_range": null,
+      "currency_code": "EUR",
+      "currency_symbol": "\u20ac",
+      "currency_minor_unit": 2,
+      "currency_decimal_separator": ",",
+      "currency_thousand_separator": ".",
+      "currency_prefix": "\u20ac",
+      "currency_suffix": ""
+    },
+    "price_html": "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&euro;</span>17,95</span>",
+    "average_rating": "0",
+    "review_count": 0,
+    "images": [
+      {
+        "id": 37498,
+        "src": "https://www.biowijnclub.nl/wp-content/uploads/CSBV_DGH-95.webp",
+        "thumbnail": "https://www.biowijnclub.nl/wp-content/uploads/CSBV_DGH-95.webp",
+        "srcset": "https://www.biowijnclub.nl/wp-content/uploads/CSBV_DGH-95.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/CSBV_DGH-95-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/CSBV_DGH-95-89x200.webp 89w",
+        "sizes": "(max-width: 200px) 100vw, 200px",
+        "thumbnail_srcset": "https://www.biowijnclub.nl/wp-content/uploads/CSBV_DGH-95.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/CSBV_DGH-95-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/CSBV_DGH-95-89x200.webp 89w",
+        "thumbnail_sizes": "(max-width: 200px) 100vw, 200px",
+        "name": "CSBV_DGH 9,5",
+        "alt": ""
+      }
+    ],
+    "categories": [
+      {
+        "id": 559,
+        "name": "Biodynamische wijn",
+        "slug": "biodynamische-wijn",
+        "link": "https://www.biowijnclub.nl/wijn/biodynamische-wijn/"
+      },
+      {
+        "id": 557,
+        "name": "Vegan wijn",
+        "slug": "vegan",
+        "link": "https://www.biowijnclub.nl/wijn/vegan/"
+      },
+      {
+        "id": 57,
+        "name": "Witte wijnen",
+        "slug": "biologische-witte-wijnen",
+        "link": "https://www.biowijnclub.nl/wijn/biologische-witte-wijnen/"
+      }
+    ],
+    "tags": [
+      {
+        "id": 145,
+        "name": "De Grote Hamersma",
+        "slug": "de-grote-hamersma",
+        "link": "https://www.biowijnclub.nl/product-tag/de-grote-hamersma/"
+      },
+      {
+        "id": 146,
+        "name": "Nieuw",
+        "slug": "nieuw",
+        "link": "https://www.biowijnclub.nl/product-tag/nieuw/"
+      }
+    ],
+    "brands": [],
+    "attributes": [
+      {
+        "id": 4,
+        "name": "Wijnhuis",
+        "taxonomy": "pa_wijnhuis",
+        "has_variations": true,
+        "terms": [
+          {
+            "id": 650,
+            "name": "Clos Troteligotte",
+            "slug": "clos-troteligotte"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "name": "Waardering",
+        "taxonomy": "pa_waardering",
+        "has_variations": true,
+        "terms": [
+          {
+            "id": 664,
+            "name": "DGH: 9,5",
+            "slug": "dgh-95"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Jaargang",
+        "taxonomy": "pa_wijnjaar",
+        "has_variations": true,
+        "terms": [
+          {
+            "id": 671,
+            "name": "2024",
+            "slug": "2024"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "name": "Inhoud",
+        "taxonomy": "pa_inhoud",
+        "has_variations": true,
+        "terms": [
+          {
+            "id": 157,
+            "name": "750ml",
+            "slug": "750ml"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "name": "Afsluiting",
+        "taxonomy": "pa_afsluiting",
+        "has_variations": true,
+        "terms": [
+          {
+            "id": 156,
+            "name": "kurk",
+            "slug": "kurk"
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "name": "NB",
+        "taxonomy": "pa_nb",
+        "has_variations": true,
+        "terms": [
+          {
+            "id": 270,
+            "name": "biologisch-dynamisch",
+            "slug": "biologisch-dynamisch"
+          },
+          {
+            "id": 159,
+            "name": "vegan",
+            "slug": "vegan"
+          }
+        ]
+      }
+    ],
+    "variations": [],
+    "grouped_products": [],
+    "has_options": false,
+    "is_purchasable": true,
+    "is_in_stock": true,
+    "is_on_backorder": false,
+    "low_stock_remaining": null,
+    "stock_availability": {
+      "text": "Op voorraad",
+      "class": "in-stock"
+    },
+    "sold_individually": false,
+    "weight": "",
+    "dimensions": {
+      "length": "",
+      "width": "",
+      "height": ""
+    },
+    "formatted_weight": "Niet beschikbaar",
+    "formatted_dimensions": "Niet beschikbaar",
+    "add_to_cart": {
+      "text": "In winkelmand",
+      "description": "Toevoegen aan winkelwagen: &ldquo;Clos Troteligotte K-Libre CSbV&ldquo;",
+      "url": "/wp-json/wc/store/v1/products?per_page=100&#038;add-to-cart=37492",
+      "single_text": "In winkelmand",
+      "minimum": 1,
+      "maximum": 69,
+      "multiple_of": 1
+    },
+    "is_password_protected": false,
+    "extensions": {
+      "woocommerce_google_analytics_integration": {
+        "identifier": "83524"
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products/37492",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products"
+        }
+      ],
+      "related": [
+        {
+          "embeddable": true,
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products?related=37492&per_page=10"
+        }
+      ]
+    }
+  },
+  {
+    "id": 37475,
+    "name": "Le Grand Verdus La Petite Merlotte",
+    "slug": "le-grand-verdus-la-petite-merlotte",
+    "parent": 0,
+    "type": "simple",
+    "variation": "",
+    "permalink": "https://www.biowijnclub.nl/wijnen/biologische-wijn/le-grand-verdus-la-petite-merlotte/",
+    "sku": "86323",
+    "short_description": "",
+    "description": "<p>Wat een fijne merlot, deze Petite Merlotte! In de neus tonen van sappige zwarte kersen, cassiscr\u00e8me, viooltjes en zoete kruiden. In de smaak veel rood fruit, kruiden en zoethout. Soepel, rond en fluweelzacht.</p>",
+    "on_sale": false,
+    "prices": {
+      "price": "980",
+      "regular_price": "980",
+      "sale_price": "980",
+      "price_range": null,
+      "currency_code": "EUR",
+      "currency_symbol": "\u20ac",
+      "currency_minor_unit": 2,
+      "currency_decimal_separator": ",",
+      "currency_thousand_separator": ".",
+      "currency_prefix": "\u20ac",
+      "currency_suffix": ""
+    },
+    "price_html": "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&euro;</span>9,80</span>",
+    "average_rating": "0",
+    "review_count": 0,
+    "images": [
+      {
+        "id": 37479,
+        "src": "https://www.biowijnclub.nl/wp-content/uploads/La-Petite-Merlotte-nieuw.webp",
+        "thumbnail": "https://www.biowijnclub.nl/wp-content/uploads/La-Petite-Merlotte-nieuw.webp",
+        "srcset": "https://www.biowijnclub.nl/wp-content/uploads/La-Petite-Merlotte-nieuw.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/La-Petite-Merlotte-nieuw-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/La-Petite-Merlotte-nieuw-89x200.webp 89w",
+        "sizes": "(max-width: 200px) 100vw, 200px",
+        "thumbnail_srcset": "https://www.biowijnclub.nl/wp-content/uploads/La-Petite-Merlotte-nieuw.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/La-Petite-Merlotte-nieuw-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/La-Petite-Merlotte-nieuw-89x200.webp 89w",
+        "thumbnail_sizes": "(max-width: 200px) 100vw, 200px",
+        "name": "La Petite Merlotte nieuw",
+        "alt": ""
+      }
+    ],
+    "categories": [
+      {
+        "id": 59,
+        "name": "Rode wijnen",
+        "slug": "biologische-rode-wijnen",
+        "link": "https://www.biowijnclub.nl/wijn/biologische-rode-wijnen/"
+      }
+    ],
+    "tags": [
+      {
+        "id": 146,
+        "name": "Nieuw",
+        "slug": "nieuw",
+        "link": "https://www.biowijnclub.nl/product-tag/nieuw/"
+      }
+    ],
+    "brands": [],
+    "attributes": [
+      {
+        "id": 4,
+        "name": "Wijnhuis",
+        "taxonomy": "pa_wijnhuis",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 666,
+            "name": "Ch\u00e2teau Le Grand Verdus",
+            "slug": "chateau-le-grand-verdus"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Jaargang",
+        "taxonomy": "pa_wijnjaar",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 642,
+            "name": "2023",
+            "slug": "2023"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "name": "Inhoud",
+        "taxonomy": "pa_inhoud",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 157,
+            "name": "750ml",
+            "slug": "750ml"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "name": "Afsluiting",
+        "taxonomy": "pa_afsluiting",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 156,
+            "name": "kurk",
+            "slug": "kurk"
+          }
+        ]
+      }
+    ],
+    "variations": [],
+    "grouped_products": [],
+    "has_options": false,
+    "is_purchasable": true,
+    "is_in_stock": true,
+    "is_on_backorder": false,
+    "low_stock_remaining": null,
+    "stock_availability": {
+      "text": "Op voorraad",
+      "class": "in-stock"
+    },
+    "sold_individually": false,
+    "weight": "",
+    "dimensions": {
+      "length": "",
+      "width": "",
+      "height": ""
+    },
+    "formatted_weight": "Niet beschikbaar",
+    "formatted_dimensions": "Niet beschikbaar",
+    "add_to_cart": {
+      "text": "In winkelmand",
+      "description": "Toevoegen aan winkelwagen: &ldquo;Le Grand Verdus La Petite Merlotte&ldquo;",
+      "url": "/wp-json/wc/store/v1/products?per_page=100&#038;add-to-cart=37475",
+      "single_text": "In winkelmand",
+      "minimum": 1,
+      "maximum": 94,
+      "multiple_of": 1
+    },
+    "is_password_protected": false,
+    "extensions": {
+      "woocommerce_google_analytics_integration": {
+        "identifier": "86323"
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products/37475",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products"
+        }
+      ],
+      "related": [
+        {
+          "embeddable": true,
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products?related=37475&per_page=10"
+        }
+      ]
+    }
+  },
+  {
+    "id": 37469,
+    "name": "Arivi&#8217; Pecorino",
+    "slug": "arivi-pecorino",
+    "parent": 0,
+    "type": "simple",
+    "variation": "",
+    "permalink": "https://www.biowijnclub.nl/wijnen/biologische-wijn/arivi-pecorino/",
+    "sku": "83825",
+    "short_description": "",
+    "description": "<p>Fruitige, frisse wijn uit de Abruzzen, wat ligt aan de oostkust van Itali\u00eb. De wijn heeft aroma&#8217;s van citrus, groene appel, peer en geurige bloesems. In de smaak delicate citroen, acaciabloesem, een vleugje honing. De afdronk is lekker fris, met een licht bittertje. Licht, fris, iets rondeur. Lekker bij asperges!</p>",
+    "on_sale": false,
+    "prices": {
+      "price": "995",
+      "regular_price": "995",
+      "sale_price": "995",
+      "price_range": null,
+      "currency_code": "EUR",
+      "currency_symbol": "\u20ac",
+      "currency_minor_unit": 2,
+      "currency_decimal_separator": ",",
+      "currency_thousand_separator": ".",
+      "currency_prefix": "\u20ac",
+      "currency_suffix": ""
+    },
+    "price_html": "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&euro;</span>9,95</span>",
+    "average_rating": "0",
+    "review_count": 0,
+    "images": [
+      {
+        "id": 37472,
+        "src": "https://www.biowijnclub.nl/wp-content/uploads/Arivi-Pecorino-nieuw.webp",
+        "thumbnail": "https://www.biowijnclub.nl/wp-content/uploads/Arivi-Pecorino-nieuw.webp",
+        "srcset": "https://www.biowijnclub.nl/wp-content/uploads/Arivi-Pecorino-nieuw.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/Arivi-Pecorino-nieuw-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/Arivi-Pecorino-nieuw-89x200.webp 89w",
+        "sizes": "(max-width: 200px) 100vw, 200px",
+        "thumbnail_srcset": "https://www.biowijnclub.nl/wp-content/uploads/Arivi-Pecorino-nieuw.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/Arivi-Pecorino-nieuw-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/Arivi-Pecorino-nieuw-89x200.webp 89w",
+        "thumbnail_sizes": "(max-width: 200px) 100vw, 200px",
+        "name": "Arivi Pecorino nieuw",
+        "alt": ""
+      }
+    ],
+    "categories": [
+      {
+        "id": 57,
+        "name": "Witte wijnen",
+        "slug": "biologische-witte-wijnen",
+        "link": "https://www.biowijnclub.nl/wijn/biologische-witte-wijnen/"
+      }
+    ],
+    "tags": [
+      {
+        "id": 146,
+        "name": "Nieuw",
+        "slug": "nieuw",
+        "link": "https://www.biowijnclub.nl/product-tag/nieuw/"
+      }
+    ],
+    "brands": [],
+    "attributes": [
+      {
+        "id": 4,
+        "name": "Wijnhuis",
+        "taxonomy": "pa_wijnhuis",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 696,
+            "name": "Cantina Sociale Sannitica",
+            "slug": "cantina-sociale-sannitica"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Jaargang",
+        "taxonomy": "pa_wijnjaar",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 682,
+            "name": "2025",
+            "slug": "2025"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "name": "Inhoud",
+        "taxonomy": "pa_inhoud",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 157,
+            "name": "750ml",
+            "slug": "750ml"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "name": "Afsluiting",
+        "taxonomy": "pa_afsluiting",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 198,
+            "name": "schroefdop",
+            "slug": "schroefdop"
+          }
+        ]
+      }
+    ],
+    "variations": [],
+    "grouped_products": [],
+    "has_options": false,
+    "is_purchasable": true,
+    "is_in_stock": true,
+    "is_on_backorder": false,
+    "low_stock_remaining": null,
+    "stock_availability": {
+      "text": "Op voorraad",
+      "class": "in-stock"
+    },
+    "sold_individually": false,
+    "weight": "",
+    "dimensions": {
+      "length": "",
+      "width": "",
+      "height": ""
+    },
+    "formatted_weight": "Niet beschikbaar",
+    "formatted_dimensions": "Niet beschikbaar",
+    "add_to_cart": {
+      "text": "In winkelmand",
+      "description": "Toevoegen aan winkelwagen: &ldquo;Arivi&#8217; Pecorino&ldquo;",
+      "url": "/wp-json/wc/store/v1/products?per_page=100&#038;add-to-cart=37469",
+      "single_text": "In winkelmand",
+      "minimum": 1,
+      "maximum": 280,
+      "multiple_of": 1
+    },
+    "is_password_protected": false,
+    "extensions": {
+      "woocommerce_google_analytics_integration": {
+        "identifier": "83825"
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products/37469",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products"
+        }
+      ],
+      "related": [
+        {
+          "embeddable": true,
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products?related=37469&per_page=10"
+        }
+      ]
+    }
+  },
+  {
+    "id": 37463,
+    "name": "Bravo Douro Tinto",
+    "slug": "bravo-douro-tinto",
+    "parent": 0,
+    "type": "simple",
+    "variation": "",
+    "permalink": "https://www.biowijnclub.nl/wijnen/biologische-wijn/bravo-douro-tinto/",
+    "sku": "86600",
+    "short_description": "",
+    "description": "<p>De aroma&#8217;s van deze wijn zijn floraal en fruitig, denk aan viooltjes, frambozen, kers, rode pruim. Je komt ook zwarte peper tegen. In de mond is de wijn elegant, zacht, soepel en verfrissend. De afdronk is licht kruidig en verfijnd.</p>",
+    "on_sale": false,
+    "prices": {
+      "price": "1160",
+      "regular_price": "1160",
+      "sale_price": "1160",
+      "price_range": null,
+      "currency_code": "EUR",
+      "currency_symbol": "\u20ac",
+      "currency_minor_unit": 2,
+      "currency_decimal_separator": ",",
+      "currency_thousand_separator": ".",
+      "currency_prefix": "\u20ac",
+      "currency_suffix": ""
+    },
+    "price_html": "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&euro;</span>11,60</span>",
+    "average_rating": "0",
+    "review_count": 0,
+    "images": [
+      {
+        "id": 37467,
+        "src": "https://www.biowijnclub.nl/wp-content/uploads/Bravo-Douro-Tinto-nieuw.webp",
+        "thumbnail": "https://www.biowijnclub.nl/wp-content/uploads/Bravo-Douro-Tinto-nieuw.webp",
+        "srcset": "https://www.biowijnclub.nl/wp-content/uploads/Bravo-Douro-Tinto-nieuw.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/Bravo-Douro-Tinto-nieuw-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/Bravo-Douro-Tinto-nieuw-89x200.webp 89w",
+        "sizes": "(max-width: 200px) 100vw, 200px",
+        "thumbnail_srcset": "https://www.biowijnclub.nl/wp-content/uploads/Bravo-Douro-Tinto-nieuw.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/Bravo-Douro-Tinto-nieuw-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/Bravo-Douro-Tinto-nieuw-89x200.webp 89w",
+        "thumbnail_sizes": "(max-width: 200px) 100vw, 200px",
+        "name": "Bravo Douro Tinto nieuw",
+        "alt": ""
+      }
+    ],
+    "categories": [
+      {
+        "id": 59,
+        "name": "Rode wijnen",
+        "slug": "biologische-rode-wijnen",
+        "link": "https://www.biowijnclub.nl/wijn/biologische-rode-wijnen/"
+      }
+    ],
+    "tags": [
+      {
+        "id": 146,
+        "name": "Nieuw",
+        "slug": "nieuw",
+        "link": "https://www.biowijnclub.nl/product-tag/nieuw/"
+      }
+    ],
+    "brands": [],
+    "attributes": [
+      {
+        "id": 4,
+        "name": "Wijnhuis",
+        "taxonomy": "pa_wijnhuis",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 659,
+            "name": "Quinta da Trovisca",
+            "slug": "quinta-da-trovisca"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "name": "Inhoud",
+        "taxonomy": "pa_inhoud",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 157,
+            "name": "750ml",
+            "slug": "750ml"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "name": "Afsluiting",
+        "taxonomy": "pa_afsluiting",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 156,
+            "name": "kurk",
+            "slug": "kurk"
+          }
+        ]
+      }
+    ],
+    "variations": [],
+    "grouped_products": [],
+    "has_options": false,
+    "is_purchasable": true,
+    "is_in_stock": true,
+    "is_on_backorder": false,
+    "low_stock_remaining": null,
+    "stock_availability": {
+      "text": "Op voorraad",
+      "class": "in-stock"
+    },
+    "sold_individually": false,
+    "weight": "",
+    "dimensions": {
+      "length": "",
+      "width": "",
+      "height": ""
+    },
+    "formatted_weight": "Niet beschikbaar",
+    "formatted_dimensions": "Niet beschikbaar",
+    "add_to_cart": {
+      "text": "In winkelmand",
+      "description": "Toevoegen aan winkelwagen: &ldquo;Bravo Douro Tinto&ldquo;",
+      "url": "/wp-json/wc/store/v1/products?per_page=100&#038;add-to-cart=37463",
+      "single_text": "In winkelmand",
+      "minimum": 1,
+      "maximum": 93,
+      "multiple_of": 1
+    },
+    "is_password_protected": false,
+    "extensions": {
+      "woocommerce_google_analytics_integration": {
+        "identifier": "86600"
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products/37463",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products"
+        }
+      ],
+      "related": [
+        {
+          "embeddable": true,
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products?related=37463&per_page=10"
+        }
+      ]
+    }
+  },
+  {
+    "id": 37457,
+    "name": "Bravo Douro Blanco",
+    "slug": "bravo-douro-blanco",
+    "parent": 0,
+    "type": "simple",
+    "variation": "",
+    "permalink": "https://www.biowijnclub.nl/wijnen/biologische-wijn/bravo-douro-blanco/",
+    "sku": "86524",
+    "short_description": "",
+    "description": "<p>Leuke wijn uit de Douro vallei, waar ook de port vandaan komt.\u00a0Deze wijn heeft aroma&#8217;s van limoen en steenfruit, is soepel en fris, licht mineraal, met levendige zuren.</p>\n<p>De wijn is vernoemd naar de mythische beschermer van de Douro, Bravo!</p>",
+    "on_sale": false,
+    "prices": {
+      "price": "1160",
+      "regular_price": "1160",
+      "sale_price": "1160",
+      "price_range": null,
+      "currency_code": "EUR",
+      "currency_symbol": "\u20ac",
+      "currency_minor_unit": 2,
+      "currency_decimal_separator": ",",
+      "currency_thousand_separator": ".",
+      "currency_prefix": "\u20ac",
+      "currency_suffix": ""
+    },
+    "price_html": "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&euro;</span>11,60</span>",
+    "average_rating": "0",
+    "review_count": 0,
+    "images": [
+      {
+        "id": 37461,
+        "src": "https://www.biowijnclub.nl/wp-content/uploads/Bravo-Douro-Blanco-nieuw.webp",
+        "thumbnail": "https://www.biowijnclub.nl/wp-content/uploads/Bravo-Douro-Blanco-nieuw.webp",
+        "srcset": "https://www.biowijnclub.nl/wp-content/uploads/Bravo-Douro-Blanco-nieuw.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/Bravo-Douro-Blanco-nieuw-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/Bravo-Douro-Blanco-nieuw-89x200.webp 89w",
+        "sizes": "(max-width: 200px) 100vw, 200px",
+        "thumbnail_srcset": "https://www.biowijnclub.nl/wp-content/uploads/Bravo-Douro-Blanco-nieuw.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/Bravo-Douro-Blanco-nieuw-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/Bravo-Douro-Blanco-nieuw-89x200.webp 89w",
+        "thumbnail_sizes": "(max-width: 200px) 100vw, 200px",
+        "name": "Bravo Douro Blanco nieuw",
+        "alt": ""
+      }
+    ],
+    "categories": [
+      {
+        "id": 57,
+        "name": "Witte wijnen",
+        "slug": "biologische-witte-wijnen",
+        "link": "https://www.biowijnclub.nl/wijn/biologische-witte-wijnen/"
+      }
+    ],
+    "tags": [
+      {
+        "id": 146,
+        "name": "Nieuw",
+        "slug": "nieuw",
+        "link": "https://www.biowijnclub.nl/product-tag/nieuw/"
+      }
+    ],
+    "brands": [],
+    "attributes": [
+      {
+        "id": 4,
+        "name": "Wijnhuis",
+        "taxonomy": "pa_wijnhuis",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 659,
+            "name": "Quinta da Trovisca",
+            "slug": "quinta-da-trovisca"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Jaargang",
+        "taxonomy": "pa_wijnjaar",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 671,
+            "name": "2024",
+            "slug": "2024"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "name": "Inhoud",
+        "taxonomy": "pa_inhoud",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 157,
+            "name": "750ml",
+            "slug": "750ml"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "name": "Afsluiting",
+        "taxonomy": "pa_afsluiting",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 156,
+            "name": "kurk",
+            "slug": "kurk"
+          }
+        ]
+      }
+    ],
+    "variations": [],
+    "grouped_products": [],
+    "has_options": false,
+    "is_purchasable": true,
+    "is_in_stock": true,
+    "is_on_backorder": false,
+    "low_stock_remaining": null,
+    "stock_availability": {
+      "text": "Op voorraad",
+      "class": "in-stock"
+    },
+    "sold_individually": false,
+    "weight": "",
+    "dimensions": {
+      "length": "",
+      "width": "",
+      "height": ""
+    },
+    "formatted_weight": "Niet beschikbaar",
+    "formatted_dimensions": "Niet beschikbaar",
+    "add_to_cart": {
+      "text": "In winkelmand",
+      "description": "Toevoegen aan winkelwagen: &ldquo;Bravo Douro Blanco&ldquo;",
+      "url": "/wp-json/wc/store/v1/products?per_page=100&#038;add-to-cart=37457",
+      "single_text": "In winkelmand",
+      "minimum": 1,
+      "maximum": 94,
+      "multiple_of": 1
+    },
+    "is_password_protected": false,
+    "extensions": {
+      "woocommerce_google_analytics_integration": {
+        "identifier": "86524"
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products/37457",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products"
+        }
+      ],
+      "related": [
+        {
+          "embeddable": true,
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products?related=37457&per_page=10"
+        }
+      ]
+    }
+  },
+  {
+    "id": 37451,
+    "name": "Cinso Bistro Cinsault",
+    "slug": "cinso-bistro-cinsault",
+    "parent": 0,
+    "type": "simple",
+    "variation": "",
+    "permalink": "https://www.biowijnclub.nl/wijnen/biodynamische-wijn/cinso-bistro-cinsault/",
+    "sku": "86700",
+    "short_description": "",
+    "description": "<p>Wat een aangename wijn is dit. Licht (slechts 11,5%), soepel, sappig en zacht. Veel rood fruit (kers, framboos, aardbei), kruidige ondertonen. Een echte &#8220;vin de plaisir&#8221;.</p>\n<p><strong>Licht gekoeld drinken!</strong></p>",
+    "on_sale": false,
+    "prices": {
+      "price": "1150",
+      "regular_price": "1150",
+      "sale_price": "1150",
+      "price_range": null,
+      "currency_code": "EUR",
+      "currency_symbol": "\u20ac",
+      "currency_minor_unit": 2,
+      "currency_decimal_separator": ",",
+      "currency_thousand_separator": ".",
+      "currency_prefix": "\u20ac",
+      "currency_suffix": ""
+    },
+    "price_html": "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&euro;</span>11,50</span>",
+    "average_rating": "0",
+    "review_count": 0,
+    "images": [
+      {
+        "id": 37455,
+        "src": "https://www.biowijnclub.nl/wp-content/uploads/Cinso-Bistro-nieuw.webp",
+        "thumbnail": "https://www.biowijnclub.nl/wp-content/uploads/Cinso-Bistro-nieuw.webp",
+        "srcset": "https://www.biowijnclub.nl/wp-content/uploads/Cinso-Bistro-nieuw.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/Cinso-Bistro-nieuw-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/Cinso-Bistro-nieuw-89x200.webp 89w",
+        "sizes": "(max-width: 200px) 100vw, 200px",
+        "thumbnail_srcset": "https://www.biowijnclub.nl/wp-content/uploads/Cinso-Bistro-nieuw.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/Cinso-Bistro-nieuw-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/Cinso-Bistro-nieuw-89x200.webp 89w",
+        "thumbnail_sizes": "(max-width: 200px) 100vw, 200px",
+        "name": "Cinso Bistro nieuw",
+        "alt": ""
+      }
+    ],
+    "categories": [
+      {
+        "id": 559,
+        "name": "Biodynamische wijn",
+        "slug": "biodynamische-wijn",
+        "link": "https://www.biowijnclub.nl/wijn/biodynamische-wijn/"
+      },
+      {
+        "id": 59,
+        "name": "Rode wijnen",
+        "slug": "biologische-rode-wijnen",
+        "link": "https://www.biowijnclub.nl/wijn/biologische-rode-wijnen/"
+      },
+      {
+        "id": 557,
+        "name": "Vegan wijn",
+        "slug": "vegan",
+        "link": "https://www.biowijnclub.nl/wijn/vegan/"
+      }
+    ],
+    "tags": [
+      {
+        "id": 146,
+        "name": "Nieuw",
+        "slug": "nieuw",
+        "link": "https://www.biowijnclub.nl/product-tag/nieuw/"
+      }
+    ],
+    "brands": [],
+    "attributes": [
+      {
+        "id": 4,
+        "name": "Wijnhuis",
+        "taxonomy": "pa_wijnhuis",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 694,
+            "name": "Ch\u00e2teau Beaubois",
+            "slug": "chateau-beaubois"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "name": "Inhoud",
+        "taxonomy": "pa_inhoud",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 157,
+            "name": "750ml",
+            "slug": "750ml"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "name": "Afsluiting",
+        "taxonomy": "pa_afsluiting",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 156,
+            "name": "kurk",
+            "slug": "kurk"
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "name": "NB",
+        "taxonomy": "pa_nb",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 270,
+            "name": "biologisch-dynamisch",
+            "slug": "biologisch-dynamisch"
+          },
+          {
+            "id": 159,
+            "name": "vegan",
+            "slug": "vegan"
+          }
+        ]
+      }
+    ],
+    "variations": [],
+    "grouped_products": [],
+    "has_options": false,
+    "is_purchasable": true,
+    "is_in_stock": true,
+    "is_on_backorder": false,
+    "low_stock_remaining": null,
+    "stock_availability": {
+      "text": "Op voorraad",
+      "class": "in-stock"
+    },
+    "sold_individually": false,
+    "weight": "",
+    "dimensions": {
+      "length": "",
+      "width": "",
+      "height": ""
+    },
+    "formatted_weight": "Niet beschikbaar",
+    "formatted_dimensions": "Niet beschikbaar",
+    "add_to_cart": {
+      "text": "In winkelmand",
+      "description": "Toevoegen aan winkelwagen: &ldquo;Cinso Bistro Cinsault&ldquo;",
+      "url": "/wp-json/wc/store/v1/products?per_page=100&#038;add-to-cart=37451",
+      "single_text": "In winkelmand",
+      "minimum": 1,
+      "maximum": 95,
+      "multiple_of": 1
+    },
+    "is_password_protected": false,
+    "extensions": {
+      "woocommerce_google_analytics_integration": {
+        "identifier": "86700"
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products/37451",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products"
+        }
+      ],
+      "related": [
+        {
+          "embeddable": true,
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products?related=37451&per_page=10"
+        }
+      ]
+    }
+  },
+  {
+    "id": 37446,
+    "name": "Zorro de Menade Godello",
+    "slug": "zorro-de-menade-godello",
+    "parent": 0,
+    "type": "simple",
+    "variation": "",
+    "permalink": "https://www.biowijnclub.nl/wijnen/biologische-wijn/zorro-de-menade-godello/",
+    "sku": "",
+    "short_description": "",
+    "description": "<p>Hier worden we blij van bij Biowijnclub! Eindelijk een biologische godello, een druif die al lang op ons verlanglijstje stond, maar moeilijk te vinden was. En dan ook nog eens van het wijnhuis Menade, waar de verrukkelijke verdejo vandaan komt.</p>\n<p>De wijn heeft aroma&#8217;s van appel, peer, bloemen, is fris en rond. Enige tijd op de fijne lies geeft de wijn wat extra body.</p>",
+    "on_sale": false,
+    "prices": {
+      "price": "1495",
+      "regular_price": "1495",
+      "sale_price": "1495",
+      "price_range": null,
+      "currency_code": "EUR",
+      "currency_symbol": "\u20ac",
+      "currency_minor_unit": 2,
+      "currency_decimal_separator": ",",
+      "currency_thousand_separator": ".",
+      "currency_prefix": "\u20ac",
+      "currency_suffix": ""
+    },
+    "price_html": "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&euro;</span>14,95</span>",
+    "average_rating": "0",
+    "review_count": 0,
+    "images": [
+      {
+        "id": 37450,
+        "src": "https://www.biowijnclub.nl/wp-content/uploads/Godello-Menade-nieuw.webp",
+        "thumbnail": "https://www.biowijnclub.nl/wp-content/uploads/Godello-Menade-nieuw.webp",
+        "srcset": "https://www.biowijnclub.nl/wp-content/uploads/Godello-Menade-nieuw.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/Godello-Menade-nieuw-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/Godello-Menade-nieuw-89x200.webp 89w",
+        "sizes": "(max-width: 200px) 100vw, 200px",
+        "thumbnail_srcset": "https://www.biowijnclub.nl/wp-content/uploads/Godello-Menade-nieuw.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/Godello-Menade-nieuw-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/Godello-Menade-nieuw-89x200.webp 89w",
+        "thumbnail_sizes": "(max-width: 200px) 100vw, 200px",
+        "name": "Godello Menade nieuw",
+        "alt": ""
+      }
+    ],
+    "categories": [
+      {
+        "id": 57,
+        "name": "Witte wijnen",
+        "slug": "biologische-witte-wijnen",
+        "link": "https://www.biowijnclub.nl/wijn/biologische-witte-wijnen/"
+      }
+    ],
+    "tags": [
+      {
+        "id": 146,
+        "name": "Nieuw",
+        "slug": "nieuw",
+        "link": "https://www.biowijnclub.nl/product-tag/nieuw/"
+      }
+    ],
+    "brands": [],
+    "attributes": [
+      {
+        "id": 4,
+        "name": "Wijnhuis",
+        "taxonomy": "pa_wijnhuis",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 142,
+            "name": "Bodegas Menade",
+            "slug": "bodegas-menade"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Jaargang",
+        "taxonomy": "pa_wijnjaar",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 682,
+            "name": "2025",
+            "slug": "2025"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "name": "Inhoud",
+        "taxonomy": "pa_inhoud",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 157,
+            "name": "750ml",
+            "slug": "750ml"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "name": "Afsluiting",
+        "taxonomy": "pa_afsluiting",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 156,
+            "name": "kurk",
+            "slug": "kurk"
+          }
+        ]
+      }
+    ],
+    "variations": [],
+    "grouped_products": [],
+    "has_options": false,
+    "is_purchasable": true,
+    "is_in_stock": true,
+    "is_on_backorder": false,
+    "low_stock_remaining": null,
+    "stock_availability": {
+      "text": "Op voorraad",
+      "class": "in-stock"
+    },
+    "sold_individually": false,
+    "weight": "",
+    "dimensions": {
+      "length": "",
+      "width": "",
+      "height": ""
+    },
+    "formatted_weight": "Niet beschikbaar",
+    "formatted_dimensions": "Niet beschikbaar",
+    "add_to_cart": {
+      "text": "In winkelmand",
+      "description": "Toevoegen aan winkelwagen: &ldquo;Zorro de Menade Godello&ldquo;",
+      "url": "/wp-json/wc/store/v1/products?per_page=100&#038;add-to-cart=37446",
+      "single_text": "In winkelmand",
+      "minimum": 1,
+      "maximum": 100,
+      "multiple_of": 1
+    },
+    "is_password_protected": false,
+    "extensions": {
+      "woocommerce_google_analytics_integration": {
+        "identifier": "#37446"
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products/37446",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products"
+        }
+      ],
+      "related": [
+        {
+          "embeddable": true,
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products?related=37446&per_page=10"
+        }
+      ]
+    }
+  },
+  {
+    "id": 37432,
+    "name": "Domaine Ortola Nautica Blanc",
+    "slug": "domaine-ortola-nautica-blanc",
+    "parent": 0,
+    "type": "simple",
+    "variation": "",
+    "permalink": "https://www.biowijnclub.nl/wijnen/biodynamische-wijn/domaine-ortola-nautica-blanc/",
+    "sku": "86025",
+    "short_description": "",
+    "description": "<p>De helft van de wijn ondergaat de vinificatie in houten vaten, wat een subtiele houttoets aan de wijn geeft. Met aroma&#8217;s van geel fruit, perziken en abrikozen. De wijn heeft fra\u00eecheur, is mooi in balans, met lengte.</p>",
+    "on_sale": false,
+    "prices": {
+      "price": "1495",
+      "regular_price": "1495",
+      "sale_price": "1495",
+      "price_range": null,
+      "currency_code": "EUR",
+      "currency_symbol": "\u20ac",
+      "currency_minor_unit": 2,
+      "currency_decimal_separator": ",",
+      "currency_thousand_separator": ".",
+      "currency_prefix": "\u20ac",
+      "currency_suffix": ""
+    },
+    "price_html": "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&euro;</span>14,95</span>",
+    "average_rating": "0",
+    "review_count": 0,
+    "images": [
+      {
+        "id": 37436,
+        "src": "https://www.biowijnclub.nl/wp-content/uploads/Nautica-blanc-nieuw.webp",
+        "thumbnail": "https://www.biowijnclub.nl/wp-content/uploads/Nautica-blanc-nieuw.webp",
+        "srcset": "https://www.biowijnclub.nl/wp-content/uploads/Nautica-blanc-nieuw.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/Nautica-blanc-nieuw-125x300.webp 125w, https://www.biowijnclub.nl/wp-content/uploads/Nautica-blanc-nieuw-83x200.webp 83w",
+        "sizes": "(max-width: 200px) 100vw, 200px",
+        "thumbnail_srcset": "https://www.biowijnclub.nl/wp-content/uploads/Nautica-blanc-nieuw.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/Nautica-blanc-nieuw-125x300.webp 125w, https://www.biowijnclub.nl/wp-content/uploads/Nautica-blanc-nieuw-83x200.webp 83w",
+        "thumbnail_sizes": "(max-width: 200px) 100vw, 200px",
+        "name": "Nautica-blanc nieuw",
+        "alt": ""
+      }
+    ],
+    "categories": [
+      {
+        "id": 559,
+        "name": "Biodynamische wijn",
+        "slug": "biodynamische-wijn",
+        "link": "https://www.biowijnclub.nl/wijn/biodynamische-wijn/"
+      },
+      {
+        "id": 557,
+        "name": "Vegan wijn",
+        "slug": "vegan",
+        "link": "https://www.biowijnclub.nl/wijn/vegan/"
+      },
+      {
+        "id": 57,
+        "name": "Witte wijnen",
+        "slug": "biologische-witte-wijnen",
+        "link": "https://www.biowijnclub.nl/wijn/biologische-witte-wijnen/"
+      }
+    ],
+    "tags": [
+      {
+        "id": 146,
+        "name": "Nieuw",
+        "slug": "nieuw",
+        "link": "https://www.biowijnclub.nl/product-tag/nieuw/"
+      }
+    ],
+    "brands": [],
+    "attributes": [
+      {
+        "id": 4,
+        "name": "Wijnhuis",
+        "taxonomy": "pa_wijnhuis",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 646,
+            "name": "Domaine Ortola",
+            "slug": "domaine-ortola"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Jaargang",
+        "taxonomy": "pa_wijnjaar",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 682,
+            "name": "2025",
+            "slug": "2025"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "name": "Inhoud",
+        "taxonomy": "pa_inhoud",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 157,
+            "name": "750ml",
+            "slug": "750ml"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "name": "Afsluiting",
+        "taxonomy": "pa_afsluiting",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 156,
+            "name": "kurk",
+            "slug": "kurk"
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "name": "NB",
+        "taxonomy": "pa_nb",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 270,
+            "name": "biologisch-dynamisch",
+            "slug": "biologisch-dynamisch"
+          },
+          {
+            "id": 159,
+            "name": "vegan",
+            "slug": "vegan"
+          }
+        ]
+      }
+    ],
+    "variations": [],
+    "grouped_products": [],
+    "has_options": false,
+    "is_purchasable": true,
+    "is_in_stock": true,
+    "is_on_backorder": false,
+    "low_stock_remaining": null,
+    "stock_availability": {
+      "text": "Op voorraad",
+      "class": "in-stock"
+    },
+    "sold_individually": false,
+    "weight": "",
+    "dimensions": {
+      "length": "",
+      "width": "",
+      "height": ""
+    },
+    "formatted_weight": "Niet beschikbaar",
+    "formatted_dimensions": "Niet beschikbaar",
+    "add_to_cart": {
+      "text": "In winkelmand",
+      "description": "Toevoegen aan winkelwagen: &ldquo;Domaine Ortola Nautica Blanc&ldquo;",
+      "url": "/wp-json/wc/store/v1/products?per_page=100&#038;add-to-cart=37432",
+      "single_text": "In winkelmand",
+      "minimum": 1,
+      "maximum": 86,
+      "multiple_of": 1
+    },
+    "is_password_protected": false,
+    "extensions": {
+      "woocommerce_google_analytics_integration": {
+        "identifier": "86025"
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products/37432",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products"
+        }
+      ],
+      "related": [
+        {
+          "embeddable": true,
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products?related=37432&per_page=10"
+        }
+      ]
+    }
+  },
+  {
+    "id": 37437,
+    "name": "Domaine Ortola Au Rythme des Lunes",
+    "slug": "domaine-ortola-au-rythme-des-lunes",
+    "parent": 0,
+    "type": "simple",
+    "variation": "",
+    "permalink": "https://www.biowijnclub.nl/wijnen/biodynamische-wijn/domaine-ortola-au-rythme-des-lunes/",
+    "sku": "86124",
+    "short_description": "",
+    "description": "<p>Mooie wijn zonder toegevoegd sulfiet!\u00a0Met aantrekkelijke aroma&#8217;s van bramencoulis en frambozen, kruiden (kruidnagel, laurier) en een vleugje garrigue (waaronder tijm). De smaak is rond, zacht, soepel. Zeer aangenaam.</p>",
+    "on_sale": false,
+    "prices": {
+      "price": "1485",
+      "regular_price": "1485",
+      "sale_price": "1485",
+      "price_range": null,
+      "currency_code": "EUR",
+      "currency_symbol": "\u20ac",
+      "currency_minor_unit": 2,
+      "currency_decimal_separator": ",",
+      "currency_thousand_separator": ".",
+      "currency_prefix": "\u20ac",
+      "currency_suffix": ""
+    },
+    "price_html": "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&euro;</span>14,85</span>",
+    "average_rating": "0",
+    "review_count": 0,
+    "images": [
+      {
+        "id": 37441,
+        "src": "https://www.biowijnclub.nl/wp-content/uploads/ORTOLA-Au-rythme-des-lunes-nieuw.webp",
+        "thumbnail": "https://www.biowijnclub.nl/wp-content/uploads/ORTOLA-Au-rythme-des-lunes-nieuw.webp",
+        "srcset": "https://www.biowijnclub.nl/wp-content/uploads/ORTOLA-Au-rythme-des-lunes-nieuw.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/ORTOLA-Au-rythme-des-lunes-nieuw-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/ORTOLA-Au-rythme-des-lunes-nieuw-89x200.webp 89w",
+        "sizes": "(max-width: 200px) 100vw, 200px",
+        "thumbnail_srcset": "https://www.biowijnclub.nl/wp-content/uploads/ORTOLA-Au-rythme-des-lunes-nieuw.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/ORTOLA-Au-rythme-des-lunes-nieuw-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/ORTOLA-Au-rythme-des-lunes-nieuw-89x200.webp 89w",
+        "thumbnail_sizes": "(max-width: 200px) 100vw, 200px",
+        "name": "ORTOLA Au rythme des lunes nieuw",
+        "alt": ""
+      }
+    ],
+    "categories": [
+      {
+        "id": 559,
+        "name": "Biodynamische wijn",
+        "slug": "biodynamische-wijn",
+        "link": "https://www.biowijnclub.nl/wijn/biodynamische-wijn/"
+      },
+      {
+        "id": 59,
+        "name": "Rode wijnen",
+        "slug": "biologische-rode-wijnen",
+        "link": "https://www.biowijnclub.nl/wijn/biologische-rode-wijnen/"
+      },
+      {
+        "id": 557,
+        "name": "Vegan wijn",
+        "slug": "vegan",
+        "link": "https://www.biowijnclub.nl/wijn/vegan/"
+      },
+      {
+        "id": 556,
+        "name": "Wijn zonder sulfiet",
+        "slug": "wijn-zonder-sulfiet",
+        "link": "https://www.biowijnclub.nl/wijn/wijn-zonder-sulfiet/"
+      }
+    ],
+    "tags": [
+      {
+        "id": 146,
+        "name": "Nieuw",
+        "slug": "nieuw",
+        "link": "https://www.biowijnclub.nl/product-tag/nieuw/"
+      }
+    ],
+    "brands": [],
+    "attributes": [
+      {
+        "id": 4,
+        "name": "Wijnhuis",
+        "taxonomy": "pa_wijnhuis",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 646,
+            "name": "Domaine Ortola",
+            "slug": "domaine-ortola"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Jaargang",
+        "taxonomy": "pa_wijnjaar",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 671,
+            "name": "2024",
+            "slug": "2024"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "name": "Inhoud",
+        "taxonomy": "pa_inhoud",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 157,
+            "name": "750ml",
+            "slug": "750ml"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "name": "Afsluiting",
+        "taxonomy": "pa_afsluiting",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 156,
+            "name": "kurk",
+            "slug": "kurk"
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "name": "NB",
+        "taxonomy": "pa_nb",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 270,
+            "name": "biologisch-dynamisch",
+            "slug": "biologisch-dynamisch"
+          },
+          {
+            "id": 159,
+            "name": "vegan",
+            "slug": "vegan"
+          },
+          {
+            "id": 404,
+            "name": "zonder toegevoegd sulfiet",
+            "slug": "zonder-toegevoegd-sulfiet"
+          }
+        ]
+      }
+    ],
+    "variations": [],
+    "grouped_products": [],
+    "has_options": false,
+    "is_purchasable": true,
+    "is_in_stock": true,
+    "is_on_backorder": false,
+    "low_stock_remaining": null,
+    "stock_availability": {
+      "text": "Op voorraad",
+      "class": "in-stock"
+    },
+    "sold_individually": false,
+    "weight": "",
+    "dimensions": {
+      "length": "",
+      "width": "",
+      "height": ""
+    },
+    "formatted_weight": "Niet beschikbaar",
+    "formatted_dimensions": "Niet beschikbaar",
+    "add_to_cart": {
+      "text": "In winkelmand",
+      "description": "Toevoegen aan winkelwagen: &ldquo;Domaine Ortola Au Rythme des Lunes&ldquo;",
+      "url": "/wp-json/wc/store/v1/products?per_page=100&#038;add-to-cart=37437",
+      "single_text": "In winkelmand",
+      "minimum": 1,
+      "maximum": 53,
+      "multiple_of": 1
+    },
+    "is_password_protected": false,
+    "extensions": {
+      "woocommerce_google_analytics_integration": {
+        "identifier": "86124"
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products/37437",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products"
+        }
+      ],
+      "related": [
+        {
+          "embeddable": true,
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products?related=37437&per_page=10"
+        }
+      ]
+    }
+  },
+  {
+    "id": 37427,
+    "name": "Domaine Ortola Nautica Rouge",
+    "slug": "domaine-ortola-nautica-rouge",
+    "parent": 0,
+    "type": "simple",
+    "variation": "",
+    "permalink": "https://www.biowijnclub.nl/wijnen/biodynamische-wijn/domaine-ortola-nautica-rouge/",
+    "sku": "83323",
+    "short_description": "",
+    "description": "<p>Deze wijn heeft zo&#8217;n 9 maanden houtlagering ondergaan. De neus is expressief en combineert rood fruit en specerijen. De wijn is soepel, krachtig. met fluwelen tannines. De houtlagering is mooi verweven en overheerst niet.</p>",
+    "on_sale": false,
+    "prices": {
+      "price": "1495",
+      "regular_price": "1495",
+      "sale_price": "1495",
+      "price_range": null,
+      "currency_code": "EUR",
+      "currency_symbol": "\u20ac",
+      "currency_minor_unit": 2,
+      "currency_decimal_separator": ",",
+      "currency_thousand_separator": ".",
+      "currency_prefix": "\u20ac",
+      "currency_suffix": ""
+    },
+    "price_html": "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&euro;</span>14,95</span>",
+    "average_rating": "0",
+    "review_count": 0,
+    "images": [
+      {
+        "id": 37431,
+        "src": "https://www.biowijnclub.nl/wp-content/uploads/ORTOLA-Nautica-rouge-nieuw.webp",
+        "thumbnail": "https://www.biowijnclub.nl/wp-content/uploads/ORTOLA-Nautica-rouge-nieuw.webp",
+        "srcset": "https://www.biowijnclub.nl/wp-content/uploads/ORTOLA-Nautica-rouge-nieuw.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/ORTOLA-Nautica-rouge-nieuw-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/ORTOLA-Nautica-rouge-nieuw-89x200.webp 89w",
+        "sizes": "(max-width: 200px) 100vw, 200px",
+        "thumbnail_srcset": "https://www.biowijnclub.nl/wp-content/uploads/ORTOLA-Nautica-rouge-nieuw.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/ORTOLA-Nautica-rouge-nieuw-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/ORTOLA-Nautica-rouge-nieuw-89x200.webp 89w",
+        "thumbnail_sizes": "(max-width: 200px) 100vw, 200px",
+        "name": "ORTOLA Nautica-rouge nieuw",
+        "alt": ""
+      }
+    ],
+    "categories": [
+      {
+        "id": 559,
+        "name": "Biodynamische wijn",
+        "slug": "biodynamische-wijn",
+        "link": "https://www.biowijnclub.nl/wijn/biodynamische-wijn/"
+      },
+      {
+        "id": 59,
+        "name": "Rode wijnen",
+        "slug": "biologische-rode-wijnen",
+        "link": "https://www.biowijnclub.nl/wijn/biologische-rode-wijnen/"
+      },
+      {
+        "id": 557,
+        "name": "Vegan wijn",
+        "slug": "vegan",
+        "link": "https://www.biowijnclub.nl/wijn/vegan/"
+      }
+    ],
+    "tags": [
+      {
+        "id": 146,
+        "name": "Nieuw",
+        "slug": "nieuw",
+        "link": "https://www.biowijnclub.nl/product-tag/nieuw/"
+      }
+    ],
+    "brands": [],
+    "attributes": [
+      {
+        "id": 4,
+        "name": "Wijnhuis",
+        "taxonomy": "pa_wijnhuis",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 646,
+            "name": "Domaine Ortola",
+            "slug": "domaine-ortola"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Jaargang",
+        "taxonomy": "pa_wijnjaar",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 642,
+            "name": "2023",
+            "slug": "2023"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "name": "Inhoud",
+        "taxonomy": "pa_inhoud",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 157,
+            "name": "750ml",
+            "slug": "750ml"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "name": "Afsluiting",
+        "taxonomy": "pa_afsluiting",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 156,
+            "name": "kurk",
+            "slug": "kurk"
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "name": "NB",
+        "taxonomy": "pa_nb",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 270,
+            "name": "biologisch-dynamisch",
+            "slug": "biologisch-dynamisch"
+          }
+        ]
+      }
+    ],
+    "variations": [],
+    "grouped_products": [],
+    "has_options": false,
+    "is_purchasable": true,
+    "is_in_stock": true,
+    "is_on_backorder": false,
+    "low_stock_remaining": null,
+    "stock_availability": {
+      "text": "Op voorraad",
+      "class": "in-stock"
+    },
+    "sold_individually": false,
+    "weight": "",
+    "dimensions": {
+      "length": "",
+      "width": "",
+      "height": ""
+    },
+    "formatted_weight": "Niet beschikbaar",
+    "formatted_dimensions": "Niet beschikbaar",
+    "add_to_cart": {
+      "text": "In winkelmand",
+      "description": "Toevoegen aan winkelwagen: &ldquo;Domaine Ortola Nautica Rouge&ldquo;",
+      "url": "/wp-json/wc/store/v1/products?per_page=100&#038;add-to-cart=37427",
+      "single_text": "In winkelmand",
+      "minimum": 1,
+      "maximum": 89,
+      "multiple_of": 1
+    },
+    "is_password_protected": false,
+    "extensions": {
+      "woocommerce_google_analytics_integration": {
+        "identifier": "83323"
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products/37427",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products"
+        }
+      ],
+      "related": [
+        {
+          "embeddable": true,
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products?related=37427&per_page=10"
+        }
+      ]
+    }
+  },
+  {
+    "id": 37422,
+    "name": "Domaine Ortola Rouge",
+    "slug": "domaine-ortola-rouge",
+    "parent": 0,
+    "type": "simple",
+    "variation": "",
+    "permalink": "https://www.biowijnclub.nl/wijnen/biodynamische-wijn/domaine-ortola-rouge/",
+    "sku": "85923",
+    "short_description": "",
+    "description": "<p>Vind je de <a href=\"https://www.biowijnclub.nl/wijnen/biologische-rode-wijnen/ortola-un-moment-suspendu-rouge/\" target=\"_blank\" rel=\"noopener\">Ortola Un Moment Suspendu Rouge</a> lekker, dan ga je deze wijn ook waarderen! Met aroma&#8217;s van garrigue, laurier en donker fruit. Mooie balans, fruitig, uitbundig, soepel en sappig.</p>",
+    "on_sale": false,
+    "prices": {
+      "price": "1250",
+      "regular_price": "1250",
+      "sale_price": "1250",
+      "price_range": null,
+      "currency_code": "EUR",
+      "currency_symbol": "\u20ac",
+      "currency_minor_unit": 2,
+      "currency_decimal_separator": ",",
+      "currency_thousand_separator": ".",
+      "currency_prefix": "\u20ac",
+      "currency_suffix": ""
+    },
+    "price_html": "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&euro;</span>12,50</span>",
+    "average_rating": "0",
+    "review_count": 0,
+    "images": [
+      {
+        "id": 37425,
+        "src": "https://www.biowijnclub.nl/wp-content/uploads/Ortola-rouge-nieuw.webp",
+        "thumbnail": "https://www.biowijnclub.nl/wp-content/uploads/Ortola-rouge-nieuw.webp",
+        "srcset": "https://www.biowijnclub.nl/wp-content/uploads/Ortola-rouge-nieuw.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/Ortola-rouge-nieuw-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/Ortola-rouge-nieuw-89x200.webp 89w",
+        "sizes": "(max-width: 200px) 100vw, 200px",
+        "thumbnail_srcset": "https://www.biowijnclub.nl/wp-content/uploads/Ortola-rouge-nieuw.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/Ortola-rouge-nieuw-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/Ortola-rouge-nieuw-89x200.webp 89w",
+        "thumbnail_sizes": "(max-width: 200px) 100vw, 200px",
+        "name": "Ortola rouge nieuw",
+        "alt": ""
+      }
+    ],
+    "categories": [
+      {
+        "id": 559,
+        "name": "Biodynamische wijn",
+        "slug": "biodynamische-wijn",
+        "link": "https://www.biowijnclub.nl/wijn/biodynamische-wijn/"
+      },
+      {
+        "id": 59,
+        "name": "Rode wijnen",
+        "slug": "biologische-rode-wijnen",
+        "link": "https://www.biowijnclub.nl/wijn/biologische-rode-wijnen/"
+      },
+      {
+        "id": 557,
+        "name": "Vegan wijn",
+        "slug": "vegan",
+        "link": "https://www.biowijnclub.nl/wijn/vegan/"
+      }
+    ],
+    "tags": [
+      {
+        "id": 146,
+        "name": "Nieuw",
+        "slug": "nieuw",
+        "link": "https://www.biowijnclub.nl/product-tag/nieuw/"
+      }
+    ],
+    "brands": [],
+    "attributes": [
+      {
+        "id": 4,
+        "name": "Wijnhuis",
+        "taxonomy": "pa_wijnhuis",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 646,
+            "name": "Domaine Ortola",
+            "slug": "domaine-ortola"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Jaargang",
+        "taxonomy": "pa_wijnjaar",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 642,
+            "name": "2023",
+            "slug": "2023"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "name": "Inhoud",
+        "taxonomy": "pa_inhoud",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 157,
+            "name": "750ml",
+            "slug": "750ml"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "name": "Afsluiting",
+        "taxonomy": "pa_afsluiting",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 156,
+            "name": "kurk",
+            "slug": "kurk"
+          }
+        ]
+      }
+    ],
+    "variations": [],
+    "grouped_products": [],
+    "has_options": false,
+    "is_purchasable": true,
+    "is_in_stock": true,
+    "is_on_backorder": false,
+    "low_stock_remaining": null,
+    "stock_availability": {
+      "text": "Op voorraad",
+      "class": "in-stock"
+    },
+    "sold_individually": false,
+    "weight": "",
+    "dimensions": {
+      "length": "",
+      "width": "",
+      "height": ""
+    },
+    "formatted_weight": "Niet beschikbaar",
+    "formatted_dimensions": "Niet beschikbaar",
+    "add_to_cart": {
+      "text": "In winkelmand",
+      "description": "Toevoegen aan winkelwagen: &ldquo;Domaine Ortola Rouge&ldquo;",
+      "url": "/wp-json/wc/store/v1/products?per_page=100&#038;add-to-cart=37422",
+      "single_text": "In winkelmand",
+      "minimum": 1,
+      "maximum": 84,
+      "multiple_of": 1
+    },
+    "is_password_protected": false,
+    "extensions": {
+      "woocommerce_google_analytics_integration": {
+        "identifier": "85923"
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products/37422",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products"
+        }
+      ],
+      "related": [
+        {
+          "embeddable": true,
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products?related=37422&per_page=10"
+        }
+      ]
+    }
+  },
+  {
+    "id": 37416,
+    "name": "Domaine Ortola Ros\u00e9",
+    "slug": "domaine-ortola-rose",
+    "parent": 0,
+    "type": "simple",
+    "variation": "",
+    "permalink": "https://www.biowijnclub.nl/wijnen/biodynamische-wijn/domaine-ortola-rose/",
+    "sku": "85825",
+    "short_description": "",
+    "description": "<p>Levendige, fruitige ros\u00e9. Fijn, zacht, rood bosfruit, lengte, fra\u00eecheur.</p>",
+    "on_sale": false,
+    "prices": {
+      "price": "1250",
+      "regular_price": "1250",
+      "sale_price": "1250",
+      "price_range": null,
+      "currency_code": "EUR",
+      "currency_symbol": "\u20ac",
+      "currency_minor_unit": 2,
+      "currency_decimal_separator": ",",
+      "currency_thousand_separator": ".",
+      "currency_prefix": "\u20ac",
+      "currency_suffix": ""
+    },
+    "price_html": "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&euro;</span>12,50</span>",
+    "average_rating": "0",
+    "review_count": 0,
+    "images": [
+      {
+        "id": 37419,
+        "src": "https://www.biowijnclub.nl/wp-content/uploads/Ortola-Rose-nieuw.webp",
+        "thumbnail": "https://www.biowijnclub.nl/wp-content/uploads/Ortola-Rose-nieuw.webp",
+        "srcset": "https://www.biowijnclub.nl/wp-content/uploads/Ortola-Rose-nieuw.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/Ortola-Rose-nieuw-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/Ortola-Rose-nieuw-89x200.webp 89w",
+        "sizes": "(max-width: 200px) 100vw, 200px",
+        "thumbnail_srcset": "https://www.biowijnclub.nl/wp-content/uploads/Ortola-Rose-nieuw.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/Ortola-Rose-nieuw-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/Ortola-Rose-nieuw-89x200.webp 89w",
+        "thumbnail_sizes": "(max-width: 200px) 100vw, 200px",
+        "name": "Ortola Ros\u00e9 nieuw",
+        "alt": ""
+      }
+    ],
+    "categories": [
+      {
+        "id": 559,
+        "name": "Biodynamische wijn",
+        "slug": "biodynamische-wijn",
+        "link": "https://www.biowijnclub.nl/wijn/biodynamische-wijn/"
+      },
+      {
+        "id": 58,
+        "name": "Ros\u00e9 wijnen",
+        "slug": "biologische-rose",
+        "link": "https://www.biowijnclub.nl/wijn/biologische-rose/"
+      },
+      {
+        "id": 557,
+        "name": "Vegan wijn",
+        "slug": "vegan",
+        "link": "https://www.biowijnclub.nl/wijn/vegan/"
+      }
+    ],
+    "tags": [
+      {
+        "id": 146,
+        "name": "Nieuw",
+        "slug": "nieuw",
+        "link": "https://www.biowijnclub.nl/product-tag/nieuw/"
+      }
+    ],
+    "brands": [],
+    "attributes": [
+      {
+        "id": 4,
+        "name": "Wijnhuis",
+        "taxonomy": "pa_wijnhuis",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 646,
+            "name": "Domaine Ortola",
+            "slug": "domaine-ortola"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Jaargang",
+        "taxonomy": "pa_wijnjaar",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 682,
+            "name": "2025",
+            "slug": "2025"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "name": "Inhoud",
+        "taxonomy": "pa_inhoud",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 157,
+            "name": "750ml",
+            "slug": "750ml"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "name": "Afsluiting",
+        "taxonomy": "pa_afsluiting",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 156,
+            "name": "kurk",
+            "slug": "kurk"
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "name": "NB",
+        "taxonomy": "pa_nb",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 270,
+            "name": "biologisch-dynamisch",
+            "slug": "biologisch-dynamisch"
+          }
+        ]
+      }
+    ],
+    "variations": [],
+    "grouped_products": [],
+    "has_options": false,
+    "is_purchasable": true,
+    "is_in_stock": true,
+    "is_on_backorder": false,
+    "low_stock_remaining": null,
+    "stock_availability": {
+      "text": "Op voorraad",
+      "class": "in-stock"
+    },
+    "sold_individually": false,
+    "weight": "",
+    "dimensions": {
+      "length": "",
+      "width": "",
+      "height": ""
+    },
+    "formatted_weight": "Niet beschikbaar",
+    "formatted_dimensions": "Niet beschikbaar",
+    "add_to_cart": {
+      "text": "In winkelmand",
+      "description": "Toevoegen aan winkelwagen: &ldquo;Domaine Ortola Ros\u00e9&ldquo;",
+      "url": "/wp-json/wc/store/v1/products?per_page=100&#038;add-to-cart=37416",
+      "single_text": "In winkelmand",
+      "minimum": 1,
+      "maximum": 82,
+      "multiple_of": 1
+    },
+    "is_password_protected": false,
+    "extensions": {
+      "woocommerce_google_analytics_integration": {
+        "identifier": "85825"
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products/37416",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products"
+        }
+      ],
+      "related": [
+        {
+          "embeddable": true,
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products?related=37416&per_page=10"
+        }
+      ]
+    }
+  },
+  {
+    "id": 37411,
+    "name": "Domaine Ortola blanc",
+    "slug": "domaine-ortola-blanc",
+    "parent": 0,
+    "type": "simple",
+    "variation": "",
+    "permalink": "https://www.biowijnclub.nl/wijnen/biodynamische-wijn/domaine-ortola-blanc/",
+    "sku": "85724",
+    "short_description": "",
+    "description": "<p>Na de eerste positieve kennismaking met de Ortola Un Moment Suspendu wijnen is de tijd rijp voor uitbreiding van het assortiment. Domaine Ortola maakt namelijk veel meer lekkere wijnen, waaronder deze witte wijn. Met aroma&#8217;s van witte bloemen. Een en al finesse, fra\u00eecheur en rondeur.</p>",
+    "on_sale": false,
+    "prices": {
+      "price": "1250",
+      "regular_price": "1250",
+      "sale_price": "1250",
+      "price_range": null,
+      "currency_code": "EUR",
+      "currency_symbol": "\u20ac",
+      "currency_minor_unit": 2,
+      "currency_decimal_separator": ",",
+      "currency_thousand_separator": ".",
+      "currency_prefix": "\u20ac",
+      "currency_suffix": ""
+    },
+    "price_html": "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&euro;</span>12,50</span>",
+    "average_rating": "0",
+    "review_count": 0,
+    "images": [
+      {
+        "id": 37414,
+        "src": "https://www.biowijnclub.nl/wp-content/uploads/Ortola-Blanc-nieuw.webp",
+        "thumbnail": "https://www.biowijnclub.nl/wp-content/uploads/Ortola-Blanc-nieuw.webp",
+        "srcset": "https://www.biowijnclub.nl/wp-content/uploads/Ortola-Blanc-nieuw.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/Ortola-Blanc-nieuw-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/Ortola-Blanc-nieuw-89x200.webp 89w",
+        "sizes": "(max-width: 200px) 100vw, 200px",
+        "thumbnail_srcset": "https://www.biowijnclub.nl/wp-content/uploads/Ortola-Blanc-nieuw.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/Ortola-Blanc-nieuw-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/Ortola-Blanc-nieuw-89x200.webp 89w",
+        "thumbnail_sizes": "(max-width: 200px) 100vw, 200px",
+        "name": "Ortola Blanc nieuw",
+        "alt": ""
+      }
+    ],
+    "categories": [
+      {
+        "id": 559,
+        "name": "Biodynamische wijn",
+        "slug": "biodynamische-wijn",
+        "link": "https://www.biowijnclub.nl/wijn/biodynamische-wijn/"
+      },
+      {
+        "id": 557,
+        "name": "Vegan wijn",
+        "slug": "vegan",
+        "link": "https://www.biowijnclub.nl/wijn/vegan/"
+      },
+      {
+        "id": 57,
+        "name": "Witte wijnen",
+        "slug": "biologische-witte-wijnen",
+        "link": "https://www.biowijnclub.nl/wijn/biologische-witte-wijnen/"
+      }
+    ],
+    "tags": [
+      {
+        "id": 146,
+        "name": "Nieuw",
+        "slug": "nieuw",
+        "link": "https://www.biowijnclub.nl/product-tag/nieuw/"
+      }
+    ],
+    "brands": [],
+    "attributes": [
+      {
+        "id": 4,
+        "name": "Wijnhuis",
+        "taxonomy": "pa_wijnhuis",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 646,
+            "name": "Domaine Ortola",
+            "slug": "domaine-ortola"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Jaargang",
+        "taxonomy": "pa_wijnjaar",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 671,
+            "name": "2024",
+            "slug": "2024"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "name": "Inhoud",
+        "taxonomy": "pa_inhoud",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 157,
+            "name": "750ml",
+            "slug": "750ml"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "name": "Afsluiting",
+        "taxonomy": "pa_afsluiting",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 156,
+            "name": "kurk",
+            "slug": "kurk"
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "name": "NB",
+        "taxonomy": "pa_nb",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 270,
+            "name": "biologisch-dynamisch",
+            "slug": "biologisch-dynamisch"
+          }
+        ]
+      }
+    ],
+    "variations": [],
+    "grouped_products": [],
+    "has_options": false,
+    "is_purchasable": true,
+    "is_in_stock": true,
+    "is_on_backorder": false,
+    "low_stock_remaining": null,
+    "stock_availability": {
+      "text": "Op voorraad",
+      "class": "in-stock"
+    },
+    "sold_individually": false,
+    "weight": "",
+    "dimensions": {
+      "length": "",
+      "width": "",
+      "height": ""
+    },
+    "formatted_weight": "Niet beschikbaar",
+    "formatted_dimensions": "Niet beschikbaar",
+    "add_to_cart": {
+      "text": "In winkelmand",
+      "description": "Toevoegen aan winkelwagen: &ldquo;Domaine Ortola blanc&ldquo;",
+      "url": "/wp-json/wc/store/v1/products?per_page=100&#038;add-to-cart=37411",
+      "single_text": "In winkelmand",
+      "minimum": 1,
+      "maximum": 88,
+      "multiple_of": 1
+    },
+    "is_password_protected": false,
+    "extensions": {
+      "woocommerce_google_analytics_integration": {
+        "identifier": "85724"
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products/37411",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products"
+        }
+      ],
+      "related": [
+        {
+          "embeddable": true,
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products?related=37411&per_page=10"
+        }
+      ]
+    }
+  },
+  {
+    "id": 37293,
+    "name": "Clos Troteligotte D\u00e9lit-K",
+    "slug": "clos-troteligotte-delit-k",
+    "parent": 0,
+    "type": "simple",
+    "variation": "",
+    "permalink": "https://www.biowijnclub.nl/wijnen/biodynamische-wijn/clos-troteligotte-delit-k/",
+    "sku": "85423",
+    "short_description": "",
+    "description": "<p>Clos Troteligotte maakt fraaie wijnen! Op de wijnbeurs in Montpellier onder de indruk geraakt van deze wijn, wat is &#8216;ie verrukkelijk delicaat! Opvoeding op beton, dus alle ruimte voor het fruit.</p>\n<p>De Grote Hamersma over deze wijn: &#8220;Laten we maar eens beginnen met een stukje etymologie. Alle wijnen van de rijzende ster Emmanuel Rybinski hebben een K in de naam en een woordgrap. Zo ook de D\u00e9lit-K. Enerzijds is het een verwijzing naar het Franse woord &#8216;d\u00e9lit&#8217;. Een delict. Zo wordt het ook gezien als je Cahors maakt die zo licht en fruitig smaakt. Dat kost je het gebruik van de appellatie. Voor straf declasseren dus naar het niveau van Vin de France.\u00a0Maar met de K erbij wordt dit misdrijf opeens uitgesproken als &#8216;d\u00e9licat&#8217;. En delicaat, dat is deze natuurwijn zeker. Een echte vin de glouglou. Doordrinkrood. Slurp-slurp-op!\u00a0Zeer atypisch voor cahors dus. Zachte babybillentannines, bleke Hollandse aardbeien, krokante aalbessen, geschoren frambozen en een schreeuw om meer. Licht gekoeld serveren graag.&#8221;</p>",
+    "on_sale": false,
+    "prices": {
+      "price": "1550",
+      "regular_price": "1550",
+      "sale_price": "1550",
+      "price_range": null,
+      "currency_code": "EUR",
+      "currency_symbol": "\u20ac",
+      "currency_minor_unit": 2,
+      "currency_decimal_separator": ",",
+      "currency_thousand_separator": ".",
+      "currency_prefix": "\u20ac",
+      "currency_suffix": ""
+    },
+    "price_html": "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&euro;</span>15,50</span>",
+    "average_rating": "0",
+    "review_count": 0,
+    "images": [
+      {
+        "id": 37296,
+        "src": "https://www.biowijnclub.nl/wp-content/uploads/DELIT-K-rouge-2022-vrijstaand-DGH-9-.webp",
+        "thumbnail": "https://www.biowijnclub.nl/wp-content/uploads/DELIT-K-rouge-2022-vrijstaand-DGH-9-.webp",
+        "srcset": "https://www.biowijnclub.nl/wp-content/uploads/DELIT-K-rouge-2022-vrijstaand-DGH-9-.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/DELIT-K-rouge-2022-vrijstaand-DGH-9--134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/DELIT-K-rouge-2022-vrijstaand-DGH-9--89x200.webp 89w",
+        "sizes": "(max-width: 200px) 100vw, 200px",
+        "thumbnail_srcset": "https://www.biowijnclub.nl/wp-content/uploads/DELIT-K-rouge-2022-vrijstaand-DGH-9-.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/DELIT-K-rouge-2022-vrijstaand-DGH-9--134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/DELIT-K-rouge-2022-vrijstaand-DGH-9--89x200.webp 89w",
+        "thumbnail_sizes": "(max-width: 200px) 100vw, 200px",
+        "name": "DELIT-K-rouge 2022- vrijstaand DGH 9-",
+        "alt": ""
+      }
+    ],
+    "categories": [
+      {
+        "id": 559,
+        "name": "Biodynamische wijn",
+        "slug": "biodynamische-wijn",
+        "link": "https://www.biowijnclub.nl/wijn/biodynamische-wijn/"
+      },
+      {
+        "id": 555,
+        "name": "Natuurwijn",
+        "slug": "natuurwijn",
+        "link": "https://www.biowijnclub.nl/wijn/natuurwijn/"
+      },
+      {
+        "id": 59,
+        "name": "Rode wijnen",
+        "slug": "biologische-rode-wijnen",
+        "link": "https://www.biowijnclub.nl/wijn/biologische-rode-wijnen/"
+      },
+      {
+        "id": 557,
+        "name": "Vegan wijn",
+        "slug": "vegan",
+        "link": "https://www.biowijnclub.nl/wijn/vegan/"
+      },
+      {
+        "id": 556,
+        "name": "Wijn zonder sulfiet",
+        "slug": "wijn-zonder-sulfiet",
+        "link": "https://www.biowijnclub.nl/wijn/wijn-zonder-sulfiet/"
+      }
+    ],
+    "tags": [
+      {
+        "id": 145,
+        "name": "De Grote Hamersma",
+        "slug": "de-grote-hamersma",
+        "link": "https://www.biowijnclub.nl/product-tag/de-grote-hamersma/"
+      },
+      {
+        "id": 146,
+        "name": "Nieuw",
+        "slug": "nieuw",
+        "link": "https://www.biowijnclub.nl/product-tag/nieuw/"
+      }
+    ],
+    "brands": [],
+    "attributes": [
+      {
+        "id": 4,
+        "name": "Wijnhuis",
+        "taxonomy": "pa_wijnhuis",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 650,
+            "name": "Clos Troteligotte",
+            "slug": "clos-troteligotte"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Jaargang",
+        "taxonomy": "pa_wijnjaar",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 642,
+            "name": "2023",
+            "slug": "2023"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "name": "Waardering",
+        "taxonomy": "pa_waardering",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 486,
+            "name": "DGH: 9-",
+            "slug": "dgh-9"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "name": "Inhoud",
+        "taxonomy": "pa_inhoud",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 157,
+            "name": "750ml",
+            "slug": "750ml"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "name": "Afsluiting",
+        "taxonomy": "pa_afsluiting",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 156,
+            "name": "kurk",
+            "slug": "kurk"
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "name": "NB",
+        "taxonomy": "pa_nb",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 270,
+            "name": "biologisch-dynamisch",
+            "slug": "biologisch-dynamisch"
+          },
+          {
+            "id": 332,
+            "name": "natuurwijn",
+            "slug": "natuurwijn"
+          },
+          {
+            "id": 159,
+            "name": "vegan",
+            "slug": "vegan"
+          },
+          {
+            "id": 404,
+            "name": "zonder toegevoegd sulfiet",
+            "slug": "zonder-toegevoegd-sulfiet"
+          }
+        ]
+      }
+    ],
+    "variations": [],
+    "grouped_products": [],
+    "has_options": false,
+    "is_purchasable": true,
+    "is_in_stock": true,
+    "is_on_backorder": false,
+    "low_stock_remaining": null,
+    "stock_availability": {
+      "text": "Op voorraad",
+      "class": "in-stock"
+    },
+    "sold_individually": false,
+    "weight": "",
+    "dimensions": {
+      "length": "",
+      "width": "",
+      "height": ""
+    },
+    "formatted_weight": "Niet beschikbaar",
+    "formatted_dimensions": "Niet beschikbaar",
+    "add_to_cart": {
+      "text": "In winkelmand",
+      "description": "Toevoegen aan winkelwagen: &ldquo;Clos Troteligotte D\u00e9lit-K&ldquo;",
+      "url": "/wp-json/wc/store/v1/products?per_page=100&#038;add-to-cart=37293",
+      "single_text": "In winkelmand",
+      "minimum": 1,
+      "maximum": 230,
+      "multiple_of": 1
+    },
+    "is_password_protected": false,
+    "extensions": {
+      "woocommerce_google_analytics_integration": {
+        "identifier": "85423"
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products/37293",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products"
+        }
+      ],
+      "related": [
+        {
+          "embeddable": true,
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products?related=37293&per_page=10"
+        }
+      ]
+    }
+  },
+  {
+    "id": 36742,
+    "name": "Hegyem Cabernet Franc",
+    "slug": "hegyem-cabernet-franc",
+    "parent": 0,
+    "type": "simple",
+    "variation": "",
+    "permalink": "https://www.biowijnclub.nl/wijnen/biologische-wijn/hegyem-cabernet-franc/",
+    "sku": "85222",
+    "short_description": "",
+    "description": "<p>In Hongarije wordt de laat rijpende Cabernet Franc altijd goed rijp. In deze wijn vind je geen groene paprikatonen maar juist gul donkerrood rijp fruit, kruidigheid met iets groene peper met een beetje grafiet. De wijn is 12 maanden gelagerd geweest in gebruikte eiken vaten, wat voor een aroma van tabak zorgt.</p>",
+    "on_sale": false,
+    "prices": {
+      "price": "1595",
+      "regular_price": "1595",
+      "sale_price": "1595",
+      "price_range": null,
+      "currency_code": "EUR",
+      "currency_symbol": "\u20ac",
+      "currency_minor_unit": 2,
+      "currency_decimal_separator": ",",
+      "currency_thousand_separator": ".",
+      "currency_prefix": "\u20ac",
+      "currency_suffix": ""
+    },
+    "price_html": "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&euro;</span>15,95</span>",
+    "average_rating": "0",
+    "review_count": 0,
+    "images": [
+      {
+        "id": 36749,
+        "src": "https://www.biowijnclub.nl/wp-content/uploads/Hegyem-Cabernet-Franc-448-X-200.webp",
+        "thumbnail": "https://www.biowijnclub.nl/wp-content/uploads/Hegyem-Cabernet-Franc-448-X-200.webp",
+        "srcset": "https://www.biowijnclub.nl/wp-content/uploads/Hegyem-Cabernet-Franc-448-X-200.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/Hegyem-Cabernet-Franc-448-X-200-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/Hegyem-Cabernet-Franc-448-X-200-89x200.webp 89w",
+        "sizes": "(max-width: 200px) 100vw, 200px",
+        "thumbnail_srcset": "https://www.biowijnclub.nl/wp-content/uploads/Hegyem-Cabernet-Franc-448-X-200.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/Hegyem-Cabernet-Franc-448-X-200-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/Hegyem-Cabernet-Franc-448-X-200-89x200.webp 89w",
+        "thumbnail_sizes": "(max-width: 200px) 100vw, 200px",
+        "name": "Hegyem-Cabernet-Franc 448 X 200",
+        "alt": ""
+      }
+    ],
+    "categories": [
+      {
+        "id": 59,
+        "name": "Rode wijnen",
+        "slug": "biologische-rode-wijnen",
+        "link": "https://www.biowijnclub.nl/wijn/biologische-rode-wijnen/"
+      },
+      {
+        "id": 557,
+        "name": "Vegan wijn",
+        "slug": "vegan",
+        "link": "https://www.biowijnclub.nl/wijn/vegan/"
+      }
+    ],
+    "tags": [],
+    "brands": [],
+    "attributes": [
+      {
+        "id": 4,
+        "name": "Wijnhuis",
+        "taxonomy": "pa_wijnhuis",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 676,
+            "name": "Wijngoed Hegyem",
+            "slug": "hegyem"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Jaargang",
+        "taxonomy": "pa_wijnjaar",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 600,
+            "name": "2022",
+            "slug": "2022"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "name": "Inhoud",
+        "taxonomy": "pa_inhoud",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 157,
+            "name": "750ml",
+            "slug": "750ml"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "name": "Afsluiting",
+        "taxonomy": "pa_afsluiting",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 156,
+            "name": "kurk",
+            "slug": "kurk"
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "name": "NB",
+        "taxonomy": "pa_nb",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 159,
+            "name": "vegan",
+            "slug": "vegan"
+          }
+        ]
+      }
+    ],
+    "variations": [],
+    "grouped_products": [],
+    "has_options": false,
+    "is_purchasable": true,
+    "is_in_stock": true,
+    "is_on_backorder": false,
+    "low_stock_remaining": null,
+    "stock_availability": {
+      "text": "Op voorraad",
+      "class": "in-stock"
+    },
+    "sold_individually": false,
+    "weight": "",
+    "dimensions": {
+      "length": "",
+      "width": "",
+      "height": ""
+    },
+    "formatted_weight": "Niet beschikbaar",
+    "formatted_dimensions": "Niet beschikbaar",
+    "add_to_cart": {
+      "text": "In winkelmand",
+      "description": "Toevoegen aan winkelwagen: &ldquo;Hegyem Cabernet Franc&ldquo;",
+      "url": "/wp-json/wc/store/v1/products?per_page=100&#038;add-to-cart=36742",
+      "single_text": "In winkelmand",
+      "minimum": 1,
+      "maximum": 8,
+      "multiple_of": 1
+    },
+    "is_password_protected": false,
+    "extensions": {
+      "woocommerce_google_analytics_integration": {
+        "identifier": "85222"
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products/36742",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products"
+        }
+      ],
+      "related": [
+        {
+          "embeddable": true,
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products?related=36742&per_page=10"
+        }
+      ]
+    }
+  },
+  {
+    "id": 36739,
+    "name": "Hegyem Z\u00f6ld Veltelini",
+    "slug": "hegyem-zold-veltelini",
+    "parent": 0,
+    "type": "simple",
+    "variation": "",
+    "permalink": "https://www.biowijnclub.nl/wijnen/biologische-wijn/hegyem-zold-veltelini/",
+    "sku": "85124",
+    "short_description": "",
+    "description": "<p>Deze Z\u00f6ld Veltelini, beter bekend als gr\u00fcner veltliner, is voor een een derde deel vergist en gerijpt op barrique en krijgt vervolgens verdere rijping op RVS. Ze blijft een aantal maanden op de fijne lees voor extra complexiteit. Het resultaat is een mooi gul glas wijn, met een spannende gelaagdheid. Gastronomisch goed inzetbaar.</p>",
+    "on_sale": false,
+    "prices": {
+      "price": "1395",
+      "regular_price": "1395",
+      "sale_price": "1395",
+      "price_range": null,
+      "currency_code": "EUR",
+      "currency_symbol": "\u20ac",
+      "currency_minor_unit": 2,
+      "currency_decimal_separator": ",",
+      "currency_thousand_separator": ".",
+      "currency_prefix": "\u20ac",
+      "currency_suffix": ""
+    },
+    "price_html": "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&euro;</span>13,95</span>",
+    "average_rating": "0",
+    "review_count": 0,
+    "images": [
+      {
+        "id": 36747,
+        "src": "https://www.biowijnclub.nl/wp-content/uploads/Hegyem-Zold-Veltelini-448-X-200.webp",
+        "thumbnail": "https://www.biowijnclub.nl/wp-content/uploads/Hegyem-Zold-Veltelini-448-X-200.webp",
+        "srcset": "https://www.biowijnclub.nl/wp-content/uploads/Hegyem-Zold-Veltelini-448-X-200.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/Hegyem-Zold-Veltelini-448-X-200-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/Hegyem-Zold-Veltelini-448-X-200-89x200.webp 89w",
+        "sizes": "(max-width: 200px) 100vw, 200px",
+        "thumbnail_srcset": "https://www.biowijnclub.nl/wp-content/uploads/Hegyem-Zold-Veltelini-448-X-200.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/Hegyem-Zold-Veltelini-448-X-200-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/Hegyem-Zold-Veltelini-448-X-200-89x200.webp 89w",
+        "thumbnail_sizes": "(max-width: 200px) 100vw, 200px",
+        "name": "Hegyem-Zold-Veltelini 448 X 200",
+        "alt": ""
+      }
+    ],
+    "categories": [
+      {
+        "id": 557,
+        "name": "Vegan wijn",
+        "slug": "vegan",
+        "link": "https://www.biowijnclub.nl/wijn/vegan/"
+      },
+      {
+        "id": 57,
+        "name": "Witte wijnen",
+        "slug": "biologische-witte-wijnen",
+        "link": "https://www.biowijnclub.nl/wijn/biologische-witte-wijnen/"
+      }
+    ],
+    "tags": [],
+    "brands": [],
+    "attributes": [
+      {
+        "id": 4,
+        "name": "Wijnhuis",
+        "taxonomy": "pa_wijnhuis",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 676,
+            "name": "Wijngoed Hegyem",
+            "slug": "hegyem"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Jaargang",
+        "taxonomy": "pa_wijnjaar",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 671,
+            "name": "2024",
+            "slug": "2024"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "name": "Inhoud",
+        "taxonomy": "pa_inhoud",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 157,
+            "name": "750ml",
+            "slug": "750ml"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "name": "Afsluiting",
+        "taxonomy": "pa_afsluiting",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 156,
+            "name": "kurk",
+            "slug": "kurk"
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "name": "NB",
+        "taxonomy": "pa_nb",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 159,
+            "name": "vegan",
+            "slug": "vegan"
+          }
+        ]
+      }
+    ],
+    "variations": [],
+    "grouped_products": [],
+    "has_options": false,
+    "is_purchasable": true,
+    "is_in_stock": true,
+    "is_on_backorder": false,
+    "low_stock_remaining": null,
+    "stock_availability": {
+      "text": "Op voorraad",
+      "class": "in-stock"
+    },
+    "sold_individually": false,
+    "weight": "",
+    "dimensions": {
+      "length": "",
+      "width": "",
+      "height": ""
+    },
+    "formatted_weight": "Niet beschikbaar",
+    "formatted_dimensions": "Niet beschikbaar",
+    "add_to_cart": {
+      "text": "In winkelmand",
+      "description": "Toevoegen aan winkelwagen: &ldquo;Hegyem Z\u00f6ld Veltelini&ldquo;",
+      "url": "/wp-json/wc/store/v1/products?per_page=100&#038;add-to-cart=36739",
+      "single_text": "In winkelmand",
+      "minimum": 1,
+      "maximum": 7,
+      "multiple_of": 1
+    },
+    "is_password_protected": false,
+    "extensions": {
+      "woocommerce_google_analytics_integration": {
+        "identifier": "85124"
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products/36739",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products"
+        }
+      ],
+      "related": [
+        {
+          "embeddable": true,
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products?related=36739&per_page=10"
+        }
+      ]
+    }
+  },
+  {
+    "id": 36601,
+    "name": "Champagne Marie Copinet Extra Qualit\u00e9 Brut",
+    "slug": "champagne-marie-copinet-extra-qualite-brut",
+    "parent": 0,
+    "type": "simple",
+    "variation": "",
+    "permalink": "https://www.biowijnclub.nl/wijnen/biologische-wijn/champagne-marie-copinet-extra-qualite-brut/",
+    "sku": "85000",
+    "short_description": "",
+    "description": "<p>Ontdekt op wijnbeurs Mill\u00e9sime Bio eerder dit jaar. Marie-Laure en Alexandre zijn de derde generatie, en staan nu aan het roer van Champagne Marie Copinet. Ze maken verfijnde champagnes.</p>\n<p>De Extra Qualit\u00e9 Brut heeft een mooie bleekgele kleur en een overvloed aan kleine belletjes. Met aroma&#8217;s van honing, appel, amandel en framboos. De wijn heeft een fijne fra\u00eecheur, is soepel, rijk, rijp. Mooi in balans. In de afdronk tonen van rijpe tarwe en appelgebak.</p>",
+    "on_sale": false,
+    "prices": {
+      "price": "3995",
+      "regular_price": "3995",
+      "sale_price": "3995",
+      "price_range": null,
+      "currency_code": "EUR",
+      "currency_symbol": "\u20ac",
+      "currency_minor_unit": 2,
+      "currency_decimal_separator": ",",
+      "currency_thousand_separator": ".",
+      "currency_prefix": "\u20ac",
+      "currency_suffix": ""
+    },
+    "price_html": "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&euro;</span>39,95</span>",
+    "average_rating": "0",
+    "review_count": 0,
+    "images": [
+      {
+        "id": 36604,
+        "src": "https://www.biowijnclub.nl/wp-content/uploads/Champagne-Copinet-Extra-Qualite.webp",
+        "thumbnail": "https://www.biowijnclub.nl/wp-content/uploads/Champagne-Copinet-Extra-Qualite.webp",
+        "srcset": "https://www.biowijnclub.nl/wp-content/uploads/Champagne-Copinet-Extra-Qualite.webp 301w, https://www.biowijnclub.nl/wp-content/uploads/Champagne-Copinet-Extra-Qualite-141x300.webp 141w, https://www.biowijnclub.nl/wp-content/uploads/Champagne-Copinet-Extra-Qualite-94x200.webp 94w",
+        "sizes": "(max-width: 301px) 100vw, 301px",
+        "thumbnail_srcset": "https://www.biowijnclub.nl/wp-content/uploads/Champagne-Copinet-Extra-Qualite.webp 301w, https://www.biowijnclub.nl/wp-content/uploads/Champagne-Copinet-Extra-Qualite-141x300.webp 141w, https://www.biowijnclub.nl/wp-content/uploads/Champagne-Copinet-Extra-Qualite-94x200.webp 94w",
+        "thumbnail_sizes": "(max-width: 301px) 100vw, 301px",
+        "name": "Champagne Copinet Extra Qualit\u00e9",
+        "alt": ""
+      }
+    ],
+    "categories": [
+      {
+        "id": 60,
+        "name": "Bubbels",
+        "slug": "biologische-bubbels-mousserende-wijnen",
+        "link": "https://www.biowijnclub.nl/wijn/biologische-bubbels-mousserende-wijnen/"
+      }
+    ],
+    "tags": [],
+    "brands": [],
+    "attributes": [
+      {
+        "id": 4,
+        "name": "Wijnhuis",
+        "taxonomy": "pa_wijnhuis",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 692,
+            "name": "Champagne Marie Copinet",
+            "slug": "champagne-marie-copinet"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "name": "Waardering",
+        "taxonomy": "pa_waardering",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 409,
+            "name": "Gouden medaille Mill\u00e9sime BIO",
+            "slug": "gouden-medaille-millesime-bio-2"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "name": "Inhoud",
+        "taxonomy": "pa_inhoud",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 157,
+            "name": "750ml",
+            "slug": "750ml"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "name": "Afsluiting",
+        "taxonomy": "pa_afsluiting",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 156,
+            "name": "kurk",
+            "slug": "kurk"
+          }
+        ]
+      }
+    ],
+    "variations": [],
+    "grouped_products": [],
+    "has_options": false,
+    "is_purchasable": true,
+    "is_in_stock": true,
+    "is_on_backorder": false,
+    "low_stock_remaining": null,
+    "stock_availability": {
+      "text": "Op voorraad",
+      "class": "in-stock"
+    },
+    "sold_individually": false,
+    "weight": "",
+    "dimensions": {
+      "length": "",
+      "width": "",
+      "height": ""
+    },
+    "formatted_weight": "Niet beschikbaar",
+    "formatted_dimensions": "Niet beschikbaar",
+    "add_to_cart": {
+      "text": "In winkelmand",
+      "description": "Toevoegen aan winkelwagen: &ldquo;Champagne Marie Copinet Extra Qualit\u00e9 Brut&ldquo;",
+      "url": "/wp-json/wc/store/v1/products?per_page=100&#038;add-to-cart=36601",
+      "single_text": "In winkelmand",
+      "minimum": 1,
+      "maximum": 24,
+      "multiple_of": 1
+    },
+    "is_password_protected": false,
+    "extensions": {
+      "woocommerce_google_analytics_integration": {
+        "identifier": "85000"
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products/36601",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products"
+        }
+      ],
+      "related": [
+        {
+          "embeddable": true,
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products?related=36601&per_page=10"
+        }
+      ]
+    }
+  },
+  {
+    "id": 36375,
+    "name": "Celler Kripta Brut Reserva",
+    "slug": "celler-kripta-brut-reserva",
+    "parent": 0,
+    "type": "simple",
+    "variation": "",
+    "permalink": "https://www.biowijnclub.nl/wijnen/biologische-wijn/celler-kripta-brut-reserva/",
+    "sku": "84721",
+    "short_description": "",
+    "description": "<p>Pracht cava van het wijnhuis Agust\u00ed Torell\u00f3 Mata, dat in 70 jaar is uitgegroeid tot \u00e9\u00e9n van de meest toonaangevende producenten van topkwaliteit Cava.</p>\n<p>Na de handmatige oogst vergist ieder druivenras afzonderlijk met behulp van natuurlijke gisten. Voorafgaand aan de tweede vergisting op de fles worden de wijnen met zorg geblend. Ieder oogstjaar wordt bepaald in welke verhouding dat gebeurt. De wijn rijpt 4 jaar op de lies. De wijn heeft een frisse neus met aroma\u2019s van groene appel en verse kruiden als munt. Zeer fijn van smaak.</p>\n<p><strong>Nog enkele flessen &#8211; nu met aantrekkelijke korting!</strong></p>",
+    "on_sale": true,
+    "prices": {
+      "price": "1495",
+      "regular_price": "1840",
+      "sale_price": "1495",
+      "price_range": null,
+      "currency_code": "EUR",
+      "currency_symbol": "\u20ac",
+      "currency_minor_unit": 2,
+      "currency_decimal_separator": ",",
+      "currency_thousand_separator": ".",
+      "currency_prefix": "\u20ac",
+      "currency_suffix": ""
+    },
+    "price_html": "<del aria-hidden=\"true\"><span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&euro;</span>18,40</span></del> <span class=\"screen-reader-text\">Oorspronkelijke prijs was: &euro;18,40.</span><ins aria-hidden=\"true\"><span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&euro;</span>14,95</span></ins><span class=\"screen-reader-text\">Huidige prijs is: &euro;14,95.</span>",
+    "average_rating": "0",
+    "review_count": 0,
+    "images": [
+      {
+        "id": 36378,
+        "src": "https://www.biowijnclub.nl/wp-content/uploads/celler-kripta-franc-brut-reserva-48-x-200.webp",
+        "thumbnail": "https://www.biowijnclub.nl/wp-content/uploads/celler-kripta-franc-brut-reserva-48-x-200.webp",
+        "srcset": "https://www.biowijnclub.nl/wp-content/uploads/celler-kripta-franc-brut-reserva-48-x-200.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/celler-kripta-franc-brut-reserva-48-x-200-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/celler-kripta-franc-brut-reserva-48-x-200-89x200.webp 89w",
+        "sizes": "(max-width: 200px) 100vw, 200px",
+        "thumbnail_srcset": "https://www.biowijnclub.nl/wp-content/uploads/celler-kripta-franc-brut-reserva-48-x-200.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/celler-kripta-franc-brut-reserva-48-x-200-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/celler-kripta-franc-brut-reserva-48-x-200-89x200.webp 89w",
+        "thumbnail_sizes": "(max-width: 200px) 100vw, 200px",
+        "name": "celler-kripta-franc-brut-reserva 48 x 200",
+        "alt": ""
+      }
+    ],
+    "categories": [
+      {
+        "id": 60,
+        "name": "Bubbels",
+        "slug": "biologische-bubbels-mousserende-wijnen",
+        "link": "https://www.biowijnclub.nl/wijn/biologische-bubbels-mousserende-wijnen/"
+      },
+      {
+        "id": 78,
+        "name": "Sla je slag",
+        "slug": "slajeslag",
+        "link": "https://www.biowijnclub.nl/wijn/slajeslag/"
+      }
+    ],
+    "tags": [],
+    "brands": [],
+    "attributes": [
+      {
+        "id": 4,
+        "name": "Wijnhuis",
+        "taxonomy": "pa_wijnhuis",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 688,
+            "name": "Agust\u00ed Torell\u00f3 Mata",
+            "slug": "agusti-torello-mata"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "name": "Inhoud",
+        "taxonomy": "pa_inhoud",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 157,
+            "name": "750ml",
+            "slug": "750ml"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "name": "Afsluiting",
+        "taxonomy": "pa_afsluiting",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 156,
+            "name": "kurk",
+            "slug": "kurk"
+          }
+        ]
+      }
+    ],
+    "variations": [],
+    "grouped_products": [],
+    "has_options": false,
+    "is_purchasable": true,
+    "is_in_stock": true,
+    "is_on_backorder": false,
+    "low_stock_remaining": null,
+    "stock_availability": {
+      "text": "Op voorraad",
+      "class": "in-stock"
+    },
+    "sold_individually": false,
+    "weight": "",
+    "dimensions": {
+      "length": "",
+      "width": "",
+      "height": ""
+    },
+    "formatted_weight": "Niet beschikbaar",
+    "formatted_dimensions": "Niet beschikbaar",
+    "add_to_cart": {
+      "text": "In winkelmand",
+      "description": "Toevoegen aan winkelwagen: &ldquo;Celler Kripta Brut Reserva&ldquo;",
+      "url": "/wp-json/wc/store/v1/products?per_page=100&#038;add-to-cart=36375",
+      "single_text": "In winkelmand",
+      "minimum": 1,
+      "maximum": 3,
+      "multiple_of": 1
+    },
+    "is_password_protected": false,
+    "extensions": {
+      "woocommerce_google_analytics_integration": {
+        "identifier": "84721"
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products/36375",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products"
+        }
+      ],
+      "related": [
+        {
+          "embeddable": true,
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products?related=36375&per_page=10"
+        }
+      ]
+    }
+  },
+  {
+    "id": 36369,
+    "name": "Fasoli Gino La Corte del Pozzo Prosecco Frizzante",
+    "slug": "fasoli-gino-la-corte-del-pozzo-prosecco-frizzante",
+    "parent": 0,
+    "type": "simple",
+    "variation": "",
+    "permalink": "https://www.biowijnclub.nl/wijnen/biologische-wijn/fasoli-gino-la-corte-del-pozzo-prosecco-frizzante/",
+    "sku": "84600",
+    "short_description": "",
+    "description": "<div id=\"product-description-collapse\" class=\"pdp-description pdp-description--collapse\">Verfijnde prosecco! Vol wit fruit, peer, perzik. Extra complexiteit door langer dan gemiddeld op de lies te hebben gelegen. Zachte bubbel, verfrissend, mooi droog.</div>",
+    "on_sale": false,
+    "prices": {
+      "price": "1280",
+      "regular_price": "1280",
+      "sale_price": "1280",
+      "price_range": null,
+      "currency_code": "EUR",
+      "currency_symbol": "\u20ac",
+      "currency_minor_unit": 2,
+      "currency_decimal_separator": ",",
+      "currency_thousand_separator": ".",
+      "currency_prefix": "\u20ac",
+      "currency_suffix": ""
+    },
+    "price_html": "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&euro;</span>12,80</span>",
+    "average_rating": "0",
+    "review_count": 0,
+    "images": [
+      {
+        "id": 36372,
+        "src": "https://www.biowijnclub.nl/wp-content/uploads/la-corte-del-pozzo-prosecco-frizzante-448-x-200.webp",
+        "thumbnail": "https://www.biowijnclub.nl/wp-content/uploads/la-corte-del-pozzo-prosecco-frizzante-448-x-200.webp",
+        "srcset": "https://www.biowijnclub.nl/wp-content/uploads/la-corte-del-pozzo-prosecco-frizzante-448-x-200.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/la-corte-del-pozzo-prosecco-frizzante-448-x-200-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/la-corte-del-pozzo-prosecco-frizzante-448-x-200-89x200.webp 89w",
+        "sizes": "(max-width: 200px) 100vw, 200px",
+        "thumbnail_srcset": "https://www.biowijnclub.nl/wp-content/uploads/la-corte-del-pozzo-prosecco-frizzante-448-x-200.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/la-corte-del-pozzo-prosecco-frizzante-448-x-200-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/la-corte-del-pozzo-prosecco-frizzante-448-x-200-89x200.webp 89w",
+        "thumbnail_sizes": "(max-width: 200px) 100vw, 200px",
+        "name": "la-corte-del-pozzo-prosecco-frizzante 448 x 200",
+        "alt": ""
+      }
+    ],
+    "categories": [
+      {
+        "id": 60,
+        "name": "Bubbels",
+        "slug": "biologische-bubbels-mousserende-wijnen",
+        "link": "https://www.biowijnclub.nl/wijn/biologische-bubbels-mousserende-wijnen/"
+      }
+    ],
+    "tags": [],
+    "brands": [],
+    "attributes": [
+      {
+        "id": 4,
+        "name": "Wijnhuis",
+        "taxonomy": "pa_wijnhuis",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 239,
+            "name": "Gino Fasoli",
+            "slug": "gino-fasoli"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "name": "Inhoud",
+        "taxonomy": "pa_inhoud",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 157,
+            "name": "750ml",
+            "slug": "750ml"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "name": "Afsluiting",
+        "taxonomy": "pa_afsluiting",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 273,
+            "name": "kroonkurk",
+            "slug": "kroonkurk"
+          }
+        ]
+      }
+    ],
+    "variations": [],
+    "grouped_products": [],
+    "has_options": false,
+    "is_purchasable": true,
+    "is_in_stock": true,
+    "is_on_backorder": false,
+    "low_stock_remaining": null,
+    "stock_availability": {
+      "text": "Op voorraad",
+      "class": "in-stock"
+    },
+    "sold_individually": false,
+    "weight": "",
+    "dimensions": {
+      "length": "",
+      "width": "",
+      "height": ""
+    },
+    "formatted_weight": "Niet beschikbaar",
+    "formatted_dimensions": "Niet beschikbaar",
+    "add_to_cart": {
+      "text": "In winkelmand",
+      "description": "Toevoegen aan winkelwagen: &ldquo;Fasoli Gino La Corte del Pozzo Prosecco Frizzante&ldquo;",
+      "url": "/wp-json/wc/store/v1/products?per_page=100&#038;add-to-cart=36369",
+      "single_text": "In winkelmand",
+      "minimum": 1,
+      "maximum": 577,
+      "multiple_of": 1
+    },
+    "is_password_protected": false,
+    "extensions": {
+      "woocommerce_google_analytics_integration": {
+        "identifier": "84600"
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products/36369",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products"
+        }
+      ],
+      "related": [
+        {
+          "embeddable": true,
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products?related=36369&per_page=10"
+        }
+      ]
+    }
+  },
+  {
+    "id": 36364,
+    "name": "Albet i Noya Icones Negre",
+    "slug": "albet-i-noya-icones-negre",
+    "parent": 0,
+    "type": "simple",
+    "variation": "",
+    "permalink": "https://www.biowijnclub.nl/wijnen/biologische-wijn/albet-i-noya-icones-negre/",
+    "sku": "84323",
+    "short_description": "",
+    "description": "<p>Joviale wijn met aroma&#8217;s van rijp fruit en rode bessen. Licht mondgevoel, zachte tannines.</p>",
+    "on_sale": false,
+    "prices": {
+      "price": "920",
+      "regular_price": "920",
+      "sale_price": "920",
+      "price_range": null,
+      "currency_code": "EUR",
+      "currency_symbol": "\u20ac",
+      "currency_minor_unit": 2,
+      "currency_decimal_separator": ",",
+      "currency_thousand_separator": ".",
+      "currency_prefix": "\u20ac",
+      "currency_suffix": ""
+    },
+    "price_html": "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&euro;</span>9,20</span>",
+    "average_rating": "0",
+    "review_count": 0,
+    "images": [
+      {
+        "id": 36367,
+        "src": "https://www.biowijnclub.nl/wp-content/uploads/Albet-i-Noya-Icones-Negre.webp",
+        "thumbnail": "https://www.biowijnclub.nl/wp-content/uploads/Albet-i-Noya-Icones-Negre.webp",
+        "srcset": "https://www.biowijnclub.nl/wp-content/uploads/Albet-i-Noya-Icones-Negre.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/Albet-i-Noya-Icones-Negre-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/Albet-i-Noya-Icones-Negre-89x200.webp 89w",
+        "sizes": "(max-width: 200px) 100vw, 200px",
+        "thumbnail_srcset": "https://www.biowijnclub.nl/wp-content/uploads/Albet-i-Noya-Icones-Negre.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/Albet-i-Noya-Icones-Negre-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/Albet-i-Noya-Icones-Negre-89x200.webp 89w",
+        "thumbnail_sizes": "(max-width: 200px) 100vw, 200px",
+        "name": "Albet i Noya Icones Negre",
+        "alt": ""
+      }
+    ],
+    "categories": [
+      {
+        "id": 59,
+        "name": "Rode wijnen",
+        "slug": "biologische-rode-wijnen",
+        "link": "https://www.biowijnclub.nl/wijn/biologische-rode-wijnen/"
+      },
+      {
+        "id": 557,
+        "name": "Vegan wijn",
+        "slug": "vegan",
+        "link": "https://www.biowijnclub.nl/wijn/vegan/"
+      }
+    ],
+    "tags": [],
+    "brands": [],
+    "attributes": [
+      {
+        "id": 4,
+        "name": "Wijnhuis",
+        "taxonomy": "pa_wijnhuis",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 181,
+            "name": "Albet i Noya",
+            "slug": "albet-i-noya"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Jaargang",
+        "taxonomy": "pa_wijnjaar",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 642,
+            "name": "2023",
+            "slug": "2023"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "name": "Inhoud",
+        "taxonomy": "pa_inhoud",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 157,
+            "name": "750ml",
+            "slug": "750ml"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "name": "Afsluiting",
+        "taxonomy": "pa_afsluiting",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 198,
+            "name": "schroefdop",
+            "slug": "schroefdop"
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "name": "NB",
+        "taxonomy": "pa_nb",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 159,
+            "name": "vegan",
+            "slug": "vegan"
+          }
+        ]
+      }
+    ],
+    "variations": [],
+    "grouped_products": [],
+    "has_options": false,
+    "is_purchasable": true,
+    "is_in_stock": true,
+    "is_on_backorder": false,
+    "low_stock_remaining": null,
+    "stock_availability": {
+      "text": "Op voorraad",
+      "class": "in-stock"
+    },
+    "sold_individually": false,
+    "weight": "",
+    "dimensions": {
+      "length": "",
+      "width": "",
+      "height": ""
+    },
+    "formatted_weight": "Niet beschikbaar",
+    "formatted_dimensions": "Niet beschikbaar",
+    "add_to_cart": {
+      "text": "In winkelmand",
+      "description": "Toevoegen aan winkelwagen: &ldquo;Albet i Noya Icones Negre&ldquo;",
+      "url": "/wp-json/wc/store/v1/products?per_page=100&#038;add-to-cart=36364",
+      "single_text": "In winkelmand",
+      "minimum": 1,
+      "maximum": 22,
+      "multiple_of": 1
+    },
+    "is_password_protected": false,
+    "extensions": {
+      "woocommerce_google_analytics_integration": {
+        "identifier": "84323"
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products/36364",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products"
+        }
+      ],
+      "related": [
+        {
+          "embeddable": true,
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products?related=36364&per_page=10"
+        }
+      ]
+    }
+  },
+  {
+    "id": 36354,
+    "name": "Reyneke Organic Chenin Blanc",
+    "slug": "reyneke-organic-chenin-blanc",
+    "parent": 0,
+    "type": "simple",
+    "variation": "",
+    "permalink": "https://www.biowijnclub.nl/wijnen/biologische-wijn/reyneke-organic-chenin-blanc/",
+    "sku": "28225",
+    "short_description": "",
+    "description": "<div id=\"product-description-collapse\" class=\"pdp-description pdp-description--collapse\">Fijne wijn van de hand van wijnmaker Johan Reyneke. De druiven groeien op maximaal 40 kilometer van de Atlantische Oceaan en de verkoelende invloed hiervan zorgt voor fra\u00eecheur in de wijn. De bodem varieert van zand tot verweerde graniet. Dit geeft de wijn zijn kenmerkende frisse, minerale tonen. Een rijping van 3 maanden op de lies na de fermentatie geeft de wijn een ronder, complexer karakter.</div>\n<div></div>\n<div id=\"product-description-collapse\" class=\"pdp-description pdp-description--collapse\">\n<p>De wijn heeft een mooie balans tussen frisheid en rijpheid. In de neus aroma\u2019s van peer, gele perzik, rijpe citroen, golden delicious en wat ananas. Sappig, fris, fruitig, rond van smaak.</p>\n</div>",
+    "on_sale": false,
+    "prices": {
+      "price": "1370",
+      "regular_price": "1370",
+      "sale_price": "1370",
+      "price_range": null,
+      "currency_code": "EUR",
+      "currency_symbol": "\u20ac",
+      "currency_minor_unit": 2,
+      "currency_decimal_separator": ",",
+      "currency_thousand_separator": ".",
+      "currency_prefix": "\u20ac",
+      "currency_suffix": ""
+    },
+    "price_html": "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&euro;</span>13,70</span>",
+    "average_rating": "0",
+    "review_count": 0,
+    "images": [
+      {
+        "id": 36357,
+        "src": "https://www.biowijnclub.nl/wp-content/uploads/Reyneke-Organic-Chenin-Blanc.webp",
+        "thumbnail": "https://www.biowijnclub.nl/wp-content/uploads/Reyneke-Organic-Chenin-Blanc.webp",
+        "srcset": "https://www.biowijnclub.nl/wp-content/uploads/Reyneke-Organic-Chenin-Blanc.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/Reyneke-Organic-Chenin-Blanc-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/Reyneke-Organic-Chenin-Blanc-89x200.webp 89w",
+        "sizes": "(max-width: 200px) 100vw, 200px",
+        "thumbnail_srcset": "https://www.biowijnclub.nl/wp-content/uploads/Reyneke-Organic-Chenin-Blanc.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/Reyneke-Organic-Chenin-Blanc-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/Reyneke-Organic-Chenin-Blanc-89x200.webp 89w",
+        "thumbnail_sizes": "(max-width: 200px) 100vw, 200px",
+        "name": "Reyneke Organic Chenin Blanc",
+        "alt": ""
+      }
+    ],
+    "categories": [
+      {
+        "id": 57,
+        "name": "Witte wijnen",
+        "slug": "biologische-witte-wijnen",
+        "link": "https://www.biowijnclub.nl/wijn/biologische-witte-wijnen/"
+      }
+    ],
+    "tags": [],
+    "brands": [],
+    "attributes": [
+      {
+        "id": 4,
+        "name": "Wijnhuis",
+        "taxonomy": "pa_wijnhuis",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 266,
+            "name": "Reyneke",
+            "slug": "reyneke"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Jaargang",
+        "taxonomy": "pa_wijnjaar",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 682,
+            "name": "2025",
+            "slug": "2025"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "name": "Inhoud",
+        "taxonomy": "pa_inhoud",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 157,
+            "name": "750ml",
+            "slug": "750ml"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "name": "Afsluiting",
+        "taxonomy": "pa_afsluiting",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 198,
+            "name": "schroefdop",
+            "slug": "schroefdop"
+          }
+        ]
+      }
+    ],
+    "variations": [],
+    "grouped_products": [],
+    "has_options": false,
+    "is_purchasable": true,
+    "is_in_stock": true,
+    "is_on_backorder": false,
+    "low_stock_remaining": null,
+    "stock_availability": {
+      "text": "Op voorraad",
+      "class": "in-stock"
+    },
+    "sold_individually": false,
+    "weight": "",
+    "dimensions": {
+      "length": "",
+      "width": "",
+      "height": ""
+    },
+    "formatted_weight": "Niet beschikbaar",
+    "formatted_dimensions": "Niet beschikbaar",
+    "add_to_cart": {
+      "text": "In winkelmand",
+      "description": "Toevoegen aan winkelwagen: &ldquo;Reyneke Organic Chenin Blanc&ldquo;",
+      "url": "/wp-json/wc/store/v1/products?per_page=100&#038;add-to-cart=36354",
+      "single_text": "In winkelmand",
+      "minimum": 1,
+      "maximum": 594,
+      "multiple_of": 1
+    },
+    "is_password_protected": false,
+    "extensions": {
+      "woocommerce_google_analytics_integration": {
+        "identifier": "28225"
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products/36354",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products"
+        }
+      ],
+      "related": [
+        {
+          "embeddable": true,
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products?related=36354&per_page=10"
+        }
+      ]
+    }
+  },
+  {
+    "id": 36349,
+    "name": "La Casa de Bio Manuel",
+    "slug": "la-casa-de-bio-manuel",
+    "parent": 0,
+    "type": "simple",
+    "variation": "",
+    "permalink": "https://www.biowijnclub.nl/wijnen/biologische-wijn/la-casa-de-bio-manuel/",
+    "sku": "84123",
+    "short_description": "",
+    "description": "<p>Deze wijn draagt de naam van wijnmaker Manuel! Sappige, soepele, fruitige wijn, met veel kers. Temperamentvol, robuust. De wijn heeft een klein beetje hout gehad.</p>",
+    "on_sale": false,
+    "prices": {
+      "price": "725",
+      "regular_price": "725",
+      "sale_price": "725",
+      "price_range": null,
+      "currency_code": "EUR",
+      "currency_symbol": "\u20ac",
+      "currency_minor_unit": 2,
+      "currency_decimal_separator": ",",
+      "currency_thousand_separator": ".",
+      "currency_prefix": "\u20ac",
+      "currency_suffix": ""
+    },
+    "price_html": "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&euro;</span>7,25</span>",
+    "average_rating": "0",
+    "review_count": 0,
+    "images": [
+      {
+        "id": 36352,
+        "src": "https://www.biowijnclub.nl/wp-content/uploads/Casa-de-Bio-Manuel-448-x-200.webp",
+        "thumbnail": "https://www.biowijnclub.nl/wp-content/uploads/Casa-de-Bio-Manuel-448-x-200.webp",
+        "srcset": "https://www.biowijnclub.nl/wp-content/uploads/Casa-de-Bio-Manuel-448-x-200.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/Casa-de-Bio-Manuel-448-x-200-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/Casa-de-Bio-Manuel-448-x-200-89x200.webp 89w",
+        "sizes": "(max-width: 200px) 100vw, 200px",
+        "thumbnail_srcset": "https://www.biowijnclub.nl/wp-content/uploads/Casa-de-Bio-Manuel-448-x-200.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/Casa-de-Bio-Manuel-448-x-200-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/Casa-de-Bio-Manuel-448-x-200-89x200.webp 89w",
+        "thumbnail_sizes": "(max-width: 200px) 100vw, 200px",
+        "name": "Casa de Bio Manuel 448 x 200",
+        "alt": ""
+      }
+    ],
+    "categories": [
+      {
+        "id": 59,
+        "name": "Rode wijnen",
+        "slug": "biologische-rode-wijnen",
+        "link": "https://www.biowijnclub.nl/wijn/biologische-rode-wijnen/"
+      },
+      {
+        "id": 557,
+        "name": "Vegan wijn",
+        "slug": "vegan",
+        "link": "https://www.biowijnclub.nl/wijn/vegan/"
+      }
+    ],
+    "tags": [],
+    "brands": [],
+    "attributes": [
+      {
+        "id": 4,
+        "name": "Wijnhuis",
+        "taxonomy": "pa_wijnhuis",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 685,
+            "name": "Bodegas Latu\u00e9",
+            "slug": "bodegas-latue"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "name": "Inhoud",
+        "taxonomy": "pa_inhoud",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 157,
+            "name": "750ml",
+            "slug": "750ml"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "name": "Afsluiting",
+        "taxonomy": "pa_afsluiting",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 198,
+            "name": "schroefdop",
+            "slug": "schroefdop"
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "name": "NB",
+        "taxonomy": "pa_nb",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 159,
+            "name": "vegan",
+            "slug": "vegan"
+          }
+        ]
+      }
+    ],
+    "variations": [],
+    "grouped_products": [],
+    "has_options": false,
+    "is_purchasable": true,
+    "is_in_stock": true,
+    "is_on_backorder": false,
+    "low_stock_remaining": null,
+    "stock_availability": {
+      "text": "Op voorraad",
+      "class": "in-stock"
+    },
+    "sold_individually": false,
+    "weight": "",
+    "dimensions": {
+      "length": "",
+      "width": "",
+      "height": ""
+    },
+    "formatted_weight": "Niet beschikbaar",
+    "formatted_dimensions": "Niet beschikbaar",
+    "add_to_cart": {
+      "text": "In winkelmand",
+      "description": "Toevoegen aan winkelwagen: &ldquo;La Casa de Bio Manuel&ldquo;",
+      "url": "/wp-json/wc/store/v1/products?per_page=100&#038;add-to-cart=36349",
+      "single_text": "In winkelmand",
+      "minimum": 1,
+      "maximum": 551,
+      "multiple_of": 1
+    },
+    "is_password_protected": false,
+    "extensions": {
+      "woocommerce_google_analytics_integration": {
+        "identifier": "84123"
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products/36349",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products"
+        }
+      ],
+      "related": [
+        {
+          "embeddable": true,
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products?related=36349&per_page=10"
+        }
+      ]
+    }
+  },
+  {
+    "id": 36344,
+    "name": "Solara Red",
+    "slug": "solara-red",
+    "parent": 0,
+    "type": "simple",
+    "variation": "",
+    "permalink": "https://www.biowijnclub.nl/wijnen/biologische-wijn/solara-red/",
+    "sku": "80623",
+    "short_description": "",
+    "description": "<p>Leuke nieuwe wijn uit Roemeni\u00eb, deze Solara Red. De wijn is gemaakt van merlot met een vleugje cabernet sauvignon. Hij zit boordevol bosfruit, vooral frambozen en bramen. De smaak is soepel, fruitig en sappig. Met zachte tannines in de afdronk.</p>",
+    "on_sale": false,
+    "prices": {
+      "price": "899",
+      "regular_price": "899",
+      "sale_price": "899",
+      "price_range": null,
+      "currency_code": "EUR",
+      "currency_symbol": "\u20ac",
+      "currency_minor_unit": 2,
+      "currency_decimal_separator": ",",
+      "currency_thousand_separator": ".",
+      "currency_prefix": "\u20ac",
+      "currency_suffix": ""
+    },
+    "price_html": "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&euro;</span>8,99</span>",
+    "average_rating": "0",
+    "review_count": 0,
+    "images": [
+      {
+        "id": 36348,
+        "src": "https://www.biowijnclub.nl/wp-content/uploads/Solara-Red-448-x-200.webp",
+        "thumbnail": "https://www.biowijnclub.nl/wp-content/uploads/Solara-Red-448-x-200.webp",
+        "srcset": "https://www.biowijnclub.nl/wp-content/uploads/Solara-Red-448-x-200.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/Solara-Red-448-x-200-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/Solara-Red-448-x-200-89x200.webp 89w",
+        "sizes": "(max-width: 200px) 100vw, 200px",
+        "thumbnail_srcset": "https://www.biowijnclub.nl/wp-content/uploads/Solara-Red-448-x-200.webp 200w, https://www.biowijnclub.nl/wp-content/uploads/Solara-Red-448-x-200-134x300.webp 134w, https://www.biowijnclub.nl/wp-content/uploads/Solara-Red-448-x-200-89x200.webp 89w",
+        "thumbnail_sizes": "(max-width: 200px) 100vw, 200px",
+        "name": "Solara Red 448 x 200",
+        "alt": ""
+      }
+    ],
+    "categories": [
+      {
+        "id": 59,
+        "name": "Rode wijnen",
+        "slug": "biologische-rode-wijnen",
+        "link": "https://www.biowijnclub.nl/wijn/biologische-rode-wijnen/"
+      },
+      {
+        "id": 557,
+        "name": "Vegan wijn",
+        "slug": "vegan",
+        "link": "https://www.biowijnclub.nl/wijn/vegan/"
+      }
+    ],
+    "tags": [],
+    "brands": [],
+    "attributes": [
+      {
+        "id": 4,
+        "name": "Wijnhuis",
+        "taxonomy": "pa_wijnhuis",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 683,
+            "name": "Cramele Recas",
+            "slug": "cramele-recas"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Jaargang",
+        "taxonomy": "pa_wijnjaar",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 642,
+            "name": "2023",
+            "slug": "2023"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "name": "Inhoud",
+        "taxonomy": "pa_inhoud",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 157,
+            "name": "750ml",
+            "slug": "750ml"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "name": "Afsluiting",
+        "taxonomy": "pa_afsluiting",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 198,
+            "name": "schroefdop",
+            "slug": "schroefdop"
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "name": "NB",
+        "taxonomy": "pa_nb",
+        "has_variations": false,
+        "terms": [
+          {
+            "id": 159,
+            "name": "vegan",
+            "slug": "vegan"
+          }
+        ]
+      }
+    ],
+    "variations": [],
+    "grouped_products": [],
+    "has_options": false,
+    "is_purchasable": true,
+    "is_in_stock": false,
+    "is_on_backorder": false,
+    "low_stock_remaining": null,
+    "stock_availability": {
+      "text": "Niet op voorraad",
+      "class": "out-of-stock"
+    },
+    "sold_individually": false,
+    "weight": "",
+    "dimensions": {
+      "length": "",
+      "width": "",
+      "height": ""
+    },
+    "formatted_weight": "Niet beschikbaar",
+    "formatted_dimensions": "Niet beschikbaar",
+    "add_to_cart": {
+      "text": "Meer informatie",
+      "description": "Meer informatie over &#8216;Solara Red&#8217;",
+      "url": "https://www.biowijnclub.nl/wijnen/biologische-wijn/solara-red/",
+      "single_text": "In winkelmand",
+      "minimum": 1,
+      "maximum": 9999,
+      "multiple_of": 1
+    },
+    "is_password_protected": false,
+    "extensions": {
+      "woocommerce_google_analytics_integration": {
+        "identifier": "80623"
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products/36344",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products"
+        }
+      ],
+      "related": [
+        {
+          "embeddable": true,
+          "href": "https://www.biowijnclub.nl/wp-json/wc/store/v1/products?related=36344&per_page=10"
+        }
+      ]
     }
   }
 ]

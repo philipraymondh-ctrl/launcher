@@ -1,15 +1,2038 @@
 {
-  "_note": "PLACEHOLDER fixture. Platform (shopify) is CONFIRMED -- probe run 30255245592 fetched and parsed this shop's real shopify endpoint. The product data below is NOT real; the actual response body is in that run's probe-results artifact and should replace this file before the shop is set verified:true.",
+  "_fixture_note": "Real response from this shop, trimmed for the repo: 25 of 250 products, keeping every tracked-producer match (1) plus a sample. Captured by probe.py --apply.",
   "products": [
     {
-      "title": "PLACEHOLDER PRODUCT -- replace with a real listing",
-      "vendor": "Placeholder",
-      "handle": "placeholder",
-      "body_html": "<p>Placeholder.</p>",
+      "id": 11342756151637,
+      "title": "Coffret \"Les T\u00eate d'Affiche\"",
+      "handle": "coffret-les-tetes-daffiche",
+      "body_html": "<table width=\"100%\" style=\"border-collapse: collapse;\">\n<tbody>\n<tr>\n<td style=\"width: 50%; padding-right: 20px;\" valign=\"top\">\n<h2>COMPOSITION</h2>\n<p>Coffret compos\u00e9 de 3 bouteilles (3 x 75 cl) :</p>\n<ul>\n<li>\n<strong>M\u00e9phisto MMXIX - Domaine de l'\u00c9cu :</strong> <em>un grand vin de Loire profond et complexe, alliant fra\u00eecheur, \u00e9l\u00e9gance et remarquable potentiel de garde.</em>\n</li>\n<li>\n<strong>Les Acacias 2023 - Mas del P\u00e9ri\u00e9 :</strong> <em>un Cahors vibrant et a\u00e9rien, port\u00e9 par un fruit \u00e9clatant, une belle \u00e9nergie et une finesse surprenante.</em>\n</li>\n<li>\n<strong>Poulprix 2024 - Ganevat :</strong> <em>une cuv\u00e9e gourmande et irr\u00e9sistible, pleine de fra\u00eecheur, de fruit croquant et de convivialit\u00e9.</em>\n</li>\n</ul>\n</td>\n<td style=\"width: 50%; padding-left: 20px;\" valign=\"top\">\n<h2>NOTRE AVIS \u2764\ufe0f</h2>\n<p>Avec le coffret \"Les T\u00eates d'Affiche\", d\u00e9couvrez trois domaines incontournables qui incarnent le meilleur du vin vivant et des grands terroirs fran\u00e7ais.</p>\n<p>Le prestige du Domaine de l'\u00c9cu, la pr\u00e9cision du Mas del P\u00e9ri\u00e9 et le talent de Ganevat se r\u00e9unissent dans une s\u00e9lection qui fera sensation aupr\u00e8s des amateurs de belles bouteilles.</p>\n<p>Entre profondeur, fra\u00eecheur et gourmandise, ce coffret offre un panorama de cuv\u00e9es embl\u00e9matiques sign\u00e9es par des vignerons devenus de v\u00e9ritables r\u00e9f\u00e9rences.</p>\n<p><br>Le cadeau id\u00e9al pour les papas amateurs de grands vins et de belles d\u00e9couvertes.</p>\n</td>\n</tr>\n</tbody>\n</table>",
+      "published_at": "2026-06-04T18:18:58+02:00",
+      "created_at": "2026-06-03T16:20:28+02:00",
+      "updated_at": "2026-07-27T16:15:01+02:00",
+      "vendor": "Petites Caves",
+      "product_type": "coffret",
+      "tags": [
+        "_badge: nouveau",
+        "_brand: Anne et Jean-Fran\u00e7ois Ganevat",
+        "_brand: Domaine de l'Ecu",
+        "_brand: Mas del P\u00e9ri\u00e9",
+        "_coffret:",
+        "_coffret: decouverte",
+        "_coffret: pere",
+        "coffret",
+        "Tous les vins"
+      ],
       "variants": [
         {
-          "price": "0.00",
-          "title": "Default"
+          "id": 54060787433813,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": null,
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "79.90",
+          "grams": 4500,
+          "compare_at_price": "92.70",
+          "position": 1,
+          "product_id": 11342756151637,
+          "created_at": "2026-06-03T16:20:28+02:00",
+          "updated_at": "2026-07-27T16:15:01+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 74864613261653,
+          "created_at": "2026-06-03T16:22:22+02:00",
+          "position": 1,
+          "updated_at": "2026-06-03T16:22:25+02:00",
+          "product_id": 11342756151637,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0459/2871/0305/files/1_9f63dbc1-c272-49e9-9776-70eb56a3a21b.png?v=1780496545",
+          "width": 1080,
+          "height": 1080
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 11415662985557,
+      "title": "Larcin 2024 | Ch\u00e2teau Barouillet",
+      "handle": "larcin-2024-chateau-barouillet",
+      "body_html": "<h2>Notre avis sur ce vin</h2>\n<p><strong>Larcin 2024 - Bergerac rouge - Ch\u00e2teau Barouillet</strong></p>\n<p>Nez r\u00e9gliss\u00e9 et sur le cassis. En bouche c'est sur le fruit \u00e9galement avec beaucoup de fra\u00eecheur pour ensuite aller vers une finale g\u00e9n\u00e9reuse avec de beaux tanins.\u00a0<br>Un vin de soif avec du caract\u00e8re !\u00a0</p>\n<p>\u00a0</p>",
+      "published_at": "2026-07-26T12:01:37+02:00",
+      "created_at": "2026-07-08T11:44:37+02:00",
+      "updated_at": "2026-07-27T16:15:01+02:00",
+      "vendor": "Vincent Alexis",
+      "product_type": "Vin",
+      "tags": [
+        "5",
+        "_appelation: Bergerac",
+        "_aromatique: Fruit\u00e9",
+        "_badge: bio",
+        "_badge: nouveau",
+        "_badge: sans-so",
+        "_brand: Ch\u00e2teau Barouillet",
+        "_cat:sans_sulfite",
+        "_cepage: Cabernet Sauvignon - Malbec",
+        "_certification: ab",
+        "_contenance: 75 cl",
+        "_couleur: Rouge",
+        "_exemple_de_plat: R\u00f4ti - C\u00f4tes - filet - noix - foie veau en sauce \u201a...",
+        "_metatype:vin_tranquille",
+        "_potentiel_de_garde: 2 \u00e0 5 ans",
+        "_region: Sud Ouest",
+        "_specificite : vin sans soufre ajout\u00e9",
+        "_structure: Frais",
+        "_structure: Puissant",
+        "_subtitle: Frais et g\u00e9n\u00e9reux",
+        "_temperatude_de_service: 16\u00b0C \u00e0 18\u00b0C",
+        "_type:vin_rouge",
+        "_un_accord_avec: Boeuf",
+        "Millesime : 2024",
+        "mois: juillet26",
+        "NC : 22042178",
+        "stock: juillet26",
+        "Tous les vins"
+      ],
+      "variants": [
+        {
+          "id": 54321843110229,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "WUBAR0001-2024",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "14.90",
+          "grams": 2000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 11415662985557,
+          "created_at": "2026-07-08T11:44:37+02:00",
+          "updated_at": "2026-07-27T16:15:01+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 39110457098479,
+          "created_at": "2022-12-16T15:55:30+01:00",
+          "position": 1,
+          "updated_at": "2022-12-16T15:55:30+01:00",
+          "product_id": 11415662985557,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0459/2871/0305/products/larcin-380419_12fa68e3-c36c-42ac-84be-d396b26f613c.jpg?v=1671202530",
+          "width": 1200,
+          "height": 1200
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 11415552065877,
+      "title": "BergecRac rouge 2025 | Ch\u00e2teau Barouillet",
+      "handle": "bergecrac-rouge-2025-chateau-barouillet",
+      "body_html": "<h2><span dir=\"auto\" style=\"vertical-align: inherit;\"><span dir=\"auto\" style=\"vertical-align: inherit;\">Notre avis sur ce vin</span></span></h2>\n<p><strong><span dir=\"auto\" style=\"vertical-align: inherit;\"><span dir=\"auto\" style=\"vertical-align: inherit;\">BergecRac rouge 2025 - Vin de France - Ch\u00e2teau Barouillet</span></span></strong></p>\n<p><span dir=\"auto\" style=\"vertical-align: inherit;\"><span dir=\"auto\" style=\"vertical-align: inherit;\">Nez r\u00e9gliss\u00e9 et sur le cassis. En bouche c'est sur le fruit \u00e9galement avec beaucoup de fra\u00eecheur pour ensuite aller vers une finale g\u00e9n\u00e9reuse avec de beaux tanins.\u00a0 </span></span><br><span dir=\"auto\" style=\"vertical-align: inherit;\"><span dir=\"auto\" style=\"vertical-align: inherit;\">Un vin de soif avec du caract\u00e8re !\u00a0</span></span></p>\n<p>\u00a0</p>",
+      "published_at": "2026-07-26T12:01:15+02:00",
+      "created_at": "2026-07-08T11:20:05+02:00",
+      "updated_at": "2026-07-27T16:15:01+02:00",
+      "vendor": "Vincent Alexis",
+      "product_type": "Vin",
+      "tags": [
+        "_appelation: Vin de France",
+        "_aromatique: Fruit\u00e9",
+        "_badge: bio",
+        "_badge: nouveau",
+        "_badge: sans-so",
+        "_brand: Ch\u00e2teau Barouillet",
+        "_cat:sans_sulfite",
+        "_cepage: Malbec - Cabernet Sauvignon - Merlot - Cabernet Franc - Fer Servadou -  M\u00e9rille",
+        "_certification: ab",
+        "_certification: biody",
+        "_contenance: 75 cl",
+        "_couleur: Rouge",
+        "_exemple_de_plat: R\u00f4ti - C\u00f4tes - filet - noix - foie veau en sauce \u201a...",
+        "_metatype:vin_tranquille",
+        "_potentiel_de_garde: 2 \u00e0 5 ans",
+        "_specificite : vin sans soufre ajout\u00e9",
+        "_structure: Frais",
+        "_structure: Puissant",
+        "_subtitle: Frais et g\u00e9n\u00e9reux",
+        "_temperatude_de_service: 16\u00b0C \u00e0 18\u00b0C",
+        "_type:vin_rouge",
+        "_un_accord_avec: Boeuf",
+        "Millesime : 2025",
+        "mois: juillet26",
+        "stock: juillet26",
+        "Tous les vins"
+      ],
+      "variants": [
+        {
+          "id": 54321694048597,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "WUBAR0007-2025",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "9.90",
+          "grams": 2000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 11415552065877,
+          "created_at": "2026-07-08T11:20:05+02:00",
+          "updated_at": "2026-07-27T16:15:01+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 54700468470101,
+          "created_at": "2024-07-03T17:38:31+02:00",
+          "position": 1,
+          "updated_at": "2024-07-03T17:38:31+02:00",
+          "product_id": 11415552065877,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0459/2871/0305/files/bergecracrougebarouillet.jpg?v=1720021111",
+          "width": 1200,
+          "height": 1200
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 11419139211605,
+      "title": "Les Bulles 2024 | L\u00e9o Dirringer",
+      "handle": "les-bulles-2024-leo-dirringer",
+      "body_html": "<h2 data-mce-fragment=\"1\">Notre avis sur ce vin</h2>\n<p><strong>Les Bulles (P\u00e9tillant Nature) - 2024 - Alsace - L\u00e9o Dirringer\u00a0</strong></p>\n<p>EN 2024, cuv\u00e9e \u00e9labor\u00e9e \u00e0 partir de pinot blanc et de riesling, cette cuv\u00e9e est donc moins aromatique que 2023, n\u00e9anmoins elle poss\u00e8de un \u00e9quilibre parfait entre le fruit\u00e9, min\u00e9ralit\u00e9 et tension des bulles !</p>",
+      "published_at": "2026-07-26T11:56:12+02:00",
+      "created_at": "2026-07-09T12:34:42+02:00",
+      "updated_at": "2026-07-27T16:15:01+02:00",
+      "vendor": "L\u00e9o Dirringer",
+      "product_type": "Pet'Nat",
+      "tags": [
+        "_appelation: Alsace",
+        "_aromatique: Fruit\u00e9",
+        "_badge: bio",
+        "_badge: nouveau",
+        "_badge: sans-so",
+        "_brand: L\u00e9o Dirringer",
+        "_cat:sans_sulfite",
+        "_cepage: pinot blanc et riesling",
+        "_certification: ab",
+        "_contenance: 75 cl",
+        "_couleur: Blanc",
+        "_degre_dalcool: 11.5",
+        "_potentiel_de_garde: 1 \u00e0 2 ans",
+        "_region: Alsace",
+        "_specificite : vin sans soufre ajout\u00e9",
+        "_structure: Frais",
+        "_temperatude_de_service: 8\u00b0C et 10\u00b0C",
+        "_type:pet_nat",
+        "Accise: W200",
+        "Bulles : P\u00e9tillant",
+        "Millesime : 2024",
+        "mois: juillet26",
+        "NC : 22042111",
+        "pet-nat",
+        "stock: juillet26",
+        "Tous les vins"
+      ],
+      "variants": [
+        {
+          "id": 54329520750933,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "WLEOD0003-2024",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "13.80",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 11419139211605,
+          "created_at": "2026-07-09T12:34:42+02:00",
+          "updated_at": "2026-07-27T16:15:01+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 48965353046357,
+          "created_at": "2023-03-31T10:23:29+02:00",
+          "position": 1,
+          "updated_at": "2023-03-31T10:23:29+02:00",
+          "product_id": 11419139211605,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0459/2871/0305/products/lesbullesdeleodirringer.jpg?v=1680251009",
+          "width": 1200,
+          "height": 1200
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10564639261013,
+      "title": "Fleurie 2024 | Thibault Ducroux",
+      "handle": "fleurie-2024-thibault-ducroux",
+      "body_html": "<h2>Notre avis sur ce vin</h2>\n<p><b>Fleurie 2024\u00a0 - Thibault Ducroux</b><br>Le nez est fin et d\u00e9licat sur les fruits noirs et rouges presque confitur\u00e9s. La bouche pr\u00e9sente une mati\u00e8re douce, profonde sans manquer de tension. Cette mati\u00e8re est une vraie chair de fruits (jus et pulpe), dense et fine.</p>\n<p>La finale nous prolonge dans un moment d\u00e9licieux o\u00f9 apparait encore quelques notes de fruits et d'\u00e9pices. Un d\u00e9lice \u00e0 croquer</p>",
+      "published_at": "2026-07-17T12:54:42+02:00",
+      "created_at": "2026-02-26T16:52:30+01:00",
+      "updated_at": "2026-07-27T16:15:01+02:00",
+      "vendor": "Thibault Ducroux",
+      "product_type": "vin",
+      "tags": [
+        ":gamay",
+        "_appelation: Fleurie",
+        "_aromatique: Floral",
+        "_brand:  Thibault Ducroux",
+        "_cepage: 100% Gamay",
+        "_cepage: gamay",
+        "_contenance: 75 cl",
+        "_couleur: Rouge",
+        "_degre_dalcool: 13%",
+        "_exemple_de_plat: Veau: Blanquette-ris et pieds de veau-escalope pan\u00e9e-veau marengo-paupiettes \u2026",
+        "_metatype:vin_tranquille",
+        "_potentiel_de_garde:5 \u00e0 7 ans",
+        "_region: Beaujolais",
+        "_structure: Puissant",
+        "_subtitle: Un vin profond et dense",
+        "_temperatude_de_service: 16\u00b0 \u00e0 18\u00b0",
+        "_type:vin_rouge",
+        "_un_accord_avec: Veau",
+        "Accise: W200",
+        "Date_17/07/26",
+        "Date_22/07/26",
+        "Date_27/06/26",
+        "Millesime : 2024",
+        "NC : 22042144",
+        "stock: mar26",
+        "Tous les vins"
+      ],
+      "variants": [
+        {
+          "id": 52749337461077,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "WTDDU0001-2024",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "15.10",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 10564639261013,
+          "created_at": "2026-02-26T16:52:30+01:00",
+          "updated_at": "2026-07-27T16:15:01+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 30901527117985,
+          "created_at": "2021-09-13T13:25:34+02:00",
+          "position": 1,
+          "updated_at": "2021-09-13T13:25:34+02:00",
+          "product_id": 10564639261013,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0459/2871/0305/products/Fleurie-2020-Thibault-Ducroux.jpg?v=1631532334",
+          "width": 950,
+          "height": 950
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 11311722955093,
+      "title": "Je suis au Jardin 2025 | Domaine Lindenlaub",
+      "handle": "je-suis-au-jardin-2025-domaine-lindenlaub",
+      "body_html": "<h2>Notre avis sur ce vin</h2>\n<p><strong>Je suis au Jardin 2025 (Muscat) - Alsace - Domaine Lindenlaub</strong></p>\n<p><meta charset=\"utf-8\">Le nez charme par ses notes de mandarine, d\u2019orgeat et de fleurs blanches, tandis que la bouche s\u00e9duit par sa fra\u00eecheur et son \u00e9nergie. La finale, sapide et nette, nous laisse une magnifique impression de finesse et surtout de l\u00e9g\u00e8ret\u00e9 (a\u00e9rienne).</p>",
+      "published_at": "2026-07-16T12:22:52+02:00",
+      "created_at": "2026-05-20T09:57:06+02:00",
+      "updated_at": "2026-07-27T16:15:01+02:00",
+      "vendor": "Christophe Lindenlaub",
+      "product_type": "Vin",
+      "tags": [
+        "_appelation: Vin d'Alsace",
+        "_aromatique: Fruit\u00e9",
+        "_badge: bio",
+        "_badge: nouveau",
+        "_badge: sans-so",
+        "_brand: Christophe Lindenlaub",
+        "_cat:sans_sulfite",
+        "_cepage: Muscat",
+        "_certification: ab",
+        "_contenance: 75 cl",
+        "_couleur: Blanc",
+        "_degre_dalcool: 12.50",
+        "_exemple_de_plat: Autres Fruits - g \u00e2teaux - tartes - p \u00e2tisseries - cr\u00e8mes - cr\u00eapes fourr\u00e9es \u201a...",
+        "_metatype:vin_tranquille",
+        "_potentiel_de_garde: 2 \u00e0 5 ans",
+        "_region: Alsace",
+        "_specificite : vin sans soufre ajout\u00e9",
+        "_structure: Frais",
+        "_subtitle: Muscat sec. Une belle claque !",
+        "_temperatude_de_service: 10\u00b0C - 12\u00b0C",
+        "_type:vin_blanc",
+        "_un_accord_avec: Desserts",
+        "Accise: W200",
+        "Millesime : 2025",
+        "mois: juin26",
+        "NC : 22042111",
+        "stock: juin26",
+        "Tous les vins"
+      ],
+      "variants": [
+        {
+          "id": 53964187173205,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "WSTOP0009-2025",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "15.90",
+          "grams": 2000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 11311722955093,
+          "created_at": "2026-05-20T09:57:07+02:00",
+          "updated_at": "2026-07-27T16:15:01+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 50851768172885,
+          "created_at": "2023-08-28T16:59:18+02:00",
+          "position": 1,
+          "updated_at": "2023-08-28T16:59:18+02:00",
+          "product_id": 11311722955093,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0459/2871/0305/files/je-suis-au-jardin-muscat-849025_7df814fb-f320-487c-9f62-48f0f509e5d1.jpg?v=1693234758",
+          "width": 1200,
+          "height": 1200
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 11243687641429,
+      "title": "Les Garrigues 2025 | Domaine Richaud",
+      "handle": "les-garrigues-2025-domaine-richaud",
+      "body_html": "<h2>Notre avis sur ce vin bio</h2>\n<p><strong>Les Garrigues 2025 - C\u00f4tes du Rh\u00f4ne - Domaine Richaud </strong></p>\n<p>Vin \u00e9quilibr\u00e9; fluide, frais et sans manquer de structure. Un joli rapport qualit\u00e9/prix sign\u00e9 par les Richaud !! Un pur vin qu'on adore !</p>\n<p>Grillades de porc ou d'agneau\u00a0au menu !</p>\n<p><br></p>",
+      "published_at": "2026-07-16T12:15:17+02:00",
+      "created_at": "2026-04-13T17:31:24+02:00",
+      "updated_at": "2026-07-27T16:15:01+02:00",
+      "vendor": "Domaine Marcel Richaud",
+      "product_type": "GOOD",
+      "tags": [
+        "_appelation: C\u00f4tes du Rh\u00f4ne",
+        "_aromatique: Floral",
+        "_badge: bio",
+        "_badge: nouveau",
+        "_brand: Domaine Marcel Richaud",
+        "_cepage: 50% de Grenache - 20% de Syrah - 20% de Carignan - 5% de Counoise et de 5% de Mourv\u00e8dre",
+        "_certification: ab",
+        "_contenance: 75 cl",
+        "_couleur: Rouge",
+        "_degre_dalcool: 15",
+        "_metatype:vin_tranquille",
+        "_potentiel_de_garde: 2 \u00e0 5 ans",
+        "_region: Vall\u00e9e du Rh\u00f4ne",
+        "_structure: Puissant",
+        "_subtitle: Une bouche gourmande et fluide !",
+        "_temperatude_de_service: 18\u00b0C - On peut le carafer",
+        "_type:vin_rouge",
+        "_un_accord_avec: viande rotie",
+        "Accise: W200",
+        "Millesime : 2025",
+        "mois: juillet26",
+        "NC : 22042146",
+        "stock: juillet26",
+        "Tous les vins"
+      ],
+      "variants": [
+        {
+          "id": 53677891191125,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "WEMAR0003-2025",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "15.90",
+          "grams": 2000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 11243687641429,
+          "created_at": "2026-04-13T17:31:24+02:00",
+          "updated_at": "2026-07-27T16:15:01+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 61402074349909,
+          "created_at": "2025-07-17T19:48:28+02:00",
+          "position": 1,
+          "updated_at": "2025-07-17T19:48:35+02:00",
+          "product_id": 11243687641429,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0459/2871/0305/files/LES-GARRIGUES-2024-Domaine_richaud.jpg?v=1752774515",
+          "width": 1200,
+          "height": 1200
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 11246523842901,
+      "title": "Tout Rouge 2025 (Litre) | Jean Pierre Rietsch",
+      "handle": "tout-rouge-2025-litre-jean-pierre-rietsch",
+      "body_html": "<h2>Notre avis sur ce vin</h2>\n<p><strong>Tout Rouge 2025 (litre)</strong><strong>\u00a0- Jean Pierre Rietsch<br></strong></p>\n<p>Un rouge au format litre (mais quelle bonne id\u00e9e), gourmand et tr\u00e8s facile \u00e0 boire, sur le fruit croquant, la fra\u00eecheur et une belle souplesse. Une cuv\u00e9e l\u00e9g\u00e8re et d\u00e9salt\u00e9rante. A partager autour d\u2019une cuisine simple.</p>",
+      "published_at": "2026-07-10T14:33:56+02:00",
+      "created_at": "2026-04-14T18:14:37+02:00",
+      "updated_at": "2026-07-27T16:15:01+02:00",
+      "vendor": "Jean-Pierre Rietsch",
+      "product_type": "ALLOCS",
+      "tags": [
+        ":pinotnoir",
+        "_appelation: Vin de France",
+        "_aromatique: Complexe",
+        "_badge: nouveau",
+        "_brand: Jean-Pierre Rietsch",
+        "_cepage: Pinot Gris et Pinot Noir",
+        "_contenance: 100 cl",
+        "_couleur: Rouge",
+        "_exemple_de_plat: Blanquette - ris et pieds de veau - escalope pan\u00e9e - veau marengo - paupiettes \u201a...",
+        "_metatype:vin_tranquille",
+        "_potentiel_de_garde: 3 \u00e0 4 ans",
+        "_structure: Fin",
+        "_temperatude_de_service: 16\u00b0C \u00e0 18\u00b0C",
+        "_type:ALLOC",
+        "_un_accord_avec: Veau",
+        "Accise: W200",
+        "Millesime : 2025",
+        "mois: juillet26",
+        "NC : 22042178",
+        "stock: juillet26",
+        "Tous les vins"
+      ],
+      "variants": [
+        {
+          "id": 53685407842645,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "WJPRI0008-2025",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "16.90",
+          "grams": 2000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 11246523842901,
+          "created_at": "2026-04-14T18:14:38+02:00",
+          "updated_at": "2026-07-27T16:15:01+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 75508770242901,
+          "created_at": "2026-07-10T14:32:59+02:00",
+          "position": 1,
+          "updated_at": "2026-07-10T14:33:02+02:00",
+          "product_id": 11246523842901,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0459/2871/0305/files/rietsch-tout-rouge.png?v=1783686782",
+          "width": 1200,
+          "height": 1200
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10320735011157,
+      "title": "Riesling Grittermate 2020 | Domaine Julien Meyer",
+      "handle": "riesling-grittermate-2020-domaine-julien-meyer",
+      "body_html": "<h2>Notre avis sur ce vin</h2>\n<p><strong>Riesling Grittermatte 2020 - Alsace - Domaine Julien Meyer</strong></p>\n<p><meta charset=\"utf-8\"><span>Ce vin exprime une \u00e9l\u00e9gance et une min\u00e9ralit\u00e9 exceptionnels. Un\u00a0magnifique\u00a0vin qui accompagnera\u00a0vos cuisines exotiques, poissons fum\u00e9s, crustac\u00e9s nobles</span></p>",
+      "published_at": "2026-07-10T09:33:30+02:00",
+      "created_at": "2025-12-12T17:39:09+01:00",
+      "updated_at": "2026-07-27T16:15:01+02:00",
+      "vendor": "Patrick Meyer",
+      "product_type": "Vin",
+      "tags": [
+        "_appelation: Vin d'Alsace",
+        "_aromatique: Complexe",
+        "_badge: bio",
+        "_badge: sans-so",
+        "_brand: Domaine Julien Meyer",
+        "_cat:sans_sulfite",
+        "_cepage: Riesling",
+        "_certification: ab",
+        "_certification: biody",
+        "_contenance: 75 cl",
+        "_couleur: Blanc",
+        "_degre_dalcool: 12.50",
+        "_exemple_de_plat: Caviar",
+        "_metatype:vin_tranquille",
+        "_potentiel_de_garde: plus de 10 ans",
+        "_region: Alsace",
+        "_specificite : vin sans soufre ajout\u00e9",
+        "_structure: Frais",
+        "_temperatude_de_service: 10\u00b0C \u00e0 12\u00b0C",
+        "_type:vin_blanc",
+        "_un_accord_avec: Hors d'oeuvre et Entr\u00e9es",
+        "Accise: W200",
+        "Date_10/07/26",
+        "Date_12/06/26",
+        "Date_19/07/26",
+        "Date_22/07/26",
+        "Millesime : 2020",
+        "NC : 22042111",
+        "stock: dec25",
+        "Tous les vins"
+      ],
+      "variants": [
+        {
+          "id": 52077584318805,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "WEJUL0006-2020",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "26.50",
+          "grams": 2000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 10320735011157,
+          "created_at": "2025-12-12T17:39:09+01:00",
+          "updated_at": "2026-07-27T16:15:01+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 38776045371631,
+          "created_at": "2022-10-21T16:18:21+02:00",
+          "position": 1,
+          "updated_at": "2022-10-21T16:18:21+02:00",
+          "product_id": 10320735011157,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0459/2871/0305/products/3935-alsace-domaine-julien-meyer-blanc-riesling-grittermate-2018-r.jpg?v=1666361901",
+          "width": 1200,
+          "height": 1200
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 11246113784149,
+      "title": "Pinot noir StierKopf 2025 | Jean Pierre Rietsch",
+      "handle": "pinot-noir-stierkopf-2025-jean-pierre-rietsch",
+      "body_html": "<h2>Notre avis sur ce vin</h2>\n<p><strong>Pinot noir StierKopf 2025 -</strong><strong>\u00a0 Vin d'Alsace - Jean Pierre Rietsch<br></strong>La bouche est charnue, l\u00e9g\u00e8rement tendue et astringente, pleine d\u2019\u00e9nergie et de longueur. Un vin qu'on pourra oublier quelque temps en cave.</p>\n<p><strong>Vinification</strong> :\u00a0<br><meta charset=\"utf-8\"><span>Mac\u00e9ration semi-carbonique de 12 jours sur raisins entiers.</span><br><span>Levures indig\u00e8nes. Tr\u00e8s l\u00e9ger sulfitage</span><br><span>Elevage de 8 mois en cuve inox.</span><br></p>\n<p><br></p>",
+      "published_at": "2026-07-09T18:07:25+02:00",
+      "created_at": "2026-04-14T15:54:18+02:00",
+      "updated_at": "2026-07-27T16:15:01+02:00",
+      "vendor": "Jean-Pierre Rietsch",
+      "product_type": "ALLOCS",
+      "tags": [
+        ":pinotnoir",
+        "_appelation: Vin d'Alsace",
+        "_aromatique: Complexe",
+        "_badge: nouveau",
+        "_brand: Jean-Pierre Rietsch",
+        "_cepage: 100% Pinot Noir",
+        "_contenance: 75 cl",
+        "_couleur: Rouge",
+        "_exemple_de_plat: Blanquette - ris et pieds de veau - escalope pan\u00e9e - veau marengo - paupiettes \u201a...",
+        "_metatype:vin_tranquille",
+        "_potentiel_de_garde: 5 \u00e0 10 ans",
+        "_region: Alsace",
+        "_structure: Fin",
+        "_temperatude_de_service: 16\u00b0C \u00e0 18\u00b0C",
+        "_type:ALLOC",
+        "_un_accord_avec: Veau",
+        "Accise: W200",
+        "Millesime : 2025",
+        "mois: juillet26",
+        "NC : 22042178",
+        "stock: juillet26",
+        "Tous les vins"
+      ],
+      "variants": [
+        {
+          "id": 53684158300501,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "WJPRI0009-2025",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "23.80",
+          "grams": 2000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 11246113784149,
+          "created_at": "2026-04-14T15:54:18+02:00",
+          "updated_at": "2026-07-27T16:15:01+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 54246714900821,
+          "created_at": "2024-06-04T14:38:58+02:00",
+          "position": 1,
+          "updated_at": "2024-06-04T14:38:58+02:00",
+          "product_id": 11246113784149,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0459/2871/0305/files/PinotnoirStierKopf2023.jpg?v=1717504738",
+          "width": 1200,
+          "height": 1200
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 11246095008085,
+      "title": "Pinot noir 2025 | Jean Pierre Rietsch",
+      "handle": "pinot-noir-2025-jean-pierre-rietsch",
+      "body_html": "<h2>Notre avis sur ce vin</h2>\n<p><strong>Pinot noir 2025 -</strong><strong>\u00a0 Vin d'Alsace - Jean Pierre Rietsch<br></strong></p>\n<p><strong>Tous les pinot noir du domaine</strong></p>\n<p>Ce pinot noir, \u00e0 la robe rubis \u00e9tincelante et au nez de fruits rouges. Bouche tr\u00e8s fluide et poss\u00e9dant une belle acidit\u00e9 (ce qui veut dire fraicheur) et sans amertume. Un rous\u00e9 ou roug\u00e9 qui se caract\u00e9rise par sa d\u00e9licatesse et sa puret\u00e9 rafraichissante.</p>\n<p><meta charset=\"utf-8\"><em>Pour assurer une conservation optimale \u00e0 ce vin, il convient de le stocker dans une cave fra\u00eeche en dessous de 14\u00b0C.</em></p>",
+      "published_at": "2026-07-09T18:07:24+02:00",
+      "created_at": "2026-04-14T15:49:48+02:00",
+      "updated_at": "2026-07-27T16:15:01+02:00",
+      "vendor": "Jean-Pierre Rietsch",
+      "product_type": "ALLOCS",
+      "tags": [
+        ":pinotnoir",
+        "_appelation: Vin d'Alsace",
+        "_aromatique: Complexe",
+        "_badge: nouveau",
+        "_badge: sans-so",
+        "_brand: Jean-Pierre Rietsch",
+        "_cepage: 100% Pinot Noir",
+        "_contenance: 75 cl",
+        "_couleur: Rouge",
+        "_exemple_de_plat: Blanquette - ris et pieds de veau - escalope pan\u00e9e - veau marengo - paupiettes \u201a...",
+        "_metatype:vin_tranquille",
+        "_potentiel_de_garde: 5 \u00e0 10 ans",
+        "_region: Alsace",
+        "_specificite : vin sans soufre ajout\u00e9",
+        "_structure: Fin",
+        "_temperatude_de_service: 16\u00b0C \u00e0 18\u00b0C",
+        "_type:ALLOC",
+        "_un_accord_avec: Veau",
+        "Accise: W200",
+        "Millesime : 2025",
+        "mois: juillet26",
+        "NC : 22042178",
+        "stock: juillet26",
+        "Tous les vins"
+      ],
+      "variants": [
+        {
+          "id": 53684117340501,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "WJPRI0003-2025",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "20.50",
+          "grams": 2000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 11246095008085,
+          "created_at": "2026-04-14T15:49:48+02:00",
+          "updated_at": "2026-07-27T16:15:01+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 61480280850773,
+          "created_at": "2025-07-22T14:10:48+02:00",
+          "position": 1,
+          "updated_at": "2025-07-22T14:41:35+02:00",
+          "product_id": 11246095008085,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0459/2871/0305/files/Pinotnoirrose2023_ef86175a-680c-425d-9f5b-57ec57ebef82.jpg?v=1753188095",
+          "width": 1200,
+          "height": 1200
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 11348972863829,
+      "title": "A toi nous 2025 | Andr\u00e9a Calek",
+      "handle": "a-toi-nous-2025-andrea-calek",
+      "body_html": "<h2>Notre avis sur ce vin</h2>\n<p><strong>A toi nous 2025 - Vin de France - <meta charset=\"utf-8\">Andr\u00e9a Calek</strong><br><strong></strong></p>\n<p><meta charset=\"utf-8\">Un 2025, juteux et tr\u00e8s gourmand, aux notes de cerise, de framboise et d\u2019\u00e9pices douces. Un vin naturel de partage, souple, frais et facile \u00e0 boire.</p>\n<p><strong><meta charset=\"utf-8\">Ce vin peut pr\u00e9senter du gaz (laiss\u00e9 volontairement par le vigneron). Si cela vous d\u00e9range, n'h\u00e9sitez pas \u00e0 le passer en carafe. C'est un vin vivant. A conserver \u00e0 une temp\u00e9rature inf\u00e9rieure \u00e0 15\u00b0C.\u00a0</strong></p>",
+      "published_at": "2026-07-09T09:49:43+02:00",
+      "created_at": "2026-06-08T10:10:50+02:00",
+      "updated_at": "2026-07-27T16:15:01+02:00",
+      "vendor": "Andrea Calek",
+      "product_type": "Vin",
+      "tags": [
+        "_appelation: Vin de France",
+        "_aromatique: Fruit\u00e9",
+        "_badge: bio",
+        "_badge: nouveau",
+        "_badge: sans-so",
+        "_brand: Andr\u00e9a Calek",
+        "_cat:sans_sulfite",
+        "_cepage: grenache - syrah",
+        "_certification: ab",
+        "_contenance: 75 cl",
+        "_couleur: Rouge",
+        "_degre_dalcool: 12.5%",
+        "_exemple_de_plat: Rillettes - Pat\u00e9s - Saucisson - Jambons",
+        "_metatype:vin_tranquille",
+        "_potentiel_de_garde: 2 \u00e0 3 ans",
+        "_specificite : vin sans soufre ajout\u00e9",
+        "_structure: L\u00e9ger",
+        "_temperatude_de_service: 18\u00b0C - 20\u00b0C",
+        "_type:vin_rouge",
+        "_un_accord_avec: Charcuterie",
+        "Accise: W200",
+        "Millesime : 2025",
+        "mois: juillet26",
+        "NC : 22042184",
+        "Tous les vins"
+      ],
+      "variants": [
+        {
+          "id": 54089823420757,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "WANCA0001-2025",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "11.90",
+          "grams": 2000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 11348972863829,
+          "created_at": "2026-06-08T10:10:51+02:00",
+          "updated_at": "2026-07-27T16:15:01+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 57319469678933,
+          "created_at": "2025-01-17T00:25:59+01:00",
+          "position": 1,
+          "updated_at": "2025-01-17T00:26:05+01:00",
+          "product_id": 11348972863829,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0459/2871/0305/files/P4958-2023.jpg?v=1737069965",
+          "width": 1000,
+          "height": 1000
+        },
+        {
+          "id": 67382477586773,
+          "created_at": "2025-11-17T15:09:37+01:00",
+          "position": 2,
+          "updated_at": "2025-11-17T15:09:43+01:00",
+          "product_id": 11348972863829,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0459/2871/0305/files/versoatoinous.jpg?v=1763388583",
+          "width": 1200,
+          "height": 1200
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 11311821586773,
+      "title": "C\u00f4t \u00e0 C\u00f4t 2022 | No\u00eblla Morantin",
+      "handle": "cot-a-cot-2022-noella-morantin",
+      "body_html": "<h2>Notre avis sur ce vin</h2>\n<p>Le <strong>C\u00f4t \u00e0 C\u00f4t 2022 - Vin de France - No\u00eblla Morantin</strong></p>\n<p><meta charset=\"utf-8\">Un rouge de Loire \u00e0 la fois gourmand, \u00e9pic\u00e9 et digeste, avec de beaux fruits noirs et une fra\u00eecheur tr\u00e8s s\u00e9duisante. Un vin naturel franc, vivant et facile \u00e0 boire.</p>\n<p>Le Malbec de Loire, version a\u00e9rienne.</p>",
+      "published_at": "2026-07-06T17:35:24+02:00",
+      "created_at": "2026-05-20T10:26:16+02:00",
+      "updated_at": "2026-07-27T16:15:01+02:00",
+      "vendor": "No\u00eblla Morantin",
+      "product_type": "GOOD",
+      "tags": [
+        "_appelation: Vin de France",
+        "_aromatique: Min\u00e9ral",
+        "_badge: nouveau",
+        "_brand: No\u00eblla Morantin",
+        "_cepage: C\u00f4t",
+        "_contenance: 75 cl",
+        "_couleur: Rouge",
+        "_degre_dalcool: 12.50",
+        "_exemple_de_plat: Carr\u00e9 de Cochon",
+        "_metatype:vin_tranquille",
+        "_potentiel_de_garde: 2 \u00e0 5 ans",
+        "_structure: Puissant",
+        "_subtitle: C'est du vin \u00e7a !",
+        "_temperatude_de_service: 18\u00b0C.",
+        "_type:vin_rouge",
+        "_un_accord_avec: Porc",
+        "Accise: W200",
+        "Millesime : 2022",
+        "mois: juin26",
+        "NC : 22042182",
+        "stock: juin26",
+        "Tous les vins"
+      ],
+      "variants": [
+        {
+          "id": 53964391874901,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "WNOMO0004-2022",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "16.50",
+          "grams": 2000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 11311821586773,
+          "created_at": "2026-05-20T10:26:16+02:00",
+          "updated_at": "2026-07-27T16:15:01+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 52935256441173,
+          "created_at": "2024-03-05T10:58:27+01:00",
+          "position": 1,
+          "updated_at": "2024-03-05T10:58:27+01:00",
+          "product_id": 11311821586773,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0459/2871/0305/files/cot-a-cot-500895_f5c0d514-f28f-4406-a53c-e99ddd730894.jpg?v=1709632707",
+          "width": 1200,
+          "height": 1200
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 11405211369813,
+      "title": "Pernand-Vergelesses rouge 2023 | Fanny Sabre",
+      "handle": "pernand-vergelesses-rouge-2023-fanny-sabre",
+      "body_html": "<h2>Notre avis sur ce vin</h2>\n<p><strong>Pernand-Vergelesses rouge 2023 - Fanny Sabre</strong></p>\n<p>Le mill\u00e9sime 2023, frais et \u00e9quilibr\u00e9, r\u00e9v\u00e8le une bouche souple, des tanins fondus et une belle longueur.<br><br></p>",
+      "published_at": "2026-07-06T17:12:18+02:00",
+      "created_at": "2026-07-03T10:14:20+02:00",
+      "updated_at": "2026-07-27T16:15:01+02:00",
+      "vendor": "Fanny Sabre",
+      "product_type": "ALLOCS",
+      "tags": [
+        ":pinotnoir",
+        "_appelation: Pernand-Vergelesses",
+        "_aromatique: Complexe",
+        "_badge: bio",
+        "_badge: coup-de",
+        "_badge: nouveau",
+        "_brand: Fanny Sabre",
+        "_cepage: 100% Pinot Noir",
+        "_certification: ab",
+        "_contenance: 75 cl",
+        "_couleur: Rouge",
+        "_metatype:vin_tranquille",
+        "_region: Bourgogne",
+        "_structure: Puissant",
+        "_subtitle: Quel jus !",
+        "_temperatude_de_service: 18\u00b0/20\u00b0C \u00e0 carafer 2 bonnes heures",
+        "_type:ALLOC",
+        "_type:vin_rouge",
+        "_un_accord_avec: Filet de B\u0153uf",
+        "Accise: W200",
+        "Date_19/07/26",
+        "Date_22/07/26",
+        "Millesime : 2023",
+        "mois: juin26",
+        "NC : 22042143",
+        "nopromo",
+        "stock: fev26",
+        "Tous les vins"
+      ],
+      "variants": [
+        {
+          "id": 54278403522901,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "WFASA0004-2023",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "51.90",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 11405211369813,
+          "created_at": "2026-07-03T10:14:20+02:00",
+          "updated_at": "2026-07-27T16:15:01+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 75471730639189,
+          "created_at": "2026-07-08T11:05:28+02:00",
+          "position": 1,
+          "updated_at": "2026-07-08T11:05:32+02:00",
+          "product_id": 11405211369813,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0459/2871/0305/files/PernandVergelesseFannySabre.png?v=1783501532",
+          "width": 2125,
+          "height": 2125
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 9611011490133,
+      "title": "Cornas Chaillot 2022 | Franck Balthazar",
+      "handle": "chaillot-2022-franck-balthazar",
+      "body_html": "<h2>Notre avis sur ce vin</h2>\n<p><strong>Chaillot 2022 - <meta charset=\"utf-8\">Cornas - Franck Balthazar</strong></p>\n<p><meta charset=\"utf-8\">Voil\u00e0 un Cornas intense et profond, aux notes de fruits noirs, de violette, d\u2019\u00e9pices et de fum\u00e9. Une cuv\u00e9e puissante, tr\u00e8s structur\u00e9e, avec une belle tension et un fort potentiel de garde.</p>\n<div>Dans sa jeunesse, pr\u00e9f\u00e9rez une jolie viande rouge ou du gibier avec quelques champignons de saison. Hummmm !</div>\n<div><br></div>",
+      "published_at": "2026-07-06T12:44:58+02:00",
+      "created_at": "2024-10-04T10:22:05+02:00",
+      "updated_at": "2026-07-27T16:15:01+02:00",
+      "vendor": "Franck Balthazar",
+      "product_type": "ALLOCS",
+      "tags": [
+        ":syrah",
+        "_appelation: Cornas",
+        "_aromatique: Min\u00e9ral",
+        "_badge: bio",
+        "_brand: Franck Balthazar",
+        "_cepage: Syrah",
+        "_certification: ab",
+        "_contenance: 75 cl",
+        "_couleur: Rouge",
+        "_degre_dalcool: 13.5%",
+        "_exemple_de_plat: Carr\u00e9 de Cochon",
+        "_exemple_de_plat: R\u00f4ti - C\u00f4tes - filet - noix - foie veau en sauce \u201a...",
+        "_metatype:vin_tranquille",
+        "_potentiel_de_garde: plus de 10 ans",
+        "_region: Vall\u00e9e du Rh\u00f4ne",
+        "_structure: Puissant",
+        "_subtitle: Gagne en profondeur d'ann\u00e9e en ann\u00e9e",
+        "_temperatude_de_service: 18\u00b0C",
+        "_type:ALLOC",
+        "_type:vin_rouge",
+        "_un_accord_avec: Viande de porc et cochon",
+        "Accise: W200",
+        "Millesime : 2022",
+        "NC : 22042146",
+        "NOFAV",
+        "nopromo",
+        "select_noel_pepite",
+        "Tous les vins"
+      ],
+      "variants": [
+        {
+          "id": 49645219119445,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "P4853-2022",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "73.90",
+          "grams": 2000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 9611011490133,
+          "created_at": "2024-10-04T10:22:06+02:00",
+          "updated_at": "2026-07-27T16:15:01+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 51106839331157,
+          "created_at": "2023-09-27T10:28:20+02:00",
+          "position": 1,
+          "updated_at": "2023-09-28T10:50:17+02:00",
+          "product_id": 9611011490133,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0459/2871/0305/files/Franck-Balthazar-chaillot_83bdd3a5-ba7e-44cc-9ca5-de6d135c51d5.jpg?v=1695891017",
+          "width": 1200,
+          "height": 1200
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 11306896261461,
+      "title": "Classique 2024 | Jean Foillard",
+      "handle": "classique-2024-jean-foillard",
+      "body_html": "<h2>Notre avis sur ce vin</h2>\n<p><strong>Classique 2024 </strong><strong>- <meta charset=\"utf-8\">Morgon - Jean Foillard</strong><br></p>\n<p>Nez de fruits. En bouche c'est aussi du fruit : de cerise, de framboise, de violette et une belle touche \u00e9pic\u00e9e. Un rouge \u00e9l\u00e9gant, frais et profond, fid\u00e8le au style du domaine.<br><meta charset=\"utf-8\">C'est un vin <meta charset=\"utf-8\">\u00e0 la fois<strong> </strong>juteux, fin et digeste,<br></p>",
+      "published_at": "2026-07-06T12:25:45+02:00",
+      "created_at": "2026-05-19T10:01:12+02:00",
+      "updated_at": "2026-07-27T16:15:01+02:00",
+      "vendor": "Jean Foillard",
+      "product_type": "BEST",
+      "tags": [
+        ":gamay",
+        "_appelation: Morgon",
+        "_aromatique: Fruit\u00e9",
+        "_badge: nouveau",
+        "_brand: Jean Foillard",
+        "_cepage: 100% Gamay",
+        "_contenance: 75 cl",
+        "_couleur: Rouge",
+        "_degre_dalcool: 13",
+        "_exemple_de_plat: Rillettes - Pat\u00e9s - Saucisson - Jambons",
+        "_metatype:vin_tranquille",
+        "_potentiel_de_garde: 1 \u00e0 2 ans",
+        "_promo: offre_par_2",
+        "_region: Beaujolais",
+        "_structure: L\u00e9ger",
+        "_subtitle: Une cuv\u00e9e incontournable...quel gamay !",
+        "_temperatude_de_service: 16\u00b0C \u00e0 18\u00b0C",
+        "_type:vin_rouge",
+        "_un_accord_avec: Charcuterie",
+        "Accise: W200",
+        "Millesime : 2024",
+        "mois: juin26",
+        "NC : 22042144",
+        "stock: juin26",
+        "Tous les vins",
+        "vin: init",
+        "VIN_ETE"
+      ],
+      "variants": [
+        {
+          "id": 53954042134869,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "WJEAF0008-2024",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "19.90",
+          "grams": 2000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 11306896261461,
+          "created_at": "2026-05-19T10:01:13+02:00",
+          "updated_at": "2026-07-27T16:15:01+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 56771296624981,
+          "created_at": "2024-11-29T15:56:17+01:00",
+          "position": 1,
+          "updated_at": "2024-11-29T15:56:17+01:00",
+          "product_id": 11306896261461,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0459/2871/0305/files/2436-beaujolais-jean-foillard-morgin-classique-r.jpg?v=1732892177",
+          "width": 1200,
+          "height": 1200
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 9790019830101,
+      "title": "Mus'cat 2022 | Domaine de l'Octavin",
+      "handle": "muscat-2022-domaine-de-loctavin",
+      "body_html": "<h2>Notre avis sur ce vin</h2>\n<p><strong>Mus'cat 2022 - Domaine de l'Octavin (Alice Bouvot)</strong></p>\n<p>UN muscat des Pyr\u00e9n\u00e9es Orientales vinifi\u00e9 dans le Jura pour notre plus grand bonheur.\u00a0Hyper frais et gourmand</p>\n<p><br></p>\n<p><br></p>\n<p><br></p>\n<p><br></p>",
+      "published_at": "2026-06-29T17:17:38+02:00",
+      "created_at": "2025-02-08T15:36:19+01:00",
+      "updated_at": "2026-07-27T16:15:01+02:00",
+      "vendor": "Alice Bouvot",
+      "product_type": "ALLOCS",
+      "tags": [
+        "_appelation: Vin de France",
+        "_aromatique: Fruit\u00e9",
+        "_badge: bio",
+        "_badge: sans-so",
+        "_brand: Domaine de l'Octavin",
+        "_cat:sans_sulfite",
+        "_cepage: Muscat d'Alexandrie 50% et muscat petits grains 50%",
+        "_certification: ab",
+        "_contenance: 75 cl",
+        "_couleur: Blanc",
+        "_degre_dalcool: 11",
+        "_exemple_de_plat: Autres Fruits - g \u00e2teaux - tartes - p \u00e2tisseries - cr\u00e8mes - cr\u00eapes fourr\u00e9es \u201a...",
+        "_metatype:vin_tranquille",
+        "_potentiel_de_garde: 2 \u00e0 5 ans",
+        "_specificite : vin sans soufre ajout\u00e9",
+        "_structure: Frais",
+        "_subtitle: Sur le fruit et la fraicheur",
+        "_temperatude_de_service: 10-12\u00b0C",
+        "_type:ALLOC",
+        "_un_accord_avec: Desserts",
+        "Date_10/07/26",
+        "Date_22/07/26",
+        "Date_25/03/26",
+        "NC : 22042183",
+        "stock: oct25",
+        "Tous les vins"
+      ],
+      "variants": [
+        {
+          "id": 50282856317269,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "P4176-2022",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "24.90",
+          "grams": 1500,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 9790019830101,
+          "created_at": "2025-02-08T15:36:20+01:00",
+          "updated_at": "2026-07-27T16:15:01+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 39544091508975,
+          "created_at": "2023-03-22T16:18:47+01:00",
+          "position": 1,
+          "updated_at": "2023-03-22T20:58:17+01:00",
+          "product_id": 9790019830101,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0459/2871/0305/products/3417-jura-domaine-de-l_octavin-blanc-muscat-2020-r_b797690e-a9bb-4844-b6f3-6a4ddea56d41.jpg?v=1679515097",
+          "width": 1200,
+          "height": 1200
+        },
+        {
+          "id": 39544091541743,
+          "created_at": "2023-03-22T16:18:47+01:00",
+          "position": 2,
+          "updated_at": "2023-03-22T20:58:11+01:00",
+          "product_id": 9790019830101,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0459/2871/0305/products/3417-jura-domaine-de-l_octavin-blanc-muscat-2020-rz_b739a8f3-14f9-4905-8b9d-bdf2110d9956.jpg?v=1679515091",
+          "width": 1200,
+          "height": 1200
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10171916321109,
+      "title": "Magnum LBL 2022 | No\u00eblla Morantin",
+      "handle": "magnum-lbl-2022-noella-morantin",
+      "body_html": "<h2>Notre avis sur ce vin</h2>\n<p><strong>Magnum LBL 2022 (Vieilles vignes de sauvignon) - Vin de France - No\u00eblla Morantin</strong><br>Un grand vin : fleur sauvage aux agrumes les plus fins, un cot\u00e9 menthol\u00e9, des pointes de cardamome, anis..</p>\n<p>Des tr\u00e8s vieux sauvignon que N\u00f6ella a d\u00e9cid\u00e9 d'isoler dans une mise. Belle bouteille cir\u00e9e, \u00e9tiquette sobre, superbe #petitescaves</p>",
+      "published_at": "2026-06-26T12:54:17+02:00",
+      "created_at": "2025-09-24T12:12:34+02:00",
+      "updated_at": "2026-07-27T16:15:01+02:00",
+      "vendor": "No\u00eblla Morantin",
+      "product_type": "Vin",
+      "tags": [
+        "_appelation: Vin de France",
+        "_aromatique: Complexe",
+        "_brand: No\u00eblla Morantin",
+        "_cepage: Sauvignon",
+        "_contenance: 150 cl",
+        "_couleur: Blanc",
+        "_degre_dalcool: 13.5",
+        "_exemple_de_plat: Plateau de fromages",
+        "_metatype:vin_tranquille",
+        "_potentiel_de_garde: 5 \u00e0 10 ans",
+        "_structure: Fin",
+        "_subtitle: Le format id\u00e9al",
+        "_temperatude_de_service: 10\u00b0C \u00e0 12\u00b0C",
+        "_type:vin_blanc",
+        "_un_accord_avec: Fromages",
+        "Millesime : 2022",
+        "NC : 22042183",
+        "nopromo",
+        "Tous les vins"
+      ],
+      "variants": [
+        {
+          "id": 51524134404437,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "WNOMO0001-2022",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "57.90",
+          "grams": 3000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 10171916321109,
+          "created_at": "2025-09-24T12:12:34+02:00",
+          "updated_at": "2026-07-27T16:15:01+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 39402747625711,
+          "created_at": "2023-02-16T11:43:50+01:00",
+          "position": 1,
+          "updated_at": "2023-02-16T11:43:50+01:00",
+          "product_id": 10171916321109,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0459/2871/0305/products/magnum-lbl-752817_26968861-b5e8-49a4-9e15-385a140f21fb.jpg?v=1676544230",
+          "width": 1200,
+          "height": 1200
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 11343799091541,
+      "title": "Cheverny blanc 2025 | Herv\u00e9 Villemade",
+      "handle": "cheverny-blanc-2025-herve-villemade",
+      "body_html": "<h2>Notre avis sur ce vin</h2>\n<p><strong>Cheverny Blanc <span data-mce-fragment=\"1\">2025</span>\u00a0 - Herv\u00e9 Villemade</strong></p>Un blanc de Loire frais et gourmand, marqu\u00e9 par des notes de fleurs blanches, d\u2019agrumes et de fruits jaunes. La bouche est maintenur par une belle vivacit\u00e9 min\u00e9rale (fra\u00eecher et tension). Un vin tr\u00e8s facile \u00e0 appr\u00e9cie \u00e0 l\u2019ap\u00e9ritif comme \u00e0 table sur du poissons par exemple",
+      "published_at": "2026-06-25T10:20:14+02:00",
+      "created_at": "2026-06-04T11:42:13+02:00",
+      "updated_at": "2026-07-27T16:15:01+02:00",
+      "vendor": "Herv\u00e9 Villemade",
+      "product_type": "GOOD",
+      "tags": [
+        "_appelation: Cheverny",
+        "_aromatique: Fruit\u00e9",
+        "_badge: bio",
+        "_badge: nouveau",
+        "_brand: Domaine Villemade",
+        "_cepage: 70% Sauvignon - 30% Chardonnay",
+        "_certification: ab",
+        "_contenance: 75 cl",
+        "_couleur: Blanc",
+        "_degre_dalcool: 14.00",
+        "_metatype:vin_tranquille",
+        "_potentiel_de_garde: 1 \u00e0 2 ans",
+        "_region: Vall\u00e9e de la Loire",
+        "_structure: L\u00e9ger",
+        "_subtitle: Un Cheverny de haut vol !",
+        "_temperatude_de_service: 10\u00b0C",
+        "_type:vin_blanc",
+        "Millesime : 2024",
+        "mois: juin26",
+        "NC : 22042117",
+        "stock: juin26",
+        "Tous les vins"
+      ],
+      "variants": [
+        {
+          "id": 54064336535893,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "WNEVI0001-2025",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "15.50",
+          "grams": 2000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 11343799091541,
+          "created_at": "2026-06-04T11:42:14+02:00",
+          "updated_at": "2026-07-27T16:15:01+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 39416141381871,
+          "created_at": "2023-02-19T11:04:21+01:00",
+          "position": 1,
+          "updated_at": "2023-02-19T11:04:21+01:00",
+          "product_id": 11343799091541,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0459/2871/0305/products/436-loire-domaine-villemade-cheverny-blanc-2018-r.jpg?v=1676801061",
+          "width": 1200,
+          "height": 1200
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 11345216897365,
+      "title": "BergecRac rouge Magnum 2025 | Ch\u00e2teau Barouillet",
+      "handle": "bergecrac-rouge-magnum-2025-chateau-barouillet",
+      "body_html": "<h2>Notre avis sur ce vin</h2>\n<p><strong>BergecRac rouge Magnum 2025 - Vin de France - Ch\u00e2teau Barouillet</strong></p>\n<p>Nez r\u00e9gliss\u00e9 et sur le cassis. En bouche c'est sur le fruit \u00e9galement avec beaucoup de fra\u00eecheur pour ensuite aller vers une finale g\u00e9n\u00e9reuse avec de beaux tanins.\u00a0<br>Un vin de soif avec du caract\u00e8re !\u00a0</p>\n<p>\u00a0</p>",
+      "published_at": "2026-06-18T16:14:09+02:00",
+      "created_at": "2026-06-05T10:21:59+02:00",
+      "updated_at": "2026-07-27T16:15:01+02:00",
+      "vendor": "Vincent Alexis",
+      "product_type": "Vin",
+      "tags": [
+        "_appelation: Vin de France",
+        "_aromatique: Fruit\u00e9",
+        "_badge: bio",
+        "_badge: nouveau",
+        "_badge: sans-so",
+        "_brand: Ch\u00e2teau Barouillet",
+        "_cat:sans_sulfite",
+        "_cepage: Malbec - Cabernet Sauvignon - Merlot - Cabernet Franc - Fer Servadou -  M\u00e9rille",
+        "_certification: ab",
+        "_certification: biody",
+        "_contenance: 150 cl",
+        "_couleur: Rouge",
+        "_degre_dalcool: 13.5%",
+        "_exemple_de_plat: R\u00f4ti - C\u00f4tes - filet - noix - foie veau en sauce \u201a...",
+        "_metatype:vin_tranquille",
+        "_potentiel_de_garde: 2 \u00e0 5 ans",
+        "_specificite : vin sans soufre ajout\u00e9",
+        "_structure: Frais",
+        "_structure: Puissant",
+        "_subtitle: Frais et g\u00e9n\u00e9reux",
+        "_temperatude_de_service: 16\u00b0C \u00e0 18\u00b0C",
+        "_type:vin_rouge",
+        "_un_accord_avec: Boeuf",
+        "Date_25/07/26",
+        "Millesime : 2025",
+        "mois: juin26",
+        "stock: juin26",
+        "Tous les vins"
+      ],
+      "variants": [
+        {
+          "id": 54072101405013,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "WUBAR0002-2025",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "19.90",
+          "grams": 3000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 11345216897365,
+          "created_at": "2026-06-05T10:21:59+02:00",
+          "updated_at": "2026-07-27T16:15:01+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 67049334800725,
+          "created_at": "2025-10-27T17:15:41+01:00",
+          "position": 1,
+          "updated_at": "2025-10-27T17:15:47+01:00",
+          "product_id": 11345216897365,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0459/2871/0305/files/WUBAR0002-2024.jpg?v=1761581747",
+          "width": 1200,
+          "height": 1200
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 11343802859861,
+      "title": "Pinot Noir 2025 | Herv\u00e9 Villemade",
+      "handle": "pinot-noir-2025-herve-villemade",
+      "body_html": "<h2>Notre avis sur ce vin bio</h2>\n<p><strong>Pinot Noir 2025 - Vin de France - Herv\u00e9 Villemade</strong></p>\n<p>Pas la peine de se compliquer la vie. Ici, du fruit rouge, encore du fruit noir 'cerise' et des touches l\u00e9g\u00e8rement \u00e9pic\u00e9es-r\u00e9gliss\u00e9es. On se r\u00e9gale tout simplement par sa fra\u00eecheur et sa buvabilit\u00e9.<br>Beaucoup de finesse.<br><br>Bref ce n'est pas un simple vin de soif</p>",
+      "published_at": "2026-06-18T10:46:13+02:00",
+      "created_at": "2026-06-04T11:46:54+02:00",
+      "updated_at": "2026-07-27T16:15:01+02:00",
+      "vendor": "Herv\u00e9 Villemade",
+      "product_type": "MID",
+      "tags": [
+        ":pinotnoir",
+        "_appelation: Vin de France",
+        "_aromatique: Fruit\u00e9",
+        "_badge: bio",
+        "_badge: nouveau",
+        "_brand: Domaine Villemade",
+        "_cepage: 100% Pinot Noir",
+        "_certification: ab",
+        "_contenance: 75 cl",
+        "_couleur: Rouge",
+        "_degre_dalcool: 12",
+        "_degre_dalcool: 13.00",
+        "_exemple_de_plat: Saumon",
+        "_metatype:vin_tranquille",
+        "_potentiel_de_garde: 2 \u00e0 5 ans",
+        "_structure: Fin",
+        "_subtitle: Un Pinot Noir de Loire : frais et fin",
+        "_temperatude_de_service: 16\u00b0C \u00e0 18\u00b0C",
+        "_type:vin_rouge",
+        "_un_accord_avec: Charcuterie",
+        "Accise: W200",
+        "Millesime : 2025",
+        "mois: juin26",
+        "NC : 22042182",
+        "stock: juin26",
+        "Tous les vins"
+      ],
+      "variants": [
+        {
+          "id": 54064345383253,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "WNEVI0003-2025",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "18.90",
+          "grams": 2000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 11343802859861,
+          "created_at": "2026-06-04T11:46:54+02:00",
+          "updated_at": "2026-07-27T16:15:01+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 53393553391957,
+          "created_at": "2024-04-07T16:29:21+02:00",
+          "position": 1,
+          "updated_at": "2024-04-08T23:03:47+02:00",
+          "product_id": 11343802859861,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0459/2871/0305/files/1932-villemade-pinot-noir-2019-r.jpg?v=1712610227",
+          "width": 1200,
+          "height": 1200
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 11343800631637,
+      "title": "Cheverny rouge 2025 | Villemade",
+      "handle": "cheverny-rouge-2025-villemade",
+      "body_html": "<h2>Notre avis sur ce vin bio</h2>\n<p><strong>Cheverny rouge 2025- Herv\u00e9 Villemade</strong></p>\n<p>Un r\u00e9gal ce Cheverny : pas la peine de se compliquer la vie. Ici, du fruit rouge, encore du fruit noir 'cerise' et des touches l\u00e9g\u00e8rement \u00e9pic\u00e9es-r\u00e9gliss\u00e9es. On se r\u00e9gale tout simplement !</p>\n<p><strong>La jaja attitude quoi !</strong></p>\n<p>\u00a0</p>",
+      "published_at": "2026-06-18T10:43:43+02:00",
+      "created_at": "2026-06-04T11:44:25+02:00",
+      "updated_at": "2026-07-27T16:15:01+02:00",
+      "vendor": "Herv\u00e9 Villemade",
+      "product_type": "",
+      "tags": [
+        "_appelation: Cheverny",
+        "_aromatique: Fruit\u00e9",
+        "_badge: bio",
+        "_badge: nouveau",
+        "_brand: Domaine Villemade",
+        "_cepage: Pinot Noir 75 % - Gamay 25 %",
+        "_certification: ab",
+        "_contenance: 75 cl",
+        "_couleur: Rouge",
+        "_degre_dalcool: 13",
+        "_exemple_de_plat: Rillettes - Pat\u00e9s - Saucisson - Jambons",
+        "_metatype:vin_tranquille",
+        "_potentiel_de_garde: 1 \u00e0 2 ans",
+        "_region: Vall\u00e9e de la Loire",
+        "_structure: L\u00e9ger",
+        "_subtitle: Et hop retour des Chouchoux",
+        "_temperatude_de_service: 16\u00b0C \u00e0 18\u00b0C",
+        "_type:vin_rouge",
+        "_un_accord_avec: Charcuterie",
+        "Millesime : 2025",
+        "mois: juin26",
+        "stock: juin26",
+        "Tous les vins",
+        "vin: init"
+      ],
+      "variants": [
+        {
+          "id": 54064340009301,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "WNEVI0002-2025",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "15.90",
+          "grams": 2000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 11343800631637,
+          "created_at": "2026-06-04T11:44:26+02:00",
+          "updated_at": "2026-07-27T16:15:01+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 39416140890351,
+          "created_at": "2023-02-19T11:04:08+01:00",
+          "position": 1,
+          "updated_at": "2024-09-20T17:15:26+02:00",
+          "product_id": 11343800631637,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0459/2871/0305/products/loire-domaine-villemade-cheverny-rouge-2019-r.jpg?v=1726845326",
+          "width": 1200,
+          "height": 1200
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 11264197689685,
+      "title": "Pari Finesse 2025 | Mas Mellet",
+      "handle": "pari-finesse-2025-mas-mellet",
+      "body_html": "<h2>Notre avis sur ce vin</h2>\n<p><strong>Pari Finesse 2025 - Costi\u00e8res de N\u00eemes - Mas Mellet <br></strong><strong>Emilie et Bruce <meta charset=\"utf-8\"> <span>Bolognini</span></strong></p>\n<p><meta charset=\"utf-8\"><span>Un rouge de Costi\u00e8res de N\u00eemes souple et expressif, au fruit croquant, aux notes de garrigue et d\u2019\u00e9pices douces. Une cuv\u00e9e gourmande, fra\u00eeche et tr\u00e8s digeste, parfaite pour les moments de partage.</span></p>",
+      "published_at": "2026-06-15T13:07:21+02:00",
+      "created_at": "2026-04-23T14:49:14+02:00",
+      "updated_at": "2026-07-27T16:15:01+02:00",
+      "vendor": "Mas Mellet",
+      "product_type": "ALLOCS",
+      "tags": [
+        "8",
+        "_appelation: Costi\u00e8res de N\u00eemes",
+        "_aromatique: Fruit\u00e9",
+        "_badge: bio",
+        "_badge: nouveau",
+        "_badge: sans-so",
+        "_brand: Mas Mellet",
+        "_cat:sans_sulfite",
+        "_cepage: 80% Syrah - 20% Grenache",
+        "_certification: ab",
+        "_contenance: 75 cl",
+        "_couleur: Rouge",
+        "_degre_dalcool: 13",
+        "_exemple_de_plat: Rago\u00fbt - saut\u00e9 - curry - \u201a...",
+        "_metatype:vin_tranquille",
+        "_potentiel_de_garde: 5 \u00e0 10 ans",
+        "_region: Vall\u00e9e du Rh\u00f4ne",
+        "_specificite : vin sans soufre ajout\u00e9",
+        "_temperatude_de_service: 18\u00b0C - 20\u00b0C",
+        "_type:ALLOC",
+        "_type:vin_rouge",
+        "_un_accord_avec: Agneau",
+        "Accise: W200",
+        "Millesime : 2025",
+        "mois: juin26",
+        "OP_nouveautes_juil26",
+        "stock: juin26",
+        "Tous les vins"
+      ],
+      "variants": [
+        {
+          "id": 53754611368277,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "WMASM0007-2025",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "13.50",
+          "grams": 2000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 11264197689685,
+          "created_at": "2026-04-23T14:49:14+02:00",
+          "updated_at": "2026-07-27T16:15:01+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 54139536114005,
+          "created_at": "2024-05-28T23:32:51+02:00",
+          "position": 1,
+          "updated_at": "2024-05-28T23:32:51+02:00",
+          "product_id": 11264197689685,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0459/2871/0305/files/vallee-du-rhone-mas-mellet-rouge-pari-finesse.jpg?v=1716931971",
+          "width": 1200,
+          "height": 1200
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 11264197001557,
+      "title": "Chemin des Salines 2025 | Mas Mellet",
+      "handle": "chemin-des-salines-2025-mas-mellet",
+      "body_html": "<h2>Notre avis sur ce vin bio</h2>\n<p><strong>Chemin des Salines 2025 - Vin de France - Mas Mellet <br></strong><strong>Emilie et Bruce <meta charset=\"utf-8\"> <span>Bolognini</span></strong></p>\n<p><span>Une petite bombe ! Des ar\u00f4mes de fruits rouges fra\u00eechement cueillis, fra\u00eecheur et pr\u00e9cision\u00a0et des tanins tr\u00e8s fins. Une mac\u00e9ration tr\u00e8s courte de 6 \u00e0 7 jours.\u00a0D\u00e9cuvage par gravit\u00e9. Pressurage et \u00e9coulement des jus en cuve b\u00e9ton. On garde le fruit et la fraicheur !</span></p>",
+      "published_at": "2026-06-15T13:07:21+02:00",
+      "created_at": "2026-04-23T14:47:37+02:00",
+      "updated_at": "2026-07-27T16:15:01+02:00",
+      "vendor": "Mas Mellet",
+      "product_type": "ALLOCS",
+      "tags": [
+        "5",
+        "_appelation: Vin de France",
+        "_aromatique: Fruit\u00e9",
+        "_badge: nouveau",
+        "_brand: Mas Mellet",
+        "_cepage: 45% cinsault - 45% grenache et 10% syrah",
+        "_certification: ab",
+        "_contenance: 75 cl",
+        "_couleur: Rouge",
+        "_degre_dalcool: 14",
+        "_exemple_de_plat: Veau: R\u00f4ti-C\u00f4tes-filet-noix-foie veau en sauce \u2026",
+        "_metatype:vin_tranquille",
+        "_potentiel_de_garde: 5 \u00e0 7 ans",
+        "_structure: L\u00e9ger",
+        "_temperatude_de_service: 16\u00b0C/18\u00b0C - gaz possible - carafe - secouer",
+        "_type:ALLOC",
+        "_type:vin_rouge",
+        "_un_accord_avec: Veau",
+        "Accise: W200",
+        "Millesime : 2025",
+        "mois: juin26",
+        "stock: juin26",
+        "Tous les vins"
+      ],
+      "variants": [
+        {
+          "id": 53754609205589,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "WMASM0006-2025",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "17.50",
+          "grams": 2000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 11264197001557,
+          "created_at": "2026-04-23T14:47:38+02:00",
+          "updated_at": "2026-07-27T16:15:01+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 54139545289045,
+          "created_at": "2024-05-28T23:34:09+02:00",
+          "position": 1,
+          "updated_at": "2024-05-28T23:34:09+02:00",
+          "product_id": 11264197001557,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0459/2871/0305/files/vallee-du-rhone-mas-mellet-rouge-chemin-des-salines.jpg?v=1716932049",
+          "width": 1200,
+          "height": 1200
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 11264171606357,
+      "title": "Les Salines 2025 ros\u00e9 | Mas Mellet",
+      "handle": "les-salines-2025-rose-mas-mellet",
+      "body_html": "<h2>Notre avis sur ce vin</h2>\n<p><strong>Les Salines 2025 - ros\u00e9 - Vin de France - Mas Mellet <br></strong><strong>Emilie et Bruce <meta charset=\"utf-8\"> <span data-mce-fragment=\"1\">Bolognini</span></strong></p>\n<p><meta charset=\"utf-8\"><span>Cette cuv\u00e9e et compos\u00e9e de carignan sur trois clos diff\u00e9rents. Apr\u00e8s une mac\u00e9ration extra courte d'une nuit, d\u00e9cuvage par gravit\u00e9 puis \u00e9levage\u00a0dans des vieilles barriques. Ajout mini mini de SO2 pour dire.</span></p>\n<p class=\"font_8\"><span></span><span><span class=\"wixGuard\">Sur ce ros\u00e9, le Mas Mellet, recherche quand m\u00eame un peu de structure (carignan) tout en gardant l'\u00e9quilibre sur la fraicheur apport\u00e9e par du fruit. A noter une finale qui a donn\u00e9 le nom \u00e0 cette cuv\u00e9e, SALINE.</span></span></p>",
+      "published_at": "2026-06-15T13:07:20+02:00",
+      "created_at": "2026-04-23T14:31:09+02:00",
+      "updated_at": "2026-07-27T16:15:01+02:00",
+      "vendor": "Mas Mellet",
+      "product_type": "ALLOCS",
+      "tags": [
+        "5",
+        "_appelation: Vin de France",
+        "_aromatique: Epic\u00e9 - fruit\u00e9",
+        "_badge: bio",
+        "_badge: nouveau",
+        "_brand: Mas Mellet",
+        "_cepage: 100% Carignan",
+        "_certification: ab",
+        "_contenance: 75 cl",
+        "_couleur: Ros\u00e9",
+        "_degre_dalcool: 13",
+        "_metatype:vin_tranquille",
+        "_potentiel_de_garde: 3 \u00e0 4 ans",
+        "_subtitle: Une 'cuv\u00e9e ap\u00e9ritif' qui appelle au repas.",
+        "_temperatude_de_service: 12\u00b0c \u00e0 14\u00b0C",
+        "_type:ALLOC",
+        "_type:vin_rose",
+        "_un_accord_avec: Ap\u00e9ritif",
+        "Accise: W200",
+        "Millesime : 2025",
+        "mois: juin26",
+        "stock: juin26",
+        "Tous les vins"
+      ],
+      "variants": [
+        {
+          "id": 53754501595477,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "WMASM0004-2025",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "16.90",
+          "grams": 2000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 11264171606357,
+          "created_at": "2026-04-23T14:31:09+02:00",
+          "updated_at": "2026-07-27T16:15:01+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 49484290949461,
+          "created_at": "2023-05-11T16:18:41+02:00",
+          "position": 1,
+          "updated_at": "2023-05-11T18:08:35+02:00",
+          "product_id": 11264171606357,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0459/2871/0305/files/Les-salines-2021_fb2a3a02-0b53-432a-9b85-d79bf5ce890e.jpg?v=1683821315",
+          "width": 1200,
+          "height": 1200
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
         }
       ]
     }

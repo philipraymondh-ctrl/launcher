@@ -124,19 +124,19 @@ SHOPS = [
         "name": "levinnaturel",
         "platform": "shopify",
         "url": "https://levinnaturel.com",
-        "verified": False,
+        "verified": True,
     },
     {
         "name": "lespeauxdevins",
         "platform": "shopify",
         "url": "https://lespeauxdevins.com",
-        "verified": False,
+        "verified": True,
     },
     {
         "name": "lacavedespapilles",
         "platform": "shopify",
         "url": "https://www.lacavedespapilles.com",
-        "verified": False,
+        "verified": True,
     },
     {
         "name": "vinnaturel",
@@ -151,13 +151,13 @@ SHOPS = [
         "name": "whynat",
         "platform": "shopify",
         "url": "https://www.whynat.fr",
-        "verified": False,
+        "verified": True,
     },
     {
         "name": "vinibee",
         "platform": "woocommerce",
         "url": "https://www.vinibee.com",
-        "verified": False,
+        "verified": True,
     },
     {
         "name": "vinscheznous",
@@ -172,7 +172,7 @@ SHOPS = [
         "name": "petitescaves",
         "platform": "shopify",
         "url": "https://www.petitescaves.com",
-        "verified": False,
+        "verified": True,
     },
     {
         "name": "cavepurjus",
@@ -187,7 +187,7 @@ SHOPS = [
         "name": "bbn",
         "platform": "shopify",
         "url": "https://biobiodynamienature.com",
-        "verified": False,
+        "verified": True,
     },
     {
         "name": "purewijnen",
@@ -202,7 +202,7 @@ SHOPS = [
         "name": "amberbottleshop",
         "platform": "shopify",
         "url": "https://amberbottleshop.com",
-        "verified": False,
+        "verified": True,
     },
     {
         "name": "naturavin",
@@ -235,13 +235,13 @@ SHOPS = [
         "name": "vinifine",
         "platform": "woocommerce",
         "url": "https://www.vinifine.be",
-        "verified": False,
+        "verified": True,
     },
     {
         "name": "zuiverwijnen",
         "platform": "shopify",
         "url": "https://zuiverwijnen.nl",
-        "verified": False,
+        "verified": True,
     },
     {
         # Platform guess based on the site's Dutch WooCommerce-default URL
@@ -255,19 +255,19 @@ SHOPS = [
         "name": "volatilewines",
         "platform": "woocommerce",
         "url": "https://volatilewines.com",
-        "verified": False,
+        "verified": True,
     },
     {
         "name": "biowijnclub",
         "platform": "woocommerce",
         "url": "https://www.biowijnclub.nl",
-        "verified": False,
+        "verified": True,
     },
     {
         "name": "puurwijnshop",
         "platform": "shopify",
         "url": "https://www.puurwijn.shop",
-        "verified": False,
+        "verified": True,
     },
     {
         "name": "purovino",

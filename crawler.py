@@ -54,7 +54,17 @@ class BudgetExceeded(FetchError):
 
 
 class UpstreamError(FetchError):
-    """The request ultimately failed (network error or non-2xx) after retries."""
+    """The request ultimately failed (network error or non-2xx) after retries.
+
+    status_code is the HTTP status when the server answered but unhappily
+    (404, 500, ...), and None when the connection itself never succeeded
+    (DNS failure, timeout, refused). Callers use that to tell "this path
+    isn't there" apart from "this host is unreachable".
+    """
+
+    def __init__(self, message, status_code=None):
+        super().__init__(message)
+        self.status_code = status_code
 
 
 class FetchResult:
@@ -71,7 +81,7 @@ class FetchResult:
 
     def raise_for_status(self):
         if self.status_code >= 400:
-            raise UpstreamError(f"HTTP {self.status_code}")
+            raise UpstreamError(f"HTTP {self.status_code}", status_code=self.status_code)
 
 
 def _build_url(url, params):
@@ -259,16 +269,22 @@ class Crawler:
                     )
                     time.sleep(delay)
                     continue
-                raise UpstreamError(f"HTTP {resp.status_code} after {MAX_ATTEMPTS} attempts")
+                raise UpstreamError(
+                    f"HTTP {resp.status_code} after {MAX_ATTEMPTS} attempts",
+                    status_code=resp.status_code,
+                )
 
             if resp.status_code >= 500:
                 if attempt < MAX_ATTEMPTS:
                     time.sleep(BACKOFF_SCHEDULE[attempt - 1])
                     continue
-                raise UpstreamError(f"HTTP {resp.status_code} after {MAX_ATTEMPTS} attempts")
+                raise UpstreamError(
+                    f"HTTP {resp.status_code} after {MAX_ATTEMPTS} attempts",
+                    status_code=resp.status_code,
+                )
 
             if resp.status_code >= 400:
-                raise UpstreamError(f"HTTP {resp.status_code}")
+                raise UpstreamError(f"HTTP {resp.status_code}", status_code=resp.status_code)
 
             entry = {
                 "status_code": resp.status_code,

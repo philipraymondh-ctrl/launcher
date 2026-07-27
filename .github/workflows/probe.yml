@@ -1,0 +1,56 @@
+name: Probe Shops
+
+# Manual only -- never scheduled. This is the tool that gives shop-adapter
+# real network access: the dev sandbox has none, so shop verification has
+# to happen on a runner. It reads shops, writes nothing back to the repo;
+# the real responses come out as an artifact to be reviewed and turned
+# into fixtures.
+on:
+  workflow_dispatch:
+    inputs:
+      only:
+        description: "Comma-separated shop names to probe (blank = all unverified)"
+        type: string
+        default: ""
+      max_requests_per_run:
+        description: "Request budget for this probe"
+        type: string
+        default: "150"
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    # Politeness costs wall-clock: 3s + jitter between requests to the same
+    # host, up to 3 endpoints per shop, ~25 shops. Budget generously.
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Probe shops
+        env:
+          CONTACT_EMAIL: ${{ vars.CONTACT_EMAIL }}
+          MAX_REQUESTS_PER_RUN: ${{ inputs.max_requests_per_run || '150' }}
+          # Always hit the network on a probe; a cached body tells us
+          # nothing new about whether the endpoint is live right now.
+          FRESH: "1"
+        run: |
+          if [ -n "${{ inputs.only }}" ]; then
+            python probe.py --only "${{ inputs.only }}"
+          else
+            python probe.py
+          fi
+
+      - name: Upload probe results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: probe-results-${{ github.run_id }}
+          path: probe_output/
+          retention-days: 30

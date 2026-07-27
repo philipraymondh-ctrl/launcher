@@ -50,6 +50,8 @@ h2{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.09em;
 .btn[disabled]{opacity:.4;cursor:not-allowed}
 .panel{background:#141418;border:1px solid #24242b;border-radius:12px;padding:15px;margin-top:16px}
 .panel h3{font-size:13px;font-weight:600;margin-bottom:4px}
+.panel.alert{background:#241a0d;border-color:#5c451a}
+.panel.alert h3{color:#e8c46a}
 .opts{display:flex;flex-wrap:wrap;gap:14px;margin-top:12px;font-size:13px;color:#a5a5ae}
 .opts label{display:inline-flex;align-items:center;gap:6px;cursor:pointer}
 input[type=checkbox]{width:17px;height:17px;accent-color:#3ba05f}
@@ -100,6 +102,8 @@ footer{margin-top:46px;padding-top:16px;border-top:1px solid #1e1e24;color:#6e6e
  .btn{background:#fff;border-color:#dcdce3;color:#16161a}
  .btn.go{background:#e7f7ee;border-color:#b7e3c9;color:#1a7f45}
  .panel,.card{background:#fff;border-color:#e7e7ec}
+ .panel.alert{background:#fdf3e0;border-color:#f0dcb0}
+ .panel.alert h3{color:#8a6316}
  input[type=text],input[type=password],select,textarea{background:#fff;border-color:#dcdce3;color:#16161a}
  .status{background:#f3f3f6;border-color:#e2e2e8;color:#41414a}
  .status.run{background:#eaf3fc;border-color:#c5ddf3;color:#1d5c93}
@@ -223,6 +227,7 @@ async function saveToken() {
     refreshAuth();
     say("Signed in. The buttons above are live now.", "ok");
     loadRuns();
+    checkSetup();
   } catch (e) {
     try { localStorage.removeItem(KEY); } catch (e2) {}
     refreshAuth();
@@ -232,6 +237,7 @@ async function saveToken() {
 
 function forgetToken() {
   try { localStorage.removeItem(KEY); } catch (e) {}
+  $("setup").hidden = true;
   refreshAuth();
   say("Token removed from this browser.", "");
 }
@@ -254,6 +260,22 @@ async function waitForNewRun(file, before) {
     if (runs.length) { return runs[0]; }
   }
   return null;
+}
+
+// Which step actually failed. "failure" on its own sends you hunting
+// through logs; the step name is one call away and usually enough.
+async function failedStep(id) {
+  try {
+    var d = await api("/repos/" + REPO + "/actions/runs/" + id + "/jobs");
+    var jobs = d.jobs || [];
+    for (var i = 0; i < jobs.length; i++) {
+      var steps = jobs[i].steps || [];
+      for (var j = 0; j < steps.length; j++) {
+        if (steps[j].conclusion === "failure") { return steps[j].name; }
+      }
+    }
+  } catch (e) { /* decoration only */ }
+  return "";
 }
 
 async function currentStep(id) {
@@ -279,11 +301,22 @@ async function watchRun(run, label) {
   for (var i = 0; i < 360; i++) {
     if (run.status === "completed") {
       var good = run.conclusion === "success";
+      var why = good ? "" : await failedStep(run.id);
+      var missing = good ? [] : await missingSecrets();
+      var note = "";
+      if (!good && missing.length) {
+        // The overwhelmingly common cause: the run worked, it just had
+        // nowhere to send the digest.
+        note = " The scrape itself was fine — it could not send the email because " +
+               esc(missing.join(", ")) + " " + (missing.length > 1 ? "are" : "is") +
+               " not set. Nothing was marked as alerted, so the finds are not lost.";
+      } else if (!good) {
+        note = " Failed at: <b>" + esc(why || "unknown step") + "</b>.";
+      }
       say("<b>" + esc(label) + "</b> finished: " + esc(run.conclusion) +
-          " (" + mins(run) + "s). " +
-          (good ? "" : "Open <b>Recent runs</b> below for which step failed."),
-          good ? "ok" : "bad");
+          " (" + mins(run) + "s)." + note, good ? "ok" : "bad");
       loadRuns();
+      checkSetup();
       return run;
     }
     var step = run.status === "in_progress" ? await currentStep(run.id) : "";
@@ -309,6 +342,44 @@ function runWorkflow(file, inputs, label) {
     }
     await watchRun(run, label);
   });
+}
+
+// --- setup check ----------------------------------------------------------
+
+// notify.py refuses to send without these three, and that surfaces as a bare
+// red "failure" an hour at a time. The API lists secret *names* only -- there
+// is no endpoint that returns a value, so this cannot leak one.
+var REQUIRED_SECRETS = ["GMAIL_SENDER", "GMAIL_APP_PASSWORD", "NOTIFY_EMAIL"];
+
+async function missingSecrets() {
+  try {
+    var d = await api("/repos/" + REPO + "/actions/secrets?per_page=100");
+    var have = {};
+    (d.secrets || []).forEach(function (s) { have[s.name] = true; });
+    return REQUIRED_SECRETS.filter(function (n) { return !have[n]; });
+  } catch (e) {
+    // No Secrets:read on the token. Not an error -- just skip the check.
+    return [];
+  }
+}
+
+async function checkSetup() {
+  if (!token()) { return; }
+  var missing = await missingSecrets();
+  var el = $("setup");
+  if (!missing.length) { el.hidden = true; return; }
+  el.hidden = false;
+  el.innerHTML =
+    "<h3>The digest has nowhere to go</h3>" +
+    '<div class="sub">Every run that finds something will fail until these exist under ' +
+    "Settings → Secrets and variables → Actions. Nothing is lost meanwhile: hits are only " +
+    "marked as alerted once an email actually sends.</div>" +
+    '<ol class="steps">' + missing.map(function (n) {
+      var hint = n === "GMAIL_APP_PASSWORD"
+        ? "16-character Google app password (needs 2-Step Verification on), not your Gmail password"
+        : (n === "GMAIL_SENDER" ? "the Gmail address sending the digest" : "where the digest should arrive");
+      return "<li><code>" + esc(n) + "</code> — " + hint + "</li>";
+    }).join("") + "</ol>";
 }
 
 // --- recent runs ----------------------------------------------------------
@@ -465,6 +536,7 @@ document.addEventListener("DOMContentLoaded", function () {
   if (token()) {
     say("Signed in on this device. Everything below runs from here.", "");
     loadRuns();
+    checkSetup();
   }
 });
 
@@ -612,6 +684,8 @@ Hourly, {esc(defaults.get("deal_threshold", "?"))}× reference flags a deal.</di
   <div class="status" id="status" hidden></div>
 </div>
 
+<div class="panel alert" id="setup" hidden></div>
+
 <div class="panel" id="signedout">
   <h3>One-time setup on this device</h3>
   <div class="sub">The repo is public, so this page can't ship a token — it keeps one in
@@ -619,7 +693,9 @@ Hourly, {esc(defaults.get("deal_threshold", "?"))}× reference flags a deal.</di
   <ol class="steps">
     <li>Open <a class="q" href="https://github.com/settings/personal-access-tokens/new">github.com/settings/personal-access-tokens/new</a>.</li>
     <li>Resource owner: your account. Repository access: <b>Only select repositories</b> → <code>{esc(REPO)}</code>.</li>
-    <li>Repository permissions: <b>Actions</b> = Read and write, <b>Issues</b> = Read and write. Nothing else.</li>
+    <li>Repository permissions: <b>Actions</b> = Read and write, <b>Issues</b> = Read and write.
+        Optionally <b>Secrets</b> = Read-only, which lets this page warn you when the email
+        secrets are missing (it can only ever read their <i>names</i> — no endpoint returns a value).</li>
     <li>Expiration: whatever you like — 90 days is fine, you just paste a new one here after.</li>
     <li>Generate, copy, paste below.</li>
   </ol>

@@ -226,6 +226,31 @@ def test_bodies_carry_the_heading_apply_config_routes_on():
             heading.replace("### ", '("') in dashboard.JS, heading
 
 
+def test_setup_check_watches_the_secrets_notify_actually_needs():
+    """The page warns when the digest has nowhere to go. If notify.py starts
+    requiring a different secret, the warning must follow it."""
+    required = set(re.search(
+        r'REQUIRED_SECRETS = \[(.*?)\]', dashboard.JS, re.S
+    ).group(1).replace('"', "").replace("\n", "").split(","))
+    required = {r.strip() for r in required if r.strip()}
+
+    notify_src = (ROOT / "notify.py").read_text()
+    checked = set(re.search(
+        r'missing = \[k for k in \((.*?)\)', notify_src, re.S
+    ).group(1).replace('"', "").split(","))
+    checked = {c.strip() for c in checked if c.strip()}
+
+    assert required == checked, f"page checks {required}, notify.py needs {checked}"
+
+
+def test_setup_check_reads_names_not_values():
+    """There is no API that returns a secret's value, and the page must not
+    look like it wants one."""
+    assert "/actions/secrets" in dashboard.JS
+    assert "decrypt" not in dashboard.JS.lower()
+    assert "encrypted_value" not in dashboard.JS
+
+
 def test_region_dropdown_offers_exactly_the_accepted_regions():
     options = set(re.findall(r'<option value="([a-z]+)">', dashboard.region_options()))
     assert options == apply_issue.VALID_REGIONS

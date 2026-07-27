@@ -43,10 +43,16 @@ shop in `SHOPS` is unverified (added from research, not a real fetch; see
 each fixture's `_note`/leading comment for what's real vs. guessed), so a
 normal run does nothing until shops are confirmed.
 
-To bring a shop online: use the `shop-adapter` agent to fetch the real
-endpoint, replace its placeholder fixture with the real response, update
-the test to assert against real content, and only then flip `verified` to
-`True`. One shop per commit. See `CLAUDE.md` for the full rules.
+To bring shops online, run the **Probe Shops** workflow with **apply**
+ticked. It fetches each shop's real endpoint, and for every shop that
+returns a parseable catalogue it saves the real response as that shop's
+fixture (trimmed, keeping every producer match), corrects the platform and
+sets `verified: true` -- then runs the full test suite and only commits if
+it passes. Shops that fail to probe are left unverified with the reason
+logged.
+
+Run it read-only first (apply unticked) to see what would happen; that
+just uploads a report and the real responses as an artifact.
 
 ## 4. Run locally
 

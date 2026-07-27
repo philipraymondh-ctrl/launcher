@@ -405,3 +405,59 @@ def test_the_real_grower_index_does_not_crash_the_product_parser():
         REAL_INDEX, "https://www.leszinzinsduvin.com/domaines.php",
         scraper.PRICE_PATTERN, scraper.parse_price)
     assert isinstance(items, list)   # no prices on an index: [] is correct
+
+
+# --- a real grower page ------------------------------------------------------
+
+REAL_GROWER = (pathlib.Path(__file__).parent / "fixtures"
+               / "leszinzinsduvin-grower-labet.html").read_text()
+GROWER_URL = "https://www.leszinzinsduvin.com/domaine-6-200-Labet_alain.html"
+
+
+def test_a_grower_page_listing_two_bottles_is_read():
+    """Labet's page lists exactly two wines. The three-block rule is for
+    deciding whether an unknown page is a catalogue; arriving from the
+    producer index already answers that, so it must not apply here."""
+    items = autoselect.find_products(
+        REAL_GROWER, GROWER_URL, scraper.PRICE_PATTERN, scraper.parse_price, min_blocks=1)
+    assert len(items) == 2
+    assert sorted(i["price"] for i in items) == [110.0, 130.0]
+
+
+def test_the_catalogue_threshold_still_applies_to_an_unknown_page():
+    """Two priced rows on a page nobody vouched for is a featured strip."""
+    assert autoselect.find_products(
+        REAL_GROWER, GROWER_URL, scraper.PRICE_PATTERN, scraper.parse_price) == []
+
+
+def test_sold_out_listings_are_marked_not_dropped():
+    """Both of Labet's bottles say "Produit épuisé". Dropping them in the
+    parser would make a shop whose stock is out today read as broken to the
+    probe, so they are marked and skipped later."""
+    items = autoselect.find_products(
+        REAL_GROWER, GROWER_URL, scraper.PRICE_PATTERN, scraper.parse_price, min_blocks=1)
+    assert items and all(i["in_stock"] is False for i in items)
+
+
+def test_out_of_stock_matches_accented_french():
+    assert autoselect.is_out_of_stock("Produit épuisé")
+    assert autoselect.is_out_of_stock("RUPTURE DE STOCK")
+    assert autoselect.is_out_of_stock("Sold out")
+    assert not autoselect.is_out_of_stock("Chercheurs d'or 2009 Labet 110,00 €")
+
+
+def test_check_shop_does_not_alert_on_a_bottle_nobody_can_buy():
+    class Serve:
+        max_requests = 99
+
+        def __init__(self):
+            self.n = 0
+
+        def get(self, url, params=None):
+            self.n += 1
+            return scraper.crawler.FetchResult(
+                200, REAL_INDEX if self.n == 1 else REAL_GROWER)
+
+    shop = dict(SHOP, catalog_path="vins.php")
+    assert scraper.fetch_html(shop, Serve()), "the adapter must still parse them"
+    assert scraper.check_shop(shop, Serve()) == []

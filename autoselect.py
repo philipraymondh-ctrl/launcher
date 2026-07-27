@@ -26,6 +26,7 @@ it doesn't -- `find_products` returns an empty list rather than guessing,
 which the caller reports as a shop needing real selectors.
 """
 import re
+import unicodedata
 from urllib.parse import urljoin, urlparse
 
 from bs4 import BeautifulSoup
@@ -123,9 +124,15 @@ def _title_for(block, anchor):
     return ""
 
 
-def find_products(html, base_url, price_pattern, parse_price):
+# A grower's page legitimately lists one or two bottles -- Labet's has two,
+# Ganevat's currently none. Requiring three there returned nothing for a
+# page that parses perfectly well; the three-block rule is for deciding
+# whether an *unknown* page is a catalogue, and on a page reached through
+# the producer index that question is already answered.
+def find_products(html, base_url, price_pattern, parse_price, min_blocks=None):
     """Return [{text, title, price, url, variant_title}], or [] if the page
     has no repeated priced structure to read."""
+    min_blocks = MIN_BLOCKS if min_blocks is None else min_blocks
     soup = BeautifulSoup(html, "html.parser")
 
     blocks = []
@@ -145,7 +152,7 @@ def find_products(html, base_url, price_pattern, parse_price):
     if not by_parent:
         return []
     best = max(by_parent.values(), key=len)
-    if len(best) < MIN_BLOCKS:
+    if len(best) < min_blocks:
         return []
 
     items, seen = [], set()
@@ -171,6 +178,10 @@ def find_products(html, base_url, price_pattern, parse_price):
             "price": parse_price(text),
             "url": url,
             "variant_title": "",
+            # Marked rather than dropped: the probe counts parsed products
+            # to decide whether an adapter works, and a shop whose stock
+            # happens to be sold out today must not read as broken.
+            "in_stock": not OUT_OF_STOCK.search(_strip_accents(text)),
         })
     return items
 
@@ -247,6 +258,24 @@ def find_producer_links(html, base_url, match_fn):
 
 
 # --- pagination -------------------------------------------------------------
+
+# A listing that says it is sold out is not a find. Alerting on a bottle
+# nobody can buy is the same noise as alerting on a coffret.
+OUT_OF_STOCK = re.compile(
+    r"\b(epuise|epuisee|rupture(?:\s+de\s+stock)?|sold\s*out|uitverkocht|"
+    r"ausverkauft|non\s+disponible|indisponible)\b", re.I)
+
+
+def _strip_accents(text):
+    return "".join(
+        c for c in unicodedata.normalize("NFKD", text or "")
+        if not unicodedata.combining(c)
+    ).lower()
+
+
+def is_out_of_stock(text, normalize_fn=None):
+    return bool(OUT_OF_STOCK.search(_strip_accents(text)))
+
 
 NEXT_WORDS = {"next", "suivant", "suivante", "volgende", "weiter", "›", "»", "→", ">"}
 

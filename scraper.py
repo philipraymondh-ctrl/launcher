@@ -459,7 +459,7 @@ def fetch_woocommerce(shop, crawler_client):
     )
 
 
-def _parse_html_page(shop, html, page_url):
+def _parse_html_page(shop, html, page_url, min_blocks=None):
     """Configured selectors first, auto-detection when they find nothing.
 
     The selectors in SHOPS are generic guesses for every shop that has not
@@ -488,7 +488,8 @@ def _parse_html_page(shop, html, page_url):
     if items:
         return items, "selectors"
 
-    return autoselect.find_products(html, page_url, PRICE_PATTERN, parse_price), "auto"
+    return autoselect.find_products(
+        html, page_url, PRICE_PATTERN, parse_price, min_blocks=min_blocks), "auto"
 
 
 def _fetch_via_producer_index(shop, index_html, index_url, crawler_client):
@@ -513,7 +514,10 @@ def _fetch_via_producer_index(shop, index_html, index_url, crawler_client):
             page.raise_for_status()
         except (crawler.BudgetExceeded, crawler.UpstreamError):
             break
-        page_items, _ = _parse_html_page(shop, page.text, url)
+        # One bottle on a grower's page is still that grower's bottle: the
+        # "is this a catalogue" test does not apply once we got here from
+        # the index.
+        page_items, _ = _parse_html_page(shop, page.text, url, min_blocks=1)
         for item in page_items:
             # The grower's own page may not repeat their name on every row.
             item["text"] = f"{producer} {item['text']}"
@@ -589,7 +593,13 @@ FETCHERS = {
 def check_shop(shop, crawler_client):
     items = FETCHERS[shop["platform"]](shop, crawler_client)
     hits = []
+    skipped = 0
     for item in items:
+        # A bottle nobody can buy is not a find. Marked by the parser,
+        # dropped here, so the probe still sees the adapter working.
+        if item.get("in_stock") is False:
+            skipped += 1
+            continue
         for producer in match_producers(item["text"]):
             hits.append({
                 "shop": shop["name"],
@@ -599,6 +609,8 @@ def check_shop(shop, crawler_client):
                 "url": item["url"],
                 "variant_title": item.get("variant_title", ""),
             })
+    if skipped:
+        print(f"[{shop['name']}] skipped {skipped} sold-out listing(s)")
     return hits
 
 

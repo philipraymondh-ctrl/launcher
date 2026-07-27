@@ -1,0 +1,113 @@
+# Reference price book for evaluate.py.
+#
+# Every producer entry below is currently `verified: false` with a rough
+# best-guess `reference_750_eur` -- these are NOT from Wine-Searcher (which
+# this project deliberately never fetches -- it's blocked and against their
+# terms). Fill in real numbers manually from Wine-Searcher yourself, then
+# set `verified: true` and `last_verified` to today's date (YYYY-MM-DD).
+#
+# `region: burgundy` producers get a tier multiplier applied on top of
+# `reference_750_eur` (which represents the *village*-level baseline price
+# for that producer); grand cru multiplies it up, bourgogne multiplies it
+# down. Non-burgundy producers (jura, etc.) get no tier multiplier --
+# `reference_750_eur` is used as-is.
+#
+# `cuvees` lets a specific bottling override the producer-level reference
+# (e.g. a producer's flagship cuvee reliably sells for more than their
+# base wine). `match` is a list of substrings checked case/accent-
+# insensitively against the listing's title.
+#
+# Run `python pricebook.py --stale` to list every entry that's still
+# verified:false or whose last_verified is older than 180 days.
+
+defaults:
+  format_multipliers:
+    375: 0.55
+    750: 1.0
+    1500: 2.30
+    3000: 5.0
+  burgundy_tier_multipliers:
+    bourgogne: 0.6
+    village: 1.0
+    premier_cru: 2.0
+    grand_cru: 4.5
+  deal_threshold: 0.85   # <=85% of reference -> DEAL
+  fair_ceiling: 1.25     # >125% of reference -> HIGH
+
+producers:
+  # --- Jura ------------------------------------------------------------
+  - name: Overnoy/Houillon
+    region: jura
+    # ROUGH GUESS: this domaine's cuvees vary enormously (a straight
+    # Ploussard vs. Vin Jaune can differ by hundreds of euros); this
+    # number is a crude central estimate only, not usable for a specific
+    # cuvee. Please replace with real per-cuvee figures if possible.
+    reference_750_eur: 250
+    cuvees: []
+    last_verified: null
+    verified: false
+
+  - name: Ganevat
+    region: jura
+    # ROUGH GUESS: ordinary cuvees roughly 50-90 EUR, some limited
+    # bottlings go much higher -- this is a mid-range placeholder.
+    reference_750_eur: 70
+    cuvees: []
+    last_verified: null
+    verified: false
+
+  - name: Labet
+    region: jura
+    reference_750_eur: 55
+    cuvees:
+      - match: ["Fleurs", "Fleur de Marne"]
+        reference_750_eur: 75
+    last_verified: null
+    verified: false
+
+  - name: Domaine des Miroirs/Kagami
+    region: jura
+    # ROUGH GUESS: allocation-only, rarely seen at retail; secondary
+    # market prices are often well above this placeholder.
+    reference_750_eur: 300
+    cuvees: []
+    last_verified: null
+    verified: false
+
+  - name: Domaine Calice
+    # Region genuinely uncertain -- small/newer producer, not confidently
+    # identified during research. Treated as non-Burgundy (no tier logic)
+    # until confirmed.
+    region: unknown
+    reference_750_eur: 35
+    cuvees: []
+    last_verified: null
+    verified: false
+
+  # --- Burgundy ----------------------------------------------------------
+  # reference_750_eur for these represents the *village*-tier baseline;
+  # the tier multiplier scales it for bourgogne/premier_cru/grand_cru.
+  - name: Clemence Gerbet
+    region: burgundy
+    reference_750_eur: 45
+    cuvees: []
+    last_verified: null
+    verified: false
+
+  - name: Thomas Popy
+    region: burgundy
+    reference_750_eur: 50
+    cuvees: []
+    last_verified: null
+    verified: false
+
+  - name: Roumier
+    region: burgundy
+    # ROUGH GUESS: even village Chambolle-Musigny from Roumier trades well
+    # above a typical village Burgundy given the domaine's reputation;
+    # grand cru bottlings (Musigny, Bonnes-Mares) often go far higher than
+    # the 4.5x multiplier implies. Treat this whole entry with caution.
+    reference_750_eur: 220
+    cuvees: []
+    last_verified: null
+    verified: false

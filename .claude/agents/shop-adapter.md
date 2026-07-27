@@ -25,6 +25,16 @@ Do not write a bespoke parser for a shop that responds to one of the JSON
 APIs above just because you found it via a Google catalog page — check the
 JSON endpoint first.
 
+## Fetch through Crawler, never requests directly
+
+`crawler.py` is the only module allowed to call `requests`. Every
+`fetch_*` function takes a `Crawler` instance and calls `crawler_client.get(url,
+params=...)` — never `requests.get(...)`. This is what gives every shop
+robots.txt compliance, rate limiting, backoff, and the disk cache for free.
+If you're checking a candidate shop's platform live (probing
+`/products.json` etc. by hand), do it through a `Crawler` too, not a bare
+`requests.get` — a manual probe should be just as polite as the real run.
+
 ## Fixtures are mandatory
 
 Never add or modify a shop without a fixture:

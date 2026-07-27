@@ -31,6 +31,26 @@ guess:
   by an order of magnitude). Evidence: show a specific parsed item next to
   what the raw response actually contains for it.
 
+## Crawl-layer causes (still fold into the four above)
+
+`crawler.py` can also produce these lines in run output — treat them as
+evidence for cause (a) "unreachable" unless noted otherwise, not a fifth
+category:
+
+- `robots.txt disallows this path` — the shop's own robots.txt blocks us.
+  This is not a bug to route around; if the disallowed path is the only
+  way to reach the shop's catalog, say so and stop (respecting robots.txt
+  isn't optional here).
+- `circuit breaker open for this host` — 3 consecutive failed requests to
+  that host this run. Look at what failed before the breaker tripped
+  (usually a preceding "unreachable" line); the breaker itself is a
+  symptom, not the root cause.
+- `MAX_REQUESTS_PER_RUN reached` — the run hit its request budget before
+  reaching this shop. This isn't a per-shop failure at all; it means
+  `MAX_REQUESTS_PER_RUN` may need raising, or an earlier host is eating
+  the budget (e.g. via repeated retries) — check which shops came before
+  it in `SHOPS` and how many requests each cost.
+
 ## Step 2: reproduce fixture-first
 
 1. Reproduce against the shop's saved fixture in `tests/fixtures/` first —

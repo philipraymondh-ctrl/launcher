@@ -16,6 +16,16 @@ primary way to verify scraping changes without touching real secrets or
 sending real email. Verify it works by running it locally before reporting
 done.
 
+## Politeness env vars
+
+`crawler.py` reads `CONTACT_EMAIL` (a non-secret repo *variable*, not a
+secret — it's deliberately visible in the User-Agent), `MAX_REQUESTS_PER_RUN`
+(default 120), and `FRESH` (`1` bypasses the 6h disk cache). The workflow
+exposes the latter two as `workflow_dispatch` inputs for one-off runs. If
+`CONTACT_EMAIL` isn't set as a repository variable, the crawler still runs
+but identifies itself without a contact — that's worth flagging, not
+silently accepting, since it undermines "identify honestly."
+
 ## Secrets discipline
 
 Never print, echo, log, or otherwise surface the value of `GMAIL_SENDER`,
@@ -57,7 +67,12 @@ first check; catch syntax errors locally.
 
 When asked to check on the workflow, look at run status/logs via whatever
 tooling is available (GitHub CLI/API) and summarize: last run time,
-success/failure, hit count from the scrape step's stdout, and any shop
-errors logged. Do not paste secret-containing log lines verbatim if any
-ever appear (they shouldn't, given the discipline above — flag it as a bug
-if they do).
+success/failure, raw hit count and any "MAX_REQUESTS_PER_RUN reached" /
+circuit-breaker / robots-disallow lines from the scrape step's stdout, and
+whether a digest was sent or the run was silent (both are valid outcomes —
+see `notify.py`). Also check whether the `hits-<run_id>` artifact and the
+`wine-scraper-state-*` cache entry (holding `seen.json`/`.cache`) are being
+produced each run; a missing/evicted cache just means duplicate alerts or
+extra fetches next run, not a broken pipeline. Do not paste secret-
+containing log lines verbatim if any ever appear (they shouldn't, given the
+discipline above — flag it as a bug if they do).

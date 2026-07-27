@@ -63,24 +63,32 @@ class CannedCrawler:
     """Replays one already-fetched response into a real fetcher, so the
     probe validates the actual parse path without a second network call.
 
-    The fetchers paginate, so only the first call gets the real body; every
-    later page reads as empty and ends the walk. The probe therefore
-    measures page one, which is all it fetched -- see `truncated` in the
-    report for whether more pages exist.
+    The first call replays the body already fetched. What happens next
+    depends on the adapter: a paginating fetcher should stop, so page two
+    reads as empty; but an adapter that follows links -- the grower-index
+    route -- has to be allowed to actually follow them, or a shop reachable
+    only that way can never be verified. So later calls go to the real
+    crawler when one is supplied, and read empty otherwise.
     """
 
-    def __init__(self, response, platform):
+    def __init__(self, response, platform, live=None, follow_budget=0):
         self._response = response
         self._empty = crawler.FetchResult(200, EMPTY_PAGE.get(platform, ""))
         self._served = False
+        self._live = live
+        self._follow_budget = follow_budget
         self.request_count = 0
-        self.max_requests = 1
+        self.max_requests = 1 + follow_budget
 
     def get(self, url, params=None):
-        if self._served:
-            return self._empty
-        self._served = True
-        return self._response
+        if not self._served:
+            self._served = True
+            return self._response
+        if self._live is not None and self._follow_budget > 0:
+            self._follow_budget -= 1
+            self.request_count += 1
+            return self._live.get(url, params=params)
+        return self._empty
 
 
 DIAGNOSTIC_DIR = Path(__file__).parent / "probe_pages"
@@ -164,7 +172,13 @@ def candidate_endpoints(shop):
     return endpoints + paths
 
 
-def try_parse(platform, shop, response):
+# How many links an index-following adapter may chase during a probe. The
+# real run allows more; this is enough to prove the route works without
+# turning one probe into a full crawl.
+PROBE_FOLLOW_BUDGET = 6
+
+
+def try_parse(platform, shop, response, live=None):
     """Run the real fetcher for `platform` against an already-fetched
     response. Returns (items, error_string)."""
     probe_shop = dict(shop)
@@ -174,7 +188,9 @@ def try_parse(platform, shop, response):
         probe_shop.setdefault("title_selector", "h2.product-title")
         probe_shop.setdefault("price_selector", "span.price")
     try:
-        items = scraper.FETCHERS[platform](probe_shop, CannedCrawler(response, platform))
+        canned = CannedCrawler(response, platform, live=live,
+                               follow_budget=PROBE_FOLLOW_BUDGET if platform == "html" else 0)
+        items = scraper.FETCHERS[platform](probe_shop, canned)
         return items, None
     except Exception as e:
         return None, f"{type(e).__name__}: {e}"
@@ -237,7 +253,7 @@ def probe_shop(shop, crawler_client):
             result["attempts"].append(attempt)
             continue
 
-        items, parse_error = try_parse(platform, shop, response)
+        items, parse_error = try_parse(platform, shop, response, live=crawler_client)
         if parse_error:
             # Record what actually came back. Without this a failure like
             # vinopura's ("not JSON") is undiagnosable from the report --

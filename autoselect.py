@@ -54,12 +54,32 @@ def _price_nodes(soup, price_pattern):
     return [el for el in soup.find_all(True) if price_pattern.search(_own_text(el))]
 
 
+# Card layouts often carry the destination in an attribute and let script
+# do the navigating -- leszinzinsduvin's grower list is 395
+# `<div class="domaines__card" data-url="domaine-6-193-Ganevat...html">`
+# and not one <a> among them. Reading only href finds nothing there.
+LINK_ATTRS = ("href", "data-url", "data-href", "data-link")
+
+
+def _link_target(element):
+    for attr in LINK_ATTRS:
+        value = (element.get(attr) or "").strip()
+        if value and not NON_PRODUCT_HREF.match(value) and not NON_PRODUCT_PATH.search(value):
+            return value
+    return None
+
+
+def _linked_elements(root):
+    for element in root.find_all(True):
+        target = _link_target(element)
+        if target:
+            yield element, target
+
+
 def _product_link(element):
-    for anchor in element.find_all("a", href=True):
-        href = anchor["href"].strip()
-        if not href or NON_PRODUCT_HREF.match(href) or NON_PRODUCT_PATH.search(href):
-            continue
-        return anchor
+    for candidate, _ in _linked_elements(element):
+        if candidate.name == "a" or candidate is not element:
+            return candidate
     return None
 
 
@@ -175,25 +195,43 @@ def looks_like_catalogue(items):
 # named list of producers rather than whole catalogues, following only the
 # growers we care about is both the data we actually want and far politer
 # than walking a thousand-wine catalogue to find sixteen of them.
-MAX_INDEX_LINKS = 12
+# leszinzinsduvin alone stocks 16 of the producers we watch. Each is a
+# request with the usual 3s+jitter politeness delay, so this is the most
+# expensive path in the run -- but it is aimed at exactly the bottles we
+# care about, where the alternative is a thousand-wine catalogue walk.
+MAX_INDEX_LINKS = 20
 
 
-def find_producer_links(html, base_url, producers, normalize_fn):
-    """[(producer, url)] for index links naming a producer we watch."""
+def _identity_text(element):
+    """The grower's name, not the blurb about them.
+
+    An index card carries a heading and a paragraph of prose, and that
+    prose name-drops: leszinzinsduvin's entry for Thomas Batardiere
+    mentions Richard Leroy, and Alexandre Plassat's mentions Ganevat.
+    Matching the whole card reported both as those producers' pages.
+    """
+    heading = element.find(["h1", "h2", "h3", "h4"])
+    if heading:
+        return heading.get_text(" ", strip=True)
+    return element.get_text(" ", strip=True)
+
+
+def find_producer_links(html, base_url, match_fn):
+    """[(producer, url)] for index entries naming a producer we watch.
+
+    Takes the matcher rather than the producer dict so the longest-alias
+    -wins rule lives in one place: matching aliases here independently made
+    "Bruyeere_houillon" report as Overnoy/Houillon, because "houillon" hits
+    first and both estates share the surname.
+    """
     soup = BeautifulSoup(html, "html.parser")
     found, seen = [], set()
-    for anchor in soup.find_all("a", href=True):
-        href = anchor["href"].strip()
-        if not href or NON_PRODUCT_HREF.match(href) or NON_PRODUCT_PATH.search(href):
-            continue
-        haystack = normalize_fn(href + " " + anchor.get_text(" ", strip=True))
-        for canonical, aliases in producers.items():
-            if any(normalize_fn(a) in haystack for a in aliases):
-                url = urljoin(base_url, href)
-                if url not in seen:
-                    seen.add(url)
-                    found.append((canonical, url))
-                break
+    for element, target in _linked_elements(soup):
+        url = urljoin(base_url, target)
+        for canonical in match_fn(target + " " + _identity_text(element)):
+            if (canonical, url) not in seen:
+                seen.add((canonical, url))
+                found.append((canonical, url))
     return found
 
 

@@ -266,14 +266,14 @@ DOMAINES_INDEX = """
 
 def test_finds_only_the_growers_we_watch():
     found = autoselect.find_producer_links(
-        DOMAINES_INDEX, "https://z.test/domaines.php", scraper.PRODUCERS, scraper.normalize)
+        DOMAINES_INDEX, "https://z.test/domaines.php", scraper.match_producers)
     assert [p for p, _ in found] == ["Ganevat", "Richard Leroy"]
     assert found[0][1] == "https://z.test/domaine-9-12-Jura_DOMAINE_GANEVAT.html"
 
 
 def test_the_cart_link_is_never_a_producer_page():
     found = autoselect.find_producer_links(
-        DOMAINES_INDEX, "https://z.test/domaines.php", scraper.PRODUCERS, scraper.normalize)
+        DOMAINES_INDEX, "https://z.test/domaines.php", scraper.match_producers)
     assert all("/panier" not in u for _, u in found)
 
 
@@ -307,3 +307,42 @@ def test_the_index_fallback_only_runs_when_the_catalogue_is_empty():
     crawler_client = PagedCrawler({"https://shop.test": page([1, 2, 3])})
     scraper.fetch_html(SHOP, crawler_client)
     assert crawler_client.requested == ["https://shop.test"]
+
+
+# --- the real leszinzinsduvin grower index -----------------------------------
+
+import pathlib
+
+REAL_INDEX = (pathlib.Path(__file__).parent / "fixtures"
+              / "leszinzinsduvin-domaines-excerpt.html").read_text()
+
+
+def test_reads_grower_cards_that_have_no_anchor_at_all():
+    """395 cards, zero <a> elements: the destination is in data-url and
+    script does the navigating. Looking only at href found nothing."""
+    found = autoselect.find_producer_links(
+        REAL_INDEX, "https://www.leszinzinsduvin.com/domaines.php", scraper.match_producers)
+    urls = {u.rsplit("/", 1)[-1] for _, u in found}
+    assert "domaine-6-193-Ganevat_Jean_franecois.html" in urls
+    assert "domaine-6-407-Ganevat_Anne_et_jean_franecois_SAS.html" in urls
+
+
+def test_the_shared_surname_goes_to_the_right_estate():
+    found = dict((u.rsplit("/", 1)[-1], p) for p, u in autoselect.find_producer_links(
+        REAL_INDEX, "https://www.leszinzinsduvin.com/domaines.php", scraper.match_producers))
+    assert found["domaine-6-366-Bruyeere_houillon.html"] == "Bruyere Houillon"
+    assert found["domaine-6-37-Overnoy_PierreHouillon_Emmanuel.html"] == "Overnoy/Houillon"
+
+
+def test_a_blurb_name_dropping_another_grower_is_not_that_grower():
+    """Thomas Batardiere's card mentions Richard Leroy in its description.
+    Matching the whole card reported his page as Richard Leroy's."""
+    found = autoselect.find_producer_links(
+        REAL_INDEX, "https://www.leszinzinsduvin.com/domaines.php", scraper.match_producers)
+    assert not any("Batardieere" in u for _, u in found)
+
+
+def test_growers_we_do_not_watch_are_left_alone():
+    found = autoselect.find_producer_links(
+        REAL_INDEX, "https://www.leszinzinsduvin.com/domaines.php", scraper.match_producers)
+    assert not any("Abate_Marino" in u for _, u in found)

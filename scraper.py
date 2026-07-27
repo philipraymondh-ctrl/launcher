@@ -505,8 +505,7 @@ def _fetch_via_producer_index(shop, index_url, crawler_client):
     except (crawler.BudgetExceeded, crawler.UpstreamError):
         return []
 
-    targets = autoselect.find_producer_links(
-        resp.text, index_url, PRODUCERS, normalize)
+    targets = autoselect.find_producer_links(resp.text, index_url, match_producers)
     if not targets:
         return []
 

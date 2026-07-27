@@ -68,10 +68,15 @@ tests first, best-effort persists `seen.json`/`.cache` across runs via
 Every `SHOPS` entry also carries a `verified` flag. `main()` skips any shop
 with `"verified": False` before it ever makes a network call — this is for
 shops added from research/guesswork rather than a real observed response
-(platform assumed, selectors invented). Flip it to `True` only after
-`shop-adapter` has fetched a real response and replaced the placeholder
-fixture with it. As of this writing every shop in `SHOPS` is unverified;
-none of them run live yet.
+(platform assumed, selectors invented). It is set only by `probe.py
+--apply`, which fetches, parses and flags in a single run against a real
+response; never by hand.
+
+13 shops are currently verified and fetched on every run. The remaining 12
+are not, and split into: nine that serve real HTML but match no selectors
+(they need hand-written per-shop selectors), one blocking us with 403
+(naturavin), one serving ~200-byte stubs (vinopura), one whose domain no
+longer resolves (vinscheznous), and one answering 415 (vinnaturel).
 
 Secrets (`GMAIL_SENDER`, `GMAIL_APP_PASSWORD`, `NOTIFY_EMAIL`) plus one
 non-secret repo variable (`CONTACT_EMAIL`, used honestly in the crawler's

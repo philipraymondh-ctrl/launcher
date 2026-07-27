@@ -84,12 +84,15 @@ SHOPS = [
         "verified": False,
     },
 
-    # --- Real shops, all UNVERIFIED placeholders -----------------------
-    # Added from web research, not a live fetch (this dev environment has
-    # no general internet egress). Platform/selectors below are guesses;
-    # each has a fixture in tests/fixtures/ documenting what's known vs.
-    # invented. shop-adapter must confirm each one against the real site
-    # before it's safe to flip "verified" to True.
+    # --- Real shops ----------------------------------------------------
+    # verified: True means probe.py --apply fetched and parsed this shop's
+    # real catalogue, saved it as the fixture, and set the platform from
+    # what was actually observed. Those shops are fetched on every run.
+    #
+    # verified: False means the opposite -- the entry came from research,
+    # its platform/selectors are guesses, and main() skips it entirely.
+    # Re-run Probe Shops with apply to promote one; see its fixture and the
+    # probe report for why it hasn't been promoted yet.
     {
         "name": "leszinzinsduvin",
         "platform": "html",

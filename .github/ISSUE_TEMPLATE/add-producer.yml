@@ -1,0 +1,50 @@
+name: Add a producer
+description: Track a new producer, with its aliases and reference price.
+title: "[producer] "
+labels: ["add-producer"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Submitting this opens a pull request updating `PRODUCERS` in
+        `scraper.py` and `prices.yaml`. Nothing goes live until you merge it.
+  - type: input
+    id: name
+    attributes:
+      label: Producer name
+      description: The canonical name shown in alert emails.
+      placeholder: Domaine Roulot
+    validations:
+      required: true
+  - type: input
+    id: aliases
+    attributes:
+      label: Aliases
+      description: >
+        Comma-separated spellings to match in shop listings. Accents are
+        handled automatically. Include second names a domaine trades under.
+      placeholder: roulot, jean-marc roulot
+    validations:
+      required: true
+  - type: dropdown
+    id: region
+    attributes:
+      label: Region
+      description: Burgundy enables cru-tier price scaling; others use a flat reference.
+      options: [jura, burgundy, loire, beaujolais, rhone, alsace, champagne, other]
+    validations:
+      required: true
+  - type: input
+    id: reference
+    attributes:
+      label: Reference price, EUR per 750ml
+      description: >
+        For Burgundy, give the village-tier price — cru multipliers scale it.
+        Leave blank if unknown; hits still report, marked NOREF.
+      placeholder: "120"
+  - type: checkboxes
+    id: verified
+    attributes:
+      label: Price source
+      options:
+        - label: This figure is a real one I checked myself (leave unticked for a guess)

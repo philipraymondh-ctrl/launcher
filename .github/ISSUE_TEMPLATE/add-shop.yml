@@ -1,0 +1,27 @@
+name: Add a shop
+description: Add a wine shop for the scraper to monitor.
+title: "[shop] "
+labels: ["add-shop"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Submitting this opens a pull request adding the shop to `SHOPS`,
+        set `verified: false`. Run the **Probe Shops** workflow afterwards to
+        detect its platform and confirm it before it goes live.
+  - type: input
+    id: name
+    attributes:
+      label: Short name
+      description: Lowercase, no spaces. Used as the key and fixture filename.
+      placeholder: lescaves
+    validations:
+      required: true
+  - type: input
+    id: url
+    attributes:
+      label: Shop URL
+      description: The site's base address, no trailing slash.
+      placeholder: https://example.com
+    validations:
+      required: true

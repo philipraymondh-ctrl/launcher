@@ -98,6 +98,34 @@ Every shop in `SHOPS` has a saved fixture response under `tests/fixtures/`
 and a test asserting what it should match. Run these before committing any
 scraping change.
 
+## 7. The dashboard
+
+`wine.html` is a generated status page and control panel: current shops and
+their platforms, producers and reference prices, and buttons to run the
+workflows or add config. Regenerate locally with `python dashboard.py`; a
+workflow rebuilds it whenever `scraper.py`, `prices.yaml` or `dashboard.py`
+changes on `main`.
+
+If GitHub Pages is enabled for the repo it is served at
+`https://<user>.github.io/launcher/wine.html` (the existing `index.html`
+launcher app keeps the root path). It holds no credentials -- every button
+links out to GitHub, which handles sign-in.
+
+## 8. Adding producers and shops from a phone
+
+Two issue forms, linked from the dashboard:
+
+- **Add a producer** -- name, aliases, region, reference price
+- **Add a shop** -- short name and URL
+
+Submitting one runs `.github/workflows/apply-config.yml`, which validates
+the input, edits `scraper.py`/`prices.yaml`, runs the tests, and opens a
+pull request. Nothing takes effect until you merge it, and a new shop is
+always added `verified: false` so it can't go live before being probed.
+
+Only issues opened by the repo owner are processed -- the repo is public,
+so this gate stops a stranger from driving edits.
+
 ## Schedule
 
 Hourly at :00 UTC (`0 * * * *`), 24 runs/day. Each run also has a

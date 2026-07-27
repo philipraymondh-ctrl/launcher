@@ -217,48 +217,86 @@ def test_probe_without_apply_never_mutates_shops():
     assert json.dumps(scraper.SHOPS, sort_keys=True) == before
 
 
+SYNTHETIC_SCRAPER = '''SHOPS = [
+    {
+        "name": "alpha",
+        "platform": "html",
+        "url": "https://alpha.example",
+        "item_selector": "div.product",
+        "title_selector": "h2.product-title",
+        "price_selector": "span.price",
+        "verified": False,
+    },
+    {
+        "name": "beta",
+        "platform": "html",
+        "url": "https://beta.example",
+        "item_selector": "div.product",
+        "title_selector": "h2.product-title",
+        "price_selector": "span.price",
+        "verified": False,
+    },
+    {
+        "name": "gamma",
+        "platform": "html",
+        "url": "https://gamma.example",
+        "item_selector": "div.product",
+        "title_selector": "h2.product-title",
+        "price_selector": "span.price",
+        "verified": False,
+    },
+]
+
+
+class EmptyResponseError(Exception):
+    pass
+'''
+
+
 def test_apply_only_verifies_shops_that_actually_probed_ok(tmp_path, monkeypatch):
     """The standing decision, exercised end to end: a shop that did not
-    return a real parsed response this run must never come out verified."""
+    return a real parsed response this run must never come out verified.
+
+    Uses a synthetic SHOPS source on purpose. An earlier version copied the
+    real scraper.py and assumed its shops were unverified -- which broke the
+    moment `--apply` legitimately verified one on a runner, failing CI and
+    blocking the very commit it was meant to protect.
+    """
     monkeypatch.setattr(probe, "OUTPUT_DIR", tmp_path)
-    original_src = probe.scraper_source_path().read_text()
-    fixtures = tmp_path / "fixtures"
-    fixtures.mkdir()
-
-    # Redirect both the source file and the fixture directory into tmp so
-    # the real repo is untouched by this test.
-    sandbox_src = tmp_path / "scraper_copy.py"
-    sandbox_src.write_text(original_src)
-    monkeypatch.setattr(probe, "scraper_source_path", lambda: sandbox_src)
     monkeypatch.setattr(probe, "__file__", str(tmp_path / "probe.py"))
-    (tmp_path / "tests").mkdir()
-    (tmp_path / "tests" / "fixtures").mkdir()
+    (tmp_path / "tests" / "fixtures").mkdir(parents=True)
 
-    (tmp_path / "whynat.json").write_text(json.dumps({
+    sandbox_src = tmp_path / "scraper_copy.py"
+    sandbox_src.write_text(SYNTHETIC_SCRAPER)
+    monkeypatch.setattr(probe, "scraper_source_path", lambda: sandbox_src)
+
+    (tmp_path / "alpha.json").write_text(json.dumps({
         "products": [{"title": "Real Wine 2020", "vendor": "V", "handle": "r",
                       "body_html": "", "variants": [{"price": "30.00"}]}]
     }))
     results = [
-        {"shop": "whynat", "status": "ok", "detected_platform": "shopify",
-         "saved_as": "probe_output/whynat.json"},
-        {"shop": "vinibee", "status": "host_unreachable", "detected_platform": None,
+        {"shop": "alpha", "status": "ok", "detected_platform": "shopify",
+         "saved_as": "probe_output/alpha.json"},
+        {"shop": "beta", "status": "host_unreachable", "detected_platform": None,
          "saved_as": None},
-        {"shop": "purovino", "status": "failed", "detected_platform": None, "saved_as": None},
+        {"shop": "gamma", "status": "failed", "detected_platform": None, "saved_as": None},
     ]
 
     applied, skipped = probe.apply_results(results)
 
-    assert applied == ["whynat"]
-    assert set(skipped) == {"vinibee", "purovino"}
+    assert applied == ["alpha"]
+    assert set(skipped) == {"beta", "gamma"}
 
     ns = {}
     exec(compile(sandbox_src.read_text(), "<s>", "exec"), {"__name__": "notmain"}, ns)
     shops = {s["name"]: s for s in ns["SHOPS"]}
-    assert shops["whynat"]["verified"] is True
-    assert shops["vinibee"]["verified"] is False
-    assert shops["purovino"]["verified"] is False
-    # The real repo's scraper.py must be untouched by this test.
-    assert probe.scraper_source_path() == sandbox_src
+    assert shops["alpha"]["verified"] is True
+    assert shops["alpha"]["platform"] == "shopify"
+    # A JSON platform must not keep html-only selectors.
+    assert "item_selector" not in shops["alpha"]
+    # Neither failure may be verified, whatever the rest of the run did.
+    assert shops["beta"]["verified"] is False
+    assert shops["gamma"]["verified"] is False
 
 
 def test_trim_keeps_every_producer_match():

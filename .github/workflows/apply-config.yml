@@ -22,10 +22,17 @@ permissions:
 
 jobs:
   apply:
+    # Matches on the form's own headings as well as the label. GitHub only
+    # applies a template's labels if they already exist in the repo, so a
+    # missing label silently skipped a correctly-submitted form -- which is
+    # exactly what happened to issue #20. The OWNER check is the security
+    # gate and is unaffected; the heading match just identifies which form.
     if: >
       github.event.issue.author_association == 'OWNER' &&
       (contains(github.event.issue.labels.*.name, 'add-producer') ||
-       contains(github.event.issue.labels.*.name, 'add-shop'))
+       contains(github.event.issue.labels.*.name, 'add-shop') ||
+       contains(github.event.issue.body, '### Producer name') ||
+       contains(github.event.issue.body, '### Short name'))
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -40,8 +47,13 @@ jobs:
 
       - name: Decide what kind of request this is
         id: kind
+        env:
+          IS_PRODUCER_LABEL: ${{ contains(github.event.issue.labels.*.name, 'add-producer') }}
+          IS_SHOP_LABEL: ${{ contains(github.event.issue.labels.*.name, 'add-shop') }}
+          HAS_PRODUCER_HEADING: ${{ contains(github.event.issue.body, '### Producer name') }}
         run: |
-          if [ "${{ contains(github.event.issue.labels.*.name, 'add-producer') }}" = "true" ]; then
+          if [ "$IS_PRODUCER_LABEL" = "true" ] || \
+             { [ "$IS_SHOP_LABEL" != "true" ] && [ "$HAS_PRODUCER_HEADING" = "true" ]; }; then
             echo "kind=producer" >> "$GITHUB_OUTPUT"
           else
             echo "kind=shop" >> "$GITHUB_OUTPUT"

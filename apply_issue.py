@@ -23,6 +23,7 @@ re-pointed shop always lands `verified: false` so it can't go live unprobed.
 import argparse
 import datetime as dt
 import re
+import unicodedata
 from pathlib import Path
 
 import yaml
@@ -40,6 +41,13 @@ SHOPS_END = "]\n\n\nclass EmptyResponseError"
 
 class InvalidSubmission(Exception):
     """The form was submitted, but its contents can't be applied safely."""
+
+
+def normalize(text):
+    """Accent-stripped, lowercased -- matches scraper.normalize() so a
+    derived alias behaves the same as a hand-written one."""
+    text = unicodedata.normalize("NFKD", text or "")
+    return "".join(c for c in text if not unicodedata.combining(c)).lower()
 
 
 # --- form parsing ------------------------------------------------------------
@@ -196,9 +204,15 @@ def upsert_producer(name, aliases, region, reference, mark_verified, src, book):
     entry = next((p for p in producers if p.get("name") == name), None)
     is_new = entry is None
 
+    derived_alias = False
     if is_new:
         if not aliases:
-            raise InvalidSubmission(f"'{name}' is new, so it needs at least one alias.")
+            # Fall back to the producer's own name rather than rejecting the
+            # submission. A single full-name alias is a workable default and
+            # far friendlier than an error; the summary says it happened so
+            # more spellings can be added if shops list it differently.
+            aliases = [normalize(name)]
+            derived_alias = True
         if not region:
             raise InvalidSubmission(f"'{name}' is new, so it needs a region.")
         entry = {
@@ -224,7 +238,8 @@ def upsert_producer(name, aliases, region, reference, mark_verified, src, book):
 
     changes = []
     if aliases:
-        changes.append(f"aliases `{', '.join(aliases)}`")
+        note = " (derived from the name -- add more if shops spell it differently)" if derived_alias else ""
+        changes.append(f"aliases `{', '.join(aliases)}`{note}")
     if region:
         changes.append(f"region `{region}`")
     if reference is not None:
@@ -253,7 +268,11 @@ def parse_bulk_producers(raw):
     entries = []
     for lineno, line in enumerate((raw or "").split("\n"), 1):
         line = line.strip()
-        if not line or line.startswith("#"):
+        # A `render: text` textarea is always returned wrapped in a code
+        # fence -- even when the user left it empty, GitHub emits an empty
+        # ```text block. Treating the fence as data broke every submission
+        # that used the form at all, which is what happened to issue #20.
+        if not line or line.startswith("#") or line.startswith("```"):
             continue
         parts = [p.strip() for p in line.split("|")]
         if len(parts) < 2:
@@ -279,16 +298,17 @@ def handle_producer(fields, src, book):
     if checkbox(fields, "remove this producer"):
         return remove_producer(get(fields, "producer name", "name", required=True), src, book)
 
-    bulk = get(fields, "bulk", "several at once", "one per line")
-    if bulk:
+    # Parse before branching: an untouched bulk box is not empty, it holds
+    # an empty code fence, so "is the string truthy" is the wrong question.
+    # Only take the bulk path when it actually yielded producers.
+    bulk_entries = parse_bulk_producers(get(fields, "bulk", "several at once", "one per line"))
+    if bulk_entries:
         summaries = []
-        for e in parse_bulk_producers(bulk):
+        for e in bulk_entries:
             src, book, summary = upsert_producer(
                 e["name"], e["aliases"], e["region"], e["reference"], False, src, book
             )
             summaries.append(summary)
-        if not summaries:
-            raise InvalidSubmission("The bulk box had no usable lines.")
         return src, book, "\n".join(f"- {s}" for s in summaries)
 
     return upsert_producer(

@@ -175,8 +175,8 @@ def test_non_numeric_price_rejected(scraper_src, book):
         apply_issue.handle_producer(fields, scraper_src, copy.deepcopy(book))
 
 
-def test_missing_required_field_rejected(scraper_src, book):
-    fields = apply_issue.parse_form(body_with(PRODUCER_BODY, "Aliases", "_No response_"))
+def test_missing_producer_name_rejected(scraper_src, book):
+    fields = apply_issue.parse_form(body_with(PRODUCER_BODY, "Producer name", "_No response_"))
     with pytest.raises(InvalidSubmission):
         apply_issue.handle_producer(fields, scraper_src, copy.deepcopy(book))
 
@@ -309,12 +309,6 @@ def test_update_price_only_keeps_aliases_and_region(scraper_src, book):
     assert producers_of(new_src)["Ganevat"] == producers_of(scraper_src)["Ganevat"]
 
 
-def test_new_producer_without_alias_is_rejected(scraper_src, book):
-    body = "### Producer name\n\nBrand New Domaine\n\n### Region\n\njura\n"
-    with pytest.raises(InvalidSubmission, match="needs at least one alias"):
-        apply_issue.handle_producer(apply_issue.parse_form(body), scraper_src, copy.deepcopy(book))
-
-
 def test_new_producer_without_region_is_rejected(scraper_src, book):
     body = "### Producer name\n\nBrand New Domaine\n\n### Aliases\n\nbrandnew\n"
     with pytest.raises(InvalidSubmission, match="needs a region"):
@@ -404,3 +398,98 @@ def test_bulk_result_is_valid_python(scraper_src, book):
         apply_issue.parse_form(body), scraper_src, copy.deepcopy(book)
     )
     ast.parse(new_src)
+
+
+# --- a new producer with no alias should still work -------------------------
+# Verbatim body of issue #20, the first real form submission. It left the
+# alias box empty, which used to be rejected outright.
+
+ISSUE_20_BODY = """### Producer name
+
+Alice Fahrenkrug
+
+### Aliases
+
+_No response_
+
+### Region
+
+jura
+
+### Reference price, EUR per 750ml
+
+40
+
+### Price quality
+
+- [ ] This is a real figure I checked myself (stamps today&#39;s date)
+
+### Or add several at once
+
+```text
+
+```
+
+### Danger zone
+
+- [ ] Remove this producer instead (uses the name above)"""
+
+
+def test_new_producer_without_alias_derives_one_from_the_name(scraper_src, book):
+    # ISSUE_20_BODY is kept verbatim for its *shape* (empty alias, fenced
+    # bulk box). The name is swapped for a collision-proof one: once the
+    # real submission lands, "Alice Fahrenkrug" exists in config and this
+    # would silently become an update test instead of an add test.
+    body = body_with(ISSUE_20_BODY, "Producer name", "Zzz No Alias Domaine")
+    new_src, new_book, summary = apply_issue.handle_producer(
+        apply_issue.parse_form(body), scraper_src, copy.deepcopy(book)
+    )
+
+    assert producers_of(new_src)["Zzz No Alias Domaine"] == ["zzz no alias domaine"]
+    entry = next(p for p in new_book["producers"] if p["name"] == "Zzz No Alias Domaine")
+    assert entry["region"] == "jura"
+    assert entry["reference_750_eur"] == 40
+    assert entry["verified"] is False  # box was left unticked
+    assert "derived from the name" in summary
+
+
+def test_derived_alias_is_accent_folded(scraper_src, book):
+    body = ("### Producer name\n\nDomaine Frédéric Cossard\n\n"
+            "### Region\n\nburgundy\n\n### Reference price\n\n60\n")
+    new_src, _, _ = apply_issue.handle_producer(
+        apply_issue.parse_form(body), scraper_src, copy.deepcopy(book)
+    )
+    assert producers_of(new_src)["Domaine Frédéric Cossard"] == ["domaine frederic cossard"]
+
+
+def test_explicit_aliases_still_win_over_the_derived_one(scraper_src, book):
+    body = ("### Producer name\n\nZzz Alias Test\n\n### Aliases\n\nzzt, zzz alias\n\n"
+            "### Region\n\njura\n")
+    new_src, _, summary = apply_issue.handle_producer(
+        apply_issue.parse_form(body), scraper_src, copy.deepcopy(book)
+    )
+    assert producers_of(new_src)["Zzz Alias Test"] == ["zzt", "zzz alias"]
+    assert "derived from the name" not in summary
+
+
+def test_existing_producer_without_alias_keeps_its_aliases(scraper_src, book):
+    # Updating a price must not overwrite aliases with a derived one.
+    before = producers_of(scraper_src)["Ganevat"]
+    body = "### Producer name\n\nGanevat\n\n### Reference price\n\n95\n"
+    new_src, _, _ = apply_issue.handle_producer(
+        apply_issue.parse_form(body), scraper_src, copy.deepcopy(book)
+    )
+    assert producers_of(new_src)["Ganevat"] == before
+
+
+def test_empty_bulk_code_fence_is_not_parsed_as_data():
+    # `render: text` always returns a fenced block, empty or not.
+    assert apply_issue.parse_bulk_producers("```text\n\n```") == []
+    assert apply_issue.parse_bulk_producers("") == []
+
+
+def test_bulk_inside_a_code_fence_still_parses():
+    entries = apply_issue.parse_bulk_producers(
+        "```text\nZzz One | zzzone | jura | 40\nZzz Two | zzztwo\n```"
+    )
+    assert [e["name"] for e in entries] == ["Zzz One", "Zzz Two"]

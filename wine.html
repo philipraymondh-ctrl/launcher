@@ -12,11 +12,34 @@ h1{font-size:21px;font-weight:600;letter-spacing:-.01em}
 h2{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.09em;
  color:#8b8b93;margin:38px 0 12px}
 .sub{color:#8b8b93;font-size:13px;margin-top:5px}
-.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:22px}
-a.btn{display:inline-block;background:#1a1a1f;border:1px solid #2e2e36;color:#e8e8ea;
- text-decoration:none;padding:11px 15px;border-radius:9px;font-size:14px;font-weight:500}
-a.btn:active{background:#26262e}
-a.btn.go{background:#1d3a2a;border-color:#2c5740;color:#7ee2a8}
+.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+.btn{display:inline-block;background:#1a1a1f;border:1px solid #2e2e36;color:#e8e8ea;
+ text-decoration:none;padding:11px 15px;border-radius:9px;font-size:14px;font-weight:500;
+ font-family:inherit;cursor:pointer;-webkit-appearance:none}
+.btn:active{background:#26262e}
+.btn.go{background:#1d3a2a;border-color:#2c5740;color:#7ee2a8}
+.btn.sm{padding:7px 11px;font-size:12.5px}
+.btn[disabled]{opacity:.4;cursor:not-allowed}
+.panel{background:#141418;border:1px solid #24242b;border-radius:12px;padding:15px;margin-top:16px}
+.panel h3{font-size:13px;font-weight:600;margin-bottom:4px}
+.opts{display:flex;flex-wrap:wrap;gap:14px;margin-top:12px;font-size:13px;color:#a5a5ae}
+.opts label{display:inline-flex;align-items:center;gap:6px;cursor:pointer}
+input[type=checkbox]{width:17px;height:17px;accent-color:#3ba05f}
+.field{margin-top:11px}
+.field label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;
+ color:#8b8b93;font-weight:600;margin-bottom:5px}
+input[type=text],input[type=password],select,textarea{width:100%;background:#0d0d0f;
+ border:1px solid #2e2e36;color:#e8e8ea;border-radius:8px;padding:10px 11px;font:14px/1.4 inherit;
+ -webkit-appearance:none}
+textarea{min-height:78px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px}
+select{background-image:none}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.status{margin-top:14px;padding:11px 13px;border-radius:9px;font-size:13.5px;line-height:1.5;
+ background:#1a1a1f;border:1px solid #2e2e36;word-break:break-word}
+.status.run{background:#12212f;border-color:#1e3c57;color:#8fc4f0}
+.status.ok{background:#12301f;border-color:#1e5233;color:#8ee5ac}
+.status.bad{background:#331717;border-color:#5c2a2a;color:#f0a0a0}
+.status.warn{background:#33260f;border-color:#5c451a;color:#e8c46a}
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:9px;margin-top:18px}
 .card{background:#141418;border:1px solid #24242b;border-radius:10px;padding:13px}
 .card .n{font-size:23px;font-weight:600}
@@ -34,13 +57,27 @@ tr:last-child td{border-bottom:none}
 .mut{background:#1f1f26;color:#8b8b93}
 a.q{color:#7aa7e8;text-decoration:none}
 code{font:12.5px ui-monospace,SFMono-Regular,Menlo,monospace;color:#b9b9c2}
+details{margin-top:12px}
+summary{cursor:pointer;font-size:13px;color:#8fc4f0;padding:4px 0;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary:before{content:"+ ";font-weight:600}
+details[open] summary:before{content:"\2212 "}
+ol.steps{margin:8px 0 0 18px;font-size:13px;color:#a5a5ae}
+ol.steps li{margin-bottom:5px}
 footer{margin-top:46px;padding-top:16px;border-top:1px solid #1e1e24;color:#6e6e77;font-size:12px}
+@media (max-width:520px){.row{grid-template-columns:1fr}}
 @media (prefers-color-scheme:light){
  body{background:#fbfbfc;color:#16161a}
- h2,.sub,.card .l,th{color:#6a6a74}
- a.btn{background:#fff;border-color:#dcdce3;color:#16161a}
- a.btn.go{background:#e7f7ee;border-color:#b7e3c9;color:#1a7f45}
- .card{background:#fff;border-color:#e7e7ec}
+ h2,.sub,.card .l,th,.opts,.field label{color:#6a6a74}
+ .btn{background:#fff;border-color:#dcdce3;color:#16161a}
+ .btn.go{background:#e7f7ee;border-color:#b7e3c9;color:#1a7f45}
+ .panel,.card{background:#fff;border-color:#e7e7ec}
+ input[type=text],input[type=password],select,textarea{background:#fff;border-color:#dcdce3;color:#16161a}
+ .status{background:#f3f3f6;border-color:#e2e2e8;color:#41414a}
+ .status.run{background:#eaf3fc;border-color:#c5ddf3;color:#1d5c93}
+ .status.ok{background:#e7f7ee;border-color:#b7e3c9;color:#166b3a}
+ .status.bad{background:#fdeced;border-color:#f3c8cb;color:#98262e}
+ .status.warn{background:#fdf3e0;border-color:#f0dcb0;color:#8a6316}
  td{border-bottom-color:#eeeef2}
  th{border-bottom-color:#dcdce3}
  code{color:#4a4a55}
@@ -53,17 +90,119 @@ footer{margin-top:46px;padding-top:16px;border-top:1px solid #1e1e24;color:#6e6e
 <div class="sub">Monitoring 25 French/EU natural wine shops for 9 producers.
 Hourly, 0.85× reference flags a deal.</div>
 
-<div class="actions"><a class="btn go" href="https://github.com/philipraymondh-ctrl/launcher/actions/workflows/scraper.yml">Run scraper</a><a class="btn" href="https://github.com/philipraymondh-ctrl/launcher/actions/workflows/probe.yml">Run shop probe</a><a class="btn" href="https://github.com/philipraymondh-ctrl/launcher/issues/new?template=add-producer.yml">Producers</a><a class="btn" href="https://github.com/philipraymondh-ctrl/launcher/issues/new?template=add-shop.yml">Shops</a><a class="btn" href="https://github.com/philipraymondh-ctrl/launcher/edit/main/prices.yaml">Edit YAML</a><a class="btn" href="https://github.com/philipraymondh-ctrl/launcher/actions">All runs</a></div>
+<div class="panel">
+  <h3>Run the scraper</h3>
+  <div class="sub">Starts the workflow from this page and watches it to the end.
+  The hourly schedule keeps running regardless.</div>
+  <div class="actions">
+    <button class="btn go" id="run-scraper" data-needs-token disabled>Run scraper now</button>
+    <button class="btn" id="run-probe" data-needs-token disabled>Run shop probe</button>
+    <button class="btn sm" id="rebuild" data-needs-token disabled>Rebuild this page</button>
+  </div>
+  <div class="opts">
+    <label><input type="checkbox" id="opt-dry"> Dry run (print, don't email)</label>
+    <label><input type="checkbox" id="opt-fresh"> Ignore the 6h cache</label>
+    <label>Budget <input type="text" id="opt-budget" value="120" inputmode="numeric" style="width:66px;padding:5px 7px"></label>
+  </div>
+  <details>
+    <summary>Probe options</summary>
+    <div class="field">
+      <label for="probe-only">Only these shops (comma-separated, blank = all unverified)</label>
+      <input type="text" id="probe-only" placeholder="lescaves, vinsnaturels">
+    </div>
+    <div class="opts">
+      <label><input type="checkbox" id="probe-apply"> Save fixtures and set <code>verified: true</code> for shops that answer</label>
+    </div>
+  </details>
+  <div class="status" id="status" hidden></div>
+</div>
+
+<div class="panel" id="signedout">
+  <h3>One-time setup on this device</h3>
+  <div class="sub">The repo is public, so this page can't ship a token — it keeps one in
+  <b>this browser only</b> (<code>localStorage</code>), and calls GitHub directly.</div>
+  <ol class="steps">
+    <li>Open <a class="q" href="https://github.com/settings/personal-access-tokens/new">github.com/settings/personal-access-tokens/new</a>.</li>
+    <li>Resource owner: your account. Repository access: <b>Only select repositories</b> → <code>philipraymondh-ctrl/launcher</code>.</li>
+    <li>Repository permissions: <b>Actions</b> = Read and write, <b>Issues</b> = Read and write. Nothing else.</li>
+    <li>Expiration: whatever you like — 90 days is fine, you just paste a new one here after.</li>
+    <li>Generate, copy, paste below.</li>
+  </ol>
+  <div class="field">
+    <label for="pat">Token</label>
+    <input type="password" id="pat" placeholder="github_pat_..." autocomplete="off" autocapitalize="off" spellcheck="false">
+  </div>
+  <div class="actions"><button class="btn go" id="save-token">Save token</button></div>
+</div>
+
+<div class="panel" id="signedin" hidden>
+  <h3>Signed in <span id="who" class="sub"></span></h3>
+  <div class="sub">Stored in this browser only. It was never committed and never leaves the device
+  except in calls to api.github.com.</div>
+  <div class="actions"><button class="btn sm" id="forget-token">Forget token</button></div>
+</div>
+
 <div class="cards"><div class="card"><div class="n">13/25</div><div class="l">Shops live</div></div><div class="card"><div class="n">0/9</div><div class="l">Prices verified</div></div><div class="card"><div class="n">9</div><div class="l">Producers</div></div><div class="card"><div class="n">0.85</div><div class="l">Deal at</div></div><div class="card"><div class="n">1.25</div><div class="l">High above</div></div></div>
+
+<h2>Recent runs</h2>
+<div class="scroll"><table>
+<thead><tr><th>Workflow</th><th>Result</th><th>When</th></tr></thead>
+<tbody id="runs"><tr><td colspan="3">Save a token to see runs.</td></tr></tbody></table></div>
+<div class="actions"><button class="btn sm" id="refresh-runs" data-needs-token disabled>Refresh</button></div>
+
+<h2>Add or change a producer</h2>
+<div class="panel">
+  <div class="sub">Fill only what you want to change — an existing name updates it, a new name adds it.
+  Applied straight to <code>main</code> once the tests pass; no pull request.</div>
+  <div class="row">
+    <div class="field"><label for="p-name">Producer name</label>
+      <input type="text" id="p-name" placeholder="Domaine Roulot"></div>
+    <div class="field"><label for="p-aliases">Aliases (comma-separated)</label>
+      <input type="text" id="p-aliases" placeholder="roulot, jean-marc roulot"></div>
+  </div>
+  <div class="row">
+    <div class="field"><label for="p-region">Region</label>
+      <select id="p-region"><option value="">(keep current)</option><option value="alsace">alsace</option><option value="beaujolais">beaujolais</option><option value="burgundy">burgundy</option><option value="champagne">champagne</option><option value="jura">jura</option><option value="loire">loire</option><option value="other">other</option><option value="rhone">rhone</option></select></div>
+    <div class="field"><label for="p-ref">Reference €/750ml</label>
+      <input type="text" id="p-ref" inputmode="decimal" placeholder="120"></div>
+  </div>
+  <div class="opts">
+    <label><input type="checkbox" id="p-verified"> Real figure I checked myself</label>
+    <label><input type="checkbox" id="p-remove"> Remove this producer</label>
+  </div>
+  <details>
+    <summary>Add several at once</summary>
+    <div class="field">
+      <label for="p-bulk">One per line — Name | aliases | region | price</label>
+      <textarea id="p-bulk" spellcheck="false" placeholder="Domaine Roulot | roulot, jean-marc roulot | burgundy | 120
+Coche-Dury | coche-dury, coche dury | burgundy | 400"></textarea>
+    </div>
+  </details>
+  <div class="actions"><button class="btn go" id="producer-submit" data-needs-token disabled>Apply producer change</button></div>
+</div>
+
+<h2>Add or change a shop</h2>
+<div class="panel">
+  <div class="sub">New and re-pointed shops land as <code>verified: false</code>. Run the probe
+  afterwards to detect the platform and bring them live.</div>
+  <div class="row">
+    <div class="field"><label for="s-name">Short name (lowercase, no spaces)</label>
+      <input type="text" id="s-name" placeholder="lescaves" autocapitalize="off" spellcheck="false"></div>
+    <div class="field"><label for="s-url">Shop URL (https only)</label>
+      <input type="text" id="s-url" placeholder="https://example.com" autocapitalize="off" spellcheck="false"></div>
+  </div>
+  <div class="opts">
+    <label><input type="checkbox" id="s-remove"> Remove this shop</label>
+  </div>
+  <div class="actions"><button class="btn go" id="shop-submit" data-needs-token disabled>Apply shop change</button></div>
+</div>
 
 <h2>Producers &amp; reference prices</h2>
 <div class="scroll"><table>
 <thead><tr><th>Producer / aliases</th><th>Region</th><th>Ref 750ml</th><th>Price data</th></tr></thead>
 <tbody><tr><td><b>Alice Fahrenkrug</b><br><code>alice fahrenkrug</code></td><td>jura</td><td>€40</td><td><span class="pill warn">unverified</span></td></tr><tr><td><b>Clemence Gerbet</b><br><code>clemence gerbet, gerbet</code></td><td>burgundy</td><td>€45</td><td><span class="pill warn">unverified</span></td></tr><tr><td><b>Domaine Calice</b><br><code>calice</code></td><td>unknown</td><td>€35</td><td><span class="pill warn">unverified</span></td></tr><tr><td><b>Domaine des Miroirs/Kagami</b><br><code>miroirs, kagami</code></td><td>jura</td><td>€300</td><td><span class="pill warn">unverified</span></td></tr><tr><td><b>Ganevat</b><br><code>ganevat</code></td><td>jura</td><td>€70</td><td><span class="pill warn">unverified</span></td></tr><tr><td><b>Labet</b><br><code>labet</code></td><td>jura</td><td>€55</td><td><span class="pill warn">unverified</span></td></tr><tr><td><b>Overnoy/Houillon</b><br><code>overnoy, houillon</code></td><td>jura</td><td>€250</td><td><span class="pill warn">unverified</span></td></tr><tr><td><b>Roumier</b><br><code>roumier</code></td><td>burgundy</td><td>€220</td><td><span class="pill warn">unverified</span></td></tr><tr><td><b>Thomas Popy</b><br><code>thomas popy, popy</code></td><td>burgundy</td><td>€50</td><td><span class="pill warn">unverified</span></td></tr></tbody></table></div>
-<div class="sub" style="margin-top:11px">Unverified references are best-guess placeholders.
-Tap <b>Producers</b> above to set a real figure — the same form adds, updates and removes, and
-ticking &ldquo;checked myself&rdquo; stamps the date. Changes apply straight to <code>main</code>
-once the tests pass; there is no pull request to merge. Nothing here fetches Wine-Searcher.</div>
+<div class="sub" style="margin-top:11px">Unverified references are best-guess placeholders and every
+alert built on one carries a caveat. Nothing here fetches Wine-Searcher — the numbers are yours to type.</div>
 
 <h2>Shops</h2>
 <div class="sub" style="margin:-4px 0 12px">13 shop(s) are live and will be fetched on the hourly run.</div>
@@ -72,9 +211,371 @@ once the tests pass; there is no pull request to merge. Nothing here fetches Win
 <tbody><tr><td><a class="q" href="https://amberbottleshop.com">amberbottleshop</a></td><td><span class="pill ok">shopify</span></td><td><span class="pill ok">live</span></td></tr><tr><td><a class="q" href="https://biobiodynamienature.com">bbn</a></td><td><span class="pill ok">shopify</span></td><td><span class="pill ok">live</span></td></tr><tr><td><a class="q" href="https://www.biowijnclub.nl">biowijnclub</a></td><td><span class="pill ok">woocommerce</span></td><td><span class="pill ok">live</span></td></tr><tr><td><a class="q" href="https://www.lacavedespapilles.com">lacavedespapilles</a></td><td><span class="pill ok">shopify</span></td><td><span class="pill ok">live</span></td></tr><tr><td><a class="q" href="https://lespeauxdevins.com">lespeauxdevins</a></td><td><span class="pill ok">shopify</span></td><td><span class="pill ok">live</span></td></tr><tr><td><a class="q" href="https://levinnaturel.com">levinnaturel</a></td><td><span class="pill ok">shopify</span></td><td><span class="pill ok">live</span></td></tr><tr><td><a class="q" href="https://www.petitescaves.com">petitescaves</a></td><td><span class="pill ok">shopify</span></td><td><span class="pill ok">live</span></td></tr><tr><td><a class="q" href="https://www.puurwijn.shop">puurwijnshop</a></td><td><span class="pill ok">shopify</span></td><td><span class="pill ok">live</span></td></tr><tr><td><a class="q" href="https://www.vinibee.com">vinibee</a></td><td><span class="pill ok">woocommerce</span></td><td><span class="pill ok">live</span></td></tr><tr><td><a class="q" href="https://www.vinifine.be">vinifine</a></td><td><span class="pill ok">woocommerce</span></td><td><span class="pill ok">live</span></td></tr><tr><td><a class="q" href="https://volatilewines.com">volatilewines</a></td><td><span class="pill ok">woocommerce</span></td><td><span class="pill ok">live</span></td></tr><tr><td><a class="q" href="https://www.whynat.fr">whynat</a></td><td><span class="pill ok">shopify</span></td><td><span class="pill ok">live</span></td></tr><tr><td><a class="q" href="https://zuiverwijnen.nl">zuiverwijnen</a></td><td><span class="pill ok">shopify</span></td><td><span class="pill ok">live</span></td></tr><tr><td><a class="q" href="https://www.cavepurjus.com">cavepurjus</a></td><td><span class="pill warn">html</span></td><td><span class="pill mut">not live</span></td></tr><tr><td><a class="q" href="https://www.leszinzinsduvin.com">leszinzinsduvin</a></td><td><span class="pill warn">html</span></td><td><span class="pill mut">not live</span></td></tr><tr><td><a class="q" href="https://www.naturavin.be">naturavin</a></td><td><span class="pill warn">html</span></td><td><span class="pill mut">not live</span></td></tr><tr><td><a class="q" href="https://www.purewijnen.be">purewijnen</a></td><td><span class="pill warn">html</span></td><td><span class="pill mut">not live</span></td></tr><tr><td><a class="q" href="https://www.purovino.be">purovino</a></td><td><span class="pill warn">html</span></td><td><span class="pill mut">not live</span></td></tr><tr><td><a class="q" href="https://www.vinnaturel.fr">vinnaturel</a></td><td><span class="pill warn">html</span></td><td><span class="pill mut">not live</span></td></tr><tr><td><a class="q" href="https://vin-naturel.be">vinnaturelbe</a></td><td><span class="pill warn">html</span></td><td><span class="pill mut">not live</span></td></tr><tr><td><a class="q" href="https://vinnouveau.fr">vinnouveau</a></td><td><span class="pill warn">html</span></td><td><span class="pill mut">not live</span></td></tr><tr><td><a class="q" href="https://vinopura.nl">vinopura</a></td><td><span class="pill ok">woocommerce</span></td><td><span class="pill mut">not live</span></td></tr><tr><td><a class="q" href="https://vinovivo.be">vinovivo</a></td><td><span class="pill warn">html</span></td><td><span class="pill mut">not live</span></td></tr><tr><td><a class="q" href="https://www.vinscheznous.com">vinscheznous</a></td><td><span class="pill warn">html</span></td><td><span class="pill mut">not live</span></td></tr><tr><td><a class="q" href="https://winenot.fr">winenot</a></td><td><span class="pill warn">html</span></td><td><span class="pill mut">not live</span></td></tr></tbody></table></div>
 
 <footer>
-Generated 2026-07-27 15:43 UTC from <code>scraper.py</code> and <code>prices.yaml</code>.
-Regenerates on every push to <code>main</code>. Buttons open GitHub, which handles sign-in —
-this page holds no credentials.
+Generated 2026-07-27 18:40 UTC from <code>scraper.py</code> and <code>prices.yaml</code>; rebuilt on every
+push to <code>main</code>. This file holds no credentials — the token you paste stays in this
+browser's storage and is sent only to api.github.com.
 </footer>
 
+<script>window.WINE = {"repo": "philipraymondh-ctrl/launcher"};</script>
+<script>
+(function () {
+"use strict";
+
+var REPO = window.WINE.repo;
+var API = "https://api.github.com";
+var KEY = "wine.gh.pat";
+
+function $(id) { return document.getElementById(id); }
+function token() { try { return localStorage.getItem(KEY) || ""; } catch (e) { return ""; } }
+function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+function esc(s) {
+  return String(s == null ? "" : s)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+// Just enough markdown for the bot's reply comment. Escapes first, so a
+// hostile comment body can't inject markup.
+function mdLite(s) {
+  return esc(s)
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, '<a class="q" href="$2">$1</a>')
+    .replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>")
+    .replace(/`([^`]+)`/g, "<code>$1</code>")
+    .replace(/\n/g, "<br>");
+}
+
+// --- api ------------------------------------------------------------------
+
+async function api(path, opts) {
+  opts = opts || {};
+  var headers = {
+    "Accept": "application/vnd.github+json",
+    "X-GitHub-Api-Version": "2022-11-28",
+    "Authorization": "Bearer " + token()
+  };
+  if (opts.body) { headers["Content-Type"] = "application/json"; }
+  var res = await fetch(API + path, {
+    method: opts.method || "GET",
+    headers: headers,
+    body: opts.body ? JSON.stringify(opts.body) : undefined
+  });
+  var text = res.status === 204 ? "" : await res.text();
+  var data = null;
+  if (text) { try { data = JSON.parse(text); } catch (e) { data = null; } }
+  if (!res.ok) {
+    var msg = (data && data.message) || (res.status + " " + res.statusText);
+    if (res.status === 401) { msg = "the token was rejected (401). It may have expired."; }
+    if (res.status === 403) { msg += " — the token probably lacks Actions or Issues write."; }
+    if (res.status === 404) { msg += " — check the token can see " + REPO + "."; }
+    throw new Error(msg);
+  }
+  return data;
+}
+
+// --- status line ----------------------------------------------------------
+
+var busy = false;
+
+function say(html, kind) {
+  var el = $("status");
+  el.className = "status " + (kind || "");
+  el.innerHTML = html;
+  el.hidden = false;
+}
+
+function lock(on) {
+  busy = on;
+  refreshAuth();
+}
+
+async function guard(label, fn) {
+  if (busy) { return; }
+  lock(true);
+  try {
+    await fn();
+  } catch (e) {
+    say("<b>" + esc(label) + " failed:</b> " + esc(e.message), "bad");
+  } finally {
+    lock(false);
+  }
+}
+
+// --- auth -----------------------------------------------------------------
+
+function refreshAuth() {
+  var has = !!token();
+  $("signedout").hidden = has;
+  $("signedin").hidden = !has;
+  var nodes = document.querySelectorAll("[data-needs-token]");
+  for (var i = 0; i < nodes.length; i++) { nodes[i].disabled = !has || busy; }
+}
+
+async function saveToken() {
+  var value = $("pat").value.trim();
+  if (!value) { say("Paste a token first.", "warn"); return; }
+  try { localStorage.setItem(KEY, value); } catch (e) {
+    say("This browser refuses to store the token (private mode?).", "bad"); return;
+  }
+  $("pat").value = "";
+  try {
+    var me = await api("/user");
+    var repo = await api("/repos/" + REPO);
+    $("who").textContent = me.login + " · " + repo.full_name;
+    refreshAuth();
+    say("Signed in. The buttons above are live now.", "ok");
+    loadRuns();
+  } catch (e) {
+    try { localStorage.removeItem(KEY); } catch (e2) {}
+    refreshAuth();
+    say("<b>That token didn't work:</b> " + esc(e.message), "bad");
+  }
+}
+
+function forgetToken() {
+  try { localStorage.removeItem(KEY); } catch (e) {}
+  refreshAuth();
+  say("Token removed from this browser.", "");
+}
+
+// --- running a workflow ---------------------------------------------------
+
+async function latestRunId(file) {
+  var d = await api("/repos/" + REPO + "/actions/workflows/" + file + "/runs?per_page=1");
+  var runs = d.workflow_runs || [];
+  return runs.length ? runs[0].id : 0;
+}
+
+// The dispatch endpoint answers 204 with no body, so the run has to be found
+// by id: anything newer than what existed a moment ago is ours.
+async function waitForNewRun(file, before) {
+  for (var i = 0; i < 20; i++) {
+    await sleep(3000);
+    var d = await api("/repos/" + REPO + "/actions/workflows/" + file + "/runs?per_page=5");
+    var runs = (d.workflow_runs || []).filter(function (r) { return r.id > before; });
+    if (runs.length) { return runs[0]; }
+  }
+  return null;
+}
+
+async function currentStep(id) {
+  try {
+    var d = await api("/repos/" + REPO + "/actions/runs/" + id + "/jobs");
+    var jobs = d.jobs || [];
+    for (var i = 0; i < jobs.length; i++) {
+      var steps = jobs[i].steps || [];
+      for (var j = 0; j < steps.length; j++) {
+        if (steps[j].status === "in_progress") { return steps[j].name; }
+      }
+    }
+  } catch (e) { /* the step name is decoration; never fail the watch for it */ }
+  return "";
+}
+
+function mins(run) {
+  var start = new Date(run.run_started_at || run.created_at).getTime();
+  return Math.max(0, Math.round((Date.now() - start) / 1000));
+}
+
+async function watchRun(run, label) {
+  for (var i = 0; i < 360; i++) {
+    if (run.status === "completed") {
+      var good = run.conclusion === "success";
+      say("<b>" + esc(label) + "</b> finished: " + esc(run.conclusion) +
+          " (" + mins(run) + "s). " +
+          (good ? "" : "Open <b>Recent runs</b> below for which step failed."),
+          good ? "ok" : "bad");
+      loadRuns();
+      return run;
+    }
+    var step = run.status === "in_progress" ? await currentStep(run.id) : "";
+    say("<b>" + esc(label) + "</b> — " + esc((run.status || "queued").replace(/_/g, " ")) +
+        (step ? " · " + esc(step) : "") + " · " + mins(run) + "s elapsed…", "run");
+    await sleep(5000);
+    run = await api("/repos/" + REPO + "/actions/runs/" + run.id);
+  }
+  say("<b>" + esc(label) + "</b> is still going after 30 minutes. Check Recent runs.", "warn");
+  return run;
+}
+
+function runWorkflow(file, inputs, label) {
+  return guard(label, async function () {
+    say("Starting <b>" + esc(label) + "</b>…", "run");
+    var before = await latestRunId(file);
+    await api("/repos/" + REPO + "/actions/workflows/" + file + "/dispatches",
+              { method: "POST", body: { ref: "main", inputs: inputs } });
+    var run = await waitForNewRun(file, before);
+    if (!run) {
+      say("<b>" + esc(label) + "</b> was accepted but no run appeared yet — tap Refresh below.", "warn");
+      return;
+    }
+    await watchRun(run, label);
+  });
+}
+
+// --- recent runs ----------------------------------------------------------
+
+function runPill(run) {
+  if (run.status !== "completed") { return '<span class="pill warn">' + esc(run.status.replace(/_/g, " ")) + "</span>"; }
+  var kind = run.conclusion === "success" ? "ok" : (run.conclusion === "cancelled" ? "mut" : "bad");
+  return '<span class="pill ' + kind + '">' + esc(run.conclusion) + "</span>";
+}
+
+function ago(iso) {
+  var s = Math.round((Date.now() - new Date(iso).getTime()) / 1000);
+  if (s < 90) { return s + "s ago"; }
+  if (s < 5400) { return Math.round(s / 60) + "m ago"; }
+  if (s < 172800) { return Math.round(s / 3600) + "h ago"; }
+  return Math.round(s / 86400) + "d ago";
+}
+
+async function loadRuns() {
+  if (!token()) { return; }
+  var body = $("runs");
+  try {
+    var d = await api("/repos/" + REPO + "/actions/runs?per_page=8&exclude_pull_requests=true");
+    var runs = d.workflow_runs || [];
+    if (!runs.length) { body.innerHTML = '<tr><td colspan="3">No runs yet.</td></tr>'; return; }
+    body.innerHTML = runs.map(function (r) {
+      return "<tr><td>" + esc(r.name) + "</td><td>" + runPill(r) +
+             "</td><td>" + esc(ago(r.created_at)) + "</td></tr>";
+    }).join("");
+  } catch (e) {
+    body.innerHTML = '<tr><td colspan="3">Could not load runs: ' + esc(e.message) + "</td></tr>";
+  }
+}
+
+// --- config changes via issue forms ---------------------------------------
+
+// apply-config.yml parses the same "### Heading" markdown GitHub's issue
+// forms produce, so the page builds that body itself. Field order matches
+// .github/ISSUE_TEMPLATE -- apply_issue.get() takes the first heading that
+// contains its keyword, and "Price quality" also contains "price".
+function section(heading, value) {
+  return "### " + heading + "\n\n" + (value && value.trim() ? value.trim() : "_No response_") + "\n\n";
+}
+
+function box(checked, label) {
+  return "- [" + (checked ? "x" : " ") + "] " + label;
+}
+
+function producerBody(f) {
+  return section("Producer name", f.name) +
+    section("Aliases", f.aliases) +
+    section("Region", f.region) +
+    section("Reference price, EUR per 750ml", f.reference) +
+    section("Price quality", box(f.verified, "This is a real figure I checked myself (stamps today's date)")) +
+    section("Or add several at once", f.bulk ? "```text\n" + f.bulk.trim() + "\n```" : "") +
+    section("Danger zone", box(f.remove, "Remove this producer instead (uses the name above)"));
+}
+
+function shopBody(f) {
+  return section("Short name", f.name) +
+    section("Shop URL", f.url) +
+    section("Danger zone", box(f.remove, "Remove this shop instead (uses the name above)"));
+}
+
+async function createIssue(title, body, label) {
+  try {
+    return await api("/repos/" + REPO + "/issues",
+                     { method: "POST", body: { title: title, body: body, labels: [label] } });
+  } catch (e) {
+    // A label that doesn't exist yet can be refused. The workflow also
+    // routes on the form's headings, so dropping the label is safe.
+    return await api("/repos/" + REPO + "/issues", { method: "POST", body: { title: title, body: body } });
+  }
+}
+
+// The workflow answers on the issue: a comment, then it closes it.
+async function watchIssue(number) {
+  for (var i = 0; i < 60; i++) {
+    await sleep(5000);
+    var comments = await api("/repos/" + REPO + "/issues/" + number + "/comments?per_page=10");
+    if (comments && comments.length) {
+      var text = comments[comments.length - 1].body || "";
+      var failed = /could not apply|nothing was committed|a later step of the run failed/i.test(text);
+      say(mdLite(text) + "<br><br>The tables on this page rebuild a minute later — reload to see it.",
+          failed ? "bad" : "ok");
+      loadRuns();
+      return;
+    }
+  }
+  say("Submitted, but nothing came back after 5 minutes. Check Recent runs for <b>Apply Config Issue</b>.", "warn");
+}
+
+function submitConfig(label, title, body, issueLabel) {
+  return guard(label, async function () {
+    say("Submitting <b>" + esc(label) + "</b>…", "run");
+    var issue = await createIssue(title, body, issueLabel);
+    say("Filed #" + issue.number + " — running the tests, then committing to <code>main</code>…", "run");
+    await watchIssue(issue.number);
+  });
+}
+
+function val(id) { var el = $(id); return el ? el.value.trim() : ""; }
+function on(id) { var el = $(id); return !!(el && el.checked); }
+
+// --- wiring ---------------------------------------------------------------
+
+document.addEventListener("DOMContentLoaded", function () {
+  $("save-token").addEventListener("click", saveToken);
+  $("forget-token").addEventListener("click", forgetToken);
+  $("refresh-runs").addEventListener("click", function () { loadRuns(); });
+
+  $("run-scraper").addEventListener("click", function () {
+    runWorkflow("scraper.yml", {
+      fresh: String(on("opt-fresh")),
+      max_requests_per_run: val("opt-budget") || "120",
+      dry_run: String(on("opt-dry"))
+    }, on("opt-dry") ? "Scraper (dry run)" : "Scraper");
+  });
+
+  $("run-probe").addEventListener("click", function () {
+    runWorkflow("probe.yml", {
+      only: val("probe-only"),
+      max_requests_per_run: "150",
+      apply: String(on("probe-apply"))
+    }, "Shop probe");
+  });
+
+  $("rebuild").addEventListener("click", function () {
+    runWorkflow("dashboard.yml", {}, "Dashboard rebuild");
+  });
+
+  $("producer-submit").addEventListener("click", function () {
+    var name = val("p-name");
+    var bulk = val("p-bulk");
+    if (!name && !bulk) { say("A producer needs a name (or use the bulk box).", "warn"); return; }
+    var f = {
+      name: name || "bulk", aliases: val("p-aliases"), region: val("p-region"),
+      reference: val("p-ref"), verified: on("p-verified"), bulk: bulk, remove: on("p-remove")
+    };
+    submitConfig("Producer change", "[producer] " + f.name, producerBody(f), "add-producer");
+  });
+
+  $("shop-submit").addEventListener("click", function () {
+    var name = val("s-name");
+    if (!name) { say("A shop needs a short name.", "warn"); return; }
+    if (!on("s-remove") && !/^https:\/\//.test(val("s-url"))) {
+      say("A shop URL must start with https://", "warn"); return;
+    }
+    var f = { name: name, url: val("s-url"), remove: on("s-remove") };
+    submitConfig("Shop change", "[shop] " + name, shopBody(f), "add-shop");
+  });
+
+  refreshAuth();
+  if (token()) {
+    say("Signed in on this device. Everything below runs from here.", "");
+    loadRuns();
+  }
+});
+
+// The issue-body builders are the one part of this file that has to agree
+// with a Python parser (apply_issue.parse_form). Exposed so tests/ can run
+// them and feed the real output through it, rather than reimplementing the
+// heading order in the test and proving nothing.
+window.WINE.builders = { producerBody: producerBody, shopBody: shopBody };
+
+})();
+</script>
 </body></html>

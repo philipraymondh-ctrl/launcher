@@ -17,6 +17,7 @@ from bs4 import BeautifulSoup
 
 import crawler
 import evaluate
+import market
 import notify
 
 DRY_RUN = os.environ.get("DRY_RUN") == "1"
@@ -45,6 +46,13 @@ PRODUCERS = {
     "Thomas Popy": ["thomas popy", "popy"],
     "Roumier": ["roumier"],
     "Alice Fahrenkrug": ["alice fahrenkrug"],
+    "Jules Brochet": ["jules brochet", "brochet"],
+    "Bruyere Houillon": ["bruyere houillon", "bruyere-houillon"],
+    "Allante et Boulanger": ["allante et boulanger", "allante boulanger", "allante"],
+    "Domaine des Murmures": ["domaine des murmures", "murmures"],
+    "Tom Gauditiabois": ["tom gauditiabois", "gauditiabois"],
+    "Richard Leroy": ["richard leroy", "leroy richard"],
+    "Lattard": ["lattard"],
 }
 
 # ---------------------------------------------------------------------------
@@ -296,13 +304,25 @@ def normalize(text):
 
 
 def match_producers(text):
-    """Return the canonical producer names whose aliases appear in text."""
+    """Return the canonical producer names whose aliases appear in text.
+
+    When one match's alias sits inside another's, only the longer one
+    counts. Two producers legitimately share a surname -- "houillon"
+    (Overnoy/Houillon) is a substring of "bruyere houillon" -- and without
+    this every Bruyere-Houillon bottle would be reported twice, once under
+    the wrong estate.
+    """
     norm = normalize(text)
-    matches = []
+    matched = {}
     for canonical, aliases in PRODUCERS.items():
-        if any(normalize(alias) in norm for alias in aliases):
-            matches.append(canonical)
-    return matches
+        hits = [normalize(a) for a in aliases if normalize(a) in norm]
+        if hits:
+            matched[canonical] = max(hits, key=len)
+
+    return [
+        canonical for canonical, alias in matched.items()
+        if not any(other is not alias and alias in other for other in matched.values())
+    ]
 
 
 # Matches a number only when a currency marker is directly adjacent, so a
@@ -521,7 +541,29 @@ def main():
     if not verified_names:
         print("No verified shops configured -- nothing to evaluate or notify on.")
 
-    evaluated = evaluate.evaluate_hits(all_hits)
+    # Reference prices are read off the crawl, not typed in. Record this
+    # run's listings *before* evaluating so a wine seen at three shops this
+    # hour is already comparable this hour -- the store is a memory across
+    # runs, not a prerequisite for one.
+    pricebook = evaluate.load_pricebook()
+    format_multipliers = {
+        int(k): v for k, v in
+        ((pricebook.get("defaults") or {}).get("format_multipliers") or {}).items()
+    }
+    aliases = market.aliases_by_producer(PRODUCERS)
+
+    store = market.load_observations()
+    sized = [evaluate.evaluate_hit(hit, pricebook) for hit in all_hits]
+    fresh = [o for o in (market.observation(h, format_multipliers, aliases) for h in sized) if o]
+    store = market.merge(store, fresh)
+    print(f"{len(fresh)} listing(s) recorded; {len(store['records'])} in the reference pool.")
+
+    evaluated = evaluate.evaluate_hits(all_hits, pricebook, store, aliases)
+
+    # A dry run must leave no trace, exactly as it leaves seen.json alone.
+    if not DRY_RUN:
+        market.save_observations(store)
+
     notify.run_digest(evaluated, dry_run=DRY_RUN)
 
 

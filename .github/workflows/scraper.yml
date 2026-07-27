@@ -36,8 +36,9 @@ jobs:
       - name: Run fixture tests
         run: pytest tests/ -q
 
-      # Best-effort persistence for notify.py's cooldown/dedupe state and
-      # crawler.py's 6h disk cache across hourly runs -- runners are
+      # Best-effort persistence for notify.py's cooldown/dedupe state,
+      # market.py's observed-price pool, and crawler.py's 6h disk cache
+      # across hourly runs -- runners are
       # ephemeral, so without this every run would look "new" again.
       # actions/cache can be evicted by GitHub at any time; the worst case
       # on a miss is a duplicate alert or an extra fetch, not a broken run.
@@ -46,6 +47,7 @@ jobs:
         with:
           path: |
             seen.json
+            observations.json
             .cache
           key: wine-scraper-state-${{ github.run_id }}
           restore-keys: |
@@ -69,5 +71,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: hits-${{ github.run_id }}
-          path: hits.json
+          path: |
+            hits.json
+            observations.json
           retention-days: 30

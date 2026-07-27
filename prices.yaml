@@ -15,59 +15,97 @@ defaults:
 producers:
 - name: Overnoy/Houillon
   region: jura
-  reference_750_eur: 250
+  reference_750_eur: null
   cuvees: []
   last_verified: null
   verified: false
 - name: Ganevat
   region: jura
-  reference_750_eur: 70
+  reference_750_eur: null
   cuvees: []
   last_verified: null
   verified: false
 - name: Labet
   region: jura
-  reference_750_eur: 55
-  cuvees:
-  - match:
-    - Fleurs
-    - Fleur de Marne
-    reference_750_eur: 75
+  reference_750_eur: null
+  cuvees: []
   last_verified: null
   verified: false
 - name: Domaine des Miroirs/Kagami
   region: jura
-  reference_750_eur: 300
+  reference_750_eur: null
   cuvees: []
   last_verified: null
   verified: false
 - name: Domaine Calice
   region: unknown
-  reference_750_eur: 35
+  reference_750_eur: null
   cuvees: []
   last_verified: null
   verified: false
 - name: Clemence Gerbet
   region: burgundy
-  reference_750_eur: 45
+  reference_750_eur: null
   cuvees: []
   last_verified: null
   verified: false
 - name: Thomas Popy
   region: burgundy
-  reference_750_eur: 50
+  reference_750_eur: null
   cuvees: []
   last_verified: null
   verified: false
 - name: Roumier
   region: burgundy
-  reference_750_eur: 220
+  reference_750_eur: null
   cuvees: []
   last_verified: null
   verified: false
 - name: Alice Fahrenkrug
   region: jura
-  reference_750_eur: 40
+  reference_750_eur: null
+  cuvees: []
+  last_verified: null
+  verified: false
+- name: Jules Brochet
+  region: other
+  reference_750_eur: null
+  cuvees: []
+  last_verified: null
+  verified: false
+- name: Bruyere Houillon
+  region: jura
+  reference_750_eur: null
+  cuvees: []
+  last_verified: null
+  verified: false
+- name: Allante et Boulanger
+  region: other
+  reference_750_eur: null
+  cuvees: []
+  last_verified: null
+  verified: false
+- name: Domaine des Murmures
+  region: other
+  reference_750_eur: null
+  cuvees: []
+  last_verified: null
+  verified: false
+- name: Tom Gauditiabois
+  region: other
+  reference_750_eur: null
+  cuvees: []
+  last_verified: null
+  verified: false
+- name: Richard Leroy
+  region: loire
+  reference_750_eur: null
+  cuvees: []
+  last_verified: null
+  verified: false
+- name: Lattard
+  region: jura
+  reference_750_eur: null
   cuvees: []
   last_verified: null
   verified: false

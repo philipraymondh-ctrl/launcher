@@ -11,7 +11,7 @@ never a reason to idle waiting for one.
 
 ## Architecture
 
-No framework, no database, no queue — five plain files, each owning one
+No framework, no database, no queue — six plain files, each owning one
 concern, wired together by `scraper.py`:
 
 1. **`crawler.py`** — the only module that calls `requests`. Every fetch
@@ -28,14 +28,29 @@ concern, wired together by `scraper.py`:
    a `Crawler` instance) that returns `{text, title, price, url,
    variant_title}` items, then runs `match_producers(text)` (accent/case-
    insensitive alias matching against `PRODUCERS`) to produce raw hits.
-3. **`prices.yaml`** / **`pricebook.py`** — the human-edited reference
-   price book (per-producer `reference_750_eur`, optional per-cuvee
+3. **`market.py`** — where reference prices come from. One typed number
+   per producer cannot describe a producer selling a negoce cuvee at EUR 30
+   and a domaine vin jaune at EUR 250, and the typing grows with producers
+   x cuvees x vintages. So the reference is *observed*: every priced
+   listing is recorded to `observations.json`, and a hit is scored against
+   what other shops charge. A ladder from strongest evidence down --
+   same cuvee + same vintage elsewhere, same cuvee other vintages, then
+   the producer's own line -- with the confidence dropping at each rung and
+   `None` at the bottom rather than a guess. Three things separate
+   themselves with no per-producer config: negoce vs domaine (the label
+   carries extra names, so `segment()` splits them), vintage (part of the
+   key), and cru (already in the cuvee text). Magnums and clavelins are
+   normalised to a per-750 equivalent; coffrets are only ever compared to
+   other coffrets. Nothing here contacts a price aggregator -- the data is
+   the crawl we already do.
+4. **`prices.yaml`** / **`pricebook.py`** — the optional manual override (per-producer `reference_750_eur`, optional per-cuvee
    overrides, a `verified`/`last_verified` pair per producer) plus a CLI
    (`python pricebook.py --stale`) listing entries that are unverified or
-   older than 180 days. Nothing in this codebase fetches Wine-Searcher —
-   that's blocked and against their terms; numbers come from manual entry
-   only.
-4. **`evaluate.py`** — turns a raw hit into a priced one: parses bottle
+   older than 180 days. No longer the primary source: a `verified: true`
+   figure still wins over observed data, but leaving it blank is now the
+   normal case. Nothing in this codebase fetches Wine-Searcher — that's
+   blocked and against their terms.
+5. **`evaluate.py`** — turns a raw hit into a priced one: parses bottle
    size from the title/variant (including the Jura 620ml clavelin, and
    defaulting to 750ml at low confidence if nothing matches), flags
    coffrets/cases as bundles whose per-bottle price is unknowable, detects
@@ -43,7 +58,7 @@ concern, wired together by `scraper.py`:
    multiplier × format multiplier`, and classifies `DEAL`/`FAIR`/`HIGH`/
    `NOREF`. Never drops a hit — an unverified reference or low size/tier
    confidence sets `caveat: true`, it doesn't suppress anything.
-5. **`notify.py`** — one digest email per run, never one per hit. State in
+6. **`notify.py`** — one digest email per run, never one per hit. State in
    `seen.json` (keyed by `sha256(shop + product_url + variant)`) drives a
    30-day per-item cooldown; a hit alerts only if it's new, its price
    dropped >10% since the last alert, or its classification improved to
@@ -68,8 +83,9 @@ the repo. The token that authorises this lives in the browser's
 instead.
 
 Runs hourly from `.github/workflows/scraper.yml`, which runs the fixture
-tests first, best-effort persists `seen.json`/`.cache` across runs via
-`actions/cache`, and uploads `hits.json` as an artifact.
+tests first, best-effort persists `seen.json`/`observations.json`/`.cache`
+across runs via `actions/cache`, and uploads `hits.json` plus
+`observations.json` as artifacts.
 
 Every `SHOPS` entry also carries a `verified` flag. `main()` skips any shop
 with `"verified": False` before it ever makes a network call — this is for
@@ -106,8 +122,24 @@ this repo.
   data or low confidence — it classifies and flags a caveat instead. Don't
   add filtering there; that's exactly the behavior this scraper exists to
   avoid.
-- Reference prices come from manual entry in `prices.yaml` only. Never add
-  code that fetches Wine-Searcher.
+- Reference prices are observed from our own crawl (`market.py`), never
+  fetched from a price aggregator. Wine-Searcher is blocked and against
+  their terms -- never add code that fetches it. A hand-entered
+  `reference_750_eur` is an *override*, only trusted ahead of observed data
+  when `verified: true`; an unverified one ranks below observed data on
+  purpose, because a guessed number produces a confident wrong verdict
+  where no number produces an honest `NOREF`.
+- `market.py` must keep cuvee, vintage and format in the comparison key.
+  Collapsing any of them re-creates the bug the module exists to fix: a
+  EUR 30 negoce bottle scored against a EUR 70 domaine average reads as a
+  permanent DEAL, and a EUR 450 coffret as a permanent HIGH.
+- A wine seen at no other shop gets no reference. Do not add a fallback
+  that invents one -- `NOREF` is a real answer and the hit is still
+  reported.
+- Producer aliases must be specific enough not to collide: `match_producers`
+  prefers the longest matching alias so a shared surname ("houillon") does
+  not report one estate's bottle under another's name. Never add a bare
+  surname that a different tracked producer also uses.
 - `notify.py` sends at most one digest email per run. Don't reintroduce a
   per-hit email path.
 - `notify.py` persists `seen.json` only *after* the email is actually sent.

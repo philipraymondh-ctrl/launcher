@@ -133,7 +133,7 @@ def test_email_capped_at_40_rows():
 
 def test_header_row_present():
     body = notify.build_digest_body([make_hit(classification="DEAL")])
-    assert "STATUS | Producer | Cuvee | Size | Price | Ref avg | Link" in body
+    assert "STATUS | Producer | Cuvee | Size | Price | Ref | Basis | Link" in body
 
 
 # --- silent run ------------------------------------------------------------------

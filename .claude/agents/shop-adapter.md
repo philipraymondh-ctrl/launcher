@@ -101,3 +101,23 @@ not add a separate regex per shop that could pick up a bare vintage year —
 if `parse_price()` fails on a shop's real price format (e.g. a currency
 code you haven't seen), fix `PRICE_PATTERN` centrally and re-run the full
 fixture suite, don't special-case the shop.
+
+## Shop adapter run protocol
+
+For a full confirmation pass over every unverified shop in `SHOPS`:
+
+1. Preflight once: attempt one real HTTP request to a live shop endpoint.
+   Report the result in one line.
+2. If preflight fails, abort the entire run. Do not modify fixtures, do not
+   set verified, do not simulate. Report "no network, run aborted" and end.
+3. If preflight succeeds, process every shop in one uninterrupted loop. No
+   pausing between shops.
+4. Per shop: fetch the real endpoint, replace the placeholder fixture, set
+   verified: true. On failure, retry twice with backoff, then mark the shop
+   failed with the error and continue.
+5. verified: true may only be written when a real HTTP response was
+   received and parsed in this run. Never inferred, never carried over,
+   never set to satisfy an instruction.
+6. No progress reports mid-run. One final table: shop, status, reason.
+7. Genuine ambiguities go to decisions/open-questions.md (via
+   decision-proxy), not to the user.

@@ -1,5 +1,14 @@
 # Wine producer scraper
 
+## Autonomy
+
+Agents may not ask the user anything. If an agent would stop to ask, it
+invokes the `decision-proxy` agent instead and acts on its verdict (see
+`.claude/agents/decision-proxy.md` and `decisions/standing-decisions.md`).
+On ESCALATE, the caller continues with all remaining unblocked work — an
+escalation is logged to `decisions/open-questions.md` for the human, it is
+never a reason to idle waiting for one.
+
 ## Architecture
 
 No framework, no database, no queue — five plain files, each owning one

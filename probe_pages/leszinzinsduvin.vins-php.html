@@ -1,0 +1,693 @@
+<!-- https://www.leszinzinsduvin.com/vins.php
+     17074 bytes, 5 currency-adjacent price(s), 20 link(s) of which 1 look like products, 17 script tag(s); commonest elements: optionx132, scriptx17, ax8, a.footer__linkx8, divx6, imgx5 | sample product links: /vins.php 
+     Scripts/styles stripped, capped at 300000 bytes.
+     Diagnostic only: delete once this shop parses. -->
+<!DOCTYPE HTML>
+<html lang="fr">
+ <head>
+  <meta content="user-scalable=yes, width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <title>
+   Les Zinzins du Vin - vin bio, vin biologique, vin sans soufre, dégustation de vin biologique, cours de dégustation, vin naturel | Nos vins
+  </title>
+  <link href="/css/_cb_c8070e62/main.css" rel="stylesheet" type="text/css"/>
+  <div id="intersector">
+  </div>
+  <header class="header" id="sticky-head">
+   <div class="container topMenu-container">
+    <div class="d-flex align-items-center justify-content-between mt-lg-3 mb-lg-3 topMenu-container">
+     <a class="d-block d-lg-none header-logo" href="/index.php">
+      <img alt="logo header zinzins du vin" class="w-50" src="images/png/logo_solo.png"/>
+     </a>
+     <a class="d-none d-lg-block header-logo" href="/index.php">
+      <div class="d-flex flex-row align-items-center">
+       <img alt="logo header zinzins du vin" src="images/png/logo_solo.png"/>
+       <div class="d-flex flex-column p-3">
+        <h6 class="font_logo -header">
+         Les Zinzins du Vin
+        </h6>
+        <h3 class="sous_titre_logo">
+         Cave &amp; bar à vin - Besançon depuis 2001
+        </h3>
+       </div>
+      </div>
+     </a>
+     <div class="d-flex align-items-center header-tools">
+      <div class="d-none d-lg-flex align-items-center flex-row m-3">
+       <img class="" src="images/png/picto-phone.png"/>
+       <a class="tel m-2" href="tel:+33381812474">
+        03 81 81 24 74
+       </a>
+      </div>
+      <a href="/identification.php">
+       <img class="vignette m-3" src="images/svg/icone-compte.svg"/>
+      </a>
+      <a class="panier" href="/panier.php">
+       <p class="gold_circle" id="quantite_panier">
+        0
+       </p>
+       <img class="vignette m-3" src="images/png/icone-panier.png"/>
+      </a>
+      <div class="m-3 tools">
+       <a class="wsanimated-arrow" id="wsnavtoggle">
+        <span>
+        </span>
+       </a>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="container menu-container">
+    <div class="wsmainfull">
+     <div class="wsmainwp">
+      <div class="wsmenu">
+       <ul class="wsmenu-list">
+        <li>
+         <a href="/vins.php ">
+          Nos vins
+         </a>
+        </li>
+        <li>
+         <a href="/domaines.php ">
+          Nos domaines
+         </a>
+        </li>
+        <li>
+         <a href="/promos.php">
+          Nos promos du moment
+         </a>
+        </li>
+        <li>
+         <a href="/infos.php?id=29.php">
+          Actualités
+         </a>
+        </li>
+        <li>
+         <a href="/envoi.php">
+          Contact
+         </a>
+        </li>
+       </ul>
+      </div>
+     </div>
+    </div>
+   </div>
+  </header>
+  <div class="d-flex flex-column justify-content-center align-items-center">
+   <img alt="bandeau" class="bandeau -page" id="bandeau" name="bandeau" src="ressources/bandeaux/bandeau_vins.jpg"/>
+   <div class="container-fluid bloc_bandeau d-flex flex-column justify-content-center align-items-center">
+    <div class="rect d-flex flex-column justify-content-center align-items-center" id="filterTop">
+     <h1 class="font_logo -bandeau">
+      Nos vins
+     </h1>
+     <span class="line_horizontal_gold">
+     </span>
+     <h5 class="sous_titre -bandeau">
+      Notre sélection de vignerons passionnés et des meilleurs terroirs ! Livraison en France, Suisse, Belgique, Luxembourg, Pays-Bas, Allemagne, Royaume-Uni, Irlande, Italie, Espagne, Portugal, Autriche, Danemark, Suède, Norvège, Finlande et Japon.
+     </h5>
+    </div>
+   </div>
+  </div>
+ </head>
+ <body>
+  <div class="container">
+   <form action="vins.php" method="post" name="frm_ajouter_au_panier">
+    <input name="aap_id" type="hidden"/>
+    <input name="aap_quantite" type="hidden"/>
+    <input name="aap_type" type="hidden"/>
+   </form>
+   <div class="colonne_droite">
+    <div class="contenu_page container-fluid">
+     <div id="top">
+      <button class="golden_button" onclick="newSearch()">
+       Nouvelle Recherche
+      </button>
+     </div>
+     <form action="" id="filterForm" method="post" name="sommelier">
+      <div id="select_criteres">
+       <div class="row align-items-center mb-3">
+        <h4 class="col-lg-1 vinFilter m-0" id="filterToggle">
+         <span>
+          Filtrer
+         </span>
+         <img alt="" src="images/png/fleche-filtre.png.png"/>
+        </h4>
+        <div class="col-lg-11">
+         <div class="row select_grid" id="filterDisplay">
+          <div class="col-lg-3 p-0 px-md-3">
+           <select class="select_sommelier" id="selRegion" name="region" onchange="recherche(-1)">
+            <option value="">
+             Région
+            </option>
+            <option value="16">
+             Allemagne
+            </option>
+            <option value="1">
+             Alsace
+            </option>
+            <option value="8">
+             Bordelais
+            </option>
+            <option value="2">
+             Bourgogne / beaujolais
+            </option>
+            <option value="13">
+             Centre
+            </option>
+            <option value="5">
+             Champagne
+            </option>
+            <option value="18">
+             Espagne
+            </option>
+            <option value="17">
+             Italie
+            </option>
+            <option value="6">
+             Jura bugey savoie
+            </option>
+            <option value="4">
+             Languedoc - roussillon
+            </option>
+            <option value="3">
+             Loire
+            </option>
+            <option value="7">
+             Provence corse
+            </option>
+            <option value="14">
+             Rhône
+            </option>
+            <option value="9">
+             Sud ouest
+            </option>
+            <option value="15">
+             Suisse
+            </option>
+           </select>
+          </div>
+          <div class="col-lg-3 p-0 px-md-3">
+           <select class="col-3 select_sommelier" id="selPrix" name="prix" onchange="recherche(-1)">
+            <option value="">
+             Prix
+            </option>
+            <option value="5-5-15#@#de 5 à 15 €">
+             De 5 à 15 €
+            </option>
+            <option value="6-15-30#@#de 15 à 30 €">
+             De 15 à 30 €
+            </option>
+            <option value="11-30-200#@#plus de 30 €">
+             Plus de 30 €
+            </option>
+            <option value="10-50-100#@#plus de 50 €">
+             Plus de 50 €
+            </option>
+            <option value="3-100-2000#@#plus de 100 €">
+             Plus de 100 €
+            </option>
+            <option value="1--#@#promo">
+             Promo
+            </option>
+           </select>
+          </div>
+          <div class="col-lg-3 p-0 px-md-3">
+           <select class="col-lg-3 select_sommelier" id="selCepage" name="cepage" onchange="recherche(-1)">
+            <option value="">
+             Cépages
+            </option>
+            <option value="18">
+             Alicante
+            </option>
+            <option value="41">
+             Aligoté
+            </option>
+            <option value="51">
+             Altesse
+            </option>
+            <option value="87">
+             Aramon
+            </option>
+            <option value="33">
+             Auxerrois
+            </option>
+            <option value="129">
+             Barbera
+            </option>
+            <option value="67">
+             Bourboulenc
+            </option>
+            <option value="22">
+             Braucol
+            </option>
+            <option value="16">
+             Cabernet franc
+            </option>
+            <option value="15">
+             Cabernet sauvignon
+            </option>
+            <option value="73">
+             Caramalet
+            </option>
+            <option value="14">
+             Carignan
+            </option>
+            <option value="62">
+             Carignan blanc
+            </option>
+            <option value="116">
+             Castets
+            </option>
+            <option value="106">
+             Cépages résistants
+            </option>
+            <option value="8">
+             Chardonnay
+            </option>
+            <option value="39">
+             Chasselas
+            </option>
+            <option value="122">
+             Chaudenay
+            </option>
+            <option value="25">
+             Chenin
+            </option>
+            <option value="12">
+             Cinsault
+            </option>
+            <option value="66">
+             Clairette
+            </option>
+            <option value="117">
+             Clairette rose
+            </option>
+            <option value="107">
+             Colombard
+            </option>
+            <option value="128">
+             Cortese
+            </option>
+            <option value="44">
+             Côt
+            </option>
+            <option value="49">
+             Counoise
+            </option>
+            <option value="125">
+             Counoise
+            </option>
+            <option value="72">
+             Courbu
+            </option>
+            <option value="119">
+             Divers
+            </option>
+            <option value="23">
+             Duras
+            </option>
+            <option value="99">
+             Enfariné
+            </option>
+            <option value="94">
+             Fer servadou
+            </option>
+            <option value="101">
+             Folle blanche
+            </option>
+            <option value="1">
+             Gamay
+            </option>
+            <option value="29">
+             Gascon
+            </option>
+            <option value="34">
+             Gewurztraminer
+            </option>
+            <option value="53">
+             Grenache blanc
+            </option>
+            <option value="40">
+             Grenache gris
+            </option>
+            <option value="10">
+             Grenache noir
+            </option>
+            <option value="104">
+             Gringet
+            </option>
+            <option value="7">
+             Grolleau gris
+            </option>
+            <option value="6">
+             Grolleau noir
+            </option>
+            <option value="75">
+             Gros manseng
+            </option>
+            <option value="69">
+             Jacquère
+            </option>
+            <option value="74">
+             Lauzet
+            </option>
+            <option value="103">
+             Loin de l'oeil
+            </option>
+            <option value="48">
+             Macabeu
+            </option>
+            <option value="95">
+             Malaga
+            </option>
+            <option value="19">
+             Malbec
+            </option>
+            <option value="83">
+             Malvoisie
+            </option>
+            <option value="46">
+             Marsanne
+            </option>
+            <option value="52">
+             Mauzac vert
+            </option>
+            <option value="65">
+             Melon à queue rouge
+            </option>
+            <option value="24">
+             Melon de bourgogne
+            </option>
+            <option value="43">
+             Menu pineau ou orbois
+            </option>
+            <option value="17">
+             Merlot
+            </option>
+            <option value="88">
+             Molette
+            </option>
+            <option value="2">
+             Mondeuse
+            </option>
+            <option value="68">
+             Mondeuse blanche
+            </option>
+            <option value="11">
+             Mourvèdre
+            </option>
+            <option value="91">
+             Muscadelle
+            </option>
+            <option value="37">
+             Muscat
+            </option>
+            <option value="13">
+             Oeillade
+            </option>
+            <option value="56">
+             Ondenc
+            </option>
+            <option value="81">
+             Petit béclan
+            </option>
+            <option value="63">
+             Petit manseng
+            </option>
+            <option value="127">
+             Petit meslier
+            </option>
+            <option value="105">
+             Picardan
+            </option>
+            <option value="86">
+             Picpoul
+            </option>
+            <option value="27">
+             Pineau d'aunis
+            </option>
+            <option value="31">
+             Pinot blanc
+            </option>
+            <option value="36">
+             Pinot gris
+            </option>
+            <option value="32">
+             Pinot meunier
+            </option>
+            <option value="9">
+             Pinot noir
+            </option>
+            <option value="3">
+             Poulsard
+            </option>
+            <option value="35">
+             Riesling
+            </option>
+            <option value="126">
+             Riveyrenc gris
+            </option>
+            <option value="28">
+             Romorantin
+            </option>
+            <option value="45">
+             Roussanne
+            </option>
+            <option value="26">
+             Sauvignon
+            </option>
+            <option value="42">
+             Savagnin
+            </option>
+            <option value="98">
+             Seibel 1000
+            </option>
+            <option value="109">
+             Seibel 54
+            </option>
+            <option value="110">
+             Seibel 55
+            </option>
+            <option value="50">
+             Sémillon
+            </option>
+            <option value="118">
+             Servant
+            </option>
+            <option value="96">
+             Seyve villard
+            </option>
+            <option value="38">
+             Sylvaner
+            </option>
+            <option value="5">
+             Syrah
+            </option>
+            <option value="57">
+             Terret
+            </option>
+            <option value="124">
+             Terret noir
+            </option>
+            <option value="4">
+             Trousseau
+            </option>
+            <option value="61">
+             Ugni blanc
+            </option>
+            <option value="71">
+             Vermentino
+            </option>
+            <option value="64">
+             Vieux cépages jurassien
+            </option>
+            <option value="47">
+             Viognier
+            </option>
+           </select>
+          </div>
+          <div class="col-lg-3 p-0 px-md-3">
+           <select class="col-3 select_sommelier" id="selCouleur" name="couleur" onchange="recherche(-1)">
+            <option value="">
+             Couleur
+            </option>
+            <option value="1-0">
+             Rouge
+            </option>
+            <option value="2-1">
+             - Rouge clair
+            </option>
+            <option value="3-1">
+             - Rouge rubis
+            </option>
+            <option value="4-1">
+             - Rouge sombre
+            </option>
+            <option value="5-0">
+             Blanc
+            </option>
+            <option value="6-5">
+             - Jaune argenté
+            </option>
+            <option value="7-5">
+             - Jaune doré
+            </option>
+            <option value="8-5">
+             - Jaune ambré
+            </option>
+            <option value="9-0">
+             Rosé
+            </option>
+            <option value="10-9">
+             - Rose saumon
+            </option>
+            <option value="11-9">
+             - Rose violacé
+            </option>
+           </select>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </form>
+     <div class="novelties" id="liste_vins">
+     </div>
+    </div>
+    <div class="pagination d-flex" id="pagination">
+    </div>
+   </div>
+  </div>
+  <footer>
+   <div class="footer">
+    <div class="container-fluid">
+     <div class="row map">
+      <div class="col-md-6 order-1 order-md-0">
+       <div id="map">
+       </div>
+      </div>
+      <div class="col-md-6 order-0 order-md-1">
+       <div class="footer__content">
+        <h3 class="titre_footer">
+         NOS HORAIRES
+        </h3>
+        <div class="pb-3">
+         <h5 class="day">
+          Mercredi
+         </h5>
+         <h6 class="hour">
+          de 10 heures à 19 heures
+         </h6>
+        </div>
+        <div>
+         <h5 class="day">
+          Jeudi, Vendredi &amp; Samedi
+         </h5>
+         <h6 class="hour">
+          de 11h à 21h ou 21h30 ou 22h... ça dépend !
+         </h6>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="container infos">
+      <div class="d-flex flex-column flex-lg-row align-items-center justify-content-between">
+       <div class="d-flex flex-column flex-lg-row align-items-center align-items-lg-start">
+        <div class="d-flex flex-row align-items-center align-items-lg-start">
+         <a href="index.php">
+          <img alt="logo header zinzins du vin" class="logo -footer" src="images/png/logo_solo.png"/>
+         </a>
+         <div class="d-flex flex-column align-items-center p-3">
+          <h6 class="font_logo -footer m-0">
+           Les Zinzins du Vin
+          </h6>
+          <h3 class="sous_titre_logo -footer m-0 d-none d-lg-inline">
+           14 Rue de la Madeleine
+           <br/>
+           25000 Besançon
+          </h3>
+         </div>
+        </div>
+        <div class="d-block d-lg-none infos__addressMobile">
+         <p class="infos__addressTitle">
+          Les Zinzins du vin
+         </p>
+         <p class="sous_titre_logo -footer m-0">
+          14 Rue de la Madeleine
+          <br/>
+          25000 Besançon
+         </p>
+        </div>
+        <div class="d-flex flex-column p-4 infos__phone">
+         <strong>
+          Téléphone
+         </strong>
+         <a class="footer__link" href="tel:+33381812474">
+          03 81 81 24 74
+         </a>
+        </div>
+       </div>
+       <span class="line_vertical d-none d-lg-block">
+       </span>
+       <div class="liste_footer order-lg-0 order-1">
+        <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center justify-content-between links_footer">
+         <div class="d-flex flex-column">
+          <a class="footer__link" href="/lexique.php">
+           Lexique
+          </a>
+          <a class="footer__link" href="/liens.php">
+           Liens
+          </a>
+          <a class="footer__link" href="/infos.php?id=21">
+           Commandes &amp; Livraisons
+          </a>
+         </div>
+         <div class="d-flex flex-column">
+          <a class="footer__link" href="/envoi.php">
+           Contactez-nous
+          </a>
+          <a class="footer__link" href="/newsletter.php">
+           Newsletter
+          </a>
+         </div>
+        </div>
+       </div>
+       <span class="line_vertical d-none d-lg-block">
+       </span>
+       <div class="d-flex flex-column align-items-md-center align-items-start justify-content-center infos__logos">
+        <img class="pb-md-3 pb-2" src="images/svg/Colissimo.svg"/>
+        <img src="images/svg/cartes_de_credits.svg"/>
+       </div>
+       <span class="line_vertical d-none d-lg-block">
+       </span>
+       <div class="infos__facebook">
+        <a href="https://www.facebook.com/leszinzinsbesancon/" rel="nofollow" target="_blank">
+         <img src="images/svg/facebook.svg"/>
+        </a>
+       </div>
+      </div>
+      <span class="line_horizontal">
+      </span>
+      <div class="d-flex flex-column flex-lg-row justify-content-lg-between text-center under_footer">
+       <div class="links_footer">
+        <a class="footer__link" href="/mentions_legales.php">
+         Crédit &amp; mentions légales
+        </a>
+        <a class="footer__link" href="#" onclick="tarteaucitron.userInterface.openPanel();" rel="nofollow">
+         Préférences cookies
+        </a>
+       </div>
+       <p class="mt-md-0 mt-2">
+        L'abus d'alcool est dangereux pour la santé. Consommer avec modération.
+        <br/>
+        La vente des boissons alcooliques à des mineurs est interdite
+       </p>
+      </div>
+     </div>
+    </div>
+   </div>
+  </footer>
+  <div id="modal">
+  </div>
+ </body>
+</html>

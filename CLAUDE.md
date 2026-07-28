@@ -108,11 +108,17 @@ shops added from research/guesswork rather than a real observed response
 --apply`, which fetches, parses and flags in a single run against a real
 response; never by hand.
 
-13 shops are currently verified and fetched on every run. The remaining 12
-are not, and split into: nine that serve real HTML but match no selectors
-(they need hand-written per-shop selectors), one blocking us with 403
-(naturavin), one serving ~200-byte stubs (vinopura), one whose domain no
-longer resolves (vinscheznous), and one answering 415 (vinnaturel).
+20 shops are currently verified and fetched on every run. The six that are
+not each have a stated reason, none of which is "needs selectors" any more
+-- `autoselect` and the producer-index route removed that category:
+  - naturavin blocks us with 403;
+  - vinscheznous no longer resolves;
+  - purewijnen, purovino, vinnaturelbe and vinovivo all serve a listing
+    with product links but no prices in the HTML (vinovivo's index has 330
+    product links and 6 prices), so the price is rendered client-side or
+    lives only on the product page. Reaching them means either running JS
+    or fetching every product page, and the second is hundreds of requests
+    for one shop. `probe_pages/` holds a trimmed copy of each page.
 
 Secrets (`GMAIL_SENDER`, `GMAIL_APP_PASSWORD`, `NOTIFY_EMAIL`) are the
 only external configuration; everything else is in this repo. Those three

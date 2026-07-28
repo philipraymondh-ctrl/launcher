@@ -168,14 +168,14 @@ def evaluate_hit(hit, pricebook, market_store=None, aliases=None):
 
     producer_entry = find_producer_entry(pricebook, hit.get("producer"))
     if producer_entry is None:
-        result["reference_basis"] = None
-        result["reference_shops"] = []
-        result.update(
-            tier=None, tier_confidence="n/a", reference_price=None,
-            expected_price=None, ratio=None, classification="NOREF",
-            reference_verified=False, caveat=True,
-        )
-        return result
+        # No pricebook row is not the same as no reference. Returning NOREF
+        # here threw away the observed cross-shop price computed just above,
+        # so a producer watched in PRODUCERS but absent from prices.yaml
+        # could never be priced -- even with the same bottle listed at three
+        # other shops. An empty entry falls through to exactly the right
+        # place: no manual override, no region, so the observed reference is
+        # used, and NOREF still results when there is nothing to observe.
+        producer_entry = {}
 
     reference_verified = bool(producer_entry.get("verified", False))
 

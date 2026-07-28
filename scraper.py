@@ -116,11 +116,11 @@ SHOPS = [
         "name": "leszinzinsduvin",
         "platform": "html",
         "url": "https://www.leszinzinsduvin.com",
-        "catalog_path": "vins.php",
+        "catalog_path": "domaines.php",
         "item_selector": "div.product",
         "title_selector": "h2.product-title",
         "price_selector": "span.price",
-        "verified": False,
+        "verified": True,
     },
     {
         "name": "winenot",

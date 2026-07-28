@@ -280,6 +280,21 @@ def probe_shop(shop, crawler_client):
             result["attempts"].append(attempt)
             continue
 
+        if not any((item.get("title") or "").strip() for item in items):
+            # A hit with no name is unreadable in a digest. Rejecting the
+            # shop here, rather than letting the fixture test fail the run,
+            # keeps one unusable adapter from blocking every other shop in
+            # the same batch from being committed.
+            attempt["outcome"] = (
+                f"parsed {len(items)} product(s) but none had a usable title"
+            )
+            attempt["products"] = len(items)
+            result["attempts"].append(attempt)
+            if platform == "html":
+                attempt["structure"] = describe_unparsed(body)
+                save_diagnostic_page(shop["name"], url, body)
+            continue
+
         if platform == "html" and len(items) < BETTER_CATALOGUE_AT:
             # A landing page's "featured wines" strip parses fine and is not
             # the catalogue. Note it and keep looking; fall back to it only

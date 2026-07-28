@@ -461,3 +461,30 @@ def test_check_shop_does_not_alert_on_a_bottle_nobody_can_buy():
     shop = dict(SHOP, catalog_path="vins.php")
     assert scraper.fetch_html(shop, Serve()), "the adapter must still parse them"
     assert scraper.check_shop(shop, Serve()) == []
+
+
+# --- every hit must be nameable ----------------------------------------------
+
+def test_a_card_with_only_an_image_and_a_price_still_gets_a_name():
+    """vinovivo parsed products whose titles were all empty, and an
+    untitled hit is unreadable in a digest. The product URL spells the wine
+    out even when the markup does not."""
+    html = ('<html><body><div class="grid">'
+            '<div><a href="/vin-3120-jura_Blanc__Poulprix_2024_Ganevat.html"></a>'
+            '<span>29,00 &euro;</span></div>'
+            '<div><a href="/vin-4001-jura_Blanc__Les_Chalasses_2018_Ganevat.html"></a>'
+            '<span>55,00 &euro;</span></div>'
+            '<div><a href="/vin-5002-jura_Rouge__Poulsard_2020_Labet.html"></a>'
+            '<span>41,00 &euro;</span></div>'
+            '</div></body></html>')
+    items = find(html)
+    assert len(items) == 3
+    assert all(i["title"] for i in items), "every hit needs a name"
+    assert "Poulprix" in items[0]["title"]
+    # And the name is still enough for producer matching.
+    assert scraper.match_producers(items[0]["title"]) == ["Ganevat"]
+
+
+def test_a_real_title_is_never_replaced_by_the_slug():
+    items = find(WOOCOMMERCE)
+    assert items[0]["title"] == "Poulprix 2024 Ganevat"

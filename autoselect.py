@@ -110,6 +110,20 @@ def _block_for(node, price_pattern):
     return widest
 
 
+def _title_from_url(url):
+    """The product slug as a last-resort name.
+
+    A shop whose cards carry only an image and a price leaves nothing to
+    read, but its product URL almost always spells the wine out --
+    /vin-3120-jura_Blanc__Poulprix_2024_Ganevat.html. An untitled hit is
+    useless in a digest, so this beats returning nothing.
+    """
+    slug = urlparse(url).path.rstrip("/").rsplit("/", 1)[-1]
+    slug = re.sub(r"\.(?:html?|php|aspx)$", "", slug, flags=re.I)
+    slug = re.sub(r"[-_+]+", " ", slug)
+    return re.sub(r"\s{2,}", " ", slug).strip()
+
+
 def _title_for(block, anchor):
     for candidate in (
         anchor.get("title"),
@@ -174,7 +188,7 @@ def find_products(html, base_url, price_pattern, parse_price, min_blocks=None):
         text = block.get_text(" ", strip=True)
         items.append({
             "text": text,
-            "title": _title_for(block, anchor),
+            "title": _title_for(block, anchor) or _title_from_url(url),
             "price": parse_price(text),
             "url": url,
             "variant_title": "",

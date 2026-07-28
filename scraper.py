@@ -507,7 +507,7 @@ def _fetch_via_producer_index(shop, index_html, index_url, crawler_client):
     if not targets:
         return []
 
-    items = []
+    items, empty = [], 0
     for producer, url in targets[:autoselect.MAX_INDEX_LINKS]:
         try:
             page = crawler_client.get(url)
@@ -518,13 +518,17 @@ def _fetch_via_producer_index(shop, index_html, index_url, crawler_client):
         # "is this a catalogue" test does not apply once we got here from
         # the index.
         page_items, _ = _parse_html_page(shop, page.text, url, min_blocks=1)
+        if not page_items:
+            empty += 1
         for item in page_items:
             # The grower's own page may not repeat their name on every row.
             item["text"] = f"{producer} {item['text']}"
         items.extend(page_items)
-    if items:
-        print(f"[{shop['name']}] no crawlable catalogue; read {len(items)} product(s) "
-              f"from {len(targets[:autoselect.MAX_INDEX_LINKS])} producer page(s)")
+    followed = len(targets[:autoselect.MAX_INDEX_LINKS])
+    in_stock = sum(1 for i in items if i.get("in_stock") is not False)
+    print(f"[{shop['name']}] no crawlable catalogue; followed {followed} producer "
+          f"page(s) from the index, {empty} listing nothing; read {len(items)} "
+          f"product(s), {in_stock} in stock")
     return items
 
 

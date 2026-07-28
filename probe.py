@@ -172,10 +172,13 @@ def candidate_endpoints(shop):
     return endpoints + paths
 
 
-# How many links an index-following adapter may chase during a probe. The
-# real run allows more; this is enough to prove the route works without
-# turning one probe into a full crawl.
-PROBE_FOLLOW_BUDGET = 6
+# How many links an index-following adapter may chase during a probe.
+# Six was not enough: leszinzinsduvin's first few growers happen to have
+# nothing listed, so the probe saw zero products for a route that works
+# and reported the shop unparseable. It has to be able to reach every
+# grower the index matched, or absence of stock at the front of the
+# alphabet reads as a broken adapter.
+PROBE_FOLLOW_BUDGET = autoselect.MAX_INDEX_LINKS
 
 
 def try_parse(platform, shop, response, live=None):

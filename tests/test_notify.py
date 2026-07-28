@@ -46,16 +46,82 @@ def test_same_item_twice_in_a_row_alerts_once():
     assert alerting2 == []
 
 
-def test_price_drop_over_10_percent_re_alerts_after_cooldown_window_not_needed():
+def test_a_price_drop_alerts_inside_the_cooldown():
+    """Reversed decision. This used to assert the cooldown won, on the
+    reasoning that it stops the digest repeating itself. It does not -- an
+    unchanged item never re-alerts either way, because the post-cooldown
+    branch also requires news. All the 30-day gate did to a price drop was
+    delay it by up to a month, which is how a live tracker goes silent for
+    weeks while a wine we already reported halves in price."""
     hit1 = make_hit(price=100.0, classification="FAIR")
     now = datetime.now(timezone.utc)
     alerting1, state = notify.select_alerts([hit1], state={}, now=now)
     assert len(alerting1) == 1
 
-    # Only 1 day later, but price dropped >10% since the last alert.
+    # One day later, well inside the cooldown, but >10% cheaper.
     hit2 = make_hit(price=85.0, classification="DEAL")
     alerting2, state = notify.select_alerts([hit2], state=state, now=now + timedelta(days=1))
-    assert alerting2 == []  # still within the 30-day cooldown -- cooldown wins
+    assert len(alerting2) == 1
+
+
+def test_a_shallow_price_drop_stays_silent_inside_the_cooldown():
+    hit1 = make_hit(price=100.0)
+    now = datetime.now(timezone.utc)
+    _, state = notify.select_alerts([hit1], state={}, now=now)
+
+    alerting, state = notify.select_alerts(
+        [make_hit(price=95.0)], state=state, now=now + timedelta(days=1))
+    assert alerting == [], "a 5% move is noise, not news"
+
+
+def test_a_price_rise_stays_silent_inside_the_cooldown():
+    now = datetime.now(timezone.utc)
+    _, state = notify.select_alerts([make_hit(price=100.0)], state={}, now=now)
+    alerting, _ = notify.select_alerts(
+        [make_hit(price=130.0)], state=state, now=now + timedelta(days=1))
+    assert alerting == []
+
+
+def test_each_alert_resets_the_drop_baseline():
+    """What stops an hourly re-alert: the comparison is against the price we
+    last alerted at, not the original one. A decline alerts once per further
+    -10% step, and a round trip alerts not at all."""
+    now = datetime.now(timezone.utc)
+    _, state = notify.select_alerts([make_hit(price=100.0)], state={}, now=now)
+
+    alerting, state = notify.select_alerts(
+        [make_hit(price=85.0)], state=state, now=now + timedelta(hours=1))
+    assert len(alerting) == 1                      # baseline is now 85
+
+    alerting, state = notify.select_alerts(
+        [make_hit(price=80.0)], state=state, now=now + timedelta(hours=2))
+    assert alerting == [], "-6% from the last alert is not another find"
+
+    alerting, state = notify.select_alerts(
+        [make_hit(price=76.0)], state=state, now=now + timedelta(hours=3))
+    assert len(alerting) == 1
+
+    # Back up to 85 and down to 80 again: nothing, the baseline is 76.
+    _, state = notify.select_alerts(
+        [make_hit(price=85.0)], state=state, now=now + timedelta(hours=4))
+    alerting, _ = notify.select_alerts(
+        [make_hit(price=80.0)], state=state, now=now + timedelta(hours=5))
+    assert alerting == []
+
+
+def test_a_classification_improvement_still_waits_for_the_cooldown():
+    """Deliberately not relaxed with the price rule. Classification is
+    derived from the observed market pool, which moves every hour as other
+    shops are crawled, so DEAL -> FAIR -> DEAL flapping is realistic in a
+    way a price round trip is not."""
+    now = datetime.now(timezone.utc)
+    _, state = notify.select_alerts(
+        [make_hit(price=100.0, classification="FAIR")], state={}, now=now)
+
+    alerting, _ = notify.select_alerts(
+        [make_hit(price=100.0, classification="DEAL")],
+        state=state, now=now + timedelta(days=3))
+    assert alerting == []
 
 
 def test_price_drop_over_10_percent_alerts_once_cooldown_has_elapsed():
@@ -142,12 +208,14 @@ def test_run_digest_silent_when_nothing_qualifies(tmp_path, capsys):
     state_path = tmp_path / "seen.json"
     hits_path = tmp_path / "hits.json"
     hit = make_hit(classification="FAIR")
-    # Pre-seed state so this exact hit is treated as "already alerted, no change".
+    # Pre-seed state so this exact hit is treated as "already alerted, no
+    # change". last_recap_at is recent too, so this isolates the cooldown
+    # path from the weekly recap.
     state = {notify.item_key(hit): {
         "last_price": hit["price"], "last_alerted_price": hit["price"],
         "last_alerted_at": datetime.now(timezone.utc).isoformat(),
         "last_classification": "FAIR",
-    }}
+    }, notify.META_KEY: {"last_recap_at": datetime.now(timezone.utc).isoformat()}}
     state_path.write_text(json.dumps(state))
 
     alerting = notify.run_digest([hit], dry_run=True, state_path=state_path, hits_path=hits_path)
@@ -181,7 +249,7 @@ def test_dry_run_does_not_consume_the_alert(tmp_path, monkeypatch):
 
     # Nothing persisted, so a subsequent real run still sees it as new.
     sent = {}
-    monkeypatch.setattr(notify, "send_email", lambda body: sent.setdefault("body", body))
+    monkeypatch.setattr(notify, "send_email", lambda body, **kw: sent.setdefault("body", body))
     alerting = notify.run_digest([hit], dry_run=False, state_path=state_path, hits_path=hits_path)
 
     assert len(alerting) == 1
@@ -192,7 +260,7 @@ def test_failed_send_does_not_mark_the_item_alerted(tmp_path, monkeypatch):
     state_path, hits_path = tmp_path / "seen.json", tmp_path / "hits.json"
     hit = make_hit(classification="DEAL")
 
-    def boom(body):
+    def boom(body, **kw):
         raise notify.NotConfigured("no credentials")
 
     monkeypatch.setattr(notify, "send_email", boom)
@@ -205,7 +273,7 @@ def test_failed_send_does_not_mark_the_item_alerted(tmp_path, monkeypatch):
     assert state.get(notify.item_key(hit), {}).get("last_alerted_at") is None
 
     sent = {}
-    monkeypatch.setattr(notify, "send_email", lambda body: sent.setdefault("body", body))
+    monkeypatch.setattr(notify, "send_email", lambda body, **kw: sent.setdefault("body", body))
     alerting = notify.run_digest([hit], state_path=state_path, hits_path=hits_path)
     assert len(alerting) == 1 and "body" in sent
 
@@ -213,7 +281,7 @@ def test_failed_send_does_not_mark_the_item_alerted(tmp_path, monkeypatch):
 def test_successful_send_does_mark_the_item_alerted(tmp_path, monkeypatch):
     state_path, hits_path = tmp_path / "seen.json", tmp_path / "hits.json"
     hit = make_hit(classification="DEAL")
-    monkeypatch.setattr(notify, "send_email", lambda body: None)
+    monkeypatch.setattr(notify, "send_email", lambda body, **kw: None)
 
     notify.run_digest([hit], state_path=state_path, hits_path=hits_path)
     second = notify.run_digest([hit], state_path=state_path, hits_path=hits_path)
@@ -230,3 +298,253 @@ def test_missing_credentials_raise_a_legible_error(monkeypatch):
 
     message = str(excinfo.value)
     assert "GMAIL_SENDER" in message and "hits.json" in message
+
+
+# --- the weekly recap: silence must not be ambiguous ---------------------------
+#
+# Even with news breaking the cooldown, a week can pass with nothing new and
+# nothing cheaper. That run is correct to say nothing -- but from the inbox it
+# is indistinguishable from expired credentials, a dead adapter or a workflow
+# that stopped firing. So: if nothing has been emailed for RECAP_DAYS and
+# there are hits, send what we can currently see.
+
+
+class Recorder:
+    """Stands in for SMTP, keeping subjects as well as bodies."""
+
+    def __init__(self, fail=False):
+        self.calls = []
+        self.fail = fail
+
+    def __call__(self, body, subject=None):
+        if self.fail:
+            raise notify.NotConfigured("no credentials")
+        self.calls.append((subject, body))
+
+    @property
+    def bodies(self):
+        return [b for _, b in self.calls]
+
+
+def days_ago(n):
+    return (datetime.now(timezone.utc) - timedelta(days=n)).isoformat()
+
+
+def seeded_state(hit, alerted_days_ago=1, recap_days_ago=None):
+    """State where `hit` was alerted and is now in cooldown with no news."""
+    state = {notify.item_key(hit): {
+        "last_price": hit["price"],
+        "last_alerted_price": hit["price"],
+        "last_alerted_at": days_ago(alerted_days_ago),
+        "last_classification": hit["classification"],
+    }}
+    if recap_days_ago is not None:
+        state[notify.META_KEY] = {"last_recap_at": days_ago(recap_days_ago)}
+    return state
+
+
+def test_a_week_without_an_email_produces_a_recap(tmp_path, monkeypatch):
+    send = Recorder()
+    monkeypatch.setattr(notify, "send_email", send)
+    hit = make_hit(classification="FAIR")
+    state_path, hits_path = tmp_path / "seen.json", tmp_path / "hits.json"
+    state_path.write_text(json.dumps(
+        seeded_state(hit, alerted_days_ago=8, recap_days_ago=8)))
+
+    alerting = notify.run_digest([hit], state_path=state_path, hits_path=hits_path)
+
+    assert alerting == [], "the recap is not an alert"
+    assert len(send.calls) == 1
+    assert hit["cuvee"] in send.bodies[0]
+
+
+def test_a_recap_is_labelled_and_has_its_own_subject(tmp_path, monkeypatch):
+    send = Recorder()
+    monkeypatch.setattr(notify, "send_email", send)
+    hit = make_hit(classification="FAIR")
+    state_path, hits_path = tmp_path / "seen.json", tmp_path / "hits.json"
+    state_path.write_text(json.dumps(
+        seeded_state(hit, alerted_days_ago=8, recap_days_ago=8)))
+
+    notify.run_digest([hit], state_path=state_path, hits_path=hits_path)
+
+    subject, body = send.calls[0]
+    assert subject == notify.RECAP_SUBJECT
+    assert subject != notify.DIGEST_SUBJECT
+    assert "recap" in body.lower()
+
+
+def test_no_recap_before_the_week_is_up(tmp_path, monkeypatch):
+    send = Recorder()
+    monkeypatch.setattr(notify, "send_email", send)
+    hit = make_hit(classification="FAIR")
+    state_path, hits_path = tmp_path / "seen.json", tmp_path / "hits.json"
+    state_path.write_text(json.dumps(
+        seeded_state(hit, alerted_days_ago=2, recap_days_ago=2)))
+
+    notify.run_digest([hit], state_path=state_path, hits_path=hits_path)
+
+    assert send.calls == [], "an hourly recap would be worse than silence"
+
+
+def test_a_recap_does_not_put_anything_into_cooldown(tmp_path, monkeypatch):
+    """Marking an item alerted is what silences it for 30 days. A recap is
+    not a find, so it must leave every item's alert record untouched."""
+    send = Recorder()
+    monkeypatch.setattr(notify, "send_email", send)
+    hit = make_hit(classification="FAIR")
+    state_path, hits_path = tmp_path / "seen.json", tmp_path / "hits.json"
+    before = seeded_state(hit, alerted_days_ago=8, recap_days_ago=8)
+    state_path.write_text(json.dumps(before))
+
+    notify.run_digest([hit], state_path=state_path, hits_path=hits_path)
+
+    entry = notify.load_state(state_path)[notify.item_key(hit)]
+    assert entry["last_alerted_at"] == before[notify.item_key(hit)]["last_alerted_at"]
+    assert entry["last_alerted_price"] == hit["price"]
+
+
+def test_a_recap_resets_its_own_clock(tmp_path, monkeypatch):
+    send = Recorder()
+    monkeypatch.setattr(notify, "send_email", send)
+    hit = make_hit(classification="FAIR")
+    state_path, hits_path = tmp_path / "seen.json", tmp_path / "hits.json"
+    state_path.write_text(json.dumps(
+        seeded_state(hit, alerted_days_ago=8, recap_days_ago=8)))
+
+    notify.run_digest([hit], state_path=state_path, hits_path=hits_path)
+    notify.run_digest([hit], state_path=state_path, hits_path=hits_path)
+
+    assert len(send.calls) == 1, "the recap repeated itself on the next run"
+
+
+def test_a_real_digest_also_resets_the_weekly_clock(tmp_path, monkeypatch):
+    """The promise is 'you hear from it at least weekly', not 'you get an
+    extra email weekly'."""
+    send = Recorder()
+    monkeypatch.setattr(notify, "send_email", send)
+    state_path, hits_path = tmp_path / "seen.json", tmp_path / "hits.json"
+    state_path.write_text(json.dumps({notify.META_KEY: {"last_recap_at": days_ago(30)}}))
+
+    notify.run_digest([make_hit(classification="DEAL")],
+                      state_path=state_path, hits_path=hits_path)
+
+    assert len(send.calls) == 1, "a digest and a recap went out for the same run"
+    assert send.calls[0][0] == notify.DIGEST_SUBJECT
+    meta = notify.load_state(state_path)[notify.META_KEY]
+    assert (datetime.now(timezone.utc) - notify._parse_iso(meta["last_recap_at"])).days == 0
+
+
+def test_nothing_to_report_stays_silent_however_long_it_has_been(tmp_path, monkeypatch):
+    """The weekly clock is not a heartbeat for the workflow. With no hits
+    there is nothing to recap."""
+    send = Recorder()
+    monkeypatch.setattr(notify, "send_email", send)
+    state_path, hits_path = tmp_path / "seen.json", tmp_path / "hits.json"
+    state_path.write_text(json.dumps({notify.META_KEY: {"last_recap_at": days_ago(99)}}))
+
+    notify.run_digest([], state_path=state_path, hits_path=hits_path)
+
+    assert send.calls == []
+
+
+def test_a_first_ever_run_with_no_state_does_not_double_email(tmp_path, monkeypatch):
+    send = Recorder()
+    monkeypatch.setattr(notify, "send_email", send)
+    state_path, hits_path = tmp_path / "seen.json", tmp_path / "hits.json"
+
+    notify.run_digest([make_hit(classification="DEAL")],
+                      state_path=state_path, hits_path=hits_path)
+
+    assert len(send.calls) == 1
+
+
+def test_a_dry_run_recap_sends_nothing_and_persists_nothing(tmp_path, monkeypatch, capsys):
+    send = Recorder()
+    monkeypatch.setattr(notify, "send_email", send)
+    hit = make_hit(classification="FAIR")
+    state_path, hits_path = tmp_path / "seen.json", tmp_path / "hits.json"
+    state = seeded_state(hit, alerted_days_ago=8, recap_days_ago=8)
+    state_path.write_text(json.dumps(state))
+
+    notify.run_digest([hit], dry_run=True, state_path=state_path, hits_path=hits_path)
+
+    assert send.calls == []
+    assert notify.load_state(state_path) == state, "a dry run consumed the recap"
+    assert "recap" in capsys.readouterr().out.lower()
+
+
+def test_a_failed_recap_send_does_not_reset_the_clock(tmp_path, monkeypatch):
+    monkeypatch.setattr(notify, "send_email", Recorder(fail=True))
+    hit = make_hit(classification="FAIR")
+    state_path, hits_path = tmp_path / "seen.json", tmp_path / "hits.json"
+    state = seeded_state(hit, alerted_days_ago=8, recap_days_ago=8)
+    state_path.write_text(json.dumps(state))
+
+    with pytest.raises(notify.NotConfigured):
+        notify.run_digest([hit], state_path=state_path, hits_path=hits_path)
+
+    assert notify.load_state(state_path) == state
+
+
+def test_the_recap_carries_the_run_notes(tmp_path, monkeypatch):
+    """Drift and missing producers are exactly what someone reads a recap
+    for."""
+    send = Recorder()
+    monkeypatch.setattr(notify, "send_email", send)
+    hit = make_hit(classification="FAIR")
+    state_path, hits_path = tmp_path / "seen.json", tmp_path / "hits.json"
+    state_path.write_text(json.dumps(
+        seeded_state(hit, alerted_days_ago=8, recap_days_ago=8)))
+
+    notify.run_digest([hit], state_path=state_path, hits_path=hits_path,
+                      notes={"Shops that returned nothing": ["mareehaute"]})
+
+    assert "mareehaute" in send.bodies[0]
+
+
+def test_the_meta_key_can_never_collide_with_an_item():
+    """seen.json is keyed by sha256 hex, so a reserved non-hex key is safe."""
+    assert not all(c in "0123456789abcdef" for c in notify.META_KEY)
+    key = notify.item_key(make_hit())
+    assert len(key) == 64 and key != notify.META_KEY
+
+
+def test_select_alerts_never_writes_the_meta_key():
+    _, state = notify.select_alerts([make_hit()], state={})
+    assert notify.META_KEY not in state
+
+
+def test_state_that_predates_the_recap_gets_one_promptly(tmp_path, monkeypatch):
+    """The state carried in the Actions cache has no recap clock, so the
+    first run after this lands has nothing to measure a week from. Sending
+    the recap is the right reading: that state is exactly the situation the
+    recap exists for -- a shelf full of hits, all in cooldown, silent for
+    days."""
+    send = Recorder()
+    monkeypatch.setattr(notify, "send_email", send)
+    hit = make_hit(classification="FAIR")
+    state_path, hits_path = tmp_path / "seen.json", tmp_path / "hits.json"
+    state_path.write_text(json.dumps(seeded_state(hit, alerted_days_ago=3)))
+
+    notify.run_digest([hit], state_path=state_path, hits_path=hits_path)
+
+    assert len(send.calls) == 1
+    assert send.calls[0][0] == notify.RECAP_SUBJECT
+
+
+def test_a_dry_run_with_nothing_to_say_writes_no_state(tmp_path, monkeypatch):
+    """A dry run leaves no trace on every path, not just the sending one.
+    The silent branch used to refresh last_price even under DRY_RUN."""
+    monkeypatch.setattr(notify, "send_email", Recorder())
+    hit = make_hit(classification="FAIR")
+    state_path, hits_path = tmp_path / "seen.json", tmp_path / "hits.json"
+    state = seeded_state(hit, alerted_days_ago=1, recap_days_ago=1)
+    state[notify.item_key(hit)]["last_price"] = 999.0   # a save would fix this
+    state_path.write_text(json.dumps(state))
+
+    alerting = notify.run_digest([hit], dry_run=True, state_path=state_path,
+                                 hits_path=hits_path)
+
+    assert alerting == []
+    assert notify.load_state(state_path) == state

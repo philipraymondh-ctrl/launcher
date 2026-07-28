@@ -79,12 +79,17 @@ concern, wired together by `scraper.py`:
    digest that is sent also carries the run's `notes`: shops that returned
    nothing, and watched producers found nowhere. State in
    `seen.json` (keyed by `sha256(shop + product_url + variant)`) drives a
-   30-day per-item cooldown; a hit alerts only if it's new, its price
-   dropped >10% since the last alert, or its classification improved to
-   `DEAL`. A run where nothing qualifies sends nothing and exits 0 — that's
-   a valid, successful run, not a failure. The full evaluated hit set
-   always goes to `hits.json` (uploaded as the workflow artifact) even
-   when the email itself is empty or capped at 40 rows.
+   30-day per-item cooldown. A hit alerts if it's new, or its price dropped
+   >10% since the last alert — a drop is news, so it ignores the cooldown —
+   or its classification improved to `DEAL`, which does wait for the
+   cooldown because classification is derived from the market pool and can
+   flap hourly. A run where nothing qualifies sends nothing and exits 0 —
+   that's a valid, successful run. But a whole *week* of them looks exactly
+   like broken credentials from the inbox, so after `RECAP_DAYS` with no
+   email at all the run sends one recap of everything currently matched
+   (`_meta.last_recap_at` in `seen.json`, reset by any email). The full
+   evaluated hit set always goes to `hits.json` (uploaded as the workflow
+   artifact) even when the email itself is empty or capped at 40 rows.
 
 Two more files exist for operating it rather than scraping:
 **`probe.py`** detects each shop's real platform from a runner (the dev
@@ -189,12 +194,17 @@ HTTP header or printed.
   `check_shop`, never by the parser -- the probe counts parsed products to
   decide whether an adapter works, so a shop whose stock is out today must
   not read as broken. Silence from an API is not "sold out".
-- `notify.py` sends at most one digest email per run. Don't reintroduce a
-  per-hit email path.
+- `notify.py` sends at most one email per run -- a digest or a recap, never
+  both, and never one per hit. Don't reintroduce a per-hit email path.
 - `notify.py` persists `seen.json` only *after* the email is actually sent.
   Marking an item alerted is what silences it for 30 days, so saving before
   the send means a dry run or a failed send silently swallows a real find.
-  Never move `save_state` back above `send_email`.
+  Never move `save_state` back above `send_email`. A `DRY_RUN` writes no
+  state on any path, including the silent one.
+- The weekly recap must never mark an item alerted. It is not a find, and
+  marking one would silence a real drop for 30 days; it refreshes
+  `last_price` only, exactly as a silent run does. It is also not a
+  heartbeat -- a run with no hits at all still sends nothing.
 - A coffret/caisse is several bottles, so its price is not comparable to a
   per-bottle reference. `evaluate.py` must keep detecting bundles, applying
   no format multiplier, and always caveating them -- real listings like

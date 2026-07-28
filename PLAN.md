@@ -1,143 +1,264 @@
-# PLAN — the tracker went quiet, and the quiet is a bug
+# Round 2 — ten ideas, a council, three picks
 
-## What the runs actually say
+Written after reading today's live run (`30401865128`) and re-running the
+real captured pages in `probe_pages/` through the current code, so every
+claim below is evidence, not intuition.
 
-Nothing is broken. Run 30401865128 (21:44 UTC today, `success`):
+## What the evidence says
 
 ```
+[mareehaute] skipped 2135 sold-out listing(s)
+[mareehaute] ok, 19 hit(s) from 3481 product(s)
+[leszinzinsduvin] followed 10 producer page(s), 8 listing nothing; 8 product(s), 0 in stock
 55 raw producer match(es) this run.
-54 listing(s) recorded; 106 in the reference pool.
-No newly alert-worthy hits this run (cooldown or no change) -- silent run is valid.
+Watched but found nowhere (13): Overnoy/Houillon, Domaine des Miroirs/Kagami,
+  Domaine Calice, Thomas Popy, Roumier, Alice Fahrenkrug, Jules Brochet,
+  Bruyere Houillon, Allante et Boulanger, Domaine des Murmures,
+  Tom Gauditiabois, Lattard, Romain Lawson
 ```
 
-Every bottle currently on those shelves was emailed once already. Since
-then `should_alert` has answered "no" for all 55 of them, every hour, for
-the same reason: they are inside the 30-day cooldown.
+13 of 16 watched producers "found nowhere" — while one shop alone hid 2135
+sold-out listings, and sold-out listings are dropped in `check_shop`
+*before* `matched_aliases` ever runs. So that line cannot distinguish a
+broken alias from a shelf that is simply empty today. It was added to make
+a broken alias visible; as built it can't.
 
-## The defect: the cooldown suppresses news, not repetition
+Two more facts from the captures:
 
-Read the rule as implemented:
+- `probe_pages/purewijnen.index.html` (real) contains
+  `<a href="/nl/renaud-bruyere-houillon">Renaud Bruyère-Houillon</a>` — and
+  `autoselect.find_producer_links` already finds exactly that one link and
+  correctly ignores `Overnoy-Crinquand`. purewijnen is dark for a reason
+  that no longer holds.
+- `probe_pages/capture.domaine-6-193-ganevat-jean-franecois-html.html`
+  (real, leszinzinsduvin's Ganevat page) contains the words "Les vins de
+  Ganevat Jean françois" and then *nothing*: no `vin-NNNN` links, no `€`.
+  The 8-of-10 empty grower pages are real emptiness, not a parse failure.
+  Nothing to fix there.
 
-```
-prev is None            -> alert
-within 30 days          -> no
-otherwise               -> only a >10% drop or an improvement to DEAL
-```
+## The ten ideas
 
-An *unchanged* item never re-alerts, cooldown or no cooldown — the third
-branch requires news. So the cooldown window is not what stops the digest
-repeating itself; the news requirement is. The only thing the 30-day gate
-actually does is **delay real news by up to a month**. A wine we already
-reported at EUR 100 dropping to EUR 60 tomorrow is silenced until late
-August. That is the exact failure mode this project exists to avoid, and
-it is what "it doesn't send anything anymore" looks like from the inbox.
+1. **Match sold-out listings too, and say which case it is.** "Found
+   nowhere" today means "found nowhere in stock". Split it into *matched
+   nowhere at all* (alias suspect) and *matched, every listing sold out*
+   (real scarcity) — and name the shops in the second case.
+2. **Separator-insensitive matching.** `normalize()` strips accents and
+   lowercases, nothing else, so `Bruyère-Houillon`, `Allanté & Boulanger`
+   and `l'Allanté` need hand-written alias variants. `PRODUCERS` already
+   carries `overnoy-houillon`, `houillon-overnoy`, `bruyere-houillon` for
+   exactly this, i.e. a maintenance cost per producer per punctuation
+   style.
+3. **Near-miss diagnosis for producers matched nowhere.** Search the run's
+   own text for tokens one edit away from a watched alias, and name them.
+   Turns "found nowhere" from a mystery into "'gauditiabois' vs
+   'gaudiciabois' at cavepurjus".
+4. **Reach purewijnen through the producer index** (evidence above), and
+   record what the other three dark shops actually serve rather than
+   leaving them as "needs work".
+5. **Pin the restock alert.** A listing that was sold out and comes back
+   alerts *by accident*: sold-out items never enter `seen.json`, so
+   `prev is None` and it reads as new. Nothing tests that. The single most
+   valuable alert for allocated wine rests on a side effect.
+6. **Audit the text stock heuristic against platform truth** where a shop
+   gives both, and report disagreements. 61% of mareehaute reads as sold
+   out; if the text backstop over-fires anywhere, real finds vanish.
+7. **Price history in the digest row** ("EUR 45, was EUR 52 on 12 Jul")
+   from `observations.json`.
+8. **Retire the genuinely unreachable shops** (vinscheznous no longer
+   resolves, naturavin 403s) instead of carrying them as pending work.
+9. **Scheduled auto-probe** so platform drift is caught before it zeroes a
+   shop for a week.
+10. **Surface the run's notes on the dashboard** so the phone shows state
+    without waiting for an email.
 
-`test_price_drop_over_10_percent_re_alerts_after_cooldown_window_not_needed`
-asserts the current behaviour deliberately, so this is a decision being
-reversed, not a bug being patched. The reversal is narrow.
+## The council
 
-### A. A price drop always alerts
+**The scraping engineer.** 4 first: coverage is the product. purewijnen
+stocks Bruyère-Houillon *today* and we are not looking. But it needs a
+live probe to confirm, and 2 makes matching work on the page it will find.
 
-```
-prev is None                     -> alert
-price <= last_alerted * 0.9      -> alert   (new; cooldown does not apply)
-within 30 days                   -> no
-otherwise                        -> improvement to DEAL
-```
+**The data skeptic.** 2 is the one that scares me, in both directions.
+Collapsing punctuation widens every alias at once — "Overnoy, Houillon" in
+one text block becomes "overnoy houillon". I want it done as one shared
+comparison rule, not four copies, and I want the namesake cases from
+`probe_pages` in the tests: `Overnoy-Crinquand` and `Renaud
+Bruyère-Houillon` sit in the same real `<ul>` and must land on different
+sides. 6 is my other worry but there is no evidence of harm yet —
+mareehaute is a platform-truth shop, so its 2135 come from `available`,
+not from the heuristic.
 
-Bounded by construction, no new state: the comparison is against
-`last_alerted_price`, which every alert resets. A monotonic decline alerts
-once per further -10% step; an oscillation between EUR 60 and EUR 50
-alerts once and then never again, because 50 is not ≤ 45.
+**The operator.** 1, 2, 3 and 5 cost zero extra requests: they all read
+data the run already has in memory. 4 costs a probe and a handful of
+grower pages. 9 costs 24 probes a day to detect something the DRIFT line
+already reports for free — no. 7 and 10 are new surface for no new
+knowledge.
 
-Classification stays behind the cooldown on purpose. It is *derived* from
-the observed market pool, which shifts every hour as other shops are
-crawled, so DEAL→FAIR→DEAL flapping is realistic in a way a price
-round-trip is not.
+**The collector.** I do not care how many products parsed. I care that
+Ganevat and Overnoy exist somewhere I can buy them. 1 is the one that
+changes my behaviour: "sold out at mareehaute and petitescaves" tells me
+where to watch, and it is the difference between "your list is broken" and
+"the wine is gone". 5 protects the only alert I would ever act on
+instantly.
 
-## B. Silence is indistinguishable from breakage
+**The test archaeologist.** Every bug in this repo was a silent one, and
+two of these are silent *right now*: the found-nowhere line is misleading
+(1), and the restock alert is an accident nobody asserts (5). Fix the
+first, pin the second in the same change — they are the same seam.
 
-Even with A, a week where nothing new appears and nothing drops sends
-nothing — correctly — and the owner cannot tell that apart from a broken
-adapter, expired secrets, or a workflow that stopped firing. They asked
-exactly that question today.
+### Verdict
 
-So: **if nothing has been emailed for 7 days and there are hits, send a
-recap** of everything currently matched.
+- **A — Coverage honesty (1, with 5 folded in).** Match every parsed
+  listing; split absent from sold-out; name the shops; pin the restock
+  behaviour with a test so recording sold-out state can never silently
+  kill it.
+- **B — One comparison rule, separator-insensitive, plus near-miss
+  diagnosis (2 + 3).**
+- **C — purewijnen through the producer index, and the truth about the
+  other three (4).** Offline: a test over the real captured index. Live: a
+  probe run, which is the only thing allowed to flip `verified`.
 
-- New reserved key in `seen.json`: `_meta.last_recap_at`. Keys are sha256
-  hex, so `_meta` cannot collide with an item, and `select_alerts` never
-  touches it. `notify.py` is the only reader of that file.
-- Any digest that goes out resets the clock — the promise is "you hear
-  from it at least weekly", not "you get an extra email weekly".
-- A recap **must not** mark anything alerted. Marking is what silences an
-  item, and a recap is not a find. It refreshes `last_price` only, exactly
-  as a silent run already does.
-- No hits at all -> still silent. There is nothing to recap, and the
-  weekly clock is not a heartbeat for the workflow.
-- Same table, an extra first line saying it is a recap, and its own
-  subject so it is filterable.
+Not chosen: 6 (no evidence of harm; mareehaute's count is platform truth),
+7, 8, 9, 10 — all either new surface for no new knowledge, or work the
+DRIFT line and the new recap already do.
+
+---
+
+# Implementation plan
+
+## A. Coverage honesty
+
+- `check_shop` runs `matched_aliases` on **every** parsed item, not only
+  in-stock ones. In-stock matches become hits as today; out-of-stock
+  matches go into a second list.
+- `ShopResult` gains `sold_out` alongside `products_parsed`. Still a
+  `list` subclass, so its fifteen callers keep working.
+- Sold-out matches never become hits: not evaluated, not in `hits.json`,
+  not in the market pool, and above all **not written to `seen.json`** —
+  that last one is what keeps a restock reading as new.
+- `main()` derives three sets: `found` (in stock), `sold_out_only`
+  (matched, nothing in stock), `unseen` (matched nowhere at all). The
+  existing "Watched but found nowhere" note keeps its name and finally
+  means what it says; a new "Matched but sold out everywhere" note names
+  producer → shops.
+- Both notes go to the digest and the recap through the existing `notes`
+  dict, which renders only non-empty blocks.
+
+## B. One comparison rule
+
+- `normalize()` exists **four times** — `scraper`, `market`, `evaluate`,
+  `apply_issue` — each an identical accent-strip-and-lower, each with a
+  comment explaining why it was copied. Changing matching in one of them
+  is how a producer added through the issue form silently never matches.
+  So: one `textnorm.py`, imported by all four (and `autoselect`, which has
+  its own `_strip_accents`).
+- The rule: NFKD, drop combining marks, lowercase, `&` → ` et `, every
+  remaining non-alphanumeric → space, collapse runs of space. Aliases and
+  haystacks both go through it, so `bruyere houillon` matches
+  `Bruyère-Houillon` with no per-producer variant.
+- `PRODUCERS` is left exactly as it is. The redundant hyphen variants are
+  harmless; the point is that the *next* producer needs none.
+- Near-miss: `near_misses(unseen, corpus)` where `corpus` is
+  `{shop: set(tokens)}` accumulated during the run. For each unseen
+  producer, take the tokens of its longest alias with ≥6 characters and
+  report corpus tokens at edit distance 1, sharing the first character,
+  within one character of the same length. Capped, and only computed for
+  producers that matched nothing — usually a handful.
+- It goes in the notes as `Alias near-misses`, worded as a suspicion, not
+  a claim.
+
+## C. purewijnen
+
+- Offline: trim the real `probe_pages/purewijnen.index.html` into a test
+  fixture and assert `find_producer_links` returns the Bruyère-Houillon
+  link and *not* Overnoy-Crinquand. That is a namesake test on real
+  markup, which is worth more than the synthetic one we have.
+- Live: dispatch `probe.yml` for the four dark shops. Only `probe.py
+  --apply` may set `verified`/replace a fixture, so nothing here flips a
+  shop by hand. If the probe cannot read purewijnen's grower pages, that
+  is the answer and it gets written down instead of implemented around.
 
 ## Order of work
 
-1. Tests first (both changes), run, confirm they fail.
-2. Rewrite the one existing test that pins the reversed decision, and say
-   in it why it was reversed.
-3. Minimal implementation.
-4. Whole suite green.
-5. Re-read every changed file against this plan.
+1. Tests for A and B, run, confirm failure.
+2. `textnorm.py` and the four call sites, then A, then near-miss.
+3. Whole suite green.
+4. Re-read every changed file against this plan.
+5. Live: probe dispatch (C) and a `DRY_RUN` scraper dispatch on this
+   branch, to see the new notes against real catalogues.
 
 ## Risks and containment
 
 | risk | containment |
 |---|---|
-| price-drop alerts every hour | baseline is `last_alerted_price`, reset on each alert; a further -10% is required |
-| recap consumes the cooldown | recap path saves the same state a silent run does, plus `_meta`; asserted |
-| recap fires weekly *and* a digest goes out | one clock, reset by both paths |
-| `_meta` mistaken for an item | keys are sha256 hex; `select_alerts` only writes keys it computed |
-| a failed send resets the clock | `save_state` stays after `send_email`, unchanged |
-| `send_email` gains a parameter | `subject` is keyword-with-default; stubs in tests updated to `**kw` |
+| collapsing punctuation widens an alias into a namesake | real-markup namesake tests from `probe_pages`; longest-alias rule unchanged |
+| four `normalize`s drift again | one module; a test asserts each caller exposes the same object |
+| sold-out matches leak into hits/state and kill restock alerts | asserted directly: no `seen.json` entry for a sold-out key, and a restock alerts |
+| the new notes make every digest noisy | rendered only when non-empty, exactly like the existing two |
+| near-miss floods the note with noise | only for producers matched nowhere, tokens ≥6 chars, distance 1, capped |
+| `market.cuvee_tokens` behaves differently under the new rule | it splits on whitespace after normalising, so collapsing punctuation to space is what it already wanted; covered by existing market tests |
+| a `ShopResult` field addition breaks a caller | it stays a `list`; `probe.py` reads `products_parsed`, which is unchanged |
 
 ## Definition of done
 
-- Suite green (335 before this change).
-- No new file, no workflow change, no new dependency.
-- Every changed file re-read against this plan.
+- Suite green (357 before this change).
+- No new dependency. One new module, documented in CLAUDE.md.
+- Live run on this branch shows the new notes and no regression in shop
+  coverage.
 
 ---
 
-# SELF-AUDIT — two things the plan did not anticipate
+# PLAN REVIEW — three corrections found by reading the code first
 
-Both surfaced while making the tests pass, and both are in the diff.
+## R1. Consolidating `normalize` as-is would break vintage parsing
 
-## 1. The silent branch persisted state even under `DRY_RUN`
+The plan said "one rule, imported everywhere". Checked what
+`market.normalize` actually feeds: `VINTAGE_RE`, whose whole job is to tell
+a vintage from a price using currency markers —
+`(?<![\d€$£.,])(19[5-9]\d|20[0-4]\d)(?![\d.,]*\s*(?:€|eur|usd|\$))`.
+Collapse every non-alphanumeric to a space and `2018,50 €` becomes
+`2018 50`, so the lookahead that currently blocks it sees nothing and the
+price reads as a vintage. That is the repo's oldest rule ("never treat a
+bare 4-digit number as a price") broken from the other end.
 
-`run_digest` returned early on both sending paths, so "a dry run leaves no
-trace" held for them — but the *silent* branch called `save_state`
-unconditionally, refreshing `last_price` for every hit. Harmless in effect,
-wrong as a rule, and now the recap depends on that file, so it was worth
-closing rather than documenting. One condition, plus a test that fails
-without it (verified by reverting the guard).
+**Corrected:** `textnorm.py` exposes *two* functions, not one.
 
-## 2. State that predates this change recaps immediately
+- `strip_accents(text)` — NFKD, drop combining marks, lowercase. Byte-for-
+  byte what all four copies do today, so importing it changes no
+  behaviour anywhere; it is pure de-duplication.
+- `match_key(text)` — `strip_accents` plus `&` → ` et `, remaining
+  non-alphanumerics → space, runs of space collapsed. Used **only** where
+  a name decides a match.
 
-The `seen.json` in the Actions cache has no `_meta`, so `recap_due` has
-nothing to measure a week from and returns True. The first run after this
-merges therefore sends a recap of all ~55 currently matched hits rather
-than waiting seven days.
+`market` and `evaluate` keep their current semantics (via
+`strip_accents`); `VINTAGE_RE`, `BUNDLE_RE` and the cru patterns never see
+`match_key`.
 
-That is the right reading, not a bug to paper over: that state *is* the
-situation the recap exists for — a full shelf, everything in cooldown, days
-of silence. Pinned in
-`test_state_that_predates_the_recap_gets_one_promptly` so it can't change by
-accident.
+## R2. Only two call sites actually need the new rule
 
-## Verified against the plan
+Which places compare a *name*? `scraper.matched_aliases` (alias vs listing
+text) and `apply_issue`'s alias derivation (which must agree with it, or a
+producer added through the issue form never matches anything — a silent
+failure with a two-week feedback loop). `market.cuvee_tokens` also
+normalises an alias, but only to strip the producer's name out of a title
+as a best effort; widening it there buys nothing and risks the token
+comparison the module exists for.
 
-- `should_alert`: drop before the cooldown gate, classification after it.
-- Recap marks nothing alerted (asserted on `last_alerted_at` directly).
-- One clock, reset by both paths; a failed send resets neither.
-- `save_state` still strictly after `send_email`.
-- No hits -> still silent, however long it has been.
-- No workflow change, no new file, no new dependency.
-- 357 tests pass (335 before, 21 added, 1 rewritten).
+**Corrected:** `match_key` at those two sites. A test asserts they agree.
+
+## R3. The near-miss corpus does not need to be a corpus
+
+The plan had `main()` accumulating every token from every shop, then
+filtering after the fact — up to ~10k titles, kept for the one case where
+a producer matched nothing.
+
+**Corrected:** filter at collection. The watched aliases are known up
+front, so a token is only worth keeping if some alias token shares its
+first character and is within one character of its length. That reduces
+the per-shop set to a handful of candidates, and the near-miss pass then
+only has to consider tokens that could possibly be one edit away.
+
+## Unchanged after review
+
+A is exactly as planned: the sold-out path stays out of `hits.json`, out of
+the market pool and out of `seen.json`, and the restock behaviour gets the
+test it never had. C stays a probe's decision, not a hand edit.

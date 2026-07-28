@@ -28,6 +28,8 @@ from pathlib import Path
 
 import yaml
 
+import textnorm
+
 ROOT = Path(__file__).parent
 SCRAPER_PATH = ROOT / "scraper.py"
 PRICES_PATH = ROOT / "prices.yaml"
@@ -43,11 +45,11 @@ class InvalidSubmission(Exception):
     """The form was submitted, but its contents can't be applied safely."""
 
 
-def normalize(text):
-    """Accent-stripped, lowercased -- matches scraper.normalize() so a
-    derived alias behaves the same as a hand-written one."""
-    text = unicodedata.normalize("NFKD", text or "")
-    return "".join(c for c in text if not unicodedata.combining(c)).lower()
+# The same objects scraper uses, not copies of them: an alias derived here
+# is matched there, and a one-character disagreement makes a newly added
+# producer match nothing at all for as long as nobody notices.
+normalize = textnorm.strip_accents
+match_key = textnorm.match_key
 
 
 # --- form parsing ------------------------------------------------------------
@@ -211,7 +213,7 @@ def upsert_producer(name, aliases, region, reference, mark_verified, src, book):
             # submission. A single full-name alias is a workable default and
             # far friendlier than an error; the summary says it happened so
             # more spellings can be added if shops list it differently.
-            aliases = [normalize(name)]
+            aliases = [match_key(name)]
             derived_alias = True
         if not region:
             raise InvalidSubmission(f"'{name}' is new, so it needs a region.")

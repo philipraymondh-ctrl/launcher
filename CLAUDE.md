@@ -11,7 +11,7 @@ never a reason to idle waiting for one.
 
 ## Architecture
 
-No framework, no database, no queue — seven plain files, each owning one
+No framework, no database, no queue — eight plain files, each owning one
 concern, wired together by `scraper.py`:
 
 1. **`crawler.py`** — the only module that calls `requests`. Every fetch
@@ -26,8 +26,12 @@ concern, wired together by `scraper.py`:
 2. **`scraper.py`** — loops over `SHOPS`, dispatching each to a platform
    fetcher (`fetch_shopify`, `fetch_woocommerce`, `fetch_html`, all taking
    a `Crawler` instance) that returns `{text, title, price, url,
-   variant_title}` items, then runs `match_producers(text)` (accent/case-
-   insensitive alias matching against `PRODUCERS`) to produce raw hits.
+   variant_title}` items, then runs `match_producers(text)` (alias matching
+   against `PRODUCERS` through `textnorm.match_key`, so accents, case and
+   separators are all out of the comparison) to produce raw hits. A match on
+   a listing that is out of stock is not dropped but set aside on
+   `ShopResult.sold_out`, which is what lets the run distinguish a broken
+   alias from a producer that is simply sold out everywhere.
 3. **`autoselect.py`** — reads a catalogue nobody wrote selectors for.
    Most HTML shops match none of the generic `div.product` guesses because
    their markup is their own (leszinzinsduvin is hand-rolled PHP serving
@@ -91,6 +95,20 @@ concern, wired together by `scraper.py`:
    evaluated hit set always goes to `hits.json` (uploaded as the workflow
    artifact) even when the email itself is empty or capped at 40 rows.
 
+8. **`textnorm.py`** — how text is compared, in one place, as two
+   functions that must not be confused. `strip_accents` (NFKD, drop
+   combining marks, lowercase) is what `scraper`, `market`, `evaluate`,
+   `apply_issue` and `autoselect` each used to carry as a private copy —
+   five identical copies waiting for one divergent edit, which would have
+   made a producer added through the issue form derive an alias matching
+   nothing. `match_key` adds separator folding (`&` → `et`, every other
+   non-alphanumeric → space) and exists only for deciding whether a *name*
+   matches, so one alias `bruyere houillon` covers "Bruyère-Houillon" and
+   "Renaud Bruyère–Houillon" with no per-producer variant. It must never
+   touch text a price or vintage regex will read afterwards: it removes the
+   currency markers `PRICE_PATTERN` and `market.VINTAGE_RE` use to tell a
+   price from a year.
+
 Two more files exist for operating it rather than scraping:
 **`probe.py`** detects each shop's real platform from a runner (the dev
 sandbox has no egress); with `--apply` it also saves the real response as
@@ -110,6 +128,13 @@ Runs hourly from `.github/workflows/scraper.yml`, which runs the fixture
 tests first, best-effort persists `seen.json`/`observations.json`/`.cache`
 across runs via `actions/cache`, and uploads `hits.json` plus
 `observations.json` as artifacts.
+
+Any digest or recap also carries what the run could not do quietly:
+shops that returned nothing, producers **matched but sold out everywhere**
+(with the shops that had them, so there is somewhere to look again),
+producers **found nowhere at all** — an alias signal, now that sold-out
+matches no longer land here — and **alias near-misses**, words on a shop's
+pages one edit away from an alias that matched nothing.
 
 Every `SHOPS` entry also carries a `verified` flag. `main()` skips any shop
 with `"verified": False` before it ever makes a network call — this is for
@@ -179,6 +204,23 @@ HTTP header or printed.
 - A wine seen at no other shop gets no reference. Do not add a fallback
   that invents one -- `NOREF` is a real answer and the hit is still
   reported.
+- A sold-out match is remembered, never alerted. `check_shop` matches
+  every parsed listing and puts out-of-stock matches on
+  `ShopResult.sold_out`; they must stay out of `hits.json`, out of the
+  market pool and above all out of `seen.json`. That last one is what makes
+  a **restock** read as a new item and alert — the most valuable alert this
+  scraper sends, and it works because nothing about a sold-out listing is
+  persisted. `tests/test_coverage.py` asserts both halves; don't "improve"
+  it by recording sold-out state.
+- "Watched but found nowhere" means matched nowhere at all, in stock or
+  not. A producer stocked somewhere but sold out belongs in "Matched but
+  sold out everywhere" with its shops named; collapsing the two back
+  together restores the exact ambiguity the note was added to remove (one
+  run called 13 of 16 producers missing while a single shop hid 2135
+  sold-out listings).
+- Near-misses are suspicions, not findings: only for producers that matched
+  nothing, only tokens of 6+ characters at edit distance 1. Loosening
+  either turns the note into noise, and a noisy note is an ignored note.
 - Producer aliases must name an estate, not a surname. `match_producers`
   prefers the longest matching alias, but that only separates producers we
   track -- it cannot help against an untracked namesake. Jura and Savoie
@@ -187,6 +229,13 @@ HTTP header or printed.
   matches Corentin Houillon and Fimbel-Houillon; "brochet" also matches
   Emmanuel Brochet. Every one of those was reported under the wrong
   producer from real catalogues. Use the full name.
+- Text comparison goes through `textnorm`, never a local copy. Use
+  `strip_accents` for anything a price, vintage or cru regex reads
+  afterwards, and `match_key` only where a *name* decides a match
+  (`scraper.matched_aliases`, `apply_issue`'s derived alias — those two must
+  agree or a producer added through the form matches nothing). Putting
+  `match_key` in front of `market.VINTAGE_RE` turns "2018,50 €" into
+  "2018 50" and a price becomes a vintage.
 - A listing that is sold out is not a find. Stock comes from the platform
   when it answers (`available` on a Shopify variant, `is_in_stock` on the
   WooCommerce Store API) and from the listing text otherwise ("epuise",

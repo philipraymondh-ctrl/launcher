@@ -30,6 +30,7 @@ import unicodedata
 from urllib.parse import urljoin, urlparse
 
 from bs4 import BeautifulSoup
+import textnorm
 
 # Fewer repeats than this is a "featured wine" box or a related-items
 # strip, not a catalogue.
@@ -280,11 +281,7 @@ OUT_OF_STOCK = re.compile(
     r"ausverkauft|non\s+disponible|indisponible)\b", re.I)
 
 
-def _strip_accents(text):
-    return "".join(
-        c for c in unicodedata.normalize("NFKD", text or "")
-        if not unicodedata.combining(c)
-    ).lower()
+_strip_accents = textnorm.strip_accents
 
 
 def is_out_of_stock(text, normalize_fn=None):

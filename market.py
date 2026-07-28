@@ -34,6 +34,8 @@ import unicodedata
 from datetime import date, timedelta
 from pathlib import Path
 
+import textnorm
+
 OBSERVATIONS_PATH = Path(__file__).parent / "observations.json"
 
 # One other shop listing the same bottle is already a comparison -- it is
@@ -53,10 +55,10 @@ MAX_AGE_DAYS = 180
 MIN_LINE_RECORDS = 3
 
 
-def normalize(text):
-    text = unicodedata.normalize("NFKD", text or "")
-    text = "".join(c for c in text if not unicodedata.combining(c))
-    return text.lower()
+# Deliberately the accent-only rule, not textnorm.match_key: VINTAGE_RE
+# below tells a vintage from a price by the currency markers touching the
+# number, and match_key removes them.
+normalize = textnorm.strip_accents
 
 
 # --- vintage ----------------------------------------------------------------

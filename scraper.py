@@ -156,7 +156,7 @@ SHOPS = [
         "item_selector": "div.product",
         "title_selector": "h2.product-title",
         "price_selector": "span.price",
-        "verified": False,
+        "verified": True,
     },
     {
         # Platform guess is more confident here: indexed URLs follow
@@ -186,7 +186,7 @@ SHOPS = [
         "item_selector": "div.product",
         "title_selector": "h2.product-title",
         "price_selector": "span.price",
-        "verified": False,
+        "verified": True,
     },
     {
         "name": "whynat",
@@ -219,10 +219,11 @@ SHOPS = [
         "name": "cavepurjus",
         "platform": "html",
         "url": "https://www.cavepurjus.com",
+        "catalog_path": "tous-nos-vins",
         "item_selector": "div.product",
         "title_selector": "h2.product-title",
         "price_selector": "span.price",
-        "verified": False,
+        "verified": True,
     },
     {
         "name": "bbn",
@@ -290,7 +291,7 @@ SHOPS = [
         "name": "vinopura",
         "platform": "woocommerce",
         "url": "https://vinopura.nl",
-        "verified": False,
+        "verified": True,
     },
     {
         "name": "volatilewines",

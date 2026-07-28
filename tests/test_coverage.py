@@ -285,3 +285,65 @@ def test_a_plural_is_never_a_near_miss():
         ["Domaine des Murmures"], {"one-shop": {"murmure"}},
         producers={"Domaine des Murmures": ["murmures"]})
     assert got == []
+
+
+# --- B3. and what the second live run taught it ---------------------------------
+#
+# The breadth filter was not enough. The next run offered:
+#
+#   Overnoy/Houillon: 'pierra' at lacavedespapilles
+#   Overnoy/Houillon: 'pierro' at puurwijnshop
+#   Domaine Calice:   'domain' at amberbottleshop
+#   Domaine Calice:   'malice' at bbn
+#
+# Each appears at one shop, so breadth said nothing -- the problem is the
+# other end: "pierre", "calice" and "domaine" are not distinctive enough to
+# hunt typos of. The corpus can say that too: a word the trade uses at
+# several shops is vocabulary, whether it is the target or the candidate.
+
+def test_a_target_the_whole_trade_uses_is_not_worth_hunting():
+    corpus = {
+        "lacavedespapilles": {"pierra", "pierre"},
+        "puurwijnshop": {"pierro", "pierre"},
+        "vinibee": {"pierre"},
+    }
+    got = scraper.near_misses(
+        ["Overnoy/Houillon"], corpus,
+        producers={"Overnoy/Houillon": ["pierre overnoy"]})
+    assert got == [], "hunted typos of a word five shops use in earnest"
+
+
+def test_a_six_letter_target_is_below_the_floor():
+    """"calice" is a French word before it is an estate, and at six letters
+    it is one edit from "malice", "calices", "police". The floor is where
+    that stops."""
+    got = scraper.near_misses(
+        ["Domaine Calice"], {"bbn": {"malice"}},
+        producers={"Domaine Calice": ["calice", "domaine du calice"]})
+    assert got == []
+
+
+def test_a_distinctive_target_still_works_at_one_shop():
+    got = scraper.near_misses(
+        ["Tom Gauditiabois"], {"cavepurjus": {"gaudiciabois"}},
+        producers={"Tom Gauditiabois": ["gauditiabois"]})
+    assert got == ["Tom Gauditiabois: 'gaudiciabois' at cavepurjus"]
+
+
+def test_the_five_lines_the_live_run_printed_are_all_gone():
+    """The regression test for this whole idea: the exact corpus shape that
+    produced five useless lines must now produce none."""
+    corpus = {
+        "lacavedespapilles": {"pierra", "pierre", "domaine"},
+        "puurwijnshop": {"pierro", "pierre", "domaine"},
+        "vinibee": {"pieure", "pierre", "domaine"},
+        "amberbottleshop": {"domain", "domaine"},
+        "bbn": {"malice", "domaine"},
+    }
+    got = scraper.near_misses(
+        ["Overnoy/Houillon", "Domaine Calice"], corpus,
+        producers={
+            "Overnoy/Houillon": ["pierre overnoy", "emmanuel houillon"],
+            "Domaine Calice": ["domaine du calice", "du calice", "calice"],
+        })
+    assert got == []

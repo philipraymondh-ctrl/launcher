@@ -383,9 +383,11 @@ def matched_aliases(text):
 # evidence for the first case -- and it is free, because the text was
 # already in memory.
 #
-# Short words are one edit from everything ("popy"/"pope"), so only tokens
-# this long are considered on either side.
-NEAR_MISS_MIN_LEN = 6
+# Short words are one edit from everything, and French wine vocabulary is
+# dense at six letters: "pierre", "calice", "kagami" each sit one edit from
+# words the trade uses in earnest ("pierres", "malice", "kagame"). Seven is
+# where the hint stops guessing.
+NEAR_MISS_MIN_LEN = 7
 NEAR_MISS_MAX_REPORTED = 5
 
 
@@ -423,7 +425,10 @@ def near_miss_candidates(text, by_first=None):
         return set()
     keep = set()
     for word in match_key(text).split():
-        if len(word) < NEAR_MISS_MIN_LEN:
+        # One below the target floor: a single deletion from a seven-letter
+        # alias token leaves six letters, and that is exactly the kind of
+        # typo worth catching.
+        if len(word) < NEAR_MISS_MIN_LEN - 1:
             continue
         for length in by_first.get(word[0], ()):
             if abs(length - len(word)) <= 1:
@@ -457,12 +462,16 @@ def near_misses(unseen, corpus, producers=None):
     Only for producers that matched nothing at all -- for anyone who did
     match, a near-miss is just another wine on the same page.
 
-    Two filters keep it from firing on ordinary words, both learned from its
-    first live run, which reported `Overnoy/Houillon: 'pierres'` at five
-    shops because "pierre overnoy" carries a six-letter first name:
+    Three filters keep it from firing on ordinary words, all three learned
+    from live runs that offered `Overnoy/Houillon: 'pierres'`,
+    `'pierra'`, `'pierro'` and `Domaine Calice: 'malice'` -- because
+    "pierre overnoy" carries a first name and "calice" is a French word
+    before it is an estate. The corpus answers both ends of that:
 
-    - a word found at more than one shop is the trade's vocabulary, not a
+    - a **candidate** at more than one shop is vocabulary, not a
       misspelling. A typo of a rare grower lives at the shop that made it.
+    - a **target** the trade itself uses at more than one shop is not worth
+      hunting typos of, however distinctive it looks in a producer's name.
     - a plural is not a typo.
     """
     catalogue = producers if producers is not None else PRODUCERS
@@ -471,13 +480,17 @@ def near_misses(unseen, corpus, producers=None):
         for word in words:
             shops_per_word.setdefault(word, set()).add(shop)
 
+    def common(word):
+        return len(shops_per_word.get(word, ())) > 1
+
     reported = []
     for producer in unseen:
         targets = {t for alias in catalogue.get(producer, [])
-                   for t in match_key(alias).split() if len(t) >= NEAR_MISS_MIN_LEN}
+                   for t in match_key(alias).split()
+                   if len(t) >= NEAR_MISS_MIN_LEN and not common(t)}
         for shop in sorted(corpus):
             for word in sorted(corpus[shop]):
-                if len(shops_per_word.get(word, ())) > 1:
+                if common(word):
                     continue
                 if any(_one_edit_apart(word, t) and not _is_plural_of(word, t)
                        for t in targets):

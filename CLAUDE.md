@@ -167,6 +167,12 @@ HTTP header or printed.
   task — edit the dict directly.
 - Every scraping change (new shop, adapter fix, selector change) must pass
   the fixture tests in `tests/` before commit.
+- A zero is not a price. Cart widgets ("Voir mon panier -- 0,00 EUR"), gift
+  cards and "price on request" all carry a currency-adjacent zero, and zero
+  is below every reference there will ever be, so such a row is a permanent
+  DEAL -- one live dry run put exactly that in the digest. `positive_price`
+  rejects it on all three platform paths, and `autoselect` does not treat a
+  zero-priced block as a listing at all.
 - Prices: parse currency-adjacent numbers only (a `€`, `$`, `£`, `EUR`, or
   `USD` marker touching the number). Never treat a bare 4-digit number as a
   price — it could be a vintage year. This is what `PRICE_PATTERN` /
@@ -219,8 +225,13 @@ HTTP header or printed.
   run called 13 of 16 producers missing while a single shop hid 2135
   sold-out listings).
 - Near-misses are suspicions, not findings: only for producers that matched
-  nothing, only tokens of 6+ characters at edit distance 1. Loosening
-  either turns the note into noise, and a noisy note is an ignored note.
+  nothing, only alias tokens of 7+ characters, only at edit distance 1, and
+  only when *neither* side is a word the corpus shows at more than one shop.
+  That last filter is doing the real work -- two live runs offered
+  `'pierres'`, `'pierra'`, `'pierro'` and `'malice'` before it existed,
+  because "pierre" and "calice" are French before they are estates.
+  Loosening any of it turns the note into noise, and a noisy note is an
+  ignored note.
 - Producer aliases must name an estate, not a surname. `match_producers`
   prefers the longest matching alias, but that only separates producers we
   track -- it cannot help against an untracked namesake. Jura and Savoie

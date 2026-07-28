@@ -155,6 +155,18 @@ not each have a stated reason, none of which is "needs selectors" any more
     or fetching every product page, and the second is hundreds of requests
     for one shop. `probe_pages/` holds a trimmed copy of each page.
 
+    Probe run 30403841248 re-tested all four and verified none: every
+    catalogue-path guess 404s and each landing page parses to zero
+    products. purewijnen looked like the exception, because its landing page
+    *is* a grower index and `find_producer_links` finds our Renaud
+    Bruyère-Houillon in it (ignoring the Overnoy-Crinquand two lines up --
+    `tests/fixtures/purewijnen-growers-excerpt.html` keeps that real markup
+    as a namesake test). Following the link settles it:
+    `probe_pages/capture.nl-renaud-bruyere-houillon.html` is a producer bio
+    with no wine list and **not one currency marker in 28KB**. There is
+    nothing on that page to read, so the shop stays unverified -- the
+    producer-index route is not the missing piece for any of these four.
+
 Secrets (`GMAIL_SENDER`, `GMAIL_APP_PASSWORD`, `NOTIFY_EMAIL`) are the
 only external configuration; everything else is in this repo. Those three
 reach Gmail's SMTP server and nothing else -- they are never put in an

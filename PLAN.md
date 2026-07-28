@@ -262,3 +262,50 @@ only has to consider tokens that could possibly be one edit away.
 A is exactly as planned: the sold-out path stays out of `hits.json`, out of
 the market pool and out of `seen.json`, and the restock behaviour gets the
 test it never had. C stays a probe's decision, not a hand edit.
+
+
+---
+
+# OUTCOME — what the live runs decided
+
+## A and B: verified against real catalogues
+
+Two `DRY_RUN` dispatches on this branch (runs 30403926578 and 30404303597),
+which fetch for real, send nothing and consume no cooldown.
+
+```
+Matched but sold out everywhere (1): Domaine des Murmures [mareehaute]
+Watched but found nowhere (12): Overnoy/Houillon, ... Romain Lawson
+Shops that returned nothing (1): vinnaturel
+```
+
+Both notes do what they were built for, and "found nowhere" is 12 instead
+of 13 because Murmures is now correctly described as stocked-but-empty.
+
+The runs also caught two things the fixtures could not, both now fixed with
+tests quoting the evidence:
+
+1. The digest's only DEAL was a shopping cart -- "Voir mon panier", EUR 0,
+   at `/commande`, scored against a EUR 99 reference. A zero is not a price.
+2. The near-miss hint fired on ordinary French, twice: `'pierres'` at five
+   shops, then `'pierra'`, `'pierro'`, `'domain'`, `'malice'` at one shop
+   each. Both ends now have to be words the corpus does *not* show at
+   several shops, and the target floor is seven letters.
+
+A consequence worth stating: with the cart no longer counted, vinnaturel
+parses zero products and appears in the DRIFT note. That is honest -- it
+was never reading that shop's catalogue, only its furniture.
+
+## C: the probe said no, with evidence
+
+Run 30403841248 probed all four dark shops with `--apply` and verified
+none. purewijnen was the promising one -- its landing page really is a
+grower index and `find_producer_links` really does find Renaud
+Bruyère-Houillon in it. So the deciding page was captured directly:
+`probe_pages/capture.nl-renaud-bruyere-houillon.html`, 28KB, **zero
+currency markers**. It is a producer bio with no wine list.
+
+So the producer-index route was never the missing piece for these four, and
+the shops stay unverified. Written into CLAUDE.md with the run ids, because
+"needs a probe" was the standing note for months and this is what a probe
+actually said.

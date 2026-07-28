@@ -186,10 +186,16 @@ def find_products(html, base_url, price_pattern, parse_price, min_blocks=None):
             continue
         seen.add(url)
         text = block.get_text(" ", strip=True)
+        # The block was chosen for holding a currency-adjacent number, so a
+        # None here means the caller rejected the value itself -- a zero,
+        # which is a cart total or a placeholder, not a bottle.
+        price = parse_price(text)
+        if price is None:
+            continue
         items.append({
             "text": text,
             "title": _title_for(block, anchor) or _title_from_url(url),
-            "price": parse_price(text),
+            "price": price,
             "url": url,
             "variant_title": "",
             # Marked rather than dropped: the probe counts parsed products

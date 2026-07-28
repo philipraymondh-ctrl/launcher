@@ -447,20 +447,40 @@ def _one_edit_apart(a, b):
     return False
 
 
+def _is_plural_of(word, target):
+    return word == target + "s" or target == word + "s"
+
+
 def near_misses(unseen, corpus, producers=None):
     """Suspicions, not findings: `Producer: 'spelling' at shop`.
 
     Only for producers that matched nothing at all -- for anyone who did
     match, a near-miss is just another wine on the same page.
+
+    Two filters keep it from firing on ordinary words, both learned from its
+    first live run, which reported `Overnoy/Houillon: 'pierres'` at five
+    shops because "pierre overnoy" carries a six-letter first name:
+
+    - a word found at more than one shop is the trade's vocabulary, not a
+      misspelling. A typo of a rare grower lives at the shop that made it.
+    - a plural is not a typo.
     """
     catalogue = producers if producers is not None else PRODUCERS
+    shops_per_word = {}
+    for shop, words in corpus.items():
+        for word in words:
+            shops_per_word.setdefault(word, set()).add(shop)
+
     reported = []
     for producer in unseen:
         targets = {t for alias in catalogue.get(producer, [])
                    for t in match_key(alias).split() if len(t) >= NEAR_MISS_MIN_LEN}
         for shop in sorted(corpus):
             for word in sorted(corpus[shop]):
-                if any(_one_edit_apart(word, t) for t in targets):
+                if len(shops_per_word.get(word, ())) > 1:
+                    continue
+                if any(_one_edit_apart(word, t) and not _is_plural_of(word, t)
+                       for t in targets):
                     reported.append(f"{producer}: '{word}' at {shop}")
                     break
     return reported[:NEAR_MISS_MAX_REPORTED]
@@ -475,12 +495,23 @@ PRICE_PATTERN = re.compile(
 )
 
 
+def positive_price(value):
+    """A zero is not a price.
+
+    Cart widgets ("Voir mon panier -- 0,00 EUR"), gift cards and "price on
+    request" placeholders all carry a currency-adjacent zero, and zero sits
+    below every reference there will ever be, so such a row scores DEAL for
+    ever. One live dry run put exactly that in the digest.
+    """
+    return value if value and value > 0 else None
+
+
 def parse_price(text):
     match = PRICE_PATTERN.search(text or "")
     if not match:
         return None
     raw = match.group(1) or match.group(2)
-    return float(raw.replace(",", "."))
+    return positive_price(float(raw.replace(",", ".")))
 
 
 def _paged(shop, crawler_client, url, params_for_page, page_size, extract):
@@ -540,7 +571,7 @@ def fetch_shopify(shop, crawler_client):
             variant_title = ""
             if variants:
                 if variants[0].get("price"):
-                    price = float(variants[0]["price"])
+                    price = positive_price(float(variants[0]["price"]))
                 variant_title = variants[0].get("title", "") or ""
             # Shopify reports availability per variant; one buyable format
             # is enough. Absent the field entirely, assume nothing.
@@ -578,7 +609,7 @@ def fetch_woocommerce(shop, crawler_client):
             raw_price = prices.get("price")
             if raw_price:
                 minor_unit = int(prices.get("currency_minor_unit", 2))
-                price = int(raw_price) / (10 ** minor_unit)
+                price = positive_price(int(raw_price) / (10 ** minor_unit))
             parsed.append({
                 "text": text,
                 "title": name,

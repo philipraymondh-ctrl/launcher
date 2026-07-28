@@ -250,3 +250,38 @@ def test_the_real_grower_list_is_read_as_an_index_not_a_catalogue():
         real_page("purewijnen-growers-excerpt.html"),
         "https://www.purewijnen.be/", scraper.PRICE_PATTERN, scraper.parse_price)
     assert products == []
+
+
+# --- B2. what the live run taught the near-miss check --------------------------
+#
+# Its first live run reported, five times over:
+#
+#   Overnoy/Houillon: 'pierres' at bbn
+#
+# because "pierre overnoy" contains a six-letter first name and every French
+# wine shop sells something "aux Pierres". A hint that fires on vocabulary is
+# a hint nobody reads.
+
+def test_a_word_seen_at_more_than_one_shop_is_vocabulary_not_a_typo():
+    """The corpus tells us this for free: a misspelling of a rare grower
+    appears at the shop that made it. A word at several shops is the trade's
+    own vocabulary."""
+    got = scraper.near_misses(
+        ["Overnoy/Houillon"],
+        {"bbn": {"pierres"}, "biowijnclub": {"pierres"}, "levinnaturel": {"pierres"}},
+        producers={"Overnoy/Houillon": ["pierre overnoy"]})
+    assert got == []
+
+
+def test_the_same_word_at_a_single_shop_is_still_offered():
+    got = scraper.near_misses(
+        ["Tom Gauditiabois"], {"cavepurjus": {"gaudiciabois"}},
+        producers={"Tom Gauditiabois": ["gauditiabois"]})
+    assert got == ["Tom Gauditiabois: 'gaudiciabois' at cavepurjus"]
+
+
+def test_a_plural_is_never_a_near_miss():
+    got = scraper.near_misses(
+        ["Domaine des Murmures"], {"one-shop": {"murmure"}},
+        producers={"Domaine des Murmures": ["murmures"]})
+    assert got == []

@@ -38,19 +38,13 @@ producers:
   last_verified: null
   verified: false
 - name: Domaine Calice
-  region: unknown
-  reference_750_eur: null
-  cuvees: []
-  last_verified: null
-  verified: false
-- name: Clemence Gerbet
-  region: burgundy
+  region: jura
   reference_750_eur: null
   cuvees: []
   last_verified: null
   verified: false
 - name: Thomas Popy
-  region: burgundy
+  region: jura
   reference_750_eur: null
   cuvees: []
   last_verified: null
@@ -80,7 +74,7 @@ producers:
   last_verified: null
   verified: false
 - name: Allante et Boulanger
-  region: other
+  region: jura
   reference_750_eur: null
   cuvees: []
   last_verified: null

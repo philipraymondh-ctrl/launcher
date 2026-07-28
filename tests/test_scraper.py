@@ -92,10 +92,20 @@ def test_empty_html_response_raises_empty_response_error():
         scraper.fetch_html(shop, FakeCrawler(FakeTextResponse("   ")))
 
 
-def test_alias_matching_is_accent_and_case_insensitive():
-    assert scraper.match_producers("Domaine GANEVAT Chardonnay") == ["Ganevat"]
-    assert scraper.match_producers("cuvee by clémence gerbet") == ["Clemence Gerbet"]
+def test_alias_matching_is_accent_and_case_insensitive(monkeypatch):
+    # A synthetic roster: naming a real producer here pinned today's config
+    # as an invariant, and the test failed the moment one was dropped --
+    # which is a legitimate edit, not a regression.
+    monkeypatch.setattr(scraper, "PRODUCERS", {"Zzz Estate": ["zzz estate"]})
+    assert scraper.match_producers("Domaine ZZZ ESTATE Chardonnay") == ["Zzz Estate"]
+    # Accents are stripped from text and alias alike, so an accented
+    # spelling of an unaccented alias still matches -- that is the point.
+    assert scraper.match_producers("cuvee by zzz éstate") == ["Zzz Estate"]
     assert scraper.match_producers("some unrelated winery") == []
+
+    monkeypatch.setattr(scraper, "PRODUCERS", {"Zzz Éstate": ["zzz éstate"]})
+    assert scraper.match_producers("ZZZ ESTATE Chardonnay") == ["Zzz Éstate"]
+    assert scraper.match_producers("zzz éstate chardonnay") == ["Zzz Éstate"]
 
 
 def test_price_parser_ignores_bare_vintage_year():

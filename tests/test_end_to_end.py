@@ -13,126 +13,27 @@ observations.json are all redirected into tmp_path.
 """
 import json
 
-import pytest
-
-import crawler
-import market
 import notify
 import scraper
 
-
-# --- the canned shop ----------------------------------------------------------
-
-def shopify(products):
-    return json.dumps({"products": products})
-
-
-def product(title, price, available=True, vendor=""):
-    return {
-        "title": title, "vendor": vendor, "handle": title.lower().replace(" ", "-"),
-        "body_html": "", "variants": [{"title": "Default", "price": str(price),
-                                       "available": available}],
-    }
-
-
-def woo(products):
-    return json.dumps(products)
-
-
-def woo_product(name, price, in_stock=True):
-    return {
-        "name": name, "permalink": f"https://woo.test/p/{name.lower().replace(' ', '-')}",
-        "prices": {"price": str(int(price * 100)), "currency_minor_unit": 2},
-        "is_in_stock": in_stock,
-    }
-
-
-def html_listing(rows):
-    cells = "".join(
-        f'<div><a href="/p/{n}">{title}</a><span>{price},00 &euro;</span>'
-        f'{"<em>Produit épuisé</em>" if sold_out else ""}</div>'
-        for n, (title, price, sold_out) in enumerate(rows)
-    )
-    return f'<html><body><div class="grid">{cells}</div></body></html>'
-
-
-SHOPS = [
-    {"name": "zzz-shopify", "platform": "shopify", "url": "https://shopify.test",
-     "verified": True},
-    {"name": "zzz-woo", "platform": "woocommerce", "url": "https://woo.test",
-     "verified": True},
-    {"name": "zzz-html", "platform": "html", "url": "https://html.test",
-     "item_selector": "div.product", "title_selector": "h2.product-title",
-     "price_selector": "span.price", "verified": True},
-    {"name": "zzz-dark", "platform": "shopify", "url": "https://dark.test",
-     "verified": False},
-]
-
-PRODUCERS = {
-    "Zzz Domaine": ["zzz domaine"],
-    "Zzz Negoce": ["zzz negoce"],
-    "Zzz Other": ["zzz other"],
-}
-
-
-class FakeCrawler:
-    """Serves canned bodies by URL prefix and counts requests, standing in
-    for the real Crawler that main() constructs for itself."""
-
-    def __init__(self, bodies, max_requests=1000, fail_hosts=()):
-        self.bodies = bodies
-        self.max_requests = max_requests
-        self.request_count = 0
-        self.fail_hosts = set(fail_hosts)
-        self.urls = []
-
-    def get(self, url, params=None):
-        self.request_count += 1
-        self.urls.append(url)
-        if self.request_count > self.max_requests:
-            raise crawler.BudgetExceeded(url)
-        for host in self.fail_hosts:
-            if host in url:
-                raise crawler.UpstreamError("Connection refused")
-        page = int((params or {}).get("page", 1))
-        for prefix, body in self.bodies.items():
-            if url.startswith(prefix):
-                if page > 1:
-                    return crawler.FetchResult(
-                        200, '{"products": []}' if "shopify" in prefix
-                        else "[]" if "woo" in prefix else "")
-                return crawler.FetchResult(200, body)
-        return crawler.FetchResult(200, "")
-
-
-@pytest.fixture
-def pipeline(monkeypatch, tmp_path):
-    """Runs main() with everything redirected away from the repo."""
-    sent = []
-
-    monkeypatch.setattr(scraper, "SHOPS", SHOPS)
-    monkeypatch.setattr(scraper, "PRODUCERS", PRODUCERS)
-    monkeypatch.setattr(notify, "STATE_PATH", tmp_path / "seen.json")
-    monkeypatch.setattr(notify, "HITS_PATH", tmp_path / "hits.json")
-    monkeypatch.setattr(market, "OBSERVATIONS_PATH", tmp_path / "observations.json")
-    # The real send path must run so state is persisted; only SMTP is stubbed.
-    monkeypatch.setattr(notify, "send_email", lambda body: sent.append(body))
-
-    def run(bodies, dry_run=False, max_requests=1000, fail_hosts=()):
-        client = FakeCrawler(bodies, max_requests=max_requests, fail_hosts=fail_hosts)
-        monkeypatch.setattr(crawler, "Crawler", lambda *a, **k: client)
-        monkeypatch.setattr(scraper, "DRY_RUN", dry_run)
-        scraper.main()
-        return client
-
-    run.sent = sent
-    run.tmp = tmp_path
-    return run
+from canned_shop import (
+    FakeCrawler, SHOPS, html_listing, product, shopify, woo, woo_product,
+)
 
 
 def digest(pipeline):
     assert pipeline.sent, "no digest was sent"
     return pipeline.sent[-1]
+
+
+def rows(body):
+    """Only the digest's product rows.
+
+    The digest now also *names* shops that returned nothing and producers
+    found nowhere, so asserting a producer is absent from the whole body
+    catches those notes -- the opposite of what these tests mean. A row is
+    the pipe-delimited kind."""
+    return "\n".join(l for l in body.splitlines() if l.count(" | ") >= 4)
 
 
 def hits_json(pipeline):
@@ -193,11 +94,11 @@ SOLD_OUT = {
 
 def test_nothing_sold_out_reaches_the_digest(pipeline):
     pipeline(SOLD_OUT)
-    body = digest(pipeline)
-    assert "Savagnin 2020" in body, "the in-stock bottle should be reported"
-    assert "Chardonnay 2020" not in body, "sold-out Shopify variant alerted"
-    assert "Poulsard 2022" not in body, "out-of-stock WooCommerce product alerted"
-    assert "Zzz Other" not in body, "listing marked epuise alerted"
+    listed = rows(digest(pipeline))
+    assert "Savagnin 2020" in listed, "the in-stock bottle should be reported"
+    assert "Chardonnay 2020" not in listed, "sold-out Shopify variant alerted"
+    assert "Poulsard 2022" not in listed, "out-of-stock WooCommerce product alerted"
+    assert "Zzz Other" not in listed, "listing marked epuise alerted"
 
 
 def test_sold_out_listings_are_still_parsed(pipeline):
@@ -321,10 +222,10 @@ def test_a_dry_run_does_not_silence_the_next_real_run(pipeline):
 
 def test_an_unreachable_shop_does_not_stop_the_others(pipeline):
     pipeline(BASIC, fail_hosts=("woo.test",))
-    body = digest(pipeline)
-    assert "Zzz Domaine" in body
-    assert "Zzz Other" in body
-    assert "Zzz Negoce" not in body
+    listed = rows(digest(pipeline))
+    assert "Zzz Domaine" in listed
+    assert "Zzz Other" in listed
+    assert "Zzz Negoce" not in listed
 
 
 # --- 9. the request budget -----------------------------------------------------

@@ -9,6 +9,7 @@ Run modes:
 Env vars consumed by the crawl layer (see crawler.py): CONTACT_URL,
 MAX_REQUESTS_PER_RUN, FRESH.
 """
+import datetime as dt
 import os
 import re
 import unicodedata
@@ -342,6 +343,17 @@ def match_producers(text):
     this every Bruyere-Houillon bottle would be reported twice, once under
     the wrong estate.
     """
+    return list(matched_aliases(text))
+
+
+def matched_aliases(text):
+    """{producer: the alias that matched} -- the same rule, but keeping the
+    alias instead of discarding it.
+
+    A digest row that names the alias carries its own diagnosis: three
+    estates were reported under the wrong producer this month, each caught
+    only by someone recognising the name and opening the shop.
+    """
     norm = normalize(text)
     matched = {}
     for canonical, aliases in PRODUCERS.items():
@@ -349,10 +361,10 @@ def match_producers(text):
         if hits:
             matched[canonical] = max(hits, key=len)
 
-    return [
-        canonical for canonical, alias in matched.items()
+    return {
+        canonical: alias for canonical, alias in matched.items()
         if not any(other is not alias and alias in other for other in matched.values())
-    ]
+    }
 
 
 # Matches a number only when a currency marker is directly adjacent, so a
@@ -622,6 +634,39 @@ FETCHERS = {
 }
 
 
+class ShopResult(list):
+    """The hits, plus how many products were parsed to find them.
+
+    A list subclass rather than a new type on purpose: fifteen callers
+    assert on this value directly (`== []`, `len(...)`, iteration), and the
+    count is the drift signal, not the payload. Every verified shop has a
+    real fixture that parses to more than zero products, so zero from a
+    live fetch means the adapter has stopped reading that shop -- which
+    until now printed exactly the same line as a shop with nothing in
+    stock.
+    """
+
+    def __init__(self, hits=(), products_parsed=0):
+        super().__init__(hits)
+        self.products_parsed = products_parsed
+
+
+def shop_order(shops, now=None):
+    """SHOPS rotated by the hour.
+
+    main() spends a global request budget walking SHOPS in list order, so
+    the moment that budget binds it is always the same shops that go
+    unfetched -- a systematic blind spot rather than a random one. An
+    hourly offset needs no stored counter and gives every shop an early
+    slot over a day. `now` is injectable so tests are not time-dependent.
+    """
+    if len(shops) < 2:
+        return list(shops)
+    hour = (now or dt.datetime.now(dt.timezone.utc)).hour
+    offset = hour % len(shops)
+    return list(shops[offset:]) + list(shops[:offset])
+
+
 def check_shop(shop, crawler_client):
     items = FETCHERS[shop["platform"]](shop, crawler_client)
     hits = []
@@ -632,7 +677,7 @@ def check_shop(shop, crawler_client):
         if item.get("in_stock") is False:
             skipped += 1
             continue
-        for producer in match_producers(item["text"]):
+        for producer, alias in matched_aliases(item["text"]).items():
             hits.append({
                 "shop": shop["name"],
                 "producer": producer,
@@ -640,10 +685,11 @@ def check_shop(shop, crawler_client):
                 "price": item["price"],
                 "url": item["url"],
                 "variant_title": item.get("variant_title", ""),
+                "matched_alias": alias,
             })
     if skipped:
         print(f"[{shop['name']}] skipped {skipped} sold-out listing(s)")
-    return hits
+    return ShopResult(hits, products_parsed=len(items))
 
 
 def main():
@@ -651,16 +697,19 @@ def main():
     all_hits = []
     error_count = 0
     skipped_count = 0
+    silent_shops = []
     verified_names = [s["name"] for s in SHOPS if s.get("verified", True)]
+    # Rotated so a binding budget does not starve the same tail every hour.
+    order = shop_order(SHOPS)
 
-    for i, shop in enumerate(SHOPS):
+    for i, shop in enumerate(order):
         if not shop.get("verified", True):
             skipped_count += 1
             print(f"[{shop['name']}] skipped: unverified placeholder, needs shop-adapter confirmation")
             continue
 
         if crawler_client.request_count >= crawler_client.max_requests:
-            remaining = [s["name"] for s in SHOPS[i:] if s.get("verified", True)]
+            remaining = [s["name"] for s in order[i:] if s.get("verified", True)]
             print(
                 f"MAX_REQUESTS_PER_RUN ({crawler_client.max_requests}) reached; "
                 f"not reached this run: {', '.join(remaining)}"
@@ -670,7 +719,13 @@ def main():
         try:
             hits = check_shop(shop, crawler_client)
             all_hits.extend(hits)
-            print(f"[{shop['name']}] ok, {len(hits)} hit(s)")
+            parsed = hits.products_parsed
+            if parsed == 0:
+                # Its fixture parses to more than zero, so the adapter has
+                # stopped reading this shop. Until now this printed the same
+                # line as a shop with nothing we watch in stock.
+                silent_shops.append(shop["name"])
+            print(f"[{shop['name']}] ok, {len(hits)} hit(s) from {parsed} product(s)")
         except EmptyResponseError:
             error_count += 1
             print(f"[{shop['name']}] empty response (likely JS-rendered storefront)")
@@ -681,7 +736,7 @@ def main():
             error_count += 1
             print(f"[{shop['name']}] circuit breaker open for this host, skipped: {e}")
         except crawler.BudgetExceeded:
-            remaining = [s["name"] for s in SHOPS[i:] if s.get("verified", True)]
+            remaining = [s["name"] for s in order[i:] if s.get("verified", True)]
             print(
                 f"MAX_REQUESTS_PER_RUN ({crawler_client.max_requests}) reached mid-run; "
                 f"not reached this run: {', '.join(remaining)}"
@@ -695,6 +750,14 @@ def main():
             print(f"[{shop['name']}] parse error: {e}")
 
     print(f"{len(all_hits)} raw producer match(es) this run.")
+    if silent_shops:
+        print(f"DRIFT: {len(silent_shops)} verified shop(s) parsed no products at "
+              f"all: {', '.join(silent_shops)}. Their fixtures parse fine, so the "
+              f"adapter has stopped reading them.")
+    found = {h["producer"] for h in all_hits}
+    unseen = [p for p in PRODUCERS if p not in found]
+    if unseen:
+        print(f"Watched but found nowhere ({len(unseen)}): {', '.join(unseen)}")
     if error_count:
         print(f"{error_count} shop(s) had errors this run.")
     if skipped_count:
@@ -725,7 +788,10 @@ def main():
     if not DRY_RUN:
         market.save_observations(store)
 
-    notify.run_digest(evaluated, dry_run=DRY_RUN)
+    notify.run_digest(evaluated, dry_run=DRY_RUN, notes={
+        "Shops that returned nothing": silent_shops,
+        "Watched but found nowhere": unseen,
+    })
 
 
 if __name__ == "__main__":

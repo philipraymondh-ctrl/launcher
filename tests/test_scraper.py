@@ -174,8 +174,23 @@ def test_verified_shop_fixture_yields_real_products(shop_name):
         pytest.skip("no verified shops yet")
     shop = shop_by_name(shop_name)
     items = scraper.FETCHERS[shop["platform"]](shop, crawler_for(shop))
-    assert items, f"{shop_name} is verified but its fixture parses to zero products"
-    assert any(i["title"] for i in items), f"{shop_name} fixture has no product titles"
+    if items:
+        assert any(i["title"] for i in items), f"{shop_name} fixture has no product titles"
+        return
+
+    # Some shops have no crawlable catalogue and are reached through a
+    # producer index instead. Their fixture is that index, and one canned
+    # response cannot stand in for the grower pages the adapter goes on to
+    # follow -- the stub hands the index back sixteen times, so the parse
+    # is legitimately empty. What must hold for such a fixture is that it
+    # still names producers we watch.
+    import autoselect
+    growers = autoselect.find_producer_links(
+        fixture_for(shop).read_text(), shop["url"], scraper.match_producers)
+    assert growers, (
+        f"{shop_name} is verified but its fixture yields neither products "
+        f"nor links to any producer we watch"
+    )
 
 
 def test_every_shop_has_a_fixture_matching_its_platform():
@@ -372,3 +387,19 @@ def test_html_shops_all_declare_selectors():
         if shop["platform"] == "html":
             for key in ("item_selector", "title_selector", "price_selector"):
                 assert key in shop, f"{shop['name']} (html) is missing {key}"
+
+
+def test_an_index_fixture_satisfies_the_verified_shop_check():
+    """The producer-index branch of the check above, exercised directly
+    against the real leszinzinsduvin index so it cannot rot unnoticed."""
+    import autoselect
+    body = (FIXTURES / "leszinzinsduvin-domaines-excerpt.html").read_text()
+
+    # It is an index: no prices on it at all.
+    assert autoselect.find_products(
+        body, "https://www.leszinzinsduvin.com/domaines.php",
+        scraper.PRICE_PATTERN, scraper.parse_price) == []
+    # ...but it names growers we watch, which is what makes it usable.
+    growers = autoselect.find_producer_links(
+        body, "https://www.leszinzinsduvin.com/domaines.php", scraper.match_producers)
+    assert {p for p, _ in growers} >= {"Ganevat", "Bruyere Houillon"}

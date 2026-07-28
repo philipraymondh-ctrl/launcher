@@ -163,10 +163,21 @@ HTTP header or printed.
 - A wine seen at no other shop gets no reference. Do not add a fallback
   that invents one -- `NOREF` is a real answer and the hit is still
   reported.
-- Producer aliases must be specific enough not to collide: `match_producers`
-  prefers the longest matching alias so a shared surname ("houillon") does
-  not report one estate's bottle under another's name. Never add a bare
-  surname that a different tracked producer also uses.
+- Producer aliases must name an estate, not a surname. `match_producers`
+  prefers the longest matching alias, but that only separates producers we
+  track -- it cannot help against an untracked namesake. Jura and Savoie
+  are full of them: "overnoy" alone also matches Domaine Overnoy,
+  Overnoy-Crinquand and Overnoy Jean-Louis et Guillaume; "houillon" also
+  matches Corentin Houillon and Fimbel-Houillon; "brochet" also matches
+  Emmanuel Brochet. Every one of those was reported under the wrong
+  producer from real catalogues. Use the full name.
+- A listing that is sold out is not a find. Stock comes from the platform
+  when it answers (`available` on a Shopify variant, `is_in_stock` on the
+  WooCommerce Store API) and from the listing text otherwise ("epuise",
+  "rupture de stock"). `in_stock` is set by the fetchers and dropped by
+  `check_shop`, never by the parser -- the probe counts parsed products to
+  decide whether an adapter works, so a shop whose stock is out today must
+  not read as broken. Silence from an API is not "sold out".
 - `notify.py` sends at most one digest email per run. Don't reintroduce a
   per-hit email path.
 - `notify.py` persists `seen.json` only *after* the email is actually sent.

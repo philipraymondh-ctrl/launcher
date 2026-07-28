@@ -403,3 +403,106 @@ def test_an_index_fixture_satisfies_the_verified_shop_check():
     growers = autoselect.find_producer_links(
         body, "https://www.leszinzinsduvin.com/domaines.php", scraper.match_producers)
     assert {p for p, _ in growers} >= {"Ganevat", "Bruyere Houillon"}
+
+
+# --- shared surnames must not collide ----------------------------------------
+
+OTHER_ESTATES = [
+    "Chardonnay Charmille 2023 - Domaine Overnoy",
+    "Trousseau 2023 - Domaine Overnoy",
+    "Overnoy-Crinquand Ploussard 2020",
+    "Overnoy Jean Louis et Guillaume, Arbois",
+    "Corentin Houillon, Savoie",
+    "Charlotte et Aurelien Houillon",
+    "Fimbel-Houillon",
+]
+
+
+@pytest.mark.parametrize("title", OTHER_ESTATES)
+def test_another_estate_is_not_reported_as_pupillin(title):
+    """Several unrelated Jura and Savoie growers share these surnames.
+    Asserting the misattribution is absent rather than that nothing
+    matches, so tracking one of them later stays legitimate."""
+    assert "Overnoy/Houillon" not in scraper.match_producers(title)
+
+
+@pytest.mark.parametrize("title", [
+    "Overnoy-Houillon Arbois Pupillin 2018",
+    "Overnoy Pierre/Houillon Emmanuel",
+    "Pierre Overnoy Arbois Pupillin",
+    "Emmanuel Houillon Ploussard",
+])
+def test_the_pupillin_estate_still_matches_however_it_is_written(title):
+    assert scraper.match_producers(title) == ["Overnoy/Houillon"]
+
+
+def test_bruyere_houillon_is_its_own_estate():
+    assert scraper.match_producers("Bruyère houillon Savagnin") == ["Bruyere Houillon"]
+
+
+# --- stock, as the platform reports it ---------------------------------------
+
+def shopify_payload(available, title="Poulprix 2024 Ganevat"):
+    variant = {"price": "29.00", "title": "Default"}
+    if available is not None:
+        variant["available"] = available
+    return {"products": [{"title": title, "vendor": "Ganevat", "handle": "p",
+                          "variants": [variant]}]}
+
+
+def one_page(payload):
+    class Paged(FakeCrawler):
+        def __init__(self):
+            super().__init__(None)
+            self.n = 0
+
+        def get(self, url, params=None):
+            self.n += 1
+            empty = {"products": []} if isinstance(payload, dict) else []
+            return FakeJSONResponse(payload if self.n == 1 else empty)
+    return Paged()
+
+
+def test_a_sold_out_shopify_variant_is_not_alerted():
+    shop = shop_by_name("example-shopify-shop")
+    assert scraper.fetch_shopify(shop, one_page(shopify_payload(False)))
+    assert scraper.check_shop(shop, one_page(shopify_payload(False))) == []
+
+
+def test_an_available_shopify_variant_still_alerts():
+    shop = shop_by_name("example-shopify-shop")
+    assert len(scraper.check_shop(shop, one_page(shopify_payload(True)))) == 1
+
+
+def test_an_unstated_shopify_stock_is_not_treated_as_sold_out():
+    """Silence from the API is not a reason to hide a wine."""
+    shop = shop_by_name("example-shopify-shop")
+    assert len(scraper.check_shop(shop, one_page(shopify_payload(None)))) == 1
+
+
+def test_a_title_saying_epuise_is_caught_even_when_the_api_is_silent():
+    shop = shop_by_name("example-shopify-shop")
+    payload = shopify_payload(None, title="Poulprix 2024 Ganevat - ÉPUISÉ")
+    assert scraper.check_shop(shop, one_page(payload)) == []
+
+
+def test_a_woocommerce_product_out_of_stock_is_not_alerted():
+    shop = shop_by_name("example-woo-shop")
+    product = {"name": "Labet Chardonnay", "permalink": "https://x.test/p",
+               "prices": {"price": "3900", "currency_minor_unit": 2},
+               "is_in_stock": False}
+    assert scraper.check_shop(shop, one_page([product])) == []
+    product["is_in_stock"] = True
+    assert len(scraper.check_shop(shop, one_page([product]))) == 1
+
+
+def test_the_real_mareehaute_catalogue_reports_only_buyable_bottles():
+    shop = shop_by_name("mareehaute")
+    data = load_json("mareehaute.json")
+    hits = scraper.check_shop(shop, one_page(data))
+    assert hits, "the shop should still yield something"
+    assert all(h["producer"] != "Overnoy/Houillon" for h in hits), (
+        "its Overnoy bottles are Domaine Overnoy, a different estate"
+    )
+    items = {i["url"]: i for i in scraper.fetch_shopify(shop, one_page(data))}
+    assert all(items[h["url"]]["in_stock"] for h in hits)

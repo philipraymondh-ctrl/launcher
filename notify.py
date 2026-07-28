@@ -109,6 +109,12 @@ def format_row(hit):
     size = hit.get("size_label") or f"{hit.get('size_ml', 750)}ml"
     cuvee = hit.get("cuvee") or hit.get("title", "")
     producer = hit.get("producer", "")
+    # The alias that fired is the whole diagnosis for a misattribution --
+    # three estates were reported under the wrong producer, each caught only
+    # by someone recognising the name and opening the shop.
+    alias = hit.get("matched_alias")
+    if alias:
+        producer = f"{producer} [{alias}]"
     # Where the reference came from is the difference between "cheaper than
     # three other shops" and "cheaper than a number someone guessed once".
     basis = hit.get("reference_basis") or "no reference"
@@ -116,7 +122,7 @@ def format_row(hit):
             f"{basis} | {hit.get('url', '')}")
 
 
-def build_digest_body(alerting_hits):
+def build_digest_body(alerting_hits, notes=None):
     ordered = []
     for section in SECTION_ORDER:
         ordered.extend(h for h in alerting_hits if h.get("classification") == section)
@@ -140,6 +146,13 @@ def build_digest_body(alerting_hits):
 
     if has_caveat:
         lines.append("* reference unverified or size/tier confidence low -- treat with caution")
+
+    # Notes are how a silent failure reaches the person rather than only the
+    # run log. Rendered only when non-empty, so a clean run gains nothing.
+    for heading, names in (notes or {}).items():
+        if names:
+            lines.append("")
+            lines.append(f"{heading} ({len(names)}): {', '.join(names)}")
 
     return "\n".join(lines).rstrip() + "\n"
 
@@ -174,7 +187,7 @@ def write_hits_json(all_hits, path=None):
     path.write_text(json.dumps(all_hits, indent=2, sort_keys=True, default=str))
 
 
-def run_digest(all_hits, dry_run=False, state_path=None, hits_path=None):
+def run_digest(all_hits, dry_run=False, state_path=None, hits_path=None, notes=None):
     """Full pipeline: decide alerts, write the full hit set to hits.json,
     send at most one digest email, and only then persist the cooldown state.
     Returns the list of alerting hits.
@@ -198,7 +211,7 @@ def run_digest(all_hits, dry_run=False, state_path=None, hits_path=None):
         print("No newly alert-worthy hits this run (cooldown or no change) -- silent run is valid.")
         return alerting
 
-    body = build_digest_body(alerting)
+    body = build_digest_body(alerting, notes)
     if dry_run:
         print("DRY_RUN=1 set, skipping SMTP send and leaving state untouched.")
         print("Digest email would be:\n")

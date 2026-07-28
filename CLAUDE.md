@@ -72,7 +72,12 @@ concern, wired together by `scraper.py`:
    multiplier × format multiplier`, and classifies `DEAL`/`FAIR`/`HIGH`/
    `NOREF`. Never drops a hit — an unverified reference or low size/tier
    confidence sets `caveat: true`, it doesn't suppress anything.
-7. **`notify.py`** — one digest email per run, never one per hit. State in
+7. **`notify.py`** — one digest email per run, never one per hit. A row
+   names the alias that matched it (`Ganevat [ganevat]`), because a
+   misattributed producer is otherwise indistinguishable from a correct
+   one -- three estates were reported wrongly before this existed. Any
+   digest that is sent also carries the run's `notes`: shops that returned
+   nothing, and watched producers found nowhere. State in
    `seen.json` (keyed by `sha256(shop + product_url + variant)`) drives a
    30-day per-item cooldown; a hit alerts only if it's new, its price
    dropped >10% since the last alert, or its classification improved to
@@ -195,6 +200,19 @@ HTTP header or printed.
   no format multiplier, and always caveating them -- real listings like
   "COFFRET ANNIVERSAIRE GANEVAT" at EUR 450 would otherwise be scored
   against a ~EUR 70 bottle reference and shouted about.
+- Silent failure is the enemy, so `main()` states three things it used to
+  keep to itself. `check_shop` returns a `ShopResult` (a `list` subclass,
+  so its fifteen callers are unaffected) carrying `products_parsed`: a
+  verified shop's fixture always parses to more than zero, so zero from a
+  live fetch is adapter drift and gets a `DRIFT` line plus a digest note.
+  It is reported, never escalated to a failed run -- a shop can be empty
+  for a night, and an hourly red run teaches you to ignore red runs.
+  Producers matched at no shop are named too: an alias typo makes a
+  producer vanish from every shop at once, which is otherwise invisible.
+- `shop_order()` rotates SHOPS by the hour. The budget is global and was
+  spent in list order, so the moment it binds it is always the same tail
+  that goes unfetched -- systematic, not random. Both "not reached this
+  run" messages must index the rotated order, not `SHOPS`.
 - Catalogues are paged. Any new fetcher must walk pages, not just read the
   first one -- seeing only page one turns a real hit into a silent miss,
   which is the exact failure this project exists to avoid.

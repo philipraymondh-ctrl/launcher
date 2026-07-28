@@ -1,0 +1,203 @@
+"""Making silent failure loud.
+
+Everything this scraper gets wrong, it has gotten wrong quietly. A shop
+that stops parsing prints the same line as a shop with nothing in stock. A
+misattributed alias produces a row that looks exactly like a correct one. A
+producer whose alias breaks simply stops appearing. And the request budget
+is spent in list order, so if it ever binds it is always the same shops
+that go unfetched.
+
+These tests cover the four signals that turn each of those from invisible
+into stated.
+"""
+import datetime as dt
+import json
+
+import pytest
+
+import crawler
+import market
+import notify
+import scraper
+
+from canned_shop import FakeCrawler, PRODUCERS, SHOPS, product, shopify, woo
+from test_end_to_end import BASIC
+
+
+# --- A. adapter drift ---------------------------------------------------------
+
+def test_check_shop_reports_how_many_products_it_parsed():
+    """The count is the drift signal: a verified shop's fixture always
+    parses to more than zero, so zero from a live fetch means the adapter
+    has stopped working."""
+    shop = SHOPS[0]
+    client = FakeCrawler(BASIC)
+    result = scraper.check_shop(shop, client)
+    assert result.products_parsed == 1
+
+
+def test_the_product_count_is_not_the_hit_count():
+    """A shop can serve plenty and stock nobody we watch. That is healthy;
+    zero products is not."""
+    shop = SHOPS[0]
+    payload = shopify([product("Someone Else Chardonnay", 20),
+                       product("Another Grower Savagnin", 30)])
+    result = scraper.check_shop(shop, FakeCrawler({"https://shopify.test": payload}))
+    assert result.products_parsed == 2
+    assert len(result) == 0
+
+
+def test_check_shop_still_behaves_as_a_plain_list():
+    """15 call sites assert on this value directly; it must stay a list."""
+    shop = SHOPS[0]
+    empty = scraper.check_shop(
+        shop, FakeCrawler({"https://shopify.test": shopify([])}))
+    assert empty == []
+    assert isinstance(empty, list)
+    assert len(empty) == 0
+
+
+def test_a_shop_that_parses_nothing_is_named_as_drift(pipeline, capsys):
+    bodies = dict(BASIC)
+    bodies["https://shopify.test"] = shopify([])
+    pipeline(bodies)
+    out = capsys.readouterr().out
+    assert "DRIFT" in out
+    assert "zzz-shopify" in out.split("DRIFT", 1)[1]
+
+
+def test_drift_reaches_the_digest_not_only_the_log(pipeline):
+    bodies = dict(BASIC)
+    bodies["https://shopify.test"] = shopify([])
+    pipeline(bodies)
+    body = pipeline.sent[-1]
+    assert "returned nothing" in body
+    assert "zzz-shopify" in body
+
+
+def test_a_healthy_run_says_nothing_about_drift(pipeline):
+    pipeline(BASIC)
+    body = pipeline.sent[-1]
+    assert "returned nothing" not in body
+    assert "found nowhere" not in body
+
+
+def test_drift_does_not_fail_the_run(pipeline):
+    """A shop can be legitimately empty for a night. A red run every hour
+    teaches you to ignore red runs."""
+    bodies = dict(BASIC)
+    bodies["https://shopify.test"] = shopify([])
+    pipeline(bodies)   # must not raise
+
+
+# --- B. the digest says which alias fired -------------------------------------
+
+def test_matched_aliases_exposes_what_actually_matched():
+    aliases = scraper.matched_aliases("Poulprix 2024 - Anne et Jean-Francois Ganevat")
+    assert aliases == {"Ganevat": "ganevat"}
+
+
+def test_matched_aliases_keeps_the_longest_alias_rule():
+    """The rule that stops one estate being reported as another must hold
+    here too, or the two functions disagree."""
+    aliases = scraper.matched_aliases("Bruyere Houillon Savagnin 2020")
+    assert list(aliases) == ["Bruyere Houillon"]
+    assert aliases["Bruyere Houillon"] == "bruyere houillon"
+
+
+def test_match_producers_is_unchanged_by_the_new_helper():
+    assert scraper.match_producers("Domaine GANEVAT Chardonnay") == ["Ganevat"]
+    assert scraper.match_producers("nothing here") == []
+
+
+def test_a_hit_carries_the_alias_that_found_it(monkeypatch):
+    monkeypatch.setattr(scraper, "PRODUCERS", PRODUCERS)
+    shop = SHOPS[0]
+    hits = scraper.check_shop(shop, FakeCrawler(BASIC))
+    assert hits[0]["matched_alias"] == "zzz domaine"
+
+
+def test_the_digest_row_shows_the_alias_so_a_bad_one_is_obvious():
+    """Three misattributions were caught by eye. The row should carry its
+    own diagnosis instead of needing the shop opened."""
+    row = notify.format_row({
+        "producer": "Overnoy/Houillon", "matched_alias": "houillon",
+        "cuvee": "Savagnin 2020", "price": 30.0, "classification": "DEAL",
+        "url": "https://x.test/1",
+    })
+    assert "Overnoy/Houillon [houillon]" in row
+
+
+def test_a_row_without_an_alias_still_renders():
+    row = notify.format_row({"producer": "Ganevat", "cuvee": "X", "price": 1.0})
+    assert "Ganevat" in row
+    assert "[" not in row.split("|")[1]
+
+
+# --- C. producers found nowhere ------------------------------------------------
+
+def test_a_producer_seen_at_no_shop_is_named_in_the_digest(pipeline):
+    """The cheapest detector for a broken alias: a typo makes a producer
+    vanish from every shop at once."""
+    bodies = dict(BASIC)
+    bodies["https://woo.test"] = woo([])          # drops Zzz Negoce entirely
+    pipeline(bodies)
+    body = pipeline.sent[-1]
+    assert "found nowhere" in body
+    assert "Zzz Negoce" in body.split("found nowhere", 1)[1]
+
+
+def test_producers_that_were_found_are_not_listed_as_missing(pipeline):
+    bodies = dict(BASIC)
+    bodies["https://woo.test"] = woo([])
+    pipeline(bodies)
+    missing = pipeline.sent[-1].split("found nowhere", 1)[1]
+    assert "Zzz Domaine" not in missing
+    assert "Zzz Other" not in missing
+
+
+# --- D. the budget must not always starve the same shops ----------------------
+
+def hour(h):
+    return dt.datetime(2026, 7, 28, h, 0, tzinfo=dt.timezone.utc)
+
+
+def test_shop_order_rotates_with_the_hour():
+    names = [s["name"] for s in SHOPS]
+    at_0 = [s["name"] for s in scraper.shop_order(SHOPS, now=hour(0))]
+    at_1 = [s["name"] for s in scraper.shop_order(SHOPS, now=hour(1))]
+    assert at_0 == names
+    assert at_1 != at_0
+    assert at_1[0] == names[1]
+
+
+def test_rotation_never_drops_or_duplicates_a_shop():
+    for h in range(24):
+        rotated = scraper.shop_order(SHOPS, now=hour(h))
+        assert sorted(s["name"] for s in rotated) == sorted(s["name"] for s in SHOPS)
+
+
+def test_every_shop_gets_the_first_slot_within_a_day():
+    firsts = {scraper.shop_order(SHOPS, now=hour(h))[0]["name"] for h in range(24)}
+    assert firsts == {s["name"] for s in SHOPS}
+
+
+def test_a_single_shop_list_is_left_alone():
+    one = [SHOPS[0]]
+    assert scraper.shop_order(one, now=hour(7)) == one
+    assert scraper.shop_order([], now=hour(7)) == []
+
+
+def test_the_budget_message_names_the_shops_actually_skipped(pipeline, capsys):
+    """After rotation the unfetched shops are no longer a suffix of SHOPS,
+    so a message built by slicing the original list would name the wrong
+    ones."""
+    pipeline(BASIC, max_requests=1)
+    out = capsys.readouterr().out
+    assert "not reached this run" in out
+    named = out.split("not reached this run:", 1)[1]
+    # The shop that was actually fetched must not be listed as unreached.
+    fetched = [line for line in out.splitlines() if "] ok," in line]
+    if fetched:
+        first = fetched[0].split("]")[0].lstrip("[")
+        assert first not in named

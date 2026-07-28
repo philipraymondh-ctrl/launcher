@@ -1,91 +1,140 @@
-# PLAN — end-to-end coverage of a scraper run
+# PLAN — make silent failure impossible to miss
 
-## Why
+Three changes, one theme. Every bug in this project has been silent until
+a human happened to look: a fetcher that never set `in_stock`, a breaker
+that ate 404s, an alias that reported the wrong estate for weeks. The
+scraper is loud about crashes and mute about being wrong.
 
-Every stage of this pipeline has unit tests. The *seam between* them has
-none. `scraper.main()` is the only place where fetching, producer
-matching, stock filtering, observation recording, market pricing,
-evaluation and notification meet, and nothing exercises it as one piece.
+## A. Adapter drift is currently indistinguishable from quiet
 
-The single test that calls `main()` today —
-`test_unverified_shops_are_skipped_by_main` — stubs the crawler so that
-any real fetch raises. It proves shops are skipped and nothing else. Every
-bug this session was in a seam:
+`main()` prints `[shop] ok, N hit(s)`. A shop that parses **zero
+products** — because it restyled, changed platform, or started rendering
+client-side — prints `ok, 0 hit(s)`, identical to a shop that simply has
+nothing we watch. mareehaute dropping from 76 hits to 0 would look like a
+normal night.
 
-| bug | unit-tested part | broken seam |
-|---|---|---|
-| sold-out Shopify variants alerting | `is_out_of_stock` was fine | the fetcher never set `in_stock` |
-| `KeyError: 'href'` | `find_producer_links` was fine | `find_products` used the same helper |
-| index route never read | `find_producer_links` was fine | `fetch_html` passed the wrong URL |
-| 404 tripping the breaker | `_record_failure` was fine | every HTML shop's discovery |
+The baseline needs no new state: **every verified shop has a real saved
+fixture that parses to > 0 products.** So a verified shop returning zero
+products from a live fetch is drift, full stop.
 
-So the target is not more coverage of the parts. It is one test module
-that runs the whole thing on canned responses and asserts what comes out
-the far end.
+- `check_shop` returns hits only; it must also report how many products
+  were parsed. Return a small result object rather than a bare list.
+- `main()` counts shops that parsed nothing and prints a distinct
+  `DRIFT` line naming them.
+- Any digest that is sent carries a `Shops that returned nothing` block,
+  so it reaches the person rather than only the log.
+- Deliberately **not** failing the run: a shop can be legitimately empty
+  for a night, and a red run every hour trains you to ignore red runs.
 
-## Constraints (from CLAUDE.md)
+## B. The digest cannot be audited by reading it
 
-- **No test may touch the network.** `main()` builds its own `Crawler`, so
-  `crawler.Crawler` must be replaced, not merely fed.
-- **Nothing may write into the repo.** `main()` writes `seen.json`,
-  `hits.json` and `observations.json` at module-level default paths. All
-  three must be redirected to `tmp_path`.
-- **Don't pin today's config.** `SHOPS` and `PRODUCERS` must be replaced
-  with a synthetic set, so adding or dropping a real shop never fails
-  these tests.
+Three misattributions were caught by the owner reading producer names and
+recognising the wrong estate. Nothing in a row says *why* it matched, so
+checking one means opening the shop.
 
-## Steps
+- `format_row` gains the matched alias: `Ganevat [ganevat]`. That is the
+  whole diagnosis for a bad alias, inline.
+- Requires `check_shop` to record which alias fired — `match_producers`
+  currently discards it.
 
-1. **`tests/test_end_to_end.py`** with a `run_pipeline` fixture that:
-   - substitutes a synthetic `SHOPS` (one Shopify, one WooCommerce, one
-     HTML) and `PRODUCERS`;
-   - substitutes `crawler.Crawler` with a fake serving canned bodies by
-     URL and counting requests;
-   - redirects `notify.STATE_PATH`, `notify.HITS_PATH` and
-     `market.OBSERVATIONS_PATH` into `tmp_path`;
-   - captures the digest by stubbing `notify.send_email`, so the *real*
-     send path runs (state is saved) without SMTP.
+## C. Producers found nowhere are invisible
 
-2. **Happy path.** Three shops, several producers, mixed stock. Assert:
-   hits from all three platforms; `hits.json` written; digest contains the
-   header row and one line per alerting hit.
+A producer can vanish from every catalogue — or its alias can break — and
+the digest simply has no row for it. Absence reads as absence of stock.
 
-3. **Stock.** A sold-out Shopify variant, a WooCommerce `is_in_stock:
-   false`, and an HTML listing saying "épuisé" must all be absent from the
-   digest while still being parsed (the probe counts parsed products).
+- A `Watched but found nowhere` line listing those producers, in any
+  digest that is sent.
+- This is the cheapest possible detector for a broken alias: an alias
+  typo makes a producer disappear from every shop at once.
 
-4. **Market pricing across shops.** The same wine at two shops at
-   different prices must produce a cross-shop reference, and the cheaper
-   one classify `DEAL` with a basis naming the other shop — not a
-   placeholder.
+## D. The tail of SHOPS starves
 
-5. **Négoce vs domaine.** A cheap négoce bottle and an expensive domaine
-   bottle from one producer must not be scored against each other.
+`main()` walks `SHOPS` in list order under a global
+`MAX_REQUESTS_PER_RUN`. Currently ~77 of 120 are used, so nothing starves
+— but the order is fixed, so the moment the budget binds it is *always
+the same shops* that go unfetched, forever. That is a systematic blind
+spot waiting to happen, not a random one.
 
-6. **Cooldown.** Running twice must email once: the second run finds
-   nothing new and exits without sending.
-
-7. **A dry run persists nothing.** `seen.json` and `observations.json`
-   must be untouched, so previewing never consumes a real find.
-
-8. **Failure isolation.** One shop raising `UpstreamError` must not stop
-   the others, and the digest must still contain their hits.
-
-9. **Budget.** With `MAX_REQUESTS_PER_RUN` below the shop count, the run
-   stops cleanly and names the shops it did not reach.
-
-10. **Empty run.** No qualifying hits sends no email and does not crash.
+- Rotate the starting offset by the hour: `offset = hour % len(shops)`.
+  Deterministic, needs no stored counter, and over a day every shop gets
+  an early slot.
+- The existing "not reached this run" message must keep naming the shops
+  actually skipped, which after rotation is no longer a list suffix.
 
 ## Order of work
 
-Write all of the above **first** and run them. Expect failures — they mark
-either a real defect or a seam that cannot currently be tested (e.g. a
-path that cannot be redirected). Fix with the minimum change, preferring a
-change to the code under test only where the code is genuinely at fault;
-otherwise adjust the harness.
+1. Tests first, for all four, run to confirm failure.
+2. Implement minimally.
+3. Full suite green.
+4. Re-read every changed file against this plan.
+
+## Risks and how each is contained
+
+| risk | containment |
+|---|---|
+| `check_shop`'s return type changes | it has three call sites (main, probe, tests); grep them all |
+| digest grows noisier | the two new blocks appear only when non-empty |
+| rotation confuses the budget message | assert the named shops are the unfetched ones, not a suffix |
+| a legitimately empty shop reads as drift | it is reported, not escalated; run still exits 0 |
 
 ## Definition of done
 
-- The whole suite green, including the pre-existing 299.
-- Every file touched re-read and cross-checked against this plan.
-- No test writes outside `tmp_path`; no test constructs a real `Crawler`.
+- Whole suite green, including the 315 already there.
+- No new persisted file, no workflow change, no new dependency.
+- Every changed file re-read against this plan; no dead code.
+
+
+---
+
+# PLAN REVIEW — four corrections found by checking the code
+
+Read against the actual source before writing anything. The plan was
+wrong in four places, three of them about breaking existing callers.
+
+## R1. `check_shop` must not change its return type
+
+The plan said "return a small result object rather than a bare list".
+`check_shop` has **15 call sites, 14 of them in tests**, and they assert on
+the value directly: `== []`, `len(...) == 1`, iteration. Swapping in an
+object rewrites ~13 tests for a field nobody asked them about — the
+opposite of the minimum change, and it would bury the real diff.
+
+**Corrected:** return a `list` subclass carrying the count as an
+attribute. `ShopResult(list)` with `.products_parsed`. Every existing
+assertion keeps working unchanged, because it still *is* a list.
+
+## R2. The matched alias is already computed and discarded
+
+The plan implied new matching work. `match_producers` already builds
+`matched[canonical] = max(hits, key=len)` internally and returns only the
+keys. But its return type is asserted all over the suite
+(`== ["Ganevat"]`), so it cannot start returning pairs.
+
+**Corrected:** add `matched_aliases(text) -> {producer: alias}` and let
+`match_producers` return `list(matched_aliases(text))`. One function, no
+duplicated logic, no changed signatures.
+
+## R3. Rotation would make an existing test time-dependent
+
+`test_the_run_stops_cleanly_when_the_budget_runs_out` runs with
+`max_requests=1`. With the offset derived from `datetime.now().hour`,
+*which* shop gets that single request depends on the hour the suite runs.
+That is a flaky test waiting to happen, and I would have shipped it.
+
+**Corrected:** extract `shop_order(shops, now=None)` taking an injectable
+clock. `main()` passes nothing; tests pass a fixed hour and assert the
+rotation directly.
+
+## R4. `build_digest_body` cannot grow a required parameter
+
+Existing notify tests call it with one argument.
+
+**Corrected:** `build_digest_body(hits, notes=None)`. Blocks render only
+when `notes` is non-empty, so every existing call and test is unaffected
+and a clean run gains nothing.
+
+## Unchanged after review
+
+The `SHOPS[i:]` risk was real and is already in the risk table: with
+rotation, the unfetched shops are no longer a list suffix, so both
+messages must index the rotated order. Two occurrences, both in `main()`.

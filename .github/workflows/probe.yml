@@ -75,8 +75,13 @@ jobs:
         if: inputs.apply || inputs.capture != ''
         run: pytest tests/ -q
 
+      # Only on the default branch. wine.html is generated, so a copy
+      # committed on a feature branch conflicts with the copy main's own
+      # rebuild workflow writes -- every merge then stops on a file whose
+      # correct resolution is "regenerate it". Main rebuilds itself on the
+      # push that follows a merge, so the branch never needs to carry one.
       - name: Rebuild dashboard
-        if: inputs.apply || inputs.capture != ''
+        if: (inputs.apply || inputs.capture != '') && github.ref_name == github.event.repository.default_branch
         run: python dashboard.py
 
       - name: Commit verified shops

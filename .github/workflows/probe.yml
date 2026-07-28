@@ -95,4 +95,18 @@ jobs:
           Real responses fetched and parsed in this run; fixtures saved
           (trimmed, keeping producer matches), platforms corrected and
           verified set true. Tests passed before this commit."
-          git push
+
+          # A probe takes minutes, and anything pushed to the branch
+          # meanwhile makes the push a non-fast-forward. Losing a verified
+          # shop to that is losing the whole point of the run, so rebase
+          # onto whatever arrived and try again.
+          for attempt in 1 2 3; do
+            if git push; then
+              exit 0
+            fi
+            echo "Push rejected (attempt $attempt); rebasing onto the branch head."
+            git pull --rebase origin "${{ github.ref_name }}" || exit 1
+            sleep $((attempt * 3))
+          done
+          echo "Could not push after 3 attempts."
+          exit 1

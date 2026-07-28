@@ -136,11 +136,15 @@ HTTP header or printed.
   data or low confidence — it classifies and flags a caveat instead. Don't
   add filtering there; that's exactly the behavior this scraper exists to
   avoid.
-- The crawler's User-Agent must never contain an email address. It is sent
-  to every shop on every request and printed into Actions logs, which are
-  world-readable on a public repo. `Crawler.__init__` raises on a contact
-  containing "@", and tests assert both that and that no workflow injects
-  one. Identify the bot with a URL people can reach the owner through.
+- The crawler's User-Agent identifies nobody. It is sent to every shop on
+  every request and printed into Actions logs, which are world-readable on
+  a public repo, so it carries no email, no personal name, no account name
+  and no URL implying any of them -- the repo URL was rejected for exactly
+  that reason. It also avoids the word "scraper", which some shops block on
+  sight however politely the thing behaves. `Crawler.__init__` raises on a
+  contact containing "@"; tests assert the default agent is `BOT_NAME`
+  alone and that no workflow injects a contact. `CONTACT_URL` exists to opt
+  back in to a contact that gives nothing away.
 - Reference prices are observed from our own crawl (`market.py`), never
   fetched from a price aggregator. Wine-Searcher is blocked and against
   their terms -- never add code that fetches it. A hand-entered

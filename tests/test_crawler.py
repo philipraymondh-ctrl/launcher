@@ -319,10 +319,27 @@ def test_an_email_passed_as_the_contact_is_refused_loudly(monkeypatch):
         crawler_mod.Crawler(contact="someone@example.com")
 
 
-def test_the_default_contact_is_a_reachable_url():
+def test_the_default_user_agent_identifies_nobody():
+    """It goes to every shop on every request. It must not carry the
+    owner's name, their account name, or any URL that implies either."""
     agent = crawler_mod.Crawler().user_agent
-    assert "https://github.com/" in agent
-    assert agent.startswith("WineTrackerBot/")
+    assert agent == crawler_mod.BOT_NAME
+    assert "@" not in agent
+    assert "://" not in agent
+    assert "github" not in agent.lower()
+
+
+def test_the_bot_name_does_not_say_scraper():
+    """Some shops block the word on sight, however politely the thing
+    behaves, and it describes us to no one's benefit."""
+    assert "scraper" not in crawler_mod.BOT_NAME.lower()
+    assert "crawler" not in crawler_mod.BOT_NAME.lower()
+    assert "bot" in crawler_mod.BOT_NAME.lower(), "still be honest that it is automated"
+
+
+def test_an_opt_in_contact_url_is_still_appended():
+    agent = crawler_mod.Crawler(contact="https://example.com/about-the-bot").user_agent
+    assert agent == crawler_mod.BOT_NAME + " (+https://example.com/about-the-bot)"
 
 
 def test_no_workflow_puts_an_email_on_the_wire():

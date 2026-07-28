@@ -45,7 +45,15 @@ class Disallowed(FetchError):
     """robots.txt disallows this URL for our user-agent."""
 
 
-DEFAULT_CONTACT = "https://github.com/philipraymondh-ctrl/launcher"
+# What every shop sees. Deliberately says nothing about who runs it:
+# no personal name, no account name, and not the word "scraper" -- which
+# some shops block on sight regardless of how politely the thing behaves.
+BOT_NAME = "WineTrackerBot/1.0"
+# No contact by default. A repository URL was the obvious polite choice,
+# but this repo's URL carries the owner's account name, which is the very
+# thing being kept off the wire. Set CONTACT_URL to opt back in to a
+# contact that gives nothing away.
+DEFAULT_CONTACT = ""
 
 
 class CircuitOpen(FetchError):
@@ -121,7 +129,7 @@ class Crawler:
                 "to every shop in the User-Agent and printed in public run logs. "
                 "Use a URL."
             )
-        self.user_agent = f"WineTrackerBot/1.0 (+{self.contact})"
+        self.user_agent = f"{BOT_NAME} (+{self.contact})" if self.contact else BOT_NAME
         self.fresh = (os.environ.get("FRESH") == "1") if fresh is None else fresh
         self.request_count = 0
 

@@ -39,7 +39,16 @@ MAX_PAGES_PER_SHOP = 20
 # known by more than one name (e.g. Overnoy is run by Houillon) lists both.
 # ---------------------------------------------------------------------------
 PRODUCERS = {
-    "Overnoy/Houillon": ["overnoy", "houillon"],
+    # Never a bare "overnoy" or "houillon". Both surnames are shared by
+    # several unrelated Jura and Savoie estates -- Domaine Overnoy,
+    # Overnoy-Crinquand, Overnoy Jean-Louis et Guillaume, Corentin
+    # Houillon, Charlotte et Aurelien Houillon, Fimbel-Houillon -- and the
+    # bare names reported all of their bottles as Pupillin's. This is the
+    # Pierre Overnoy / Emmanuel Houillon estate and nothing else.
+    "Overnoy/Houillon": [
+        "overnoy-houillon", "overnoy houillon", "houillon-overnoy",
+        "pierre overnoy", "overnoy pierre", "emmanuel houillon", "houillon emmanuel",
+    ],
     "Ganevat": ["ganevat"],
     "Labet": ["labet"],
     "Domaine des Miroirs/Kagami": ["miroirs", "kagami"],
@@ -393,6 +402,19 @@ def _paged(shop, crawler_client, url, params_for_page, page_size, extract):
     return items
 
 
+def in_stock(explicit, text):
+    """Whether a listing can actually be bought.
+
+    False only when the shop says so. An unknown stock state is not a
+    reason to hide a wine -- the platform APIs are authoritative when they
+    answer, and the text is a backstop for shops that only say "epuise" in
+    the title.
+    """
+    if explicit is False:
+        return False
+    return not autoselect.is_out_of_stock(text)
+
+
 def fetch_shopify(shop, crawler_client):
     base = shop["url"].rstrip("/")
 
@@ -409,12 +431,17 @@ def fetch_shopify(shop, crawler_client):
                 if variants[0].get("price"):
                     price = float(variants[0]["price"])
                 variant_title = variants[0].get("title", "") or ""
+            # Shopify reports availability per variant; one buyable format
+            # is enough. Absent the field entirely, assume nothing.
+            stated = (any(v.get("available") for v in variants)
+                      if any("available" in v for v in variants) else None)
             parsed.append({
                 "text": text,
                 "title": title,
                 "price": price,
                 "url": f"{base}/products/{product.get('handle', '')}",
                 "variant_title": variant_title,
+                "in_stock": in_stock(stated, f"{title} {variant_title}"),
             })
         return parsed
 
@@ -447,6 +474,7 @@ def fetch_woocommerce(shop, crawler_client):
                 "price": price,
                 "url": product.get("permalink", shop["url"]),
                 "variant_title": "",
+                "in_stock": in_stock(product.get("is_in_stock"), name),
             })
         return parsed
 

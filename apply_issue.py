@@ -23,7 +23,6 @@ re-pointed shop always lands `verified: false` so it can't go live unprobed.
 import argparse
 import datetime as dt
 import re
-import unicodedata
 from pathlib import Path
 
 import yaml

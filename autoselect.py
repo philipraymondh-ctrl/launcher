@@ -26,7 +26,6 @@ it doesn't -- `find_products` returns an empty list rather than guessing,
 which the caller reports as a shop needing real selectors.
 """
 import re
-import unicodedata
 from urllib.parse import urljoin, urlparse
 
 from bs4 import BeautifulSoup

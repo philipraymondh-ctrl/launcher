@@ -30,7 +30,6 @@ shop gets a weaker basis and a caveat, never an invented number.
 import json
 import re
 import statistics
-import unicodedata
 from datetime import date, timedelta
 from pathlib import Path
 

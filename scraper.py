@@ -12,7 +12,6 @@ MAX_REQUESTS_PER_RUN, FRESH.
 import datetime as dt
 import os
 import re
-import unicodedata
 from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup

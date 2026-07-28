@@ -7,7 +7,6 @@ bad reference data would hide real finds, which defeats the point of the
 scraper.
 """
 import re
-import unicodedata
 from pathlib import Path
 
 import yaml

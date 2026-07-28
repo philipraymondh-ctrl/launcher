@@ -103,3 +103,9 @@ producers:
   cuvees: []
   last_verified: null
   verified: false
+- name: Romain Lawson
+  region: jura
+  reference_750_eur: 40
+  cuvees: []
+  last_verified: null
+  verified: false

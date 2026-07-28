@@ -67,6 +67,7 @@ PRODUCERS = {
     "Tom Gauditiabois": ["tom gauditiabois", "gauditiabois"],
     "Richard Leroy": ["richard leroy", "leroy richard"],
     "Lattard": ["lattard"],
+    "Romain Lawson": ["romain lawson"],
 }
 
 # ---------------------------------------------------------------------------

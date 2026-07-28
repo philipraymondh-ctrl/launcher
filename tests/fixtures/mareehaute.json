@@ -1,0 +1,1930 @@
+{
+  "_fixture_note": "Real response from this shop, trimmed for the repo: 25 of 250 products, keeping every tracked-producer match (17) plus a sample. Captured by probe.py --apply.",
+  "products": [
+    {
+      "id": 15483199750519,
+      "title": "Le Mont Benoit L22 Extra Brut - Emmanuel Brochet",
+      "handle": "le-mont-benoit-l22-extra-brut-emmanuel-brochet",
+      "body_html": "<p data-oe-version=\"1.2\">\ud83d\udc68\ud83c\udffc\u200d\ud83c\udf3e Champagne r\u00e9alis\u00e9 par <strong><u>Emmanuel Brochet.</u></strong>\u00a0</p><p>Champagne exceptionnel de la Montagne de Reims, assemblant dans la tradition les trois principaux c\u00e9pages rois, offrant un \u00e9quilibre parfait, ni trop gourmand ni trop nerveux. L\u2019harmonie en bouche est extr\u00eamement plaisante pour sa palette bien garni d\u2019agrumes et de fruits \u00e0 p\u00e9pins, de fleurs blanches parfum\u00e9s et de notes p\u00e2tissi\u00e8res de brioche au beurre et de levure. Un appel \u00e0 red\u00e9couvrir des champagnes d\u2019assemblage qui fonctionne en diable !\u00a0</p><p>\ud83d\udccdR\u00e9gion : <strong><u>Champagne</u></strong>\u00a0<br>\ud83c\udf47C\u00e9page : Pinot Meunier, Pinot Noir, Chardonnay\u00a0<br>\ud83d\udcc6Mill\u00e9sime : 2022<br>\u2052Taux d\u2019alcool : 12,5\u00b0\u00a0</p><p>\u26a0\ufe0f Attention : cette cuv\u00e9e est limit\u00e9e \u00e0 1 bouteille par commande</p><p>Allerg\u00e8nes : contient des sulfites</p>",
+      "published_at": "2026-07-24T15:24:03+02:00",
+      "created_at": "2026-05-20T12:02:16+02:00",
+      "updated_at": "2026-07-27T22:58:50+02:00",
+      "vendor": "Emmanuel Brochet",
+      "product_type": "",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57106187223415,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "EBROCHETLMBL22EB",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "89.00",
+          "grams": 1700,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15483199750519,
+          "created_at": "2026-05-20T12:02:16+02:00",
+          "updated_at": "2026-07-27T22:58:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 85703477363063,
+          "created_at": "2026-05-20T12:02:50+02:00",
+          "position": 1,
+          "updated_at": "2026-05-20T12:02:50+02:00",
+          "product_id": 15483199750519,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/af903f58d2a9ca0748a804c2ab04ccdf.png?v=1779271370",
+          "width": 700,
+          "height": 700
+        },
+        {
+          "id": 85703479427447,
+          "created_at": "2026-05-20T12:02:54+02:00",
+          "position": 2,
+          "updated_at": "2026-05-20T12:02:54+02:00",
+          "product_id": 15483199750519,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/496cfb17f5072e0f94d2d58bf277bf17.jpg?v=1779271374",
+          "width": 650,
+          "height": 650
+        },
+        {
+          "id": 85703478772087,
+          "created_at": "2026-05-20T12:02:52+02:00",
+          "position": 3,
+          "updated_at": "2026-05-20T12:02:52+02:00",
+          "product_id": 15483199750519,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/ebeca44035bd27d9888a69f88b47c4da.jpg?v=1779271372",
+          "width": 700,
+          "height": 700
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15518548296055,
+      "title": "Chardonnay Charmille 2023 - Domaine Overnoy",
+      "handle": "chardonnay-charmille-2023-domaine-overnoy",
+      "body_html": "<p data-oe-version=\"1.2\">\ud83d\udc68\ud83c\udffc\u200d\ud83c\udf3e Vin Blanc r\u00e9alis\u00e9 par <a href=\"https://www.mareehaute.vin/collections/domaine-overnoy?_pos=1&amp;_psq=overn&amp;_ss=e&amp;_v=1.0\"><strong><u>Guillaume Overnoy</u></strong></a><strong><u>.</u></strong>\u00a0</p><p>Un Chardonnay tout en \u00e9quilibre, o\u00f9 les fruits m\u00fbrs se m\u00ealent \u00e0 une belle min\u00e9ralit\u00e9. Le nez offre des ar\u00f4mes de poire, de fleurs blanches et une touche beurr\u00e9e. En bouche, une texture ample et une fra\u00eecheur bien ma\u00eetris\u00e9e. Un vin charmeur, \u00e0 savourer d\u00e8s aujourd\u2019hui.\u00a0</p><p>\ud83d\udccdR\u00e9gion : <strong><u><a href=\"https://www.mareehaute.vin/collections/jura\">Jura</a></u></strong>\u00a0<br>\ud83c\udf47C\u00e9page : Chardonnay\u00a0<br>\ud83d\udcc6Mill\u00e9sime : 2023<br>% Taux d'Alcool : 13,5\u00b0</p><p>Allerg\u00e8nes : contient des sulfites</p>",
+      "published_at": "2026-07-23T10:52:16+02:00",
+      "created_at": "2026-07-23T10:47:55+02:00",
+      "updated_at": "2026-07-27T22:58:50+02:00",
+      "vendor": "Domaine Overnoy",
+      "product_type": "",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57318411927927,
+          "title": "Une Bouteille",
+          "option1": "Une Bouteille",
+          "option2": null,
+          "option3": null,
+          "sku": "OVERNOYCCHA23",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "27.00",
+          "grams": 1400,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15518548296055,
+          "created_at": "2026-07-23T10:47:55+02:00",
+          "updated_at": "2026-07-27T22:58:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 86294022914423,
+          "created_at": "2026-07-23T10:48:42+02:00",
+          "position": 1,
+          "updated_at": "2026-07-23T10:48:42+02:00",
+          "product_id": 15518548296055,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/6a46701f9d627a1bae64fdcfdedf25a8_a5cc0f4a-e45a-48c7-b208-3fc8d3cfe6a3.webp?v=1784796522",
+          "width": 1000,
+          "height": 1000
+        },
+        {
+          "id": 86294022881655,
+          "created_at": "2026-07-23T10:48:40+02:00",
+          "position": 2,
+          "updated_at": "2026-07-23T10:48:40+02:00",
+          "product_id": 15518548296055,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/b6da7fad297d170e30994401907185b3_f0aa71fe-b664-47b9-b266-11ed4b6c491e.jpg?v=1784796520",
+          "width": 680,
+          "height": 680
+        },
+        {
+          "id": 86294023111031,
+          "created_at": "2026-07-23T10:48:44+02:00",
+          "position": 3,
+          "updated_at": "2026-07-23T10:48:44+02:00",
+          "product_id": 15518548296055,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/88de0ac33e6d92afd6bae734b08a42ca_57b28d72-d615-463d-8706-18917e679886.jpg?v=1784796524",
+          "width": 970,
+          "height": 970
+        }
+      ],
+      "options": [
+        {
+          "name": "Bouteilles",
+          "position": 1,
+          "values": [
+            "Une Bouteille"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15518548263287,
+      "title": "Pinot Noir 2023 - Domaine Overnoy",
+      "handle": "pinot-noir-2023-domaine-overnoy",
+      "body_html": "<p data-oe-version=\"1.2\">\ud83d\udc68\ud83c\udffc\u200d\ud83c\udf3e Vin Rouge r\u00e9alis\u00e9 par <a href=\"https://www.mareehaute.vin/collections/domaine-overnoy?_pos=1&amp;_psq=overn&amp;_ss=e&amp;_v=1.0\"><strong><u>Guillaume Overnoy</u></strong></a><strong><u>.</u></strong>\u00a0</p><p>Un Pinot Noir tout en d\u00e9licatesse, avec un nez charmeur sur des ar\u00f4mes de cerise et de framboise. En bouche, une belle souplesse et des tanins fins, accompagn\u00e9s d\u2019une fra\u00eecheur gourmande. Id\u00e9al pour accompagner des volailles ou des plats v\u00e9g\u00e9tariens.\u00a0</p><p>\ud83d\udccdR\u00e9gion : <strong><u><a href=\"https://www.mareehaute.vin/collections/jura\">Jura</a></u></strong>\u00a0<br>\ud83c\udf47C\u00e9page : Pinot Noir\u00a0<br>\ud83d\udcc6Mill\u00e9sime : 2023<br>% Taux d'Alcool : 12,5\u00b0</p><p>Allerg\u00e8nes : contient des sulfites</p>",
+      "published_at": "2026-07-23T10:52:15+02:00",
+      "created_at": "2026-07-23T10:47:44+02:00",
+      "updated_at": "2026-07-27T22:58:50+02:00",
+      "vendor": "Domaine Overnoy",
+      "product_type": "",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57318411895159,
+          "title": "Une Bouteille",
+          "option1": "Une Bouteille",
+          "option2": null,
+          "option3": null,
+          "sku": "OVERNOYPN23",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "29.00",
+          "grams": 1400,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15518548263287,
+          "created_at": "2026-07-23T10:47:45+02:00",
+          "updated_at": "2026-07-27T22:58:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 86294022357367,
+          "created_at": "2026-07-23T10:48:36+02:00",
+          "position": 1,
+          "updated_at": "2026-07-23T10:48:36+02:00",
+          "product_id": 15518548263287,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/24d63bb525ed6c29f0665d8a3eb9e66d_6481f667-3c22-4e75-81f6-d8a2d183d810.jpg?v=1784796516",
+          "width": 900,
+          "height": 900
+        },
+        {
+          "id": 86294021996919,
+          "created_at": "2026-07-23T10:48:35+02:00",
+          "position": 2,
+          "updated_at": "2026-07-23T10:48:35+02:00",
+          "product_id": 15518548263287,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/b6da7fad297d170e30994401907185b3_94d17ac7-6eae-4b58-aebc-f7771038cb8e.jpg?v=1784796515",
+          "width": 680,
+          "height": 680
+        },
+        {
+          "id": 86294022652279,
+          "created_at": "2026-07-23T10:48:38+02:00",
+          "position": 3,
+          "updated_at": "2026-07-23T10:48:38+02:00",
+          "product_id": 15518548263287,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/ce6c606b14c98834cdbb17ff35ada5a6_f3e7f6b2-1ffb-4f3b-adf5-c21d4547e10e.jpg?v=1784796518",
+          "width": 900,
+          "height": 900
+        }
+      ],
+      "options": [
+        {
+          "name": "Bouteilles",
+          "position": 1,
+          "values": [
+            "Une Bouteille"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15518548164983,
+      "title": "Trousseau 2023 - Domaine Overnoy",
+      "handle": "trousseau-2023-domaine-overnoy",
+      "body_html": "<p data-oe-version=\"1.2\">\ud83d\udc68\ud83c\udffc\u200d\ud83c\udf3e Vin Rouge r\u00e9alis\u00e9 par <strong><u>Guillaume Overnoy.</u></strong>\u00a0</p><p>Un rouge d\u00e9licat et a\u00e9rien, o\u00f9 le Trousseau r\u00e9v\u00e8le toute sa finesse. Nez sur les fruits rouges frais, l\u00e9g\u00e8rement poivr\u00e9. La bouche est fluide et \u00e9l\u00e9gante, port\u00e9e par une belle acidit\u00e9 et des tanins subtils. Un vin tout en l\u00e9g\u00e8ret\u00e9, parfait pour une cuisine l\u00e9g\u00e8re ou \u00e0 d\u00e9guster seul.\u00a0</p><p>\ud83d\udccdR\u00e9gion : <strong><u><a href=\"https://www.mareehaute.vin/collections/jura\">Jura</a></u></strong>\u00a0<br>\ud83c\udf47C\u00e9page : Trousseau\u00a0<br>\ud83d\udcc6Mill\u00e9sime : 2023<br>% Taux d'Alcool : 11\u00b0</p><p>Allerg\u00e8nes : contient des sulfites</p>",
+      "published_at": "2026-07-23T10:52:14+02:00",
+      "created_at": "2026-07-23T10:47:16+02:00",
+      "updated_at": "2026-07-27T22:58:50+02:00",
+      "vendor": "Domaine Overnoy",
+      "product_type": "",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57318409470327,
+          "title": "Une Bouteille",
+          "option1": "Une Bouteille",
+          "option2": null,
+          "option3": null,
+          "sku": "OVERNOYTRO23",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "29.00",
+          "grams": 1400,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15518548164983,
+          "created_at": "2026-07-23T10:47:16+02:00",
+          "updated_at": "2026-07-27T22:58:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 86294013313399,
+          "created_at": "2026-07-23T10:47:31+02:00",
+          "position": 1,
+          "updated_at": "2026-07-23T10:47:31+02:00",
+          "product_id": 15518548164983,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/c1f6685580a21a7263a552c493d307ec_ab494a84-3fe8-467a-afe7-530c32e885f3.webp?v=1784796451",
+          "width": 1000,
+          "height": 1000
+        },
+        {
+          "id": 86294013084023,
+          "created_at": "2026-07-23T10:47:29+02:00",
+          "position": 2,
+          "updated_at": "2026-07-23T10:47:29+02:00",
+          "product_id": 15518548164983,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/76f7b3aad96ca1b80506cbd757b879f3_9096bdd1-7d30-4a4a-9d9e-4156e49323ae.jpg?v=1784796449",
+          "width": 500,
+          "height": 500
+        },
+        {
+          "id": 86294014067063,
+          "created_at": "2026-07-23T10:47:38+02:00",
+          "position": 3,
+          "updated_at": "2026-07-23T10:47:38+02:00",
+          "product_id": 15518548164983,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/4c581b9285b72224c8a747424cefd47c_572d903e-00b5-4f99-a36c-3214d42d0809.jpg?v=1784796458",
+          "width": 970,
+          "height": 970
+        }
+      ],
+      "options": [
+        {
+          "name": "Bouteilles",
+          "position": 1,
+          "values": [
+            "Une Bouteille"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15512343839095,
+      "title": "Chalasses Vieilles Vignes 2023 - Jean-Fran\u00e7ois Ganevat",
+      "handle": "chalasses-vieilles-vignes-2023-jean-francois-ganevat",
+      "body_html": "<p data-oe-version=\"1.2\">\ud83d\udc68\ud83c\udffc\u200d\ud83c\udf3e Vin Rouge\u00a0r\u00e9alis\u00e9 par <strong><u>Jean-Fran\u00e7ois Ganevat.</u></strong>\u00a0</p><p>Issu de tr\u00e8s vieilles vignes de\u00a0Poulsard\u00a0plant\u00e9es sur les marnes grises des Chalasses, ce vin exprime toute la d\u00e9licatesse du c\u00e9page dans une version profonde et rac\u00e9e. Les raisins sont r\u00e9colt\u00e9s \u00e0 la main puis vinifi\u00e9s avec un minimum d'intervention afin de pr\u00e9server la finesse naturelle du fruit et du terroir. Le nez d\u00e9voile des notes de fraise des bois, de groseille, de pivoine et une touche d'\u00e9pices douces. La bouche est soyeuse, pr\u00e9cise, port\u00e9e par des tanins de velours et une fra\u00eecheur remarquable qui \u00e9tire la finale. Un grand Poulsard, aussi a\u00e9rien que complexe, qui accompagnera parfaitement une volaille r\u00f4tie ou des champignons des bois.</p><p>\ud83d\udccdR\u00e9gion : <strong><u><a href=\"https://www.mareehaute.vin/collections/jura\">Jura</a></u></strong>\u00a0<br>\ud83c\udf47C\u00e9page : Poulsard\u00a0<br>\ud83d\udcc6Mill\u00e9sime : 2023<br>% Taux d'Alcool : 12,5\u00b0</p><p>\u26a0\ufe0f Attention : cuv\u00e9e limit\u00e9e \u00e0 1 bouteille par personne</p><p>Allerg\u00e8nes : contient des sulfites</p>",
+      "published_at": "2026-07-10T15:13:56+02:00",
+      "created_at": "2026-07-09T12:35:02+02:00",
+      "updated_at": "2026-07-27T22:58:50+02:00",
+      "vendor": "Jean-Fran\u00e7ois Ganevat",
+      "product_type": "",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57289425781111,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "JFGANEVATCVV23",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "91.00",
+          "grams": 1400,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15512343839095,
+          "created_at": "2026-07-09T12:35:02+02:00",
+          "updated_at": "2026-07-27T22:58:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 86189153157495,
+          "created_at": "2026-07-09T12:36:40+02:00",
+          "position": 1,
+          "updated_at": "2026-07-09T12:36:40+02:00",
+          "product_id": 15512343839095,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/779040c66ddf93073c6874cab3854402.png?v=1783593400",
+          "width": 700,
+          "height": 700
+        },
+        {
+          "id": 86189153124727,
+          "created_at": "2026-07-09T12:36:38+02:00",
+          "position": 2,
+          "updated_at": "2026-07-09T12:36:38+02:00",
+          "product_id": 15512343839095,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/6c0e2590d5dcbbf4f777d8a937f83741.jpg?v=1783593398",
+          "width": 650,
+          "height": 650
+        },
+        {
+          "id": 86189153190263,
+          "created_at": "2026-07-09T12:36:42+02:00",
+          "position": 3,
+          "updated_at": "2026-07-09T12:36:42+02:00",
+          "product_id": 15512343839095,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/f1d6fc01c6d74ed3f41379ba0f98215a_afaa1b7c-ae69-4312-a003-5734583d15e6.jpg?v=1783593402",
+          "width": 650,
+          "height": 650
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15512343708023,
+      "title": "Au Sommet 2021 - Anne & Jean-Fran\u00e7ois Ganevat",
+      "handle": "au-sommet-2021-anne-jean-francois-ganevat",
+      "body_html": "<p data-oe-version=\"1.2\">\ud83d\udc68\ud83c\udffc\u200d\ud83c\udf3e Vin Blanc\u00a0r\u00e9alis\u00e9 par <strong><u>Jean-Fran\u00e7ois Ganevat.</u></strong></p><p>\n</p><p>Un Riesling de n\u00e9goce issu de vieilles vignes, vinifi\u00e9 dans l'esprit des grands blancs sign\u00e9s Anne et Jean-Fran\u00e7ois Ganevat. L'\u00e9levage en vieux f\u00fbts accompagne le vin sans masquer la pr\u00e9cision du c\u00e9page. Le nez s'ouvre sur le citron confit, les fleurs blanches, les fruits \u00e0 noyau et une d\u00e9licate note pierreuse. La bouche est tendue, cristalline, port\u00e9e par une belle salinit\u00e9 et une finale d'une grande puret\u00e9. Un Riesling lumineux, id\u00e9al sur des hu\u00eetres, des poissons crus ou un fromage de montagne.</p><p>\ud83d\udccdAppellation : Vin de France<strong></strong><br>\n\ud83c\udf47C\u00e9page : Riesling<br>\n\ud83d\udcc6Mill\u00e9sime : 2021<br>\n% Taux d'Alcool : 13\u00b0</p><p>Allerg\u00e8nes : contient des sulfites</p>",
+      "published_at": "2026-07-10T15:13:56+02:00",
+      "created_at": "2026-07-09T12:34:47+02:00",
+      "updated_at": "2026-07-27T22:58:50+02:00",
+      "vendor": "Anne et Jean-Fran\u00e7ois Ganevat",
+      "product_type": "",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57289425486199,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "A&JGANEVATAS21",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "69.00",
+          "grams": 1400,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15512343708023,
+          "created_at": "2026-07-09T12:34:47+02:00",
+          "updated_at": "2026-07-27T22:58:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 86189152502135,
+          "created_at": "2026-07-09T12:36:34+02:00",
+          "position": 1,
+          "updated_at": "2026-07-09T12:36:34+02:00",
+          "product_id": 15512343708023,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/f10ed636b590725821bd1b731263185e.png?v=1783593394",
+          "width": 750,
+          "height": 750
+        },
+        {
+          "id": 86189152469367,
+          "created_at": "2026-07-09T12:36:31+02:00",
+          "position": 2,
+          "updated_at": "2026-07-09T12:36:31+02:00",
+          "product_id": 15512343708023,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/09664ce23bae63364dc666821ab1e56e.jpg?v=1783593391",
+          "width": 780,
+          "height": 780
+        },
+        {
+          "id": 86189152600439,
+          "created_at": "2026-07-09T12:36:35+02:00",
+          "position": 3,
+          "updated_at": "2026-07-09T12:36:35+02:00",
+          "product_id": 15512343708023,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/a22141e245d149368ce2acb4fa1a727e_eda1480b-a043-4a9e-a4c1-be966de3f778.jpg?v=1783593395",
+          "width": 650,
+          "height": 650
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15512343642487,
+      "title": "L'eau D'Range - Anne & Jean-Fran\u00e7ois Ganevat",
+      "handle": "leau-drange-anne-jean-francois-ganevat",
+      "body_html": "<p data-oe-version=\"1.2\">\ud83d\udc68\ud83c\udffc\u200d\ud83c\udf3e Vin Blanc de mac\u00e9ration r\u00e9alis\u00e9 par <a href=\"https://www.mareehaute.vin/collections/anne-et-jean-francois-ganevat\"><strong><u>Anne et\u00a0Jean-Fran\u00e7ois Ganevat</u></strong></a><strong><u>.</u></strong></p><p>\n</p><p>L\u2019Eau d\u2019Range est une cuv\u00e9e de mac\u00e9ration profonde, issue de Chardonnay et Savagnin de vieilles vignes plant\u00e9es sur les marnes grises du Lias. Les raisins sont mac\u00e9r\u00e9s pendant sept semaines, puis le vin est \u00e9lev\u00e9 longuement en demi-muids pendant six ans, sans aucune intervention. Les levures indig\u00e8nes m\u00e8nent la fermentation, sans collage, sans filtration et sans ajout de SO\u2082. La bouche est ample, textur\u00e9e, avec une profondeur saline remarquable et une longueur impressionnante. Malgr\u00e9 la puissance, l\u2019\u00e9quilibre reste magistral. Un grand vin de m\u00e9ditation, radical et ma\u00eetris\u00e9. Parfait sur une cuisine \u00e9pic\u00e9e ou des plats aux saveurs intenses.</p><p>\ud83d\udccdAppellation : Vin de France<strong></strong><br>\n\ud83c\udf47C\u00e9page :\u00a0Chardonnay &amp; Savagnin<br>\n\ud83d\udcc6Mill\u00e9sime : NM<br>\n% Taux d'Alcool : 14,5\u00b0</p><p>Allerg\u00e8nes : contient des sulfites</p>",
+      "published_at": "2026-07-10T15:13:55+02:00",
+      "created_at": "2026-07-09T12:34:33+02:00",
+      "updated_at": "2026-07-27T22:58:50+02:00",
+      "vendor": "Anne et Jean-Fran\u00e7ois Ganevat",
+      "product_type": "",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57289425027447,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "A&JGANEVATLEDRA",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "69.00",
+          "grams": 1400,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15512343642487,
+          "created_at": "2026-07-09T12:34:33+02:00",
+          "updated_at": "2026-07-27T22:58:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 86189151977847,
+          "created_at": "2026-07-09T12:36:27+02:00",
+          "position": 1,
+          "updated_at": "2026-07-09T12:36:27+02:00",
+          "product_id": 15512343642487,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/811300f4839f3c8041f33e36381bd4ae_79c27511-0607-470b-8bea-eb6f8140e5a5.png?v=1783593387",
+          "width": 750,
+          "height": 750
+        },
+        {
+          "id": 86189151846775,
+          "created_at": "2026-07-09T12:36:25+02:00",
+          "position": 2,
+          "updated_at": "2026-07-09T12:36:25+02:00",
+          "product_id": 15512343642487,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/3d6245cf4ecb242ecceafbe45b55ba04_a9fd7c6c-63b8-4a2e-8817-cd313d5274df.jpg?v=1783593385",
+          "width": 790,
+          "height": 790
+        },
+        {
+          "id": 86189152436599,
+          "created_at": "2026-07-09T12:36:29+02:00",
+          "position": 3,
+          "updated_at": "2026-07-09T12:36:29+02:00",
+          "product_id": 15512343642487,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/a22141e245d149368ce2acb4fa1a727e_85a79ca8-f905-4aca-bf28-bcfeb6c04471.jpg?v=1783593389",
+          "width": 650,
+          "height": 650
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15512343544183,
+      "title": "Julien en Billat l'enfant terrible du Sud 2024 - Jean-Fran\u00e7ois Ganevat",
+      "handle": "julien-en-billat-lenfant-terrible-du-sud-2024-jean-francois-ganevat",
+      "body_html": "<p style=\"white-space:pre-wrap;\" data-oe-version=\"1.2\">\ud83d\udc68\ud83c\udffc\u200d\ud83c\udf3eVin Rouge\u00a0r\u00e9alis\u00e9 par <strong><u>Jean-Fran\u00e7ois Ganevat</u></strong>.</p><p style=\"white-space:pre-wrap;\">Un\u00a0Pinot Noir\u00a0de n\u00e9goce qui d\u00e9montre toute la capacit\u00e9 de Jean-Fran\u00e7ois Ganevat \u00e0 r\u00e9v\u00e9ler l'identit\u00e9 d'un terroir hors du Jura. Vinifi\u00e9 avec les levures indig\u00e8nes et une intervention minimale, il privil\u00e9gie l'infusion du fruit plut\u00f4t que l'extraction. Le vin s'ouvre sur la griotte, la framboise fra\u00eeche, les fleurs s\u00e9ch\u00e9es et une touche d'\u00e9pices fines. La bouche est souple, soyeuse, port\u00e9e par une fra\u00eecheur qui \u00e9quilibre parfaitement la mati\u00e8re. Un Pinot Noir gourmand et \u00e9l\u00e9gant, \u00e0 partager autour d'une volaille r\u00f4tie ou d'un filet de veau.</p><p style=\"white-space:pre-wrap;\">\ud83d\udccdR\u00e9gion : <span style=\"text-decoration:underline;\"><strong><a href=\"https://www.mareehaute.vin/collections/jura\">Jura</a></strong></span><br>\ud83c\udf47C\u00e9page : Pinot Noir\u00a0<br>\ud83d\udcc6Mill\u00e9sime : 2024<br>\u2052Taux d\u2019alcool :\u00a011,5\u00b0</p><p>Allerg\u00e8nes : contient des sulfites</p>",
+      "published_at": "2026-07-10T15:13:54+02:00",
+      "created_at": "2026-07-09T12:34:14+02:00",
+      "updated_at": "2026-07-27T22:58:50+02:00",
+      "vendor": "Jean-Fran\u00e7ois Ganevat",
+      "product_type": "",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57289424404855,
+          "title": "Une Bouteille",
+          "option1": "Une Bouteille",
+          "option2": null,
+          "option3": null,
+          "sku": "JFGANEVATJEBLTDSUD24",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "91.00",
+          "grams": 1400,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15512343544183,
+          "created_at": "2026-07-09T12:34:14+02:00",
+          "updated_at": "2026-07-27T22:58:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 86189151682935,
+          "created_at": "2026-07-09T12:36:23+02:00",
+          "position": 1,
+          "updated_at": "2026-07-09T12:36:23+02:00",
+          "product_id": 15512343544183,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/34243990bc29a4460ce4de0186f1919f.png?v=1783593383",
+          "width": 600,
+          "height": 600
+        },
+        {
+          "id": 86189151519095,
+          "created_at": "2026-07-09T12:36:20+02:00",
+          "position": 2,
+          "updated_at": "2026-07-09T12:36:20+02:00",
+          "product_id": 15512343544183,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/33ca8f8b49a52c1255b5b3b7118cb371.jpg?v=1783593380",
+          "width": 600,
+          "height": 600
+        },
+        {
+          "id": 86189151420791,
+          "created_at": "2026-07-09T12:36:18+02:00",
+          "position": 3,
+          "updated_at": "2026-07-09T12:36:18+02:00",
+          "product_id": 15512343544183,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/da230bf1f208e0e8b72eb7e03254f8a9_8962f5c9-03de-4f90-9ffe-a354623ab1cc.jpg?v=1783593378",
+          "width": 600,
+          "height": 600
+        }
+      ],
+      "options": [
+        {
+          "name": "Bouteilles",
+          "position": 1,
+          "values": [
+            "Une Bouteille"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15512343445879,
+      "title": "Pinot Noir Les Grands Teppes 2023 - Jean-Fran\u00e7ois Ganevat",
+      "handle": "pinot-noir-les-grands-teppes-2023-jean-francois-ganevat",
+      "body_html": "<p style=\"white-space:pre-wrap;\" data-oe-version=\"1.2\">\ud83d\udc68\ud83c\udffc\u200d\ud83c\udf3eVin Rouge\u00a0r\u00e9alis\u00e9 par <strong><u>Jean-Fran\u00e7ois Ganevat</u></strong>.</p><p style=\"white-space:pre-wrap;\">Une des grandes cuv\u00e9es parcellaires du domaine, issue du climat\u00a0Les Grands Teppes\u00a0\u00e0 Rotalier. Les vieilles vignes de Pinot Noir sont cultiv\u00e9es en biodynamie puis \u00e9lev\u00e9es longuement en vieux f\u00fbts afin de pr\u00e9server toute la subtilit\u00e9 du terroir. Le vin d\u00e9voile des ar\u00f4mes de cerise noire, de rose s\u00e9ch\u00e9e, de sous-bois et d'\u00e9pices d\u00e9licates. La bouche est profonde, d'une grande finesse de texture, avec une tension min\u00e9rale qui accompagne une finale particuli\u00e8rement longue. Un Pinot Noir jurassien d'une rare \u00e9l\u00e9gance, superbe sur un pigeon r\u00f4ti ou un filet de veau.</p><p style=\"white-space:pre-wrap;\">\ud83d\udccdR\u00e9gion : <span style=\"text-decoration:underline;\"><strong><a href=\"https://www.mareehaute.vin/collections/jura\">Jura</a></strong></span><br>\ud83c\udf47C\u00e9page : Pinot Noir\u00a0<br>\ud83d\udcc6Mill\u00e9sime : 2023<br>\u2052Taux d\u2019alcool : 11,5\u00b0</p><p>Allerg\u00e8nes : contient des sulfites</p>",
+      "published_at": "2026-07-10T15:13:53+02:00",
+      "created_at": "2026-07-09T12:33:57+02:00",
+      "updated_at": "2026-07-27T22:58:50+02:00",
+      "vendor": "Jean-Fran\u00e7ois Ganevat",
+      "product_type": "",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57289424142711,
+          "title": "Une Bouteille",
+          "option1": "Une Bouteille",
+          "option2": null,
+          "option3": null,
+          "sku": "JFGANEVATPNLGT23",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "88.00",
+          "grams": 1400,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15512343445879,
+          "created_at": "2026-07-09T12:33:57+02:00",
+          "updated_at": "2026-07-27T22:58:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 86189150273911,
+          "created_at": "2026-07-09T12:36:14+02:00",
+          "position": 1,
+          "updated_at": "2026-07-09T12:36:14+02:00",
+          "product_id": 15512343445879,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/da0e31890e4f2b80e0334ba49ae2d484.png?v=1783593374",
+          "width": 600,
+          "height": 600
+        },
+        {
+          "id": 86189150372215,
+          "created_at": "2026-07-09T12:36:16+02:00",
+          "position": 2,
+          "updated_at": "2026-07-09T12:36:16+02:00",
+          "product_id": 15512343445879,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/e0692bf470e7b09fdbaace792a5e97ae.jpg?v=1783593376",
+          "width": 600,
+          "height": 600
+        },
+        {
+          "id": 86189150241143,
+          "created_at": "2026-07-09T12:36:12+02:00",
+          "position": 3,
+          "updated_at": "2026-07-09T12:36:12+02:00",
+          "product_id": 15512343445879,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/da230bf1f208e0e8b72eb7e03254f8a9_b8954eb5-2c0c-4df2-a70a-e821188fc9de.jpg?v=1783593372",
+          "width": 600,
+          "height": 600
+        }
+      ],
+      "options": [
+        {
+          "name": "Bouteilles",
+          "position": 1,
+          "values": [
+            "Une Bouteille"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15512343380343,
+      "title": "La Prairie du Haut 2021 - Anne & Jean-Fran\u00e7ois Ganevat",
+      "handle": "la-prairie-du-haut-2021-anne-jean-francois-ganevat",
+      "body_html": "<p data-oe-version=\"1.2\">\ud83d\udc68\ud83c\udffc\u200d\ud83c\udf3e Vin Blanc\u00a0r\u00e9alis\u00e9 par <strong><u>Jean-Fran\u00e7ois Ganevat.</u></strong></p><p>\n</p><p>Une cuv\u00e9e rare \u00e9labor\u00e9e \u00e0 partir de\u00a0Savagnin Rose, c\u00e9page ancien du Jura aujourd'hui confidentiel. Fid\u00e8les \u00e0 leur approche peu interventionniste, Anne et Jean-Fran\u00e7ois Ganevat privil\u00e9gient une vinification en levures indig\u00e8nes suivie d'un \u00e9levage en vieux f\u00fbts qui accompagne le vin sans masquer son identit\u00e9. Le nez s'ouvre sur les agrumes confits, les fruits blancs, les \u00e9pices douces et une fine touche fum\u00e9e. La bouche est ample, vibrante, port\u00e9e par une remarquable tension min\u00e9rale qui \u00e9quilibre parfaitement la richesse naturelle du c\u00e9page. Un blanc de caract\u00e8re, id\u00e9al sur une volaille aux morilles ou un vieux Comt\u00e9.</p><p>\ud83d\udccdAppellation : Vin de France<strong></strong><br>\n\ud83c\udf47C\u00e9page : Savagnin Rose<br>\n\ud83d\udcc6Mill\u00e9sime : 2021<br>\n% Taux d'Alcool : 13,5\u00b0</p><p>Allerg\u00e8nes : contient des sulfites</p>",
+      "published_at": "2026-07-10T15:13:52+02:00",
+      "created_at": "2026-07-09T12:33:38+02:00",
+      "updated_at": "2026-07-27T22:58:50+02:00",
+      "vendor": "Anne et Jean-Fran\u00e7ois Ganevat",
+      "product_type": "",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57289424077175,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "GANEVATPRAIRIE21",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "65.00",
+          "grams": 1400,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15512343380343,
+          "created_at": "2026-07-09T12:33:38+02:00",
+          "updated_at": "2026-07-27T22:58:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 86189150175607,
+          "created_at": "2026-07-09T12:36:10+02:00",
+          "position": 1,
+          "updated_at": "2026-07-09T12:36:10+02:00",
+          "product_id": 15512343380343,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/c7d62c5ec956b67fcb50b543d7731c07.png?v=1783593370",
+          "width": 650,
+          "height": 650
+        },
+        {
+          "id": 86189146046839,
+          "created_at": "2026-07-09T12:36:06+02:00",
+          "position": 2,
+          "updated_at": "2026-07-09T12:36:06+02:00",
+          "product_id": 15512343380343,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/a5ccc683f86dea9d671d9e3434525a45.jpg?v=1783593366",
+          "width": 650,
+          "height": 650
+        },
+        {
+          "id": 86189146276215,
+          "created_at": "2026-07-09T12:36:08+02:00",
+          "position": 3,
+          "updated_at": "2026-07-09T12:36:08+02:00",
+          "product_id": 15512343380343,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/da230bf1f208e0e8b72eb7e03254f8a9_2f203430-dd59-44b0-bf21-73df7e3f8b25.jpg?v=1783593368",
+          "width": 600,
+          "height": 600
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15512343282039,
+      "title": "La Prairie du Haut 2021 Magnum - Anne & Jean-Fran\u00e7ois Ganevat",
+      "handle": "la-prairie-du-haut-2021-magnum-anne-jean-francois-ganevat",
+      "body_html": "<p data-oe-version=\"1.2\">\ud83d\udc68\ud83c\udffc\u200d\ud83c\udf3e Vin Blanc\u00a0r\u00e9alis\u00e9 par <strong><u>Jean-Fran\u00e7ois Ganevat.</u></strong></p><p>\n</p><p>Le format magnum offre \u00e0 cette cuv\u00e9e de\u00a0Savagnin Rose\u00a0une \u00e9volution encore plus lente et une expression particuli\u00e8rement harmonieuse. L'\u00e9levage en vieux f\u00fbts laisse pleinement parler le terroir et la personnalit\u00e9 de ce c\u00e9page rare. Le vin d\u00e9voile des notes de citron m\u00fbr, de fruits secs, de fleurs s\u00e9ch\u00e9es et une d\u00e9licate trame min\u00e9rale. La bouche conjugue volume, fra\u00eecheur et longueur avec beaucoup d'\u00e9l\u00e9gance, dans un \u00e9quilibre remarquable. Un grand vin de gastronomie, parfait sur un homard r\u00f4ti ou un vieux Comt\u00e9 affin\u00e9.</p><p>\ud83d\udccdAppellation : Vin de France<strong></strong><br>\n\ud83c\udf47C\u00e9page : Savagnin Rose<br>\n\ud83d\udcc6Mill\u00e9sime : 2021<br>\n% Taux d'Alcool : 13,5\u00b0</p><p>Allerg\u00e8nes : contient des sulfites</p>",
+      "published_at": "2026-07-10T15:13:51+02:00",
+      "created_at": "2026-07-09T12:33:20+02:00",
+      "updated_at": "2026-07-27T22:58:50+02:00",
+      "vendor": "Anne et Jean-Fran\u00e7ois Ganevat",
+      "product_type": "",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57289423913335,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "GANEVATPRAIRIEMAG21",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "141.00",
+          "grams": 3000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15512343282039,
+          "created_at": "2026-07-09T12:33:20+02:00",
+          "updated_at": "2026-07-27T22:58:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 86189145719159,
+          "created_at": "2026-07-09T12:36:00+02:00",
+          "position": 1,
+          "updated_at": "2026-07-09T12:36:00+02:00",
+          "product_id": 15512343282039,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/ef523c9e764e914e801fe70ab3a919c2.png?v=1783593360",
+          "width": 600,
+          "height": 600
+        },
+        {
+          "id": 86189145981303,
+          "created_at": "2026-07-09T12:36:04+02:00",
+          "position": 2,
+          "updated_at": "2026-07-09T12:36:04+02:00",
+          "product_id": 15512343282039,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/65dadfa7721df8e6839b6b149fb19c27.jpg?v=1783593364",
+          "width": 600,
+          "height": 600
+        },
+        {
+          "id": 86189145817463,
+          "created_at": "2026-07-09T12:36:02+02:00",
+          "position": 3,
+          "updated_at": "2026-07-09T12:36:02+02:00",
+          "product_id": 15512343282039,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/da230bf1f208e0e8b72eb7e03254f8a9_7b62929e-44f8-4ba7-bb0f-ad0254d562df.jpg?v=1783593362",
+          "width": 600,
+          "height": 600
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15512343249271,
+      "title": "De Toute Beaut\u00e9 2024 - Anne et Jean-Fran\u00e7ois Ganevat",
+      "handle": "de-toute-beaute-2024-anne-et-jean-francois-ganevat",
+      "body_html": "<p data-oe-version=\"1.2\">\ud83d\udc68\ud83c\udffc\u200d\ud83c\udf3e Vin Rouge\u00a0r\u00e9alis\u00e9 par <strong><u>Anne et Jean-Fran\u00e7ois Ganevat.</u></strong></p><p>\n</p><p>Assemblage de\u00a070 % Gamay et 30 % de c\u00e9pages oubli\u00e9s, cette cuv\u00e9e de n\u00e9goce illustre parfaitement la libert\u00e9 cr\u00e9ative d'Anne et Jean-Fran\u00e7ois Ganevat. Les raisins sont vinifi\u00e9s naturellement, avec les levures indig\u00e8nes et tr\u00e8s peu d'intervention, afin de pr\u00e9server tout l'\u00e9clat du fruit. Le vin s'ouvre sur la cerise croquante, la framboise, les fleurs fra\u00eeches et une pointe d'\u00e9pices. La bouche est souple, juteuse, incroyablement digeste, avec une fra\u00eecheur qui accompagne le vin jusqu'\u00e0 une finale pleine d'\u00e9nergie. Un rouge joyeux et lumineux, parfait autour d'une cuisine de bistrot ou d'une belle planche de charcuteries.</p><p>\ud83d\udccdAppellation : Vin de France<strong></strong><br>\n\ud83c\udf47C\u00e9page :\u00a070% Gamay &amp; 30% C\u00e9pages Oubli\u00e9s<br>\n\ud83d\udcc6Mill\u00e9sime : 2024<br>\n% Taux d'Alcool : 13,5\u00b0</p><p>Allerg\u00e8nes : contient des sulfites</p>",
+      "published_at": "2026-07-10T15:13:50+02:00",
+      "created_at": "2026-07-09T12:33:01+02:00",
+      "updated_at": "2026-07-27T22:58:50+02:00",
+      "vendor": "Anne et Jean-Fran\u00e7ois Ganevat",
+      "product_type": "",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57289423847799,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "AJGANEVAT",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "40.00",
+          "grams": 1400,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15512343249271,
+          "created_at": "2026-07-09T12:33:02+02:00",
+          "updated_at": "2026-07-27T22:58:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 86189144932727,
+          "created_at": "2026-07-09T12:35:54+02:00",
+          "position": 1,
+          "updated_at": "2026-07-09T12:35:54+02:00",
+          "product_id": 15512343249271,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/697232d3f9574dcf7dfca7eb9a509584.jpg?v=1783593354",
+          "width": 1000,
+          "height": 1000
+        },
+        {
+          "id": 86189145555319,
+          "created_at": "2026-07-09T12:35:56+02:00",
+          "position": 2,
+          "updated_at": "2026-07-09T12:35:56+02:00",
+          "product_id": 15512343249271,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/b5fc8f86fe699fb2ce6595f2f99994f4.jpg?v=1783593356",
+          "width": 1000,
+          "height": 1000
+        },
+        {
+          "id": 86189145653623,
+          "created_at": "2026-07-09T12:35:57+02:00",
+          "position": 3,
+          "updated_at": "2026-07-09T12:35:57+02:00",
+          "product_id": 15512343249271,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/f1d6fc01c6d74ed3f41379ba0f98215a_8247178b-e9fa-4329-a62e-6aa7fe72d1f4.jpg?v=1783593357",
+          "width": 650,
+          "height": 650
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15512343183735,
+      "title": "Rotagam\u00e8te Magnum - Anne et Jean-Fran\u00e7ois Ganevat",
+      "handle": "rotagamete-magnum-anne-et-jean-francois-ganevat",
+      "body_html": "<p data-oe-version=\"1.2\">\ud83d\udc68\ud83c\udffc\u200d\ud83c\udf3e Vin Rouge\u00a0r\u00e9alis\u00e9 par <strong><u>Jean-Fran\u00e7ois Ganevat.</u></strong></p><p>\n</p><p>Un vin vibrant, en grand format pour mieux s\u2019exprimer. Rotagam\u00e8te assemble le fruit pulpeux du Gamay \u00e0 l\u2019\u00e9nergie plus terrienne des c\u00e9pages anciens. Le r\u00e9sultat est un jus franc, vivant, l\u00e9g\u00e8rement \u00e9pic\u00e9, o\u00f9 la gourmandise n\u2019emp\u00eache jamais la structure. C\u2019est un rouge d\u2019\u00e9lan, de partage, de table g\u00e9n\u00e9reuse \u2014 avec ce suppl\u00e9ment d\u2019\u00e2me propre aux vins de Ganevat.</p><p>\ud83d\udccdR\u00e9gion : <strong><u><a href=\"https://www.mareehaute.vin/collections/jura\">Jura</a></u></strong><br>\n\ud83c\udf47C\u00e9page : Gamay &amp; C\u00e9pages Jurassien\u00a0<br>\n\ud83d\udcc6Mill\u00e9sime : NM<br>\n% Taux d'Alcool : 13\u00b0</p><p>Allerg\u00e8nes : contient des sulfites</p>",
+      "published_at": "2026-07-10T15:13:49+02:00",
+      "created_at": "2026-07-09T12:32:46+02:00",
+      "updated_at": "2026-07-27T22:58:50+02:00",
+      "vendor": "Anne et Jean-Fran\u00e7ois Ganevat",
+      "product_type": "",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57289423749495,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "AJGANEVATROTMAG",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "123.00",
+          "grams": 3000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15512343183735,
+          "created_at": "2026-07-09T12:32:46+02:00",
+          "updated_at": "2026-07-27T22:58:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 86189144637815,
+          "created_at": "2026-07-09T12:35:49+02:00",
+          "position": 1,
+          "updated_at": "2026-07-09T12:35:49+02:00",
+          "product_id": 15512343183735,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/c4fe8a183af4187da404da87b1c44910.png?v=1783593349",
+          "width": 700,
+          "height": 700
+        },
+        {
+          "id": 86189144506743,
+          "created_at": "2026-07-09T12:35:47+02:00",
+          "position": 2,
+          "updated_at": "2026-07-09T12:35:47+02:00",
+          "product_id": 15512343183735,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/45bd74e175b34815af1b53c5d4362af4.jpg?v=1783593347",
+          "width": 670,
+          "height": 670
+        },
+        {
+          "id": 86189144736119,
+          "created_at": "2026-07-09T12:35:52+02:00",
+          "position": 3,
+          "updated_at": "2026-07-09T12:35:52+02:00",
+          "product_id": 15512343183735,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/f1d6fc01c6d74ed3f41379ba0f98215a_b2ed64f7-01e8-4a27-965c-a3bef4eeb5c8.jpg?v=1783593352",
+          "width": 650,
+          "height": 650
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15512343052663,
+      "title": "Sulq Blanc - Anne et Jean-Fran\u00e7ois Ganevat",
+      "handle": "sulq-blanc-anne-et-jean-francois-ganevat",
+      "body_html": "<p style=\"white-space:pre-wrap;\" data-oe-version=\"1.2\">\ud83d\udc68\ud83c\udffc\u200d\ud83c\udf3eVin Blanc\u00a0liquoreux r\u00e9alis\u00e9 par <strong><u>Anne &amp; Jean-Fran\u00e7ois Ganevat.</u></strong></p><p style=\"white-space:pre-wrap;\">Une cuv\u00e9e singuli\u00e8re \u00e9labor\u00e9e \u00e0 partir\u00a0d'anciens c\u00e9pages passerill\u00e9s pendant cinq mois, selon une approche inspir\u00e9e des grands vins de m\u00e9ditation. La concentration naturelle des raisins apporte une richesse aromatique exceptionnelle, \u00e9quilibr\u00e9e par une fra\u00eecheur remarquable. Le nez d\u00e9voile des notes d'abricot sec, d'\u00e9corce d'orange, de miel, d'\u00e9pices douces et de fruits confits. La bouche est ample, intense, mais toujours port\u00e9e par une belle tension qui \u00e9vite toute lourdeur. Un vin rare, d'une grande complexit\u00e9, magnifique avec un foie gras, un fromage persill\u00e9 ou simplement \u00e0 lui seul en fin de repas.</p><p style=\"white-space:pre-wrap;\">\ud83d\udccdAppellation : Vin de France<span style=\"text-decoration:underline;\"></span><br>\ud83c\udf47C\u00e9page : Anciens c\u00e9pages passerill\u00e9s pendant 5 mois<br>\ud83d\udcc6Mill\u00e9sime :\u00a0NM<br>\u2052Taux d\u2019alcool :\u00a014\u00b0</p><p>Allerg\u00e8nes : contient des sulfites</p>",
+      "published_at": "2026-07-10T15:13:49+02:00",
+      "created_at": "2026-07-09T12:32:28+02:00",
+      "updated_at": "2026-07-27T22:58:50+02:00",
+      "vendor": "Anne et Jean-Fran\u00e7ois Ganevat",
+      "product_type": "",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57289423618423,
+          "title": "Une Bouteille",
+          "option1": "Une Bouteille",
+          "option2": null,
+          "option3": null,
+          "sku": "AJGANEVATSUB",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "80.00",
+          "grams": 1400,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15512343052663,
+          "created_at": "2026-07-09T12:32:28+02:00",
+          "updated_at": "2026-07-27T22:58:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 86189144244599,
+          "created_at": "2026-07-09T12:35:43+02:00",
+          "position": 1,
+          "updated_at": "2026-07-09T12:35:43+02:00",
+          "product_id": 15512343052663,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/9982dcbae81ca19a3a05ec81876f06a2.png?v=1783593343",
+          "width": 610,
+          "height": 610
+        },
+        {
+          "id": 86189144342903,
+          "created_at": "2026-07-09T12:35:45+02:00",
+          "position": 2,
+          "updated_at": "2026-07-09T12:35:45+02:00",
+          "product_id": 15512343052663,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/56396d10482d9869af9f29eb73a9f389.jpg?v=1783593345",
+          "width": 650,
+          "height": 650
+        },
+        {
+          "id": 86189143392631,
+          "created_at": "2026-07-09T12:35:35+02:00",
+          "position": 3,
+          "updated_at": "2026-07-09T12:35:35+02:00",
+          "product_id": 15512343052663,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/da230bf1f208e0e8b72eb7e03254f8a9_c5ce23a6-a77d-44df-94c0-b219af2d496d.jpg?v=1783593335",
+          "width": 600,
+          "height": 600
+        }
+      ],
+      "options": [
+        {
+          "name": "Bouteilles",
+          "position": 1,
+          "values": [
+            "Une Bouteille"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15512342987127,
+      "title": "Julien en Billat l'enfant terrible du Sud 2024 Magnum - Jean-Fran\u00e7ois Ganevat",
+      "handle": "julien-en-billat-lenfant-terrible-du-sud-2024-magnum-jean-francois-ganevat",
+      "body_html": "<p style=\"white-space:pre-wrap;\" data-oe-version=\"1.2\">\ud83d\udc68\ud83c\udffc\u200d\ud83c\udf3eVin Rouge\u00a0r\u00e9alis\u00e9 par <strong><u>Jean-Fran\u00e7ois Ganevat</u></strong>.</p><p style=\"white-space:pre-wrap;\">Dans son format magnum, ce\u00a0Pinot Noir\u00a0gagne encore en profondeur et en finesse. Vinifi\u00e9 avec la m\u00eame pr\u00e9cision que la bouteille, il privil\u00e9gie une extraction douce et un \u00e9levage discret qui mettent en avant la puret\u00e9 du fruit. Le nez m\u00eale la griotte, la framboise, les fleurs s\u00e9ch\u00e9es et une fine touche \u00e9pic\u00e9e. La bouche est soyeuse, \u00e9lanc\u00e9e, avec une fra\u00eecheur remarquable qui allonge la finale. Un Pinot Noir d\u00e9licat et vivant, parfait pour accompagner une belle volaille r\u00f4tie ou un filet de veau.</p><p style=\"white-space:pre-wrap;\">\ud83d\udccdR\u00e9gion : <span style=\"text-decoration:underline;\"><strong><a href=\"https://www.mareehaute.vin/collections/jura\">Jura</a></strong></span><br>\ud83c\udf47C\u00e9page : Pinot Noir\u00a0<br>\ud83d\udcc6Mill\u00e9sime : 2024<br>\u2052Taux d\u2019alcool :\u00a011,5\u00b0</p><p>Allerg\u00e8nes : contient des sulfites</p>",
+      "published_at": "2026-07-10T15:13:48+02:00",
+      "created_at": "2026-07-09T12:32:18+02:00",
+      "updated_at": "2026-07-27T22:58:50+02:00",
+      "vendor": "Jean-Fran\u00e7ois Ganevat",
+      "product_type": "",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57289423585655,
+          "title": "Une Bouteille",
+          "option1": "Une Bouteille",
+          "option2": null,
+          "option3": null,
+          "sku": "JFGANEVATJEBETDS24MAG",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "195.00",
+          "grams": 3000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15512342987127,
+          "created_at": "2026-07-09T12:32:18+02:00",
+          "updated_at": "2026-07-27T22:58:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 86189143294327,
+          "created_at": "2026-07-09T12:35:33+02:00",
+          "position": 1,
+          "updated_at": "2026-07-09T12:35:33+02:00",
+          "product_id": 15512342987127,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/bfc52ac6a7e6588aa839f79c36d9e190.png?v=1783593333",
+          "width": 600,
+          "height": 600
+        },
+        {
+          "id": 86189142901111,
+          "created_at": "2026-07-09T12:35:29+02:00",
+          "position": 2,
+          "updated_at": "2026-07-09T12:35:29+02:00",
+          "product_id": 15512342987127,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/bf8e6271ca582f275a725fba68660041.jpg?v=1783593329",
+          "width": 600,
+          "height": 600
+        },
+        {
+          "id": 86189143032183,
+          "created_at": "2026-07-09T12:35:31+02:00",
+          "position": 3,
+          "updated_at": "2026-07-09T12:35:31+02:00",
+          "product_id": 15512342987127,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/da230bf1f208e0e8b72eb7e03254f8a9_399b45d4-1bc0-445f-a193-03965bb3d1f3.jpg?v=1783593331",
+          "width": 600,
+          "height": 600
+        }
+      ],
+      "options": [
+        {
+          "name": "Bouteilles",
+          "position": 1,
+          "values": [
+            "Une Bouteille"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15512342954359,
+      "title": "Poulsard \"L'Enfant Terrible\" 2023 - Jean-Fran\u00e7ois Ganevat",
+      "handle": "poulsard-lenfant-terrible-2023-jean-francois-ganevat",
+      "body_html": "<p style=\"white-space:pre-wrap;\" data-oe-version=\"1.2\">\ud83d\udc68\ud83c\udffc\u200d\ud83c\udf3eVin Rouge\u00a0r\u00e9alis\u00e9 par <strong><u>Jean-Fran\u00e7ois Ganevat</u></strong>.</p><p style=\"white-space:pre-wrap;\">Une lecture \u00e9clatante du Poulsard, c\u00e9page embl\u00e9matique du Jura que Jean-Fran\u00e7ois Ganevat ma\u00eetrise comme peu d'autres. Les raisins sont r\u00e9colt\u00e9s \u00e0 la main puis vinifi\u00e9s avec les levures indig\u00e8nes et un minimum d'intervention afin de pr\u00e9server toute la d\u00e9licatesse du c\u00e9page. Le vin s'ouvre sur la fraise des bois, la groseille, la rose s\u00e9ch\u00e9e et une pointe d'\u00e9pices douces. La bouche est a\u00e9rienne, incroyablement soyeuse, port\u00e9e par une fra\u00eecheur saline qui donne beaucoup d'allonge et de finesse. Un Poulsard d'une grande puret\u00e9, aussi \u00e0 l'aise sur une volaille r\u00f4tie que sur une belle assiette de charcuteries jurassiennes.</p><p style=\"white-space:pre-wrap;\">\ud83d\udccdR\u00e9gion : <span style=\"text-decoration:underline;\"><strong><a href=\"https://www.mareehaute.vin/collections/jura\">Jura</a></strong></span><br>\ud83c\udf47C\u00e9page :\u00a0Poulsard<br>\ud83d\udcc6Mill\u00e9sime :\u00a02023<br>\u2052Taux d\u2019alcool :\u00a012\u00b0</p><p>Allerg\u00e8nes : contient des sulfites</p>",
+      "published_at": "2026-07-10T15:13:47+02:00",
+      "created_at": "2026-07-09T12:32:12+02:00",
+      "updated_at": "2026-07-27T22:58:50+02:00",
+      "vendor": "Jean-Fran\u00e7ois Ganevat",
+      "product_type": "",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57289423552887,
+          "title": "Une Bouteille",
+          "option1": "Une Bouteille",
+          "option2": null,
+          "option3": null,
+          "sku": "JFGANEVATPET23",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "83.00",
+          "grams": 1400,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15512342954359,
+          "created_at": "2026-07-09T12:32:12+02:00",
+          "updated_at": "2026-07-27T22:58:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 86189142770039,
+          "created_at": "2026-07-09T12:35:25+02:00",
+          "position": 1,
+          "updated_at": "2026-07-09T12:35:25+02:00",
+          "product_id": 15512342954359,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/123f57e8630a3cfdab408734e148eb1d.png?v=1783593325",
+          "width": 610,
+          "height": 610
+        },
+        {
+          "id": 86189142802807,
+          "created_at": "2026-07-09T12:35:27+02:00",
+          "position": 2,
+          "updated_at": "2026-07-09T12:35:27+02:00",
+          "product_id": 15512342954359,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/abb97498436bc0ecbe89d149f5304442.jpg?v=1783593327",
+          "width": 610,
+          "height": 610
+        },
+        {
+          "id": 86189142147447,
+          "created_at": "2026-07-09T12:35:22+02:00",
+          "position": 3,
+          "updated_at": "2026-07-09T12:35:22+02:00",
+          "product_id": 15512342954359,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/da230bf1f208e0e8b72eb7e03254f8a9_02216119-16da-4c76-a0f5-56840c35e6ba.jpg?v=1783593322",
+          "width": 600,
+          "height": 600
+        }
+      ],
+      "options": [
+        {
+          "name": "Bouteilles",
+          "position": 1,
+          "values": [
+            "Une Bouteille"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15512342856055,
+      "title": "Savagnin Les Rescap\u00e9s 2021 Magnum - Jean-Fran\u00e7ois Ganevat",
+      "handle": "savagnin-les-rescapes-2021-magnum-jean-francois-ganevat",
+      "body_html": "<p data-oe-version=\"1.2\">\ud83d\udc68\ud83c\udffc\u200d\ud83c\udf3e Vin Blanc\u00a0r\u00e9alis\u00e9 par <strong><u>Jean-Fran\u00e7ois Ganevat.</u></strong></p><p>\n</p><p>Une cuv\u00e9e rare \u00e9labor\u00e9e \u00e0 partir de\u00a0Savagnin, issue de raisins ayant \u00e9chapp\u00e9 aux al\u00e9as climatiques du mill\u00e9sime, d'o\u00f9 son nom\u00a0<em>Les Rescap\u00e9s</em>. Vinifi\u00e9 de mani\u00e8re ouill\u00e9e puis \u00e9lev\u00e9 longuement en vieux f\u00fbts, le vin exprime toute la profondeur du c\u00e9page sans recours \u00e0 un \u00e9levage sous voile. Le nez m\u00eale les agrumes confits, la pomme m\u00fbre, les fruits secs et une fine touche de pierre \u00e0 fusil. La bouche est ample, intense et d'une remarquable pr\u00e9cision, port\u00e9e par une tension min\u00e9rale qui \u00e9tire la finale avec une grande \u00e9l\u00e9gance. En magnum, le vin gagne encore en complexit\u00e9 et en harmonie. Un grand Savagnin de gastronomie, magnifique sur un homard r\u00f4ti, une volaille aux morilles ou un vieux Comt\u00e9.</p><p>\ud83d\udccdAppellation : Vin de France<strong></strong><br>\n\ud83c\udf47C\u00e9page : Savagnin<br>\n\ud83d\udcc6Mill\u00e9sime : 2021<br>\n% Taux d'Alcool : 13\u00b0</p><p>Allerg\u00e8nes : contient des sulfites</p>",
+      "published_at": "2026-07-10T15:13:46+02:00",
+      "created_at": "2026-07-09T12:31:44+02:00",
+      "updated_at": "2026-07-27T22:58:50+02:00",
+      "vendor": "Jean-Fran\u00e7ois Ganevat",
+      "product_type": "",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57289422340471,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "JFGANEVATSLR21MAG",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "242.00",
+          "grams": 3000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15512342856055,
+          "created_at": "2026-07-09T12:31:44+02:00",
+          "updated_at": "2026-07-27T22:58:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 86189138116983,
+          "created_at": "2026-07-09T12:32:11+02:00",
+          "position": 1,
+          "updated_at": "2026-07-09T12:32:11+02:00",
+          "product_id": 15512342856055,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/237bde9039bd06c3f9de16e48c1fd572.png?v=1783593131",
+          "width": 600,
+          "height": 600
+        },
+        {
+          "id": 86189138051447,
+          "created_at": "2026-07-09T12:32:04+02:00",
+          "position": 2,
+          "updated_at": "2026-07-09T12:32:04+02:00",
+          "product_id": 15512342856055,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/272c9cae4088873c88ab374707d2a850.jpg?v=1783593124",
+          "width": 600,
+          "height": 600
+        },
+        {
+          "id": 86189137985911,
+          "created_at": "2026-07-09T12:32:02+02:00",
+          "position": 3,
+          "updated_at": "2026-07-09T12:32:02+02:00",
+          "product_id": 15512342856055,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/da230bf1f208e0e8b72eb7e03254f8a9.jpg?v=1783593122",
+          "width": 600,
+          "height": 600
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15519843287415,
+      "title": "Pommard \"Chanlin Haut\" 2020 - Pascal Roblet-Monnot",
+      "handle": "pommard-chanlin-haut-2020-pascal-roblet-monnot",
+      "body_html": "<p data-oe-version=\"1.2\">\ud83d\udc68\ud83c\udffc\u200d\ud83c\udf3e Vin Rouge\u00a0r\u00e9alis\u00e9 par\u00a0<strong><u>Pascal Roblet-Monnot</u></strong>.</p><p>Situ\u00e9 sur les hauteurs entre\u00a0Volnay et Pommard, le climat\u00a0Chanlin Haut\u00a0donne naissance \u00e0 un Pinot Noir o\u00f9 la puissance de Pommard s'exprime avec beaucoup de finesse. Cultiv\u00e9 en bio selon des pratiques proches de la biodynamie, vendang\u00e9 \u00e0 la main et \u00e9lev\u00e9 longuement en f\u00fbts, le vin d\u00e9voile des\u00a0notes de cerise, de framboise, de pivoine et d'\u00e9pices, soutenues par une bouche profonde, des tanins soyeux et une finale saline. Un Pommard de caract\u00e8re, d\u00e9j\u00e0 superbe aujourd'hui mais taill\u00e9 pour une belle garde.</p><p>\ud83d\udccdR\u00e9gion : <b><u><a href=\"https://www.mareehaute.vin/collections/bourgogne\">Bourgogne</a></u></b>\u00a0<br>\ud83c\udf47C\u00e9page : Pinot Noir<br>\ud83d\udcc6Mill\u00e9sime : 2020<br>% Taux d'Alcool : 13\u00b0</p><p>Allerg\u00e8nes : contient des sulfites</p>",
+      "published_at": "2026-07-27T09:52:48+02:00",
+      "created_at": "2026-07-27T09:20:02+02:00",
+      "updated_at": "2026-07-27T22:58:50+02:00",
+      "vendor": "Pascal Roblet-Monnot",
+      "product_type": "",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57326202814839,
+          "title": "Une Bouteille",
+          "option1": "Une Bouteille",
+          "option2": null,
+          "option3": null,
+          "sku": "PRMONNOTPCH20",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "68.00",
+          "grams": 1400,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15519843287415,
+          "created_at": "2026-07-27T09:20:02+02:00",
+          "updated_at": "2026-07-27T22:58:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 86316780061047,
+          "created_at": "2026-07-27T09:21:25+02:00",
+          "position": 1,
+          "updated_at": "2026-07-27T09:21:25+02:00",
+          "product_id": 15519843287415,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/5b8a9e711ed10cb8d96d546e4be0ed92.png?v=1785136885",
+          "width": 700,
+          "height": 700
+        },
+        {
+          "id": 86316780093815,
+          "created_at": "2026-07-27T09:21:31+02:00",
+          "position": 2,
+          "updated_at": "2026-07-27T09:21:31+02:00",
+          "product_id": 15519843287415,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/5d9a5e5af94df6df1266c5a9a86df1bd.jpg?v=1785136891",
+          "width": 700,
+          "height": 700
+        },
+        {
+          "id": 86316779733367,
+          "created_at": "2026-07-27T09:21:22+02:00",
+          "position": 3,
+          "updated_at": "2026-07-27T09:21:22+02:00",
+          "product_id": 15519843287415,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/9507509757f173c5bc87d59559639dbf_7e493ef2-a991-4a18-8a61-6a236b1b839c.jpg?v=1785136882",
+          "width": 620,
+          "height": 620
+        }
+      ],
+      "options": [
+        {
+          "name": "Bouteilles",
+          "position": 1,
+          "values": [
+            "Une Bouteille"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15519843254647,
+      "title": "Volnay \"Saint-Fran\u00e7ois\" 2020 - Pascal Roblet-Monnot",
+      "handle": "volnay-saint-francois-2020-pascal-roblet-monnot",
+      "body_html": "<p data-oe-version=\"1.2\">\ud83d\udc68\ud83c\udffc\u200d\ud83c\udf3e Vin Rouge\u00a0r\u00e9alis\u00e9 par\u00a0<strong><u>Pascal Roblet-Monnot</u></strong>.</p><p>Cette cuv\u00e9e rend hommage au p\u00e8re de Pascal Roblet et \u00e0 son fils, tous deux pr\u00e9nomm\u00e9s Fran\u00e7ois. Assemblage de plusieurs parcelles de Volnay, elle exprime toute la d\u00e9licatesse de l'appellation. Le nez s'ouvre sur la\u00a0cerise fra\u00eeche, la rose, les \u00e9pices douces et une pointe de sous-bois, avant une bouche soyeuse, \u00e9lanc\u00e9e et d'une grande longueur. Un Volnay lumineux, o\u00f9 l'\u00e9l\u00e9gance du Pinot Noir prend le dessus sur la puissance, parfait avec une volaille r\u00f4tie ou un veau aux morilles.</p><p>\ud83d\udccdR\u00e9gion : <b><u><a href=\"https://www.mareehaute.vin/collections/bourgogne\">Bourgogne</a></u></b>\u00a0<br>\ud83c\udf47C\u00e9page : Pinot Noir<br>\ud83d\udcc6Mill\u00e9sime : 2020<br>% Taux d'Alcool : 13\u00b0</p><p>Allerg\u00e8nes : contient des sulfites</p>",
+      "published_at": "2026-07-27T09:52:47+02:00",
+      "created_at": "2026-07-27T09:19:43+02:00",
+      "updated_at": "2026-07-27T22:58:50+02:00",
+      "vendor": "Pascal Roblet-Monnot",
+      "product_type": "",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57326202782071,
+          "title": "Une Bouteille",
+          "option1": "Une Bouteille",
+          "option2": null,
+          "option3": null,
+          "sku": "PRMONNOTVSF20",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "71.00",
+          "grams": 1400,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15519843254647,
+          "created_at": "2026-07-27T09:19:43+02:00",
+          "updated_at": "2026-07-27T22:58:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 86316779602295,
+          "created_at": "2026-07-27T09:21:18+02:00",
+          "position": 1,
+          "updated_at": "2026-07-27T09:21:18+02:00",
+          "product_id": 15519843254647,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/286d2e461bcbadda5f76a05322b0335b.png?v=1785136878",
+          "width": 700,
+          "height": 700
+        },
+        {
+          "id": 86316779700599,
+          "created_at": "2026-07-27T09:21:20+02:00",
+          "position": 2,
+          "updated_at": "2026-07-27T09:21:20+02:00",
+          "product_id": 15519843254647,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/d8f5a84ecf2f8a13be2daa2c7f4c3345.jpg?v=1785136880",
+          "width": 700,
+          "height": 700
+        },
+        {
+          "id": 86316779438455,
+          "created_at": "2026-07-27T09:21:16+02:00",
+          "position": 3,
+          "updated_at": "2026-07-27T09:21:16+02:00",
+          "product_id": 15519843254647,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/9507509757f173c5bc87d59559639dbf_3899fc36-324f-4ddd-a28c-a8c6e42ab1c4.jpg?v=1785136876",
+          "width": 620,
+          "height": 620
+        }
+      ],
+      "options": [
+        {
+          "name": "Bouteilles",
+          "position": 1,
+          "values": [
+            "Une Bouteille"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15519843221879,
+      "title": "Bourgogne Aligot\u00e9 Nerthus \"C\u00f4te de Nantoux\" 2021 - Pascal Roblet-Monnot",
+      "handle": "bourgogne-aligote-nerthus-cote-de-nantoux-2021-pascal-roblet-monnot",
+      "body_html": "<p data-oe-version=\"1.2\">\ud83d\udc68\ud83c\udffc\u200d\ud83c\udf3e Vin Blanc\u00a0r\u00e9alis\u00e9 par\u00a0<strong><u>Pascal Roblet-Monnot</u></strong>.</p><p>Issu d'une s\u00e9lection massale d'Aligot\u00e9\u00a0plant\u00e9e sur les\u00a0calcaires de la C\u00f4te de Nantoux, ce blanc montre tout le potentiel du c\u00e9page lorsqu'il est travaill\u00e9 avec exigence. Les raisins sont press\u00e9s d\u00e9licatement, ferment\u00e9s avec les\u00a0levures indig\u00e8nes, \u00e9lev\u00e9s un an en f\u00fbts puis plusieurs mois en cuve avant la mise en bouteille. Le vin offre un bel \u00e9quilibre entre\u00a0citron confit, fruits m\u00fbrs, anis et une finale intens\u00e9ment saline, port\u00e9 par une mati\u00e8re ample et une \u00e9nergie remarquable. Un Aligot\u00e9 de gastronomie, aussi \u00e0 l'aise sur des hu\u00eetres que sur un comt\u00e9 affin\u00e9.</p><p>\ud83d\udccdR\u00e9gion : <b><u>\ufeff<a href=\"https://www.mareehaute.vin/collections/bourgogne\">\ufeffBourgogne\ufeff</a>\ufeff</u></b>\u00a0<br>\ud83c\udf47C\u00e9page : Aligot\u00e9<br>\ud83d\udcc6Mill\u00e9sime : 2021<br>% Taux d'Alcool : 12,5\u00b0</p><p>Allerg\u00e8nes : contient des sulfites</p>",
+      "published_at": "2026-07-27T09:52:47+02:00",
+      "created_at": "2026-07-27T09:19:24+02:00",
+      "updated_at": "2026-07-27T22:58:50+02:00",
+      "vendor": "Pascal Roblet-Monnot",
+      "product_type": "",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57326202749303,
+          "title": "Une Bouteille",
+          "option1": "Une Bouteille",
+          "option2": null,
+          "option3": null,
+          "sku": "PRMONNOTBANCDN21",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "31.00",
+          "grams": 1400,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15519843221879,
+          "created_at": "2026-07-27T09:19:24+02:00",
+          "updated_at": "2026-07-27T22:58:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 86316779340151,
+          "created_at": "2026-07-27T09:21:14+02:00",
+          "position": 1,
+          "updated_at": "2026-07-27T09:21:14+02:00",
+          "product_id": 15519843221879,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/7b4e929acab5d9e2320e1066fbf7d87c.png?v=1785136874",
+          "width": 700,
+          "height": 700
+        },
+        {
+          "id": 86316778881399,
+          "created_at": "2026-07-27T09:21:09+02:00",
+          "position": 2,
+          "updated_at": "2026-07-27T09:21:09+02:00",
+          "product_id": 15519843221879,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/55ccf3e0c98e5b01c9536222e36aa3b6.jpg?v=1785136869",
+          "width": 700,
+          "height": 700
+        },
+        {
+          "id": 86316779241847,
+          "created_at": "2026-07-27T09:21:12+02:00",
+          "position": 3,
+          "updated_at": "2026-07-27T09:21:12+02:00",
+          "product_id": 15519843221879,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/9507509757f173c5bc87d59559639dbf.jpg?v=1785136872",
+          "width": 620,
+          "height": 620
+        }
+      ],
+      "options": [
+        {
+          "name": "Bouteilles",
+          "position": 1,
+          "values": [
+            "Une Bouteille"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15519843189111,
+      "title": "Arnet 2022 - Prieur\u00e9 Saint-Jean de Bebian",
+      "handle": "arnet-2022-prieure-saint-jean-de-bebian",
+      "body_html": "<p data-oe-version=\"1.2\">\ud83d\udc68\ud83c\udffc\ud83c\udf3e Vin Blanc r\u00e9alis\u00e9 par <u><strong>Benoit Pontenier.</strong></u>\u00a0</p>\n<p>Un blanc de Roussanne qui part chercher la profondeur plut\u00f4t que l\u2019\u00e9vidence. Issu de vieilles vignes plant\u00e9es sur une ancienne coul\u00e9e de lave, Arnet garde cette empreinte volcanique dans sa mati\u00e8re : quelque chose de dense, de vibrant, presque fum\u00e9 en fond. Le domaine travaille aujourd\u2019hui en biodynamie, avec des vinifications sans recours au soufre, dans une recherche de pr\u00e9cision plut\u00f4t que de puissance. Le vin s\u2019ouvre sur les fruits jaunes, les fleurs s\u00e8ches, une touche d\u2019amande et une bouche ample mais tenue. Un blanc du Languedoc avec du relief, solaire mais jamais lourd.</p>\n<p>\ud83d\udccdAppellation : Vin de France<br>\ud83c\udf47C\u00e9page : Roussanne\u00a0<br>\ud83d\udcc6Mill\u00e9sime : 2022<br>% Taux d'Alcool : 13,5\u00b0</p>\n<p>Allerg\u00e8nes : contient des sulfites</p>",
+      "published_at": "2026-07-27T09:52:46+02:00",
+      "created_at": "2026-07-27T09:19:12+02:00",
+      "updated_at": "2026-07-27T22:58:50+02:00",
+      "vendor": "Prieure Saint-Jean de B\u00e9bian",
+      "product_type": "",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57326202716535,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "BEBIANARN22",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "61.00",
+          "grams": 1400,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15519843189111,
+          "created_at": "2026-07-27T09:19:12+02:00",
+          "updated_at": "2026-07-27T22:58:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 86316778717559,
+          "created_at": "2026-07-27T09:21:04+02:00",
+          "position": 1,
+          "updated_at": "2026-07-27T09:21:04+02:00",
+          "product_id": 15519843189111,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/da67b52a900123a563f4cd7083ed11e2.png?v=1785136864",
+          "width": 700,
+          "height": 700
+        },
+        {
+          "id": 86316778848631,
+          "created_at": "2026-07-27T09:21:07+02:00",
+          "position": 2,
+          "updated_at": "2026-07-27T09:21:07+02:00",
+          "product_id": 15519843189111,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/f7256fbf46fd9d4932cc620de6ebde63.jpg?v=1785136867",
+          "width": 700,
+          "height": 700
+        },
+        {
+          "id": 86316778750327,
+          "created_at": "2026-07-27T09:21:05+02:00",
+          "position": 3,
+          "updated_at": "2026-07-27T09:21:05+02:00",
+          "product_id": 15519843189111,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/26f29656a99eadea86558c096c2c787a_aa8d9a3f-8411-4f18-b367-a293bc56eec0.jpg?v=1785136865",
+          "width": 650,
+          "height": 650
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15519843156343,
+      "title": "Le Rec 2024 - Prieur\u00e9 Saint-Jean de Bebian",
+      "handle": "le-rec-2024-prieure-saint-jean-de-bebian",
+      "body_html": "<p data-oe-version=\"1.2\">\ud83d\udc68\ud83c\udffc\ud83c\udf3e\u00a0Vin Rouge\u00a0r\u00e9alis\u00e9 par <strong><u>Benoit Pontenier</u></strong>.</p>\n<p>Un Cinsault pur, issu de vieilles vignes sur un terroir fluviatile du Villafranchien, riche en silex, quartz, marbre et sable. Ici, le raisin est travaill\u00e9 en infusion pendant trois semaines, sans extraction brutale, puis \u00e9lev\u00e9 douze mois en foudre avant de poursuivre son repos en bouteille. Le vin s\u2019ouvre sur un fruit rouge tr\u00e8s fin, presque juteux, avec une touche d\u2019\u00e9pices douces et une sensation de pierre chaude en arri\u00e8re-plan. La bouche est souple, soyeuse, mais jamais molle : \u00e7a glisse, \u00e7a respire, \u00e7a reste pr\u00e9cis. Un rouge d\u00e9licat, qui montre \u00e0 quel point le Cinsault peut avoir de la tenue quand il est bien travaill\u00e9.</p>\n<p>\ud83d\udccdAppellation : Vin de France<strong></strong><br>\ud83c\udf47C\u00e9page : Cinsault<br>\ud83d\udcc6Mill\u00e9sime : 2024<br><span style=\"color: rgb(119, 119, 119); font-size: 13px; font-weight: 500;\">%</span>\u00a0Taux d'Alcool : 12\u00b0</p>\n<p>Allerg\u00e8nes : contient des sulfites</p>",
+      "published_at": "2026-07-27T09:52:45+02:00",
+      "created_at": "2026-07-27T09:18:57+02:00",
+      "updated_at": "2026-07-27T22:58:50+02:00",
+      "vendor": "Prieure Saint-Jean de B\u00e9bian",
+      "product_type": "",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57326202683767,
+          "title": "Une Bouteille",
+          "option1": "Une Bouteille",
+          "option2": null,
+          "option3": null,
+          "sku": "BEBIANREC24",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "55.00",
+          "grams": 1400,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15519843156343,
+          "created_at": "2026-07-27T09:18:58+02:00",
+          "updated_at": "2026-07-27T22:58:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 86316778619255,
+          "created_at": "2026-07-27T09:20:57+02:00",
+          "position": 1,
+          "updated_at": "2026-07-27T09:20:57+02:00",
+          "product_id": 15519843156343,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/940009df48738d63c08cd0a1cd50a579.png?v=1785136857",
+          "width": 700,
+          "height": 700
+        },
+        {
+          "id": 86316778652023,
+          "created_at": "2026-07-27T09:20:59+02:00",
+          "position": 2,
+          "updated_at": "2026-07-27T09:20:59+02:00",
+          "product_id": 15519843156343,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/dca024b184a88302f1c0a2f0c9db409b.jpg?v=1785136859",
+          "width": 700,
+          "height": 700
+        },
+        {
+          "id": 86316778684791,
+          "created_at": "2026-07-27T09:21:00+02:00",
+          "position": 3,
+          "updated_at": "2026-07-27T09:21:01+02:00",
+          "product_id": 15519843156343,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/26f29656a99eadea86558c096c2c787a_2096abe4-1983-4f33-8884-bd92a5deef52.jpg?v=1785136861",
+          "width": 650,
+          "height": 650
+        }
+      ],
+      "options": [
+        {
+          "name": "Bouteilles",
+          "position": 1,
+          "values": [
+            "Une Bouteille"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15519843058039,
+      "title": "Les Moutons 2024 - Prieur\u00e9 Saint-Jean de Bebian",
+      "handle": "les-moutons-2024-prieure-saint-jean-de-bebian",
+      "body_html": "<p data-oe-version=\"1.2\">\ud83d\udc68\ud83c\udffc\ud83c\udf3e\u00a0Vin Rouge\u00a0r\u00e9alis\u00e9 par <strong><u>Benoit Pontenier</u></strong>.</p>\n<p>Un Mourv\u00e8dre pur, issu d\u2019une vieille parcelle en terrasses fluviatiles, sur galets roul\u00e9s et argiles grises. La vinification en grappes enti\u00e8res garde toute l\u2019\u00e9nergie du raisin, puis l\u2019\u00e9levage en foudre pendant douze mois vient poser la mati\u00e8re sans la durcir. Le vin s\u2019ouvre sur les fruits noirs, les herbes s\u00e8ches, une touche de poivre et ce fond m\u00e9diterran\u00e9en qui rappelle la garrigue sans tomber dans la lourdeur. La bouche est profonde, structur\u00e9e, mais \u00e9tonnamment fra\u00eeche, avec des tanins serr\u00e9s et une vraie longueur. Un Mourv\u00e8dre de caract\u00e8re, plus vertical que massif.</p>\n<p>\ud83d\udccdAppellation : Vin de France<strong></strong><br>\ud83c\udf47C\u00e9page : Mourv\u00e8dre<br>\ud83d\udcc6Mill\u00e9sime : 2024<br><span style=\"color: rgb(119, 119, 119); font-size: 13px; font-weight: 500;\">%</span>\u00a0Taux d'Alcool : 13,5\u00b0</p>\n<p>Allerg\u00e8nes : contient des sulfites</p>",
+      "published_at": "2026-07-27T09:52:44+02:00",
+      "created_at": "2026-07-27T09:18:33+02:00",
+      "updated_at": "2026-07-27T22:58:50+02:00",
+      "vendor": "Prieure Saint-Jean de B\u00e9bian",
+      "product_type": "",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57326202519927,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "BEBIANLMO24",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "55.00",
+          "grams": 1400,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15519843058039,
+          "created_at": "2026-07-27T09:18:34+02:00",
+          "updated_at": "2026-07-27T22:58:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 86316778520951,
+          "created_at": "2026-07-27T09:20:50+02:00",
+          "position": 1,
+          "updated_at": "2026-07-27T09:20:50+02:00",
+          "product_id": 15519843058039,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/2b45421e9144da86cebbe61a0501b3b7.png?v=1785136850",
+          "width": 700,
+          "height": 700
+        },
+        {
+          "id": 86316778553719,
+          "created_at": "2026-07-27T09:20:51+02:00",
+          "position": 2,
+          "updated_at": "2026-07-27T09:20:51+02:00",
+          "product_id": 15519843058039,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/7997f9b91d5f1ea5000ae28a9d4fa994.jpg?v=1785136851",
+          "width": 700,
+          "height": 700
+        },
+        {
+          "id": 86316778586487,
+          "created_at": "2026-07-27T09:20:54+02:00",
+          "position": 3,
+          "updated_at": "2026-07-27T09:20:54+02:00",
+          "product_id": 15519843058039,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/26f29656a99eadea86558c096c2c787a_c0cee8c3-d6f9-41f2-b544-1c08b1ca7df6.jpg?v=1785136854",
+          "width": 650,
+          "height": 650
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15519842894199,
+      "title": "Pautel 2024 - Prieur\u00e9 Saint-Jean de Bebian",
+      "handle": "pautel-2024-prieure-saint-jean-de-bebian",
+      "body_html": "<p data-oe-version=\"1.2\">\ud83d\udc68\ud83c\udffc\u200d\ud83c\udf3e\u00a0Vin Rouge\u00a0r\u00e9alis\u00e9 par <strong><u>Benoit Pontenier</u></strong>.</p><p>Une Syrah pure, issue d\u2019une vieille s\u00e9lection massale plant\u00e9e en 1973 sur un terroir graveleux du Villafranchien et d\u2019argiles grises. La fermentation se fait partiellement en grappes enti\u00e8res, avec un \u00e9levage en foudre qui garde la pr\u00e9cision du fruit sans le maquiller. Le vin s\u2019ouvre sur une aromatique tr\u00e8s fine, entre violette, agrumes, poivre et fruits noirs frais. La bouche est soyeuse, juteuse, avec une mati\u00e8re d\u00e9licate mais bien dessin\u00e9e. Une Syrah du sud qui \u00e9vite la lourdeur, plus florale que massive, plus fra\u00eeche que d\u00e9monstrative. </p><p>\ud83d\udccdAppellation : Vin de France<strong></strong><br>\ud83c\udf47C\u00e9page : Syrah<br>\ud83d\udcc6Mill\u00e9sime : 2024<br><span style=\"color: rgb(119, 119, 119);font-size: 13px;font-weight: 500\">%</span>\u00a0Taux d'Alcool : 13,5\u00b0</p><p>Allerg\u00e8nes : contient des sulfites</p>",
+      "published_at": "2026-07-27T09:52:43+02:00",
+      "created_at": "2026-07-27T09:18:19+02:00",
+      "updated_at": "2026-07-27T22:58:50+02:00",
+      "vendor": "Prieure Saint-Jean de B\u00e9bian",
+      "product_type": "",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57326193738103,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "BEBIANPAU24",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "55.00",
+          "grams": 1400,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15519842894199,
+          "created_at": "2026-07-27T09:18:19+02:00",
+          "updated_at": "2026-07-27T22:58:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 86316778389879,
+          "created_at": "2026-07-27T09:20:47+02:00",
+          "position": 1,
+          "updated_at": "2026-07-27T09:20:47+02:00",
+          "product_id": 15519842894199,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/78d378120751a136668cc98df23bd3ad.png?v=1785136847",
+          "width": 700,
+          "height": 700
+        },
+        {
+          "id": 86316778324343,
+          "created_at": "2026-07-27T09:20:43+02:00",
+          "position": 2,
+          "updated_at": "2026-07-27T09:20:43+02:00",
+          "product_id": 15519842894199,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/b6a91b0028d1f52af51e2226e75f604e.jpg?v=1785136843",
+          "width": 700,
+          "height": 700
+        },
+        {
+          "id": 86316778357111,
+          "created_at": "2026-07-27T09:20:44+02:00",
+          "position": 3,
+          "updated_at": "2026-07-27T09:20:44+02:00",
+          "product_id": 15519842894199,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/26f29656a99eadea86558c096c2c787a_514bd86e-16f9-413d-81a8-b6825ef00404.jpg?v=1785136844",
+          "width": 650,
+          "height": 650
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15519842664823,
+      "title": "Prieure Saint-Jean de Bebian Rouge 2024 - Prieur\u00e9 Saint-Jean de Bebian",
+      "handle": "prieure-saint-jean-de-bebian-rouge-2024-prieure-saint-jean-de-bebian",
+      "body_html": "<p data-oe-version=\"1.2\">\ud83d\udc68\ud83c\udffc\u200d\ud83c\udf3e\u00a0Vin Rouge\u00a0r\u00e9alis\u00e9 par <strong><u>Benoit Pontenier</u></strong>.</p><p>La cuv\u00e9e historique du domaine, construite autour de Grenache, Syrah et Mourv\u00e8dre, dans l\u2019esprit des grandes s\u00e9lections massales plant\u00e9es ici depuis les ann\u00e9es 1970. Le domaine travaille aujourd\u2019hui en biodynamie, avec des vinifications sans soufre, pour laisser parler les grands terroirs de P\u00e9zenas : basaltes, calcaires, galets roul\u00e9s et terrasses fluviatiles. Le vin s\u2019ouvre sur les fruits noirs, les \u00e9pices, la garrigue et une touche l\u00e9g\u00e8rement fum\u00e9e. La bouche est ample, profonde, mais gard\u00e9e par une fra\u00eecheur nette qui emp\u00eache toute lourdeur. Un grand rouge languedocien, ancr\u00e9, structur\u00e9, mais beaucoup plus fin que puissant.</p><p>\ud83d\udccdR\u00e9gion :\u00a0<strong><u><a href=\"https://www.mareehaute.vin/collections/languedoc-roussillon\">Languedoc</a></u></strong><br>\ud83c\udf47C\u00e9page : Syrah, Grenache &amp; Mourv\u00e8dre<br>\ud83d\udcc6Mill\u00e9sime : 2024<br><span style=\"color: rgb(119, 119, 119);font-size: 13px;font-weight: 500\">%</span>\u00a0Taux d'Alcool : 13,5\u00b0</p><p>Allerg\u00e8nes : contient des sulfites</p>",
+      "published_at": "2026-07-27T09:52:43+02:00",
+      "created_at": "2026-07-27T09:18:00+02:00",
+      "updated_at": "2026-07-27T22:58:50+02:00",
+      "vendor": "Prieure Saint-Jean de B\u00e9bian",
+      "product_type": "",
+      "tags": [],
+      "variants": [
+        {
+          "id": 57326191870327,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "BEBIANPSJDBR24",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "51.00",
+          "grams": 1400,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15519842664823,
+          "created_at": "2026-07-27T09:18:01+02:00",
+          "updated_at": "2026-07-27T22:58:50+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 86316778291575,
+          "created_at": "2026-07-27T09:20:35+02:00",
+          "position": 1,
+          "updated_at": "2026-07-27T09:20:35+02:00",
+          "product_id": 15519842664823,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/8c1a12d6d67ee4b1aa0a345fc72f4ea1.png?v=1785136835",
+          "width": 700,
+          "height": 700
+        },
+        {
+          "id": 86316778258807,
+          "created_at": "2026-07-27T09:20:33+02:00",
+          "position": 2,
+          "updated_at": "2026-07-27T09:20:33+02:00",
+          "product_id": 15519842664823,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/c483a759f6616b44a02ac29bedaef404.jpg?v=1785136833",
+          "width": 700,
+          "height": 700
+        },
+        {
+          "id": 86316778127735,
+          "created_at": "2026-07-27T09:20:31+02:00",
+          "position": 3,
+          "updated_at": "2026-07-27T09:20:31+02:00",
+          "product_id": 15519842664823,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0818/6947/2019/files/26f29656a99eadea86558c096c2c787a.jpg?v=1785136831",
+          "width": 650,
+          "height": 650
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    }
+  ]
+}

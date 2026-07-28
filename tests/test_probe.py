@@ -13,6 +13,9 @@ FIXTURES = Path(__file__).parent / "fixtures"
 @pytest.fixture(autouse=True)
 def isolated_output(tmp_path, monkeypatch):
     monkeypatch.setattr(probe, "OUTPUT_DIR", tmp_path / "probe_output")
+    # Diagnostics land in a committed directory, so an unpatched test wrote
+    # testshop.html into the repo and a probe run committed it.
+    monkeypatch.setattr(probe, "DIAGNOSTIC_DIR", tmp_path / "probe_pages")
     probe.OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     return probe.OUTPUT_DIR
 
@@ -128,7 +131,14 @@ def test_http_404_does_not_stop_the_probe():
     result = probe.probe_shop(a_shop(), stub)
 
     assert result["status"] == "ok"
-    assert len(stub.calls) == 3
+    # The rule, not the endpoint count: a 404 means "host is up, wrong
+    # platform", so the probe must carry on past it to the HTML attempt.
+    # Pinning an exact number here just breaks when the candidate list
+    # grows, which is what catalogue discovery did.
+    assert "https://testshop.example/products.json" in stub.calls
+    assert "https://testshop.example" in stub.calls
+    assert stub.calls.index("https://testshop.example/products.json") < \
+        stub.calls.index("https://testshop.example")
 
 
 def test_saves_real_body_for_fixture_use(isolated_output):
@@ -367,3 +377,40 @@ def test_zero_product_html_page_is_saved_for_selector_work(isolated_output):
     assert result["status"] == "failed"
     saved = isolated_output / "testshop.unparsed.html"
     assert saved.exists() and "Some Wine 2020" in saved.read_text()
+
+
+def test_a_guessed_catalog_path_does_not_replace_the_search():
+    """It goes first, but the rest of the list must still be tried -- short
+    -circuiting here meant the shop catalogue discovery was written for only
+    ever tried its one guessed path."""
+    shop = dict(a_shop(), catalog_path="vins.php")
+    urls = [url for _, url, _, _ in probe.candidate_endpoints(shop)]
+    html_urls = [u for u in urls if "products.json" not in u and "wp-json" not in u]
+    assert html_urls[0].endswith("/vins.php")
+    assert len(html_urls) > 1, "no other catalogue paths were tried"
+    assert any(u.endswith("/boutique") for u in html_urls)
+
+
+def test_a_recorded_path_is_not_tried_twice():
+    shop = dict(a_shop(), catalog_path="boutique")
+    urls = [url for _, url, _, _ in probe.candidate_endpoints(shop)]
+    assert urls.count(urls[2]) == 1
+    assert len(urls) == len(set(urls))
+
+
+def test_each_unparsed_page_is_kept_separately(monkeypatch, tmp_path):
+    """One file per shop meant the last failing page overwrote the one that
+    mattered -- the catalogue diagnostic was replaced by the home page."""
+    monkeypatch.setattr(probe, "DIAGNOSTIC_DIR", tmp_path)
+    body = "<html><body><p>rien</p></body></html>"
+    probe.save_diagnostic_page("zzzshop", "https://zzz.example/vins.php", body)
+    probe.save_diagnostic_page("zzzshop", "https://zzz.example/", body)
+    assert sorted(p.name for p in tmp_path.iterdir() if p.is_file()) == [
+        "zzzshop.index.html", "zzzshop.vins-php.html",
+    ]
+
+
+def test_diagnostics_never_land_in_the_repo_during_tests():
+    """The directory is committed, so a leaked test file gets pushed."""
+    stray = Path(__file__).parent.parent / "probe_pages" / "testshop.html"
+    assert not stray.exists(), "a test wrote a diagnostic into the repo"

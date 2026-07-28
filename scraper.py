@@ -6,17 +6,20 @@ Run modes:
   python scraper.py            normal run, sends a digest email via Gmail SMTP
   DRY_RUN=1 python scraper.py  skips SMTP, prints the would-be digest to stdout
 
-Env vars consumed by the crawl layer (see crawler.py): CONTACT_EMAIL,
+Env vars consumed by the crawl layer (see crawler.py): CONTACT_URL,
 MAX_REQUESTS_PER_RUN, FRESH.
 """
 import os
 import re
 import unicodedata
+from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
 
+import autoselect
 import crawler
 import evaluate
+import market
 import notify
 
 DRY_RUN = os.environ.get("DRY_RUN") == "1"
@@ -45,6 +48,16 @@ PRODUCERS = {
     "Thomas Popy": ["thomas popy", "popy"],
     "Roumier": ["roumier"],
     "Alice Fahrenkrug": ["alice fahrenkrug"],
+    # Not a bare "brochet": Emmanuel Brochet is a different
+    # Champagne grower, and mareehaute stocks him -- the bare
+    # surname reported his bottles as this producer.
+    "Jules Brochet": ["jules brochet"],
+    "Bruyere Houillon": ["bruyere houillon", "bruyere-houillon"],
+    "Allante et Boulanger": ["allante et boulanger", "allante boulanger", "allante"],
+    "Domaine des Murmures": ["domaine des murmures", "murmures"],
+    "Tom Gauditiabois": ["tom gauditiabois", "gauditiabois"],
+    "Richard Leroy": ["richard leroy", "leroy richard"],
+    "Lattard": ["lattard"],
 }
 
 # ---------------------------------------------------------------------------
@@ -95,13 +108,19 @@ SHOPS = [
     # Re-run Probe Shops with apply to promote one; see its fixture and the
     # probe report for why it hasn't been promoted yet.
     {
+        # Hand-rolled PHP: no products.json, no Store API. The wines live at
+        # /vins.php (product pages are /vin-<id>-<region>_<colour>__<cuvee>_
+        # <vintage>_<producer>.html), so the landing page alone parses to
+        # nothing. Selectors below are the generic placeholders and are
+        # expected to miss -- autoselect reads the listing instead.
         "name": "leszinzinsduvin",
         "platform": "html",
         "url": "https://www.leszinzinsduvin.com",
+        "catalog_path": "domaines.php",
         "item_selector": "div.product",
         "title_selector": "h2.product-title",
         "price_selector": "span.price",
-        "verified": False,
+        "verified": True,
     },
     {
         "name": "winenot",
@@ -110,7 +129,17 @@ SHOPS = [
         "item_selector": "div.product",
         "title_selector": "h2.product-title",
         "price_selector": "span.price",
-        "verified": False,
+        "verified": True,
+    },
+    {
+        # Marée Haute, Saint-Pierre d'Oléron. Indexed URLs are
+        # /fr-eu/pages/..., /en/collections/tous-nos-vins -- locale prefix
+        # plus /collections/, which is Shopify's own shape. Still a guess
+        # until the probe fetches it.
+        "name": "mareehaute",
+        "platform": "shopify",
+        "url": "https://www.mareehaute.vin",
+        "verified": True,
     },
     {
         "name": "vinnouveau",
@@ -296,13 +325,25 @@ def normalize(text):
 
 
 def match_producers(text):
-    """Return the canonical producer names whose aliases appear in text."""
+    """Return the canonical producer names whose aliases appear in text.
+
+    When one match's alias sits inside another's, only the longer one
+    counts. Two producers legitimately share a surname -- "houillon"
+    (Overnoy/Houillon) is a substring of "bruyere houillon" -- and without
+    this every Bruyere-Houillon bottle would be reported twice, once under
+    the wrong estate.
+    """
     norm = normalize(text)
-    matches = []
+    matched = {}
     for canonical, aliases in PRODUCERS.items():
-        if any(normalize(alias) in norm for alias in aliases):
-            matches.append(canonical)
-    return matches
+        hits = [normalize(a) for a in aliases if normalize(a) in norm]
+        if hits:
+            matched[canonical] = max(hits, key=len)
+
+    return [
+        canonical for canonical, alias in matched.items()
+        if not any(other is not alias and alias in other for other in matched.values())
+    ]
 
 
 # Matches a number only when a currency marker is directly adjacent, so a
@@ -418,12 +459,17 @@ def fetch_woocommerce(shop, crawler_client):
     )
 
 
-def fetch_html(shop, crawler_client):
-    resp = crawler_client.get(shop["url"])
-    resp.raise_for_status()
-    if not resp.text.strip():
-        raise EmptyResponseError(shop["name"])
-    soup = BeautifulSoup(resp.text, "html.parser")
+def _parse_html_page(shop, html, page_url, min_blocks=None):
+    """Configured selectors first, auto-detection when they find nothing.
+
+    The selectors in SHOPS are generic guesses for every shop that has not
+    been probed, so on a real site they usually match zero elements.
+    Falling back to autoselect turns that from "shop needs hand-written
+    selectors" into a working adapter, and a shop whose markup later
+    changes degrades to auto-detection instead of silently reporting an
+    empty catalogue.
+    """
+    soup = BeautifulSoup(html, "html.parser")
     items = []
     for node in soup.select(shop["item_selector"]):
         title_node = node.select_one(shop["title_selector"])
@@ -431,7 +477,7 @@ def fetch_html(shop, crawler_client):
         title = title_node.get_text(strip=True) if title_node else ""
         price = parse_price(price_node.get_text(strip=True) if price_node else "")
         link_node = node.select_one("a[href]")
-        url = link_node["href"] if link_node else shop["url"]
+        url = urljoin(page_url, link_node["href"]) if link_node else page_url
         items.append({
             "text": f"{title} {node.get_text(' ', strip=True)}",
             "title": title,
@@ -439,6 +485,105 @@ def fetch_html(shop, crawler_client):
             "url": url,
             "variant_title": "",
         })
+    if items:
+        return items, "selectors"
+
+    return autoselect.find_products(
+        html, page_url, PRICE_PATTERN, parse_price, min_blocks=min_blocks), "auto"
+
+
+def _fetch_via_producer_index(shop, index_html, index_url, crawler_client):
+    """Last resort for a shop with no crawlable catalogue.
+
+    leszinzinsduvin only exposes its wines through a POST search form, but
+    it lists its growers, and we watch growers. Follow the index entries
+    matching PRODUCERS and read those pages -- a dozen requests instead of
+    a full catalogue walk, aimed at exactly the bottles we care about.
+    """
+    # The page is already in hand -- re-fetching it wasted a request, and
+    # under the probe's replay crawler it fetched a *different* page than
+    # the one just parsed, so the index was never actually read.
+    targets = autoselect.find_producer_links(index_html, index_url, match_producers)
+    if not targets:
+        return []
+
+    items, empty = [], 0
+    for producer, url in targets[:autoselect.MAX_INDEX_LINKS]:
+        try:
+            page = crawler_client.get(url)
+            page.raise_for_status()
+        except (crawler.BudgetExceeded, crawler.UpstreamError):
+            break
+        # One bottle on a grower's page is still that grower's bottle: the
+        # "is this a catalogue" test does not apply once we got here from
+        # the index.
+        page_items, _ = _parse_html_page(shop, page.text, url, min_blocks=1)
+        if not page_items:
+            empty += 1
+        for item in page_items:
+            # The grower's own page may not repeat their name on every row.
+            item["text"] = f"{producer} {item['text']}"
+        items.extend(page_items)
+    followed = len(targets[:autoselect.MAX_INDEX_LINKS])
+    in_stock = sum(1 for i in items if i.get("in_stock") is not False)
+    print(f"[{shop['name']}] no crawlable catalogue; followed {followed} producer "
+          f"page(s) from the index, {empty} listing nothing; read {len(items)} "
+          f"product(s), {in_stock} in stock")
+    return items
+
+
+def fetch_html(shop, crawler_client):
+    """Walk an HTML catalogue, following its own "next page" link.
+
+    A shop may list nothing on its landing page, so `catalog_path` points
+    at the catalogue when the two differ (leszinzinsduvin serves its wines
+    from /vins.php).
+    """
+    start = urljoin(shop["url"] + "/", shop["catalog_path"]) if shop.get("catalog_path") else shop["url"]
+
+    # Product URLs and page URLs are different namespaces -- checking a
+    # "next page" link against the product set would never match, and a
+    # self-referential pager would walk until the budget ran out.
+    items, seen_urls, visited, page_url, how = [], set(), {start}, start, None
+    first_html, first_url = "", start
+    for page in range(1, MAX_PAGES_PER_SHOP + 1):
+        try:
+            resp = crawler_client.get(page_url)
+        except crawler.BudgetExceeded:
+            print(f"[{shop['name']}] request budget exhausted after page {page - 1}; "
+                  f"catalogue TRUNCATED, later pages not checked")
+            break
+        resp.raise_for_status()
+        if not resp.text.strip():
+            if page == 1:
+                raise EmptyResponseError(shop["name"])
+            break
+
+        if page == 1:
+            first_html, first_url = resp.text, page_url
+        page_items, how = _parse_html_page(shop, resp.text, page_url)
+        fresh = [i for i in page_items if i["url"] not in seen_urls]
+        if not fresh:
+            break
+        seen_urls.update(i["url"] for i in fresh)
+        items.extend(fresh)
+
+        next_url = autoselect.find_next_page(resp.text, page_url)
+        if not next_url or next_url in visited:
+            break
+        visited.add(next_url)
+        page_url = next_url
+    else:
+        print(f"[{shop['name']}] hit MAX_PAGES_PER_SHOP ({MAX_PAGES_PER_SHOP}); "
+              f"catalogue may be TRUNCATED")
+
+    if not items and first_html:
+        items = _fetch_via_producer_index(shop, first_html, first_url, crawler_client)
+        how = "index" if items else how
+
+    if items and how == "auto":
+        print(f"[{shop['name']}] no configured selector matched; "
+              f"read {len(items)} product(s) by auto-detection")
     return items
 
 
@@ -452,7 +597,13 @@ FETCHERS = {
 def check_shop(shop, crawler_client):
     items = FETCHERS[shop["platform"]](shop, crawler_client)
     hits = []
+    skipped = 0
     for item in items:
+        # A bottle nobody can buy is not a find. Marked by the parser,
+        # dropped here, so the probe still sees the adapter working.
+        if item.get("in_stock") is False:
+            skipped += 1
+            continue
         for producer in match_producers(item["text"]):
             hits.append({
                 "shop": shop["name"],
@@ -462,6 +613,8 @@ def check_shop(shop, crawler_client):
                 "url": item["url"],
                 "variant_title": item.get("variant_title", ""),
             })
+    if skipped:
+        print(f"[{shop['name']}] skipped {skipped} sold-out listing(s)")
     return hits
 
 
@@ -521,7 +674,29 @@ def main():
     if not verified_names:
         print("No verified shops configured -- nothing to evaluate or notify on.")
 
-    evaluated = evaluate.evaluate_hits(all_hits)
+    # Reference prices are read off the crawl, not typed in. Record this
+    # run's listings *before* evaluating so a wine seen at three shops this
+    # hour is already comparable this hour -- the store is a memory across
+    # runs, not a prerequisite for one.
+    pricebook = evaluate.load_pricebook()
+    format_multipliers = {
+        int(k): v for k, v in
+        ((pricebook.get("defaults") or {}).get("format_multipliers") or {}).items()
+    }
+    aliases = market.aliases_by_producer(PRODUCERS)
+
+    store = market.load_observations()
+    sized = [evaluate.evaluate_hit(hit, pricebook) for hit in all_hits]
+    fresh = [o for o in (market.observation(h, format_multipliers, aliases) for h in sized) if o]
+    store = market.merge(store, fresh)
+    print(f"{len(fresh)} listing(s) recorded; {len(store['records'])} in the reference pool.")
+
+    evaluated = evaluate.evaluate_hits(all_hits, pricebook, store, aliases)
+
+    # A dry run must leave no trace, exactly as it leaves seen.json alone.
+    if not DRY_RUN:
+        market.save_observations(store)
+
     notify.run_digest(evaluated, dry_run=DRY_RUN)
 
 

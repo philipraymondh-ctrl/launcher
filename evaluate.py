@@ -12,6 +12,8 @@ from pathlib import Path
 
 import yaml
 
+import market
+
 PRICES_PATH = Path(__file__).parent / "prices.yaml"
 
 
@@ -127,7 +129,7 @@ def derive_cuvee(title, producer_name):
 
 # --- evaluation --------------------------------------------------------------
 
-def evaluate_hit(hit, pricebook):
+def evaluate_hit(hit, pricebook, market_store=None, aliases=None):
     """Return a new dict: hit plus size_ml, size_confidence, tier,
     tier_confidence, reference_price, expected_price, ratio, classification,
     reference_verified, caveat, cuvee.
@@ -158,8 +160,16 @@ def evaluate_hit(hit, pricebook):
     result["size_label"] = "coffret" if bundle else f"{size_ml}ml"
     result["cuvee"] = derive_cuvee(hit.get("title", ""), hit.get("producer", ""))
 
+    observed = None
+    if market_store is not None:
+        observed = market.reference_from_market(
+            result, market_store, format_multipliers, aliases or {}
+        )
+
     producer_entry = find_producer_entry(pricebook, hit.get("producer"))
     if producer_entry is None:
+        result["reference_basis"] = None
+        result["reference_shops"] = []
         result.update(
             tier=None, tier_confidence="n/a", reference_price=None,
             expected_price=None, ratio=None, classification="NOREF",
@@ -180,7 +190,24 @@ def evaluate_hit(hit, pricebook):
             tier = None  # unknown tier -> no multiplier applied
 
     cuvee_override = find_cuvee_override(producer_entry, hit.get("title", ""))
-    reference_price = (cuvee_override or {}).get("reference_750_eur", producer_entry.get("reference_750_eur"))
+    manual_price = (cuvee_override or {}).get("reference_750_eur", producer_entry.get("reference_750_eur"))
+
+    # Order of trust: a figure a human checked, then what other shops
+    # actually charge, then an unchecked placeholder. The placeholders are
+    # last on purpose -- one guessed number per producer is what made a
+    # negoce bottle look like a permanent bargain.
+    reference_price, basis, basis_confidence = None, None, "n/a"
+    if manual_price is not None and reference_verified:
+        reference_price, basis, basis_confidence = manual_price, "verified by hand", "high"
+    elif observed is not None:
+        reference_price = observed["price"]
+        basis, basis_confidence = observed["basis"], observed["confidence"]
+        reference_verified = observed["confidence"] == "high"
+    elif manual_price is not None:
+        reference_price, basis, basis_confidence = manual_price, "unverified placeholder", "low"
+
+    result["reference_basis"] = basis
+    result["reference_shops"] = (observed or {}).get("shops", [])
 
     if reference_price is None:
         result.update(
@@ -205,7 +232,8 @@ def evaluate_hit(hit, pricebook):
         else:
             classification = "FAIR"
 
-    low_confidence = size_confidence == "low" or tier_confidence == "low"
+    low_confidence = (size_confidence == "low" or tier_confidence == "low"
+                      or basis_confidence in ("low", "medium"))
     caveat = (not reference_verified) or low_confidence or bundle
 
     result.update(
@@ -221,6 +249,6 @@ def evaluate_hit(hit, pricebook):
     return result
 
 
-def evaluate_hits(hits, pricebook=None):
+def evaluate_hits(hits, pricebook=None, market_store=None, aliases=None):
     pricebook = pricebook if pricebook is not None else load_pricebook()
-    return [evaluate_hit(hit, pricebook) for hit in hits]
+    return [evaluate_hit(hit, pricebook, market_store, aliases) for hit in hits]

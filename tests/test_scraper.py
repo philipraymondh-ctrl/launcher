@@ -1,4 +1,6 @@
+import inspect
 import json
+import re
 from pathlib import Path
 
 import pytest
@@ -172,8 +174,23 @@ def test_verified_shop_fixture_yields_real_products(shop_name):
         pytest.skip("no verified shops yet")
     shop = shop_by_name(shop_name)
     items = scraper.FETCHERS[shop["platform"]](shop, crawler_for(shop))
-    assert items, f"{shop_name} is verified but its fixture parses to zero products"
-    assert any(i["title"] for i in items), f"{shop_name} fixture has no product titles"
+    if items:
+        assert any(i["title"] for i in items), f"{shop_name} fixture has no product titles"
+        return
+
+    # Some shops have no crawlable catalogue and are reached through a
+    # producer index instead. Their fixture is that index, and one canned
+    # response cannot stand in for the grower pages the adapter goes on to
+    # follow -- the stub hands the index back sixteen times, so the parse
+    # is legitimately empty. What must hold for such a fixture is that it
+    # still names producers we watch.
+    import autoselect
+    growers = autoselect.find_producer_links(
+        fixture_for(shop).read_text(), shop["url"], scraper.match_producers)
+    assert growers, (
+        f"{shop_name} is verified but its fixture yields neither products "
+        f"nor links to any producer we watch"
+    )
 
 
 def test_every_shop_has_a_fixture_matching_its_platform():
@@ -186,14 +203,36 @@ def test_every_shop_has_a_fixture_matching_its_platform():
         )
 
 
+# The markers the fixture generators actually write -- probe.py and
+# apply_issue.write_shop_fixture. Matching the bare word "placeholder"
+# instead rejected a real saved page, because every shop's search box is
+# an <input placeholder="Rechercher">: the test called a genuine fixture
+# fake and blocked the commit that would have brought the shop live.
+PLACEHOLDER_MARKER = re.compile(r"PLACEHOLDER\s+(?:FIXTURE|--)", re.I)
+
+
 def test_verified_shops_do_not_carry_placeholder_fixtures():
     # The whole point of `verified` is that the fixture is real. If a
     # placeholder marker survives, the flag is lying.
     for shop in VERIFIED:
         body = fixture_for(shop).read_text()
-        assert "PLACEHOLDER" not in body.upper(), (
+        assert not PLACEHOLDER_MARKER.search(body), (
             f"{shop['name']} is verified but its fixture is still a placeholder"
         )
+
+
+def test_the_placeholder_marker_matches_what_the_generators_write():
+    """Both generators must keep writing something this recognises, or the
+    check above silently passes on a fake fixture."""
+    import apply_issue
+    assert PLACEHOLDER_MARKER.search("UNVERIFIED PLACEHOLDER FIXTURE for x")
+    assert PLACEHOLDER_MARKER.search("PLACEHOLDER -- replace with a real listing")
+    # ...and must not fire on ordinary markup.
+    assert not PLACEHOLDER_MARKER.search('<input placeholder="Rechercher un vin">')
+    assert not PLACEHOLDER_MARKER.search('placeholder="Search"')
+
+    src = inspect.getsource(apply_issue.write_shop_fixture)
+    assert "PLACEHOLDER" in src
 
 
 def test_levinnaturel_fixture_has_labet_hit():
@@ -348,3 +387,19 @@ def test_html_shops_all_declare_selectors():
         if shop["platform"] == "html":
             for key in ("item_selector", "title_selector", "price_selector"):
                 assert key in shop, f"{shop['name']} (html) is missing {key}"
+
+
+def test_an_index_fixture_satisfies_the_verified_shop_check():
+    """The producer-index branch of the check above, exercised directly
+    against the real leszinzinsduvin index so it cannot rot unnoticed."""
+    import autoselect
+    body = (FIXTURES / "leszinzinsduvin-domaines-excerpt.html").read_text()
+
+    # It is an index: no prices on it at all.
+    assert autoselect.find_products(
+        body, "https://www.leszinzinsduvin.com/domaines.php",
+        scraper.PRICE_PATTERN, scraper.parse_price) == []
+    # ...but it names growers we watch, which is what makes it usable.
+    growers = autoselect.find_producer_links(
+        body, "https://www.leszinzinsduvin.com/domaines.php", scraper.match_producers)
+    assert {p for p, _ in growers} >= {"Ganevat", "Bruyere Houillon"}

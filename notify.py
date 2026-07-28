@@ -109,7 +109,11 @@ def format_row(hit):
     size = hit.get("size_label") or f"{hit.get('size_ml', 750)}ml"
     cuvee = hit.get("cuvee") or hit.get("title", "")
     producer = hit.get("producer", "")
-    return f"{status:<5} | {producer} | {cuvee} | {size} | {price} | {ref} | {hit.get('url', '')}"
+    # Where the reference came from is the difference between "cheaper than
+    # three other shops" and "cheaper than a number someone guessed once".
+    basis = hit.get("reference_basis") or "no reference"
+    return (f"{status:<5} | {producer} | {cuvee} | {size} | {price} | {ref} | "
+            f"{basis} | {hit.get('url', '')}")
 
 
 def build_digest_body(alerting_hits):
@@ -118,7 +122,7 @@ def build_digest_body(alerting_hits):
         ordered.extend(h for h in alerting_hits if h.get("classification") == section)
     shown = ordered[:EMAIL_ROW_CAP]
 
-    lines = ["STATUS | Producer | Cuvee | Size | Price | Ref avg | Link", ""]
+    lines = ["STATUS | Producer | Cuvee | Size | Price | Ref | Basis | Link", ""]
     has_caveat = False
     for section in SECTION_ORDER:
         items = [h for h in shown if h.get("classification") == section]

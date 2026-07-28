@@ -26,6 +26,7 @@ import json
 from pathlib import Path
 
 import apply_issue
+import market
 import pricebook
 import scraper
 
@@ -558,6 +559,16 @@ def pill(text, kind):
     return f'<span class="pill {kind}">{esc(text)}</span>'
 
 
+def observation_counts():
+    """How much observed market data backs each producer."""
+    store = market.load_observations()
+    counts, shops = {}, {}
+    for record in store.get("records", []):
+        counts[record["producer"]] = counts.get(record["producer"], 0) + 1
+        shops.setdefault(record["producer"], set()).add(record["shop"])
+    return counts, {k: len(v) for k, v in shops.items()}, len(store.get("records", []))
+
+
 def collect():
     book = pricebook.load_pricebook()
     stale = {p["name"] for p in pricebook.stale_producers(book)}
@@ -574,10 +585,14 @@ def collect():
         if not s["name"].startswith("example-")
     ]
 
+    counts, shop_counts, _total = observation_counts()
+
     producers = []
     for name, aliases in scraper.PRODUCERS.items():
         entry = refs.get(name, {})
         producers.append({
+            "observations": counts.get(name, 0),
+            "obs_shops": shop_counts.get(name, 0),
             "name": name,
             "aliases": aliases,
             "region": entry.get("region", "-"),
@@ -599,12 +614,12 @@ def region_options():
 
 def render(shops, producers, book):
     verified_shops = sum(s["verified"] for s in shops)
-    verified_refs = sum(p["verified"] for p in producers)
+    pool_total = sum(p["observations"] for p in producers)
     defaults = book.get("defaults", {})
 
     cards = "".join([
         f'<div class="card"><div class="n">{verified_shops}/{len(shops)}</div><div class="l">Shops live</div></div>',
-        f'<div class="card"><div class="n">{verified_refs}/{len(producers)}</div><div class="l">Prices verified</div></div>',
+        f'<div class="card"><div class="n">{pool_total}</div><div class="l">Priced listings</div></div>',
         f'<div class="card"><div class="n">{len(producers)}</div><div class="l">Producers</div></div>',
         f'<div class="card"><div class="n">{defaults.get("deal_threshold", "-")}</div><div class="l">Deal at</div></div>',
         f'<div class="card"><div class="n">{defaults.get("fair_ceiling", "-")}</div><div class="l">High above</div></div>',
@@ -614,14 +629,20 @@ def render(shops, producers, book):
     for p in sorted(producers, key=lambda x: x["name"]):
         if not p["in_pricebook"]:
             status = pill("no entry", "bad")
-        elif p["verified"] and not p["stale"]:
-            status = pill("verified", "ok")
+        elif p["obs_shops"] >= 2:
+            status = pill("comparable", "ok")
+        elif p["observations"]:
+            status = pill("one shop", "warn")
         else:
-            status = pill("unverified", "warn")
-        ref = f'€{p["reference"]}' if p["reference"] is not None else "—"
+            status = pill("not seen yet", "mut")
+        if p["reference"] is not None:
+            ref = f'€{p["reference"]}' + (" fixed" if p["verified"] else "?")
+        else:
+            ref = "observed"
+        seen = f'{p["observations"]} at {p["obs_shops"]} shop(s)' if p["observations"] else "—"
         prows += (
             f'<tr><td><b>{esc(p["name"])}</b><br><code>{esc(", ".join(p["aliases"]))}</code></td>'
-            f'<td>{esc(p["region"])}</td><td>{ref}</td><td>{status}</td></tr>'
+            f'<td>{esc(p["region"])}</td><td>{ref}</td><td>{esc(seen)}</td><td>{status}</td></tr>'
         )
 
     srows = ""
@@ -723,8 +744,9 @@ Hourly, {esc(defaults.get("deal_threshold", "?"))}× reference flags a deal.</di
 
 <h2>Add or change a producer</h2>
 <div class="panel">
-  <div class="sub">Fill only what you want to change — an existing name updates it, a new name adds it.
-  Applied straight to <code>main</code> once the tests pass; no pull request.</div>
+  <div class="sub">Name and region are enough — the price looks after itself once the wine shows up at two
+  shops. Fill only what you want to change; an existing name updates it, a new name adds it. Applied straight
+  to <code>main</code> once the tests pass; no pull request.</div>
   <div class="row">
     <div class="field"><label for="p-name">Producer name</label>
       <input type="text" id="p-name" placeholder="Domaine Roulot"></div>
@@ -770,10 +792,13 @@ Coche-Dury | coche-dury, coche dury | burgundy | 400"></textarea>
 
 <h2>Producers &amp; reference prices</h2>
 <div class="scroll"><table>
-<thead><tr><th>Producer / aliases</th><th>Region</th><th>Ref 750ml</th><th>Price data</th></tr></thead>
+<thead><tr><th>Producer / aliases</th><th>Region</th><th>Ref 750ml</th><th>Listings seen</th><th>Price data</th></tr></thead>
 <tbody>{prows}</tbody></table></div>
-<div class="sub" style="margin-top:11px">Unverified references are best-guess placeholders and every
-alert built on one carries a caveat. Nothing here fetches Wine-Searcher — the numbers are yours to type.</div>
+<div class="sub" style="margin-top:11px">References are <b>observed, not typed</b>: when two shops list the
+same bottle, that is the reference. Cuvee, vintage and format are part of the comparison, so a negoce bottle is
+never scored against a domaine price and a 2012 is never scored against a 2024. A wine seen at one shop only gets
+a weaker basis and a caveat; one seen nowhere else is reported as <code>NOREF</code> rather than guessed at.
+Setting a price by hand still overrides everything — it just is not required any more.</div>
 
 <h2>Shops</h2>
 <div class="sub" style="margin:-4px 0 12px">{live_note}</div>

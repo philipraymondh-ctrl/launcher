@@ -24,7 +24,7 @@ def tmp_cache(tmp_path):
 
 
 def make_crawler(tmp_cache, **kwargs):
-    kwargs.setdefault("contact_email", "test@example.com")
+    kwargs.setdefault("contact", "https://example.com/bot")
     return crawler_mod.Crawler(cache_dir=tmp_cache, **kwargs)
 
 
@@ -219,9 +219,11 @@ def test_min_delay_enforced_between_requests_to_same_host(monkeypatch, tmp_cache
     assert any(abs(s - (crawler_mod.MIN_DELAY_SECONDS - 1)) < 0.01 for s in sleeps)
 
 
-def test_user_agent_includes_contact_email(tmp_cache):
-    c = crawler_mod.Crawler(cache_dir=tmp_cache, contact_email="me@example.com")
-    assert "me@example.com" in c.user_agent
+def test_user_agent_includes_a_contact_url(tmp_cache):
+    # Shops should be able to reach the operator; that contact is a URL,
+    # never a mailbox -- see the identity tests at the end of this file.
+    c = crawler_mod.Crawler(cache_dir=tmp_cache, contact="https://example.com/bot")
+    assert "https://example.com/bot" in c.user_agent
 
 
 def test_crawl_delay_from_robots_overrides_min_delay(monkeypatch, tmp_cache):
@@ -246,3 +248,104 @@ def test_crawl_delay_from_robots_overrides_min_delay(monkeypatch, tmp_cache):
 
     # Crawl-delay: 10 should be honoured over the default 3s minimum.
     assert any(abs(s - 8) < 0.01 for s in sleeps)
+
+
+# --- what counts as a host failure ------------------------------------------
+
+def test_a_404_is_not_a_host_failure():
+    """Catalogue discovery is mostly misses. Counting them tripped the
+    breaker after three tries, so the path that would have worked was
+    never reached."""
+    assert crawler_mod.Crawler._is_host_failure(404) is False
+    assert crawler_mod.Crawler._is_host_failure(410) is False
+    assert crawler_mod.Crawler._is_host_failure(400) is False
+
+
+def test_a_refusal_or_an_outage_is_a_host_failure():
+    assert crawler_mod.Crawler._is_host_failure(None) is True     # no connection
+    assert crawler_mod.Crawler._is_host_failure(500) is True
+    assert crawler_mod.Crawler._is_host_failure(503) is True
+    assert crawler_mod.Crawler._is_host_failure(429) is True      # slow down
+    assert crawler_mod.Crawler._is_host_failure(403) is True      # blocked
+
+
+def test_repeated_404s_never_open_the_circuit(monkeypatch):
+    client = crawler_mod.Crawler()
+    monkeypatch.setattr(client, "_allowed", lambda url: True)
+    monkeypatch.setattr(client, "_wait_for_host", lambda host: None)
+    monkeypatch.setattr(
+        client, "_attempt_with_retries",
+        lambda *a, **k: (_ for _ in ()).throw(crawler_mod.UpstreamError("HTTP 404", status_code=404)),
+    )
+    for _ in range(crawler_mod.CIRCUIT_BREAKER_THRESHOLD + 3):
+        with pytest.raises(crawler_mod.UpstreamError):
+            client.get("https://missing.example/nope")
+    # Still reachable: the host was answering the whole time.
+    assert client._consecutive_failures["missing.example"] == 0
+
+
+def test_repeated_outages_still_open_the_circuit(monkeypatch):
+    client = crawler_mod.Crawler()
+    monkeypatch.setattr(client, "_allowed", lambda url: True)
+    monkeypatch.setattr(client, "_wait_for_host", lambda host: None)
+    monkeypatch.setattr(
+        client, "_attempt_with_retries",
+        lambda *a, **k: (_ for _ in ()).throw(crawler_mod.UpstreamError("refused")),
+    )
+    for _ in range(crawler_mod.CIRCUIT_BREAKER_THRESHOLD):
+        with pytest.raises(crawler_mod.UpstreamError):
+            client.get("https://down.example/x")
+    with pytest.raises(crawler_mod.CircuitOpen):
+        client.get("https://down.example/y")
+
+
+# --- the User-Agent must not carry anyone's identity -------------------------
+
+def test_the_user_agent_never_contains_an_email_address():
+    """It goes to every shop on every request and into public run logs."""
+    assert "@" not in crawler_mod.Crawler().user_agent
+
+
+def test_a_contact_email_in_the_environment_is_not_used(monkeypatch):
+    """CONTACT_EMAIL used to be interpolated straight into the header."""
+    monkeypatch.setenv("CONTACT_EMAIL", "someone@example.com")
+    agent = crawler_mod.Crawler().user_agent
+    assert "someone@example.com" not in agent
+    assert "@" not in agent
+
+
+def test_an_email_passed_as_the_contact_is_refused_loudly(monkeypatch):
+    with pytest.raises(ValueError, match="must not be an email"):
+        crawler_mod.Crawler(contact="someone@example.com")
+
+
+def test_the_default_user_agent_identifies_nobody():
+    """It goes to every shop on every request. It must not carry the
+    owner's name, their account name, or any URL that implies either."""
+    agent = crawler_mod.Crawler().user_agent
+    assert agent == crawler_mod.BOT_NAME
+    assert "@" not in agent
+    assert "://" not in agent
+    assert "github" not in agent.lower()
+
+
+def test_the_bot_name_does_not_say_scraper():
+    """Some shops block the word on sight, however politely the thing
+    behaves, and it describes us to no one's benefit."""
+    assert "scraper" not in crawler_mod.BOT_NAME.lower()
+    assert "crawler" not in crawler_mod.BOT_NAME.lower()
+    assert "bot" in crawler_mod.BOT_NAME.lower(), "still be honest that it is automated"
+
+
+def test_an_opt_in_contact_url_is_still_appended():
+    agent = crawler_mod.Crawler(contact="https://example.com/about-the-bot").user_agent
+    assert agent == crawler_mod.BOT_NAME + " (+https://example.com/about-the-bot)"
+
+
+def test_no_workflow_puts_an_email_on_the_wire():
+    from pathlib import Path
+    workflows = Path(__file__).parent.parent / ".github" / "workflows"
+    for path in workflows.glob("*.yml"):
+        assert "CONTACT_EMAIL" not in path.read_text(), (
+            f"{path.name} still injects CONTACT_EMAIL into the crawler"
+        )

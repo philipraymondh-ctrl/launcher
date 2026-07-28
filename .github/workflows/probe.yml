@@ -16,6 +16,10 @@ on:
         description: "Comma-separated shop names to probe (blank = all unverified)"
         type: string
         default: ""
+      capture:
+        description: "Comma-separated URLs to fetch and commit to probe_pages/ for inspection (diagnostic only)"
+        type: string
+        default: ""
       max_requests_per_run:
         description: "Request budget for this probe"
         type: string
@@ -46,7 +50,6 @@ jobs:
 
       - name: Probe shops
         env:
-          CONTACT_EMAIL: ${{ vars.CONTACT_EMAIL }}
           MAX_REQUESTS_PER_RUN: ${{ inputs.max_requests_per_run || '150' }}
           # Always hit the network on a probe; a cached body tells us
           # nothing new about whether the endpoint is live right now.
@@ -54,6 +57,7 @@ jobs:
         run: |
           ARGS=""
           [ -n "${{ inputs.only }}" ] && ARGS="$ARGS --only ${{ inputs.only }}"
+          [ -n "${{ inputs.capture }}" ] && ARGS="$ARGS --capture ${{ inputs.capture }}"
           [ "${{ inputs.apply }}" = "true" ] && ARGS="$ARGS --apply"
           python probe.py $ARGS
 
@@ -68,15 +72,15 @@ jobs:
       # Nothing is committed unless the suite is green against the new
       # fixtures, so a shop can never go live on a response we can't parse.
       - name: Run tests against the new fixtures
-        if: inputs.apply
+        if: inputs.apply || inputs.capture != ''
         run: pytest tests/ -q
 
       - name: Rebuild dashboard
-        if: inputs.apply
+        if: inputs.apply || inputs.capture != ''
         run: python dashboard.py
 
       - name: Commit verified shops
-        if: inputs.apply
+        if: inputs.apply || inputs.capture != ''
         run: |
           rm -rf probe_output
           if [ -z "$(git status --porcelain)" ]; then
@@ -91,4 +95,18 @@ jobs:
           Real responses fetched and parsed in this run; fixtures saved
           (trimmed, keeping producer matches), platforms corrected and
           verified set true. Tests passed before this commit."
-          git push
+
+          # A probe takes minutes, and anything pushed to the branch
+          # meanwhile makes the push a non-fast-forward. Losing a verified
+          # shop to that is losing the whole point of the run, so rebase
+          # onto whatever arrived and try again.
+          for attempt in 1 2 3; do
+            if git push; then
+              exit 0
+            fi
+            echo "Push rejected (attempt $attempt); rebasing onto the branch head."
+            git pull --rebase origin "${{ github.ref_name }}" || exit 1
+            sleep $((attempt * 3))
+          done
+          echo "Could not push after 3 attempts."
+          exit 1

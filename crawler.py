@@ -45,6 +45,17 @@ class Disallowed(FetchError):
     """robots.txt disallows this URL for our user-agent."""
 
 
+# What every shop sees. Deliberately says nothing about who runs it:
+# no personal name, no account name, and not the word "scraper" -- which
+# some shops block on sight regardless of how politely the thing behaves.
+BOT_NAME = "WineTrackerBot/1.0"
+# No contact by default. A repository URL was the obvious polite choice,
+# but this repo's URL carries the owner's account name, which is the very
+# thing being kept off the wire. Set CONTACT_URL to opt back in to a
+# contact that gives nothing away.
+DEFAULT_CONTACT = ""
+
+
 class CircuitOpen(FetchError):
     """This host had 3+ consecutive failures this run; it's being skipped."""
 
@@ -96,7 +107,7 @@ def _host_of(url):
 
 
 class Crawler:
-    def __init__(self, cache_dir=None, max_requests=None, contact_email=None, fresh=None):
+    def __init__(self, cache_dir=None, max_requests=None, contact=None, fresh=None):
         self.cache_dir = Path(cache_dir) if cache_dir else DEFAULT_CACHE_DIR
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self.max_requests = (
@@ -104,14 +115,21 @@ class Crawler:
             if max_requests is not None
             else int(os.environ.get("MAX_REQUESTS_PER_RUN", DEFAULT_MAX_REQUESTS_PER_RUN))
         )
-        self.contact_email = (
-            contact_email if contact_email is not None else os.environ.get("CONTACT_EMAIL", "")
-        )
-        self.user_agent = (
-            f"WineTrackerBot/1.0 (+{self.contact_email})"
-            if self.contact_email
-            else "WineTrackerBot/1.0"
-        )
+        # A polite crawler identifies a way to be contacted, but that does
+        # not have to be a person's mailbox. A repository URL reaches the
+        # owner through GitHub issues and exposes nothing personal, so it
+        # is what goes on the wire. An address passed here or set in
+        # CONTACT_EMAIL is deliberately NOT used: it was being sent as a
+        # header to every shop on every request, and echoed into public
+        # Actions logs.
+        self.contact = contact or os.environ.get("CONTACT_URL", "") or DEFAULT_CONTACT
+        if "@" in self.contact:
+            raise ValueError(
+                "The crawler's contact must not be an email address -- it is sent "
+                "to every shop in the User-Agent and printed in public run logs. "
+                "Use a URL."
+            )
+        self.user_agent = f"{BOT_NAME} (+{self.contact})" if self.contact else BOT_NAME
         self.fresh = (os.environ.get("FRESH") == "1") if fresh is None else fresh
         self.request_count = 0
 
@@ -183,6 +201,20 @@ class Crawler:
 
     # -- failure tracking / circuit breaker ------------------------------
 
+    # A 404 is a healthy server saying "no such page". The breaker exists
+    # for hosts that are down, refusing us, or rate-limiting -- counting
+    # 404s toward it meant catalogue discovery, which is mostly misses,
+    # tripped the breaker after three tries and never reached the page that
+    # would have worked. 401/403/407 do count: those are a host actively
+    # refusing, and hammering on is the rude thing to do.
+    HOST_FAILURE_STATUSES = frozenset({401, 403, 407, 429})
+
+    @classmethod
+    def _is_host_failure(cls, status_code):
+        if status_code is None:
+            return True          # the connection itself never succeeded
+        return status_code >= 500 or status_code in cls.HOST_FAILURE_STATUSES
+
     def _record_failure(self, host):
         self._consecutive_failures[host] += 1
         if self._consecutive_failures[host] >= CIRCUIT_BREAKER_THRESHOLD:
@@ -231,8 +263,13 @@ class Crawler:
             # backoff sequence is normal politeness, not 3 host failures.
             try:
                 result = self._attempt_with_retries(full_url, host, headers, cached)
-            except UpstreamError:
-                self._record_failure(host)
+            except UpstreamError as e:
+                if self._is_host_failure(e.status_code):
+                    self._record_failure(host)
+                else:
+                    # The host answered, so it is up; this path just is not
+                    # there. Not a strike against the host.
+                    self._record_success(host)
                 raise
             self._record_success(host)
             return result

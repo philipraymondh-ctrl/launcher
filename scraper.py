@@ -237,12 +237,6 @@ SHOPS = [
         "verified": False,
     },
     {
-        "name": "amberbottleshop",
-        "platform": "shopify",
-        "url": "https://amberbottleshop.com",
-        "verified": True,
-    },
-    {
         "name": "naturavin",
         "platform": "html",
         "url": "https://www.naturavin.be",

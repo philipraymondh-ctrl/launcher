@@ -7,23 +7,20 @@ bad reference data would hide real finds, which defeats the point of the
 scraper.
 """
 import re
-import unicodedata
 from pathlib import Path
 
 import yaml
 
 import market
+import textnorm
 
 PRICES_PATH = Path(__file__).parent / "prices.yaml"
 
 
-def normalize(text):
-    # Duplicated from scraper.normalize(): tiny, and importing scraper here
-    # would create a scraper <-> evaluate circular import (scraper.py calls
-    # into evaluate.py, not the other way around).
-    text = unicodedata.normalize("NFKD", text or "")
-    text = "".join(c for c in text if not unicodedata.combining(c))
-    return text.lower()
+# One shared implementation (textnorm), so this can no longer drift from
+# scraper's. Accent-only on purpose: BUNDLE_RE and the cru patterns read
+# punctuation.
+normalize = textnorm.strip_accents
 
 
 def load_pricebook(path=None):

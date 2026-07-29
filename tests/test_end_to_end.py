@@ -168,18 +168,25 @@ def test_the_same_finds_are_not_emailed_twice(pipeline):
     assert len(pipeline.sent) == 1, "a second run re-alerted on unchanged hits"
 
 
-def test_a_price_drop_inside_the_cooldown_does_not_re_alert(pipeline):
-    """Documented, deliberate behaviour: the 30-day cooldown wins over a
-    price drop -- see test_notify.py. Asserted here so the end-to-end path
-    agrees with the unit-level decision rather than quietly diverging.
-
-    Worth knowing it means a genuine 50% drop stays silent for up to a
-    month; changing that is a product decision, not a bug fix."""
+def test_a_price_drop_inside_the_cooldown_re_alerts(pipeline):
+    """The cooldown suppresses repetition, not news -- see test_notify.py for
+    why that decision was reversed. Asserted here so the end-to-end path
+    agrees with the unit-level rule rather than quietly diverging."""
     pipeline(BASIC)
     cheaper = dict(BASIC)
     cheaper["https://shopify.test"] = shopify(
         [product("Zzz Domaine Chardonnay 2020", 30)])
     pipeline(cheaper)
+    assert len(pipeline.sent) == 2
+    assert "Chardonnay 2020" in rows(pipeline.sent[-1])
+
+
+def test_an_unchanged_shelf_stays_silent(pipeline):
+    """The other half of the same rule: nothing new, nothing cheaper, no
+    email -- three runs in a row."""
+    pipeline(BASIC)
+    pipeline(BASIC)
+    pipeline(BASIC)
     assert len(pipeline.sent) == 1
 
 
@@ -247,3 +254,47 @@ def test_a_run_with_no_hits_sends_nothing_and_does_not_crash(pipeline):
     })
     assert pipeline.sent == []
     assert hits_json(pipeline) == []
+
+
+# --- 11. a week of correct silence still reaches the owner ----------------------
+
+def test_a_week_without_news_still_produces_a_recap(pipeline):
+    """A run that says nothing is right to say nothing, but from the inbox it
+    looks exactly like expired credentials or a dead workflow. After a week,
+    the run reports what it can currently see."""
+    import datetime as dt
+
+    pipeline(BASIC)
+    assert len(pipeline.sent) == 1
+
+    state_path = pipeline.tmp / "seen.json"
+    state = json.loads(state_path.read_text())
+    state[notify.META_KEY] = {"last_recap_at": (
+        dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=notify.RECAP_DAYS + 1)
+    ).isoformat()}
+    state_path.write_text(json.dumps(state))
+
+    pipeline(BASIC)
+    assert len(pipeline.sent) == 2
+    assert pipeline.subjects[-1] == notify.RECAP_SUBJECT
+    assert "Zzz Domaine" in rows(pipeline.sent[-1])
+
+
+def test_the_recap_does_not_silence_a_later_real_find(pipeline):
+    import datetime as dt
+
+    pipeline(BASIC)
+    state_path = pipeline.tmp / "seen.json"
+    state = json.loads(state_path.read_text())
+    state[notify.META_KEY] = {"last_recap_at": (
+        dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=notify.RECAP_DAYS + 1)
+    ).isoformat()}
+    state_path.write_text(json.dumps(state))
+    pipeline(BASIC)                                   # recap
+
+    cheaper = dict(BASIC)
+    cheaper["https://shopify.test"] = shopify(
+        [product("Zzz Domaine Chardonnay 2020", 20)])
+    pipeline(cheaper)
+    assert len(pipeline.sent) == 3
+    assert pipeline.subjects[-1] == notify.DIGEST_SUBJECT

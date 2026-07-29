@@ -14,6 +14,7 @@ from canned_shop import FakeCrawler, PRODUCERS, SHOPS
 def pipeline(monkeypatch, tmp_path):
     """Runs main() with everything redirected away from the repo."""
     sent = []
+    subjects = []
 
     monkeypatch.setattr(scraper, "SHOPS", SHOPS)
     monkeypatch.setattr(scraper, "PRODUCERS", PRODUCERS)
@@ -21,7 +22,11 @@ def pipeline(monkeypatch, tmp_path):
     monkeypatch.setattr(notify, "HITS_PATH", tmp_path / "hits.json")
     monkeypatch.setattr(market, "OBSERVATIONS_PATH", tmp_path / "observations.json")
     # The real send path must run so state is persisted; only SMTP is stubbed.
-    monkeypatch.setattr(notify, "send_email", lambda body: sent.append(body))
+    def fake_send(body, subject=None):
+        sent.append(body)
+        subjects.append(subject)
+
+    monkeypatch.setattr(notify, "send_email", fake_send)
 
     def run(bodies, dry_run=False, max_requests=1000, fail_hosts=()):
         client = FakeCrawler(bodies, max_requests=max_requests, fail_hosts=fail_hosts)
@@ -31,5 +36,6 @@ def pipeline(monkeypatch, tmp_path):
         return client
 
     run.sent = sent
+    run.subjects = subjects
     run.tmp = tmp_path
     return run

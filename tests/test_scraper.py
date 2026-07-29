@@ -516,3 +516,60 @@ def test_the_real_mareehaute_catalogue_reports_only_buyable_bottles():
     )
     items = {i["url"]: i for i in scraper.fetch_shopify(shop, one_page(data))}
     assert all(items[h["url"]]["in_stock"] for h in hits)
+
+
+# --- a zero is not a price ----------------------------------------------------
+#
+# Found by a live dry run, in the digest it would have emailed:
+#
+#   DEAL* | Ganevat [ganevat] | Voir mon panier | 750ml | EUR 0 | EUR 99 | ...
+#            .../commande
+#
+# "Voir mon panier" is the cart widget. It carries "0,00 €", which is
+# currency-adjacent, so it parsed as a product priced at zero -- and zero is
+# below every reference there will ever be, so it scores DEAL for ever.
+
+def test_a_zero_is_not_a_price():
+    assert scraper.parse_price("0,00 €") is None
+    assert scraper.parse_price("€0.00") is None
+    assert scraper.parse_price("45,00 €") == 45.0
+
+
+def test_a_zero_priced_shopify_variant_is_not_priced():
+    """Gift cards and hidden products are listed at 0.00."""
+    from canned_shop import FakeCrawler, product, shopify
+
+    shop = {"name": "s", "platform": "shopify", "url": "https://shopify.test",
+            "verified": True}
+    items = scraper.fetch_shopify(shop, FakeCrawler({
+        "https://shopify.test": shopify([product("Carte cadeau", 0)])}))
+    assert items[0]["price"] is None
+
+
+def test_a_zero_priced_woo_product_is_not_priced():
+    from canned_shop import FakeCrawler, woo, woo_product
+
+    shop = {"name": "w", "platform": "woocommerce", "url": "https://woo.test",
+            "verified": True}
+    items = scraper.fetch_woocommerce(shop, FakeCrawler({
+        "https://woo.test": woo([woo_product("Bon cadeau", 0)])}))
+    assert items[0]["price"] is None
+
+
+def test_the_cart_widget_that_caused_this_is_not_a_product():
+    """Reduced from vinnaturel's grower page: a block with a link and a
+    0,00 EUR total is site furniture, not a listing."""
+    import autoselect
+
+    html = """
+    <html><body><div class="grid">
+      <div><a href="/commande">Voir mon panier</a><span>0,00 &euro;</span></div>
+      <div><a href="/vin-1">Ganevat Chardonnay</a><span>45,00 &euro;</span></div>
+      <div><a href="/vin-2">Ganevat Savagnin</a><span>55,00 &euro;</span></div>
+      <div><a href="/vin-3">Ganevat Poulsard</a><span>35,00 &euro;</span></div>
+    </div></body></html>
+    """
+    urls = [i["url"] for i in autoselect.find_products(
+        html, "https://x.test/", scraper.PRICE_PATTERN, scraper.parse_price)]
+    assert not any("commande" in u for u in urls)
+    assert len(urls) == 3

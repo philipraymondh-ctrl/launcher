@@ -26,10 +26,10 @@ it doesn't -- `find_products` returns an empty list rather than guessing,
 which the caller reports as a shop needing real selectors.
 """
 import re
-import unicodedata
 from urllib.parse import urljoin, urlparse
 
 from bs4 import BeautifulSoup
+import textnorm
 
 # Fewer repeats than this is a "featured wine" box or a related-items
 # strip, not a catalogue.
@@ -186,10 +186,16 @@ def find_products(html, base_url, price_pattern, parse_price, min_blocks=None):
             continue
         seen.add(url)
         text = block.get_text(" ", strip=True)
+        # The block was chosen for holding a currency-adjacent number, so a
+        # None here means the caller rejected the value itself -- a zero,
+        # which is a cart total or a placeholder, not a bottle.
+        price = parse_price(text)
+        if price is None:
+            continue
         items.append({
             "text": text,
             "title": _title_for(block, anchor) or _title_from_url(url),
-            "price": parse_price(text),
+            "price": price,
             "url": url,
             "variant_title": "",
             # Marked rather than dropped: the probe counts parsed products
@@ -280,11 +286,7 @@ OUT_OF_STOCK = re.compile(
     r"ausverkauft|non\s+disponible|indisponible)\b", re.I)
 
 
-def _strip_accents(text):
-    return "".join(
-        c for c in unicodedata.normalize("NFKD", text or "")
-        if not unicodedata.combining(c)
-    ).lower()
+_strip_accents = textnorm.strip_accents
 
 
 def is_out_of_stock(text, normalize_fn=None):

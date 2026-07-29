@@ -12,7 +12,6 @@ MAX_REQUESTS_PER_RUN, FRESH.
 import datetime as dt
 import os
 import re
-import unicodedata
 from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
@@ -22,6 +21,7 @@ import crawler
 import evaluate
 import market
 import notify
+import textnorm
 
 DRY_RUN = os.environ.get("DRY_RUN") == "1"
 
@@ -329,10 +329,10 @@ class EmptyResponseError(Exception):
     """Raised when an HTML shop returns empty/near-empty markup, usually a JS-rendered storefront."""
 
 
-def normalize(text):
-    text = unicodedata.normalize("NFKD", text or "")
-    text = "".join(c for c in text if not unicodedata.combining(c))
-    return text.lower()
+# Accent-folding lives in textnorm so the four modules that compare text
+# cannot drift apart; see textnorm.py for why matching needs a second rule.
+normalize = textnorm.strip_accents
+match_key = textnorm.match_key
 
 
 def match_producers(text):
@@ -354,11 +354,18 @@ def matched_aliases(text):
     A digest row that names the alias carries its own diagnosis: three
     estates were reported under the wrong producer this month, each caught
     only by someone recognising the name and opening the shop.
+
+    Both sides go through `match_key`, so the separator a shop happens to
+    choose is not part of the comparison: one alias `bruyere houillon`
+    covers "Bruyère-Houillon", "Bruyere Houillon" and "Renaud
+    Bruyère–Houillon", and `allante et boulanger` covers "Allanté &
+    Boulanger". The longest-alias rule still decides between estates that
+    share a surname, so widening the separators does not widen who matches.
     """
-    norm = normalize(text)
+    norm = match_key(text)
     matched = {}
     for canonical, aliases in PRODUCERS.items():
-        hits = [normalize(a) for a in aliases if normalize(a) in norm]
+        hits = [match_key(a) for a in aliases if match_key(a) in norm]
         if hits:
             matched[canonical] = max(hits, key=len)
 
@@ -366,6 +373,130 @@ def matched_aliases(text):
         canonical: alias for canonical, alias in matched.items()
         if not any(other is not alias and alias in other for other in matched.values())
     }
+
+
+# --- alias near-misses --------------------------------------------------------
+#
+# "Watched but found nowhere" is true and unhelpful: it cannot say whether
+# the alias is wrong or the wine is simply not sold anywhere we look. A
+# token one edit away from a watched alias is the cheapest available
+# evidence for the first case -- and it is free, because the text was
+# already in memory.
+#
+# Short words are one edit from everything, and French wine vocabulary is
+# dense at six letters: "pierre", "calice", "kagami" each sit one edit from
+# words the trade uses in earnest ("pierres", "malice", "kagame"). Seven is
+# where the hint stops guessing.
+NEAR_MISS_MIN_LEN = 7
+NEAR_MISS_MAX_REPORTED = 5
+
+
+def alias_tokens(producers=None):
+    """The long, distinctive words of every watched alias."""
+    tokens = set()
+    for aliases in (producers if producers is not None else PRODUCERS).values():
+        for alias in aliases:
+            tokens |= {t for t in match_key(alias).split() if len(t) >= NEAR_MISS_MIN_LEN}
+    return tokens
+
+
+def alias_length_index(producers=None):
+    """{first letter: lengths of alias tokens starting with it}.
+
+    Built once per shop, not once per listing: a shop can parse thousands of
+    products and this depends only on the roster.
+    """
+    by_first = {}
+    for token in alias_tokens(producers):
+        by_first.setdefault(token[0], set()).add(len(token))
+    return by_first
+
+
+def near_miss_candidates(text, by_first=None):
+    """The words in `text` worth keeping for a later near-miss check.
+
+    Filtered at collection rather than after the run: a token can only be
+    one edit from an alias token if it starts with the same letter and its
+    length is within one. That turns a shop's whole catalogue into a handful
+    of words.
+    """
+    by_first = alias_length_index() if by_first is None else by_first
+    if not by_first:
+        return set()
+    keep = set()
+    for word in match_key(text).split():
+        # One below the target floor: a single deletion from a seven-letter
+        # alias token leaves six letters, and that is exactly the kind of
+        # typo worth catching.
+        if len(word) < NEAR_MISS_MIN_LEN - 1:
+            continue
+        for length in by_first.get(word[0], ()):
+            if abs(length - len(word)) <= 1:
+                keep.add(word)
+                break
+    return keep
+
+
+def _one_edit_apart(a, b):
+    """True when a single insertion, deletion or substitution turns a into b."""
+    if a == b:
+        return False
+    if abs(len(a) - len(b)) > 1:
+        return False
+    if len(a) == len(b):
+        return sum(x != y for x, y in zip(a, b)) == 1
+    shorter, longer = (a, b) if len(a) < len(b) else (b, a)
+    for i in range(len(longer)):
+        if longer[:i] + longer[i + 1:] == shorter:
+            return True
+    return False
+
+
+def _is_plural_of(word, target):
+    return word == target + "s" or target == word + "s"
+
+
+def near_misses(unseen, corpus, producers=None):
+    """Suspicions, not findings: `Producer: 'spelling' at shop`.
+
+    Only for producers that matched nothing at all -- for anyone who did
+    match, a near-miss is just another wine on the same page.
+
+    Three filters keep it from firing on ordinary words, all three learned
+    from live runs that offered `Overnoy/Houillon: 'pierres'`,
+    `'pierra'`, `'pierro'` and `Domaine Calice: 'malice'` -- because
+    "pierre overnoy" carries a first name and "calice" is a French word
+    before it is an estate. The corpus answers both ends of that:
+
+    - a **candidate** at more than one shop is vocabulary, not a
+      misspelling. A typo of a rare grower lives at the shop that made it.
+    - a **target** the trade itself uses at more than one shop is not worth
+      hunting typos of, however distinctive it looks in a producer's name.
+    - a plural is not a typo.
+    """
+    catalogue = producers if producers is not None else PRODUCERS
+    shops_per_word = {}
+    for shop, words in corpus.items():
+        for word in words:
+            shops_per_word.setdefault(word, set()).add(shop)
+
+    def common(word):
+        return len(shops_per_word.get(word, ())) > 1
+
+    reported = []
+    for producer in unseen:
+        targets = {t for alias in catalogue.get(producer, [])
+                   for t in match_key(alias).split()
+                   if len(t) >= NEAR_MISS_MIN_LEN and not common(t)}
+        for shop in sorted(corpus):
+            for word in sorted(corpus[shop]):
+                if common(word):
+                    continue
+                if any(_one_edit_apart(word, t) and not _is_plural_of(word, t)
+                       for t in targets):
+                    reported.append(f"{producer}: '{word}' at {shop}")
+                    break
+    return reported[:NEAR_MISS_MAX_REPORTED]
 
 
 # Matches a number only when a currency marker is directly adjacent, so a
@@ -377,12 +508,23 @@ PRICE_PATTERN = re.compile(
 )
 
 
+def positive_price(value):
+    """A zero is not a price.
+
+    Cart widgets ("Voir mon panier -- 0,00 EUR"), gift cards and "price on
+    request" placeholders all carry a currency-adjacent zero, and zero sits
+    below every reference there will ever be, so such a row scores DEAL for
+    ever. One live dry run put exactly that in the digest.
+    """
+    return value if value and value > 0 else None
+
+
 def parse_price(text):
     match = PRICE_PATTERN.search(text or "")
     if not match:
         return None
     raw = match.group(1) or match.group(2)
-    return float(raw.replace(",", "."))
+    return positive_price(float(raw.replace(",", ".")))
 
 
 def _paged(shop, crawler_client, url, params_for_page, page_size, extract):
@@ -442,7 +584,7 @@ def fetch_shopify(shop, crawler_client):
             variant_title = ""
             if variants:
                 if variants[0].get("price"):
-                    price = float(variants[0]["price"])
+                    price = positive_price(float(variants[0]["price"]))
                 variant_title = variants[0].get("title", "") or ""
             # Shopify reports availability per variant; one buyable format
             # is enough. Absent the field entirely, assume nothing.
@@ -480,7 +622,7 @@ def fetch_woocommerce(shop, crawler_client):
             raw_price = prices.get("price")
             if raw_price:
                 minor_unit = int(prices.get("currency_minor_unit", 2))
-                price = int(raw_price) / (10 ** minor_unit)
+                price = positive_price(int(raw_price) / (10 ** minor_unit))
             parsed.append({
                 "text": text,
                 "title": name,
@@ -636,7 +778,7 @@ FETCHERS = {
 
 
 class ShopResult(list):
-    """The hits, plus how many products were parsed to find them.
+    """The hits, plus what the run learned while finding them.
 
     A list subclass rather than a new type on purpose: fifteen callers
     assert on this value directly (`== []`, `len(...)`, iteration), and the
@@ -645,11 +787,23 @@ class ShopResult(list):
     live fetch means the adapter has stopped reading that shop -- which
     until now printed exactly the same line as a shop with nothing in
     stock.
+
+    `sold_out` carries the producers this shop had on the page but cannot
+    sell today. They are not hits and never become hits -- they exist so
+    "watched but found nowhere" can stop meaning "found nowhere in stock",
+    which is a different and much less alarming fact.
+
+    `near_tokens` is the raw material for the alias near-miss check: the
+    words on this shop's pages that are close enough to a watched alias to
+    be a misspelling of it. Filtered here rather than kept wholesale,
+    because a shop like mareehaute parses 3481 products.
     """
 
-    def __init__(self, hits=(), products_parsed=0):
+    def __init__(self, hits=(), products_parsed=0, sold_out=(), near_tokens=()):
         super().__init__(hits)
         self.products_parsed = products_parsed
+        self.sold_out = list(sold_out)
+        self.near_tokens = set(near_tokens)
 
 
 def shop_order(shops, now=None):
@@ -671,15 +825,22 @@ def shop_order(shops, now=None):
 def check_shop(shop, crawler_client):
     items = FETCHERS[shop["platform"]](shop, crawler_client)
     hits = []
+    sold_out = []
+    near_tokens = set()
+    by_first = alias_length_index()
     skipped = 0
     for item in items:
-        # A bottle nobody can buy is not a find. Marked by the parser,
-        # dropped here, so the probe still sees the adapter working.
-        if item.get("in_stock") is False:
+        near_tokens |= near_miss_candidates(item["text"], by_first)
+        matches = matched_aliases(item["text"])
+        # A bottle nobody can buy is not a find. But it is still evidence
+        # that this shop stocks the producer at all, which is the difference
+        # between "your alias is broken" and "the wine is gone" -- so it is
+        # matched first and set aside, not skipped before matching.
+        out_of_stock = item.get("in_stock") is False
+        if out_of_stock:
             skipped += 1
-            continue
-        for producer, alias in matched_aliases(item["text"]).items():
-            hits.append({
+        for producer, alias in matches.items():
+            row = {
                 "shop": shop["name"],
                 "producer": producer,
                 "title": item["title"],
@@ -687,15 +848,19 @@ def check_shop(shop, crawler_client):
                 "url": item["url"],
                 "variant_title": item.get("variant_title", ""),
                 "matched_alias": alias,
-            })
+            }
+            (sold_out if out_of_stock else hits).append(row)
     if skipped:
         print(f"[{shop['name']}] skipped {skipped} sold-out listing(s)")
-    return ShopResult(hits, products_parsed=len(items))
+    return ShopResult(hits, products_parsed=len(items),
+                      sold_out=sold_out, near_tokens=near_tokens)
 
 
 def main():
     crawler_client = crawler.Crawler()
     all_hits = []
+    sold_out_shops = {}      # producer -> shops that had it, out of stock
+    near_corpus = {}         # shop -> words close to a watched alias
     error_count = 0
     skipped_count = 0
     silent_shops = []
@@ -720,6 +885,10 @@ def main():
         try:
             hits = check_shop(shop, crawler_client)
             all_hits.extend(hits)
+            for row in hits.sold_out:
+                sold_out_shops.setdefault(row["producer"], set()).add(row["shop"])
+            if hits.near_tokens:
+                near_corpus[shop["name"]] = hits.near_tokens
             parsed = hits.products_parsed
             if parsed == 0:
                 # Its fixture parses to more than zero, so the adapter has
@@ -755,10 +924,23 @@ def main():
         print(f"DRIFT: {len(silent_shops)} verified shop(s) parsed no products at "
               f"all: {', '.join(silent_shops)}. Their fixtures parse fine, so the "
               f"adapter has stopped reading them.")
+    # Three states, not two. A producer stocked at three shops and sold out
+    # at all three used to be reported identically to one whose alias is
+    # broken -- and the second is the only one worth acting on.
     found = {h["producer"] for h in all_hits}
-    unseen = [p for p in PRODUCERS if p not in found]
+    sold_out_only = [
+        f"{p} [{', '.join(sorted(sold_out_shops[p]))}]"
+        for p in PRODUCERS if p not in found and p in sold_out_shops
+    ]
+    unseen = [p for p in PRODUCERS if p not in found and p not in sold_out_shops]
+    if sold_out_only:
+        print(f"Matched but sold out everywhere ({len(sold_out_only)}): "
+              f"{', '.join(sold_out_only)}")
     if unseen:
         print(f"Watched but found nowhere ({len(unseen)}): {', '.join(unseen)}")
+    misses = near_misses(unseen, near_corpus)
+    if misses:
+        print(f"Alias near-misses ({len(misses)}): {'; '.join(misses)}")
     if error_count:
         print(f"{error_count} shop(s) had errors this run.")
     if skipped_count:
@@ -791,7 +973,9 @@ def main():
 
     notify.run_digest(evaluated, dry_run=DRY_RUN, notes={
         "Shops that returned nothing": silent_shops,
+        "Matched but sold out everywhere": sold_out_only,
         "Watched but found nowhere": unseen,
+        "Alias near-misses": misses,
     })
 
 

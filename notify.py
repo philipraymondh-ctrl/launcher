@@ -3,7 +3,9 @@ state in seen.json, and the full evaluated hit set in hits.json for the
 workflow artifact.
 
 Never one email per hit. A run where nothing newly qualifies sends nothing
-and exits 0 -- a silent run is a valid run, not a failure.
+and exits 0 -- a silent run is a valid run, not a failure. But a whole week
+of them is not distinguishable from a broken one from the inbox, so after
+RECAP_DAYS of quiet the run sends a recap of what it can currently see.
 """
 import hashlib
 import json
@@ -20,6 +22,16 @@ COOLDOWN_DAYS = 30
 PRICE_DROP_THRESHOLD = 0.10
 EMAIL_ROW_CAP = 40
 SECTION_ORDER = ["DEAL", "FAIR", "NOREF", "HIGH"]
+
+# How long the tracker may stay silent before it says so unprompted. A run
+# with no news is right to send nothing, but from the inbox that is
+# indistinguishable from expired credentials or a dead adapter.
+RECAP_DAYS = 7
+DIGEST_SUBJECT = "Wine tracker digest"
+RECAP_SUBJECT = "Wine tracker weekly recap"
+# seen.json is keyed by sha256 hex, so a non-hex key cannot collide with an
+# item, and select_alerts only ever writes keys it computed itself.
+META_KEY = "_meta"
 
 
 def item_key(hit):
@@ -50,16 +62,26 @@ def _parse_iso(ts):
 
 
 def should_alert(hit, prev, now):
-    """new item -> always. Otherwise: a 30-day cooldown blocks re-alerting
-    the same item, except a brand-new item (no prior record) has nothing to
-    be "within cooldown" of. Past cooldown, alert only on a >10% price drop
-    since the last alert, or a classification improving to DEAL."""
+    """new item -> always. A >10% drop since the last alert -> always, too:
+    the cooldown is there to stop the digest repeating itself, and a price
+    drop is not a repeat. Otherwise the 30-day cooldown blocks re-alerting,
+    and past it only a classification improving to DEAL qualifies.
+
+    The drop rule ignoring the cooldown is deliberate and was once the other
+    way round. An *unchanged* item never re-alerts either way -- the
+    post-cooldown branch also requires news -- so all the 30-day gate ever
+    did to a price drop was delay it by up to a month, which is how a live
+    tracker goes quiet for weeks while a wine it already reported halves in
+    price. Nothing runs away as a result: the comparison is against
+    `last_alerted_price`, which every alert resets, so a decline alerts once
+    per further -10% step and a round trip alerts not at all.
+
+    Classification stays behind the cooldown on purpose. It is derived from
+    the observed market pool, which moves every hour as other shops are
+    crawled, so DEAL -> FAIR -> DEAL flapping is realistic in a way a price
+    round trip is not."""
     if prev is None:
         return True
-
-    last_alerted_at = prev.get("last_alerted_at")
-    if last_alerted_at and (now - _parse_iso(last_alerted_at)).days < COOLDOWN_DAYS:
-        return False
 
     last_alerted_price = prev.get("last_alerted_price")
     price = hit.get("price")
@@ -68,10 +90,15 @@ def should_alert(hit, prev, now):
         and price is not None
         and price <= last_alerted_price * (1 - PRICE_DROP_THRESHOLD)
     )
-    classification_improved_to_deal = (
-        hit.get("classification") == "DEAL" and prev.get("last_classification") != "DEAL"
-    )
-    return price_dropped or classification_improved_to_deal
+    if price_dropped:
+        return True
+
+    last_alerted_at = prev.get("last_alerted_at")
+    if last_alerted_at and (now - _parse_iso(last_alerted_at)).days < COOLDOWN_DAYS:
+        return False
+
+    return (hit.get("classification") == "DEAL"
+            and prev.get("last_classification") != "DEAL")
 
 
 def _update_state(state, hit, key, alerted, now):
@@ -122,13 +149,39 @@ def format_row(hit):
             f"{basis} | {hit.get('url', '')}")
 
 
-def build_digest_body(alerting_hits, notes=None):
+def recap_due(state, now, every_days=RECAP_DAYS):
+    """True when nothing has been emailed for `every_days`. The clock is
+    reset by any digest, not only by a recap -- the promise is "you hear from
+    it at least weekly", not "you get an extra email weekly"."""
+    last = (state.get(META_KEY) or {}).get("last_recap_at")
+    if not last:
+        return True
+    return (now - _parse_iso(last)).total_seconds() >= every_days * 86400
+
+
+def _stamp_recap(state, now):
+    meta = dict(state.get(META_KEY) or {})
+    meta["last_recap_at"] = now.isoformat()
+    state[META_KEY] = meta
+    return state
+
+
+def build_digest_body(alerting_hits, notes=None, recap=False):
     ordered = []
     for section in SECTION_ORDER:
         ordered.extend(h for h in alerting_hits if h.get("classification") == section)
     shown = ordered[:EMAIL_ROW_CAP]
 
-    lines = ["STATUS | Producer | Cuvee | Size | Price | Ref | Basis | Link", ""]
+    lines = []
+    if recap:
+        lines += [
+            f"Weekly recap. Nothing new and nothing more than "
+            f"{PRICE_DROP_THRESHOLD:.0%} cheaper in the last {RECAP_DAYS} days, so "
+            f"this is everything currently matched rather than a set of fresh "
+            f"finds -- and confirmation that the tracker is still running.",
+            "",
+        ]
+    lines += ["STATUS | Producer | Cuvee | Size | Price | Ref | Basis | Link", ""]
     has_caveat = False
     for section in SECTION_ORDER:
         items = [h for h in shown if h.get("classification") == section]
@@ -142,7 +195,8 @@ def build_digest_body(alerting_hits, notes=None):
         lines.append("")
 
     if len(ordered) > EMAIL_ROW_CAP:
-        lines.append(f"... {len(ordered) - EMAIL_ROW_CAP} more alert-worthy hit(s) omitted; see hits.json")
+        kind = "matched" if recap else "alert-worthy"
+        lines.append(f"... {len(ordered) - EMAIL_ROW_CAP} more {kind} hit(s) omitted; see hits.json")
 
     if has_caveat:
         lines.append("* reference unverified or size/tier confidence low -- treat with caution")
@@ -161,7 +215,7 @@ class NotConfigured(Exception):
     """SMTP credentials are missing, so the digest cannot be delivered."""
 
 
-def send_email(body):
+def send_email(body, subject=DIGEST_SUBJECT):
     missing = [k for k in ("GMAIL_SENDER", "GMAIL_APP_PASSWORD", "NOTIFY_EMAIL") if not os.environ.get(k)]
     if missing:
         raise NotConfigured(
@@ -174,7 +228,7 @@ def send_email(body):
     password = os.environ["GMAIL_APP_PASSWORD"]
     recipient = os.environ["NOTIFY_EMAIL"]
     msg = MIMEText(body)
-    msg["Subject"] = "Wine tracker digest"
+    msg["Subject"] = subject
     msg["From"] = sender
     msg["To"] = recipient
     with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
@@ -187,9 +241,10 @@ def write_hits_json(all_hits, path=None):
     path.write_text(json.dumps(all_hits, indent=2, sort_keys=True, default=str))
 
 
-def run_digest(all_hits, dry_run=False, state_path=None, hits_path=None, notes=None):
+def run_digest(all_hits, dry_run=False, state_path=None, hits_path=None,
+               notes=None, now=None):
     """Full pipeline: decide alerts, write the full hit set to hits.json,
-    send at most one digest email, and only then persist the cooldown state.
+    send at most one email, and only then persist the cooldown state.
     Returns the list of alerting hits.
 
     Ordering matters. Marking an item "alerted" is what silences it for the
@@ -199,26 +254,43 @@ def run_digest(all_hits, dry_run=False, state_path=None, hits_path=None, notes=N
     (missing SMTP credentials, Gmail down) discarded the find entirely.
     Both are silent misses, which is the failure this scraper exists to
     avoid.
+
+    With nothing to alert on, one of two things happens. Usually: silence,
+    which is a valid run. But if nothing has been emailed for RECAP_DAYS,
+    the run sends a recap of everything currently matched instead --
+    otherwise a correct week of quiet looks exactly like a broken one. A
+    recap marks nothing as alerted; it is not a find.
     """
+    now = now or datetime.now(timezone.utc)
     state = load_state(state_path)
-    alerting, updated_state = select_alerts(all_hits, state)
+    alerting, updated_state = select_alerts(all_hits, state, now)
     write_hits_json(all_hits, hits_path)
 
-    if not alerting:
+    if alerting:
+        body, subject = build_digest_body(alerting, notes), DIGEST_SUBJECT
+    elif all_hits and recap_due(state, now):
+        body, subject = build_digest_body(all_hits, notes, recap=True), RECAP_SUBJECT
+    else:
         # Nothing was alerted, so nothing is being silenced; persisting here
         # just refreshes last_price for future drop comparisons.
-        save_state(updated_state, state_path)
+        if not dry_run:
+            save_state(updated_state, state_path)
         print("No newly alert-worthy hits this run (cooldown or no change) -- silent run is valid.")
         return alerting
 
-    body = build_digest_body(alerting, notes)
     if dry_run:
         print("DRY_RUN=1 set, skipping SMTP send and leaving state untouched.")
-        print("Digest email would be:\n")
+        print(f"{subject} would be:\n")
         print(body)
         return alerting
 
-    send_email(body)
-    save_state(updated_state, state_path)
-    print(f"Sent digest email with {len(alerting)} alert-worthy hit(s).")
+    send_email(body, subject=subject)
+    # The recap clock is reset by whichever email went out, so a digest and a
+    # recap can never both fire for the same stretch of quiet.
+    save_state(_stamp_recap(updated_state, now), state_path)
+    if alerting:
+        print(f"Sent digest email with {len(alerting)} alert-worthy hit(s).")
+    else:
+        print(f"Nothing new for {RECAP_DAYS} days; sent a recap of "
+              f"{len(all_hits)} currently matched hit(s).")
     return alerting

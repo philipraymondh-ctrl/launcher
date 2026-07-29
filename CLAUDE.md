@@ -11,7 +11,7 @@ never a reason to idle waiting for one.
 
 ## Architecture
 
-No framework, no database, no queue — seven plain files, each owning one
+No framework, no database, no queue — eight plain files, each owning one
 concern, wired together by `scraper.py`:
 
 1. **`crawler.py`** — the only module that calls `requests`. Every fetch
@@ -26,8 +26,12 @@ concern, wired together by `scraper.py`:
 2. **`scraper.py`** — loops over `SHOPS`, dispatching each to a platform
    fetcher (`fetch_shopify`, `fetch_woocommerce`, `fetch_html`, all taking
    a `Crawler` instance) that returns `{text, title, price, url,
-   variant_title}` items, then runs `match_producers(text)` (accent/case-
-   insensitive alias matching against `PRODUCERS`) to produce raw hits.
+   variant_title}` items, then runs `match_producers(text)` (alias matching
+   against `PRODUCERS` through `textnorm.match_key`, so accents, case and
+   separators are all out of the comparison) to produce raw hits. A match on
+   a listing that is out of stock is not dropped but set aside on
+   `ShopResult.sold_out`, which is what lets the run distinguish a broken
+   alias from a producer that is simply sold out everywhere.
 3. **`autoselect.py`** — reads a catalogue nobody wrote selectors for.
    Most HTML shops match none of the generic `div.product` guesses because
    their markup is their own (leszinzinsduvin is hand-rolled PHP serving
@@ -79,12 +83,31 @@ concern, wired together by `scraper.py`:
    digest that is sent also carries the run's `notes`: shops that returned
    nothing, and watched producers found nowhere. State in
    `seen.json` (keyed by `sha256(shop + product_url + variant)`) drives a
-   30-day per-item cooldown; a hit alerts only if it's new, its price
-   dropped >10% since the last alert, or its classification improved to
-   `DEAL`. A run where nothing qualifies sends nothing and exits 0 — that's
-   a valid, successful run, not a failure. The full evaluated hit set
-   always goes to `hits.json` (uploaded as the workflow artifact) even
-   when the email itself is empty or capped at 40 rows.
+   30-day per-item cooldown. A hit alerts if it's new, or its price dropped
+   >10% since the last alert — a drop is news, so it ignores the cooldown —
+   or its classification improved to `DEAL`, which does wait for the
+   cooldown because classification is derived from the market pool and can
+   flap hourly. A run where nothing qualifies sends nothing and exits 0 —
+   that's a valid, successful run. But a whole *week* of them looks exactly
+   like broken credentials from the inbox, so after `RECAP_DAYS` with no
+   email at all the run sends one recap of everything currently matched
+   (`_meta.last_recap_at` in `seen.json`, reset by any email). The full
+   evaluated hit set always goes to `hits.json` (uploaded as the workflow
+   artifact) even when the email itself is empty or capped at 40 rows.
+
+8. **`textnorm.py`** — how text is compared, in one place, as two
+   functions that must not be confused. `strip_accents` (NFKD, drop
+   combining marks, lowercase) is what `scraper`, `market`, `evaluate`,
+   `apply_issue` and `autoselect` each used to carry as a private copy —
+   five identical copies waiting for one divergent edit, which would have
+   made a producer added through the issue form derive an alias matching
+   nothing. `match_key` adds separator folding (`&` → `et`, every other
+   non-alphanumeric → space) and exists only for deciding whether a *name*
+   matches, so one alias `bruyere houillon` covers "Bruyère-Houillon" and
+   "Renaud Bruyère–Houillon" with no per-producer variant. It must never
+   touch text a price or vintage regex will read afterwards: it removes the
+   currency markers `PRICE_PATTERN` and `market.VINTAGE_RE` use to tell a
+   price from a year.
 
 Two more files exist for operating it rather than scraping:
 **`probe.py`** detects each shop's real platform from a runner (the dev
@@ -106,6 +129,13 @@ tests first, best-effort persists `seen.json`/`observations.json`/`.cache`
 across runs via `actions/cache`, and uploads `hits.json` plus
 `observations.json` as artifacts.
 
+Any digest or recap also carries what the run could not do quietly:
+shops that returned nothing, producers **matched but sold out everywhere**
+(with the shops that had them, so there is somewhere to look again),
+producers **found nowhere at all** — an alias signal, now that sold-out
+matches no longer land here — and **alias near-misses**, words on a shop's
+pages one edit away from an alias that matched nothing.
+
 Every `SHOPS` entry also carries a `verified` flag. `main()` skips any shop
 with `"verified": False` before it ever makes a network call — this is for
 shops added from research/guesswork rather than a real observed response
@@ -125,6 +155,18 @@ not each have a stated reason, none of which is "needs selectors" any more
     or fetching every product page, and the second is hundreds of requests
     for one shop. `probe_pages/` holds a trimmed copy of each page.
 
+    Probe run 30403841248 re-tested all four and verified none: every
+    catalogue-path guess 404s and each landing page parses to zero
+    products. purewijnen looked like the exception, because its landing page
+    *is* a grower index and `find_producer_links` finds our Renaud
+    Bruyère-Houillon in it (ignoring the Overnoy-Crinquand two lines up --
+    `tests/fixtures/purewijnen-growers-excerpt.html` keeps that real markup
+    as a namesake test). Following the link settles it:
+    `probe_pages/capture.nl-renaud-bruyere-houillon.html` is a producer bio
+    with no wine list and **not one currency marker in 28KB**. There is
+    nothing on that page to read, so the shop stays unverified -- the
+    producer-index route is not the missing piece for any of these four.
+
 Secrets (`GMAIL_SENDER`, `GMAIL_APP_PASSWORD`, `NOTIFY_EMAIL`) are the
 only external configuration; everything else is in this repo. Those three
 reach Gmail's SMTP server and nothing else -- they are never put in an
@@ -137,6 +179,12 @@ HTTP header or printed.
   task — edit the dict directly.
 - Every scraping change (new shop, adapter fix, selector change) must pass
   the fixture tests in `tests/` before commit.
+- A zero is not a price. Cart widgets ("Voir mon panier -- 0,00 EUR"), gift
+  cards and "price on request" all carry a currency-adjacent zero, and zero
+  is below every reference there will ever be, so such a row is a permanent
+  DEAL -- one live dry run put exactly that in the digest. `positive_price`
+  rejects it on all three platform paths, and `autoselect` does not treat a
+  zero-priced block as a listing at all.
 - Prices: parse currency-adjacent numbers only (a `€`, `$`, `£`, `EUR`, or
   `USD` marker touching the number). Never treat a bare 4-digit number as a
   price — it could be a vintage year. This is what `PRICE_PATTERN` /
@@ -174,6 +222,28 @@ HTTP header or printed.
 - A wine seen at no other shop gets no reference. Do not add a fallback
   that invents one -- `NOREF` is a real answer and the hit is still
   reported.
+- A sold-out match is remembered, never alerted. `check_shop` matches
+  every parsed listing and puts out-of-stock matches on
+  `ShopResult.sold_out`; they must stay out of `hits.json`, out of the
+  market pool and above all out of `seen.json`. That last one is what makes
+  a **restock** read as a new item and alert — the most valuable alert this
+  scraper sends, and it works because nothing about a sold-out listing is
+  persisted. `tests/test_coverage.py` asserts both halves; don't "improve"
+  it by recording sold-out state.
+- "Watched but found nowhere" means matched nowhere at all, in stock or
+  not. A producer stocked somewhere but sold out belongs in "Matched but
+  sold out everywhere" with its shops named; collapsing the two back
+  together restores the exact ambiguity the note was added to remove (one
+  run called 13 of 16 producers missing while a single shop hid 2135
+  sold-out listings).
+- Near-misses are suspicions, not findings: only for producers that matched
+  nothing, only alias tokens of 7+ characters, only at edit distance 1, and
+  only when *neither* side is a word the corpus shows at more than one shop.
+  That last filter is doing the real work -- two live runs offered
+  `'pierres'`, `'pierra'`, `'pierro'` and `'malice'` before it existed,
+  because "pierre" and "calice" are French before they are estates.
+  Loosening any of it turns the note into noise, and a noisy note is an
+  ignored note.
 - Producer aliases must name an estate, not a surname. `match_producers`
   prefers the longest matching alias, but that only separates producers we
   track -- it cannot help against an untracked namesake. Jura and Savoie
@@ -182,6 +252,13 @@ HTTP header or printed.
   matches Corentin Houillon and Fimbel-Houillon; "brochet" also matches
   Emmanuel Brochet. Every one of those was reported under the wrong
   producer from real catalogues. Use the full name.
+- Text comparison goes through `textnorm`, never a local copy. Use
+  `strip_accents` for anything a price, vintage or cru regex reads
+  afterwards, and `match_key` only where a *name* decides a match
+  (`scraper.matched_aliases`, `apply_issue`'s derived alias — those two must
+  agree or a producer added through the form matches nothing). Putting
+  `match_key` in front of `market.VINTAGE_RE` turns "2018,50 €" into
+  "2018 50" and a price becomes a vintage.
 - A listing that is sold out is not a find. Stock comes from the platform
   when it answers (`available` on a Shopify variant, `is_in_stock` on the
   WooCommerce Store API) and from the listing text otherwise ("epuise",
@@ -189,12 +266,17 @@ HTTP header or printed.
   `check_shop`, never by the parser -- the probe counts parsed products to
   decide whether an adapter works, so a shop whose stock is out today must
   not read as broken. Silence from an API is not "sold out".
-- `notify.py` sends at most one digest email per run. Don't reintroduce a
-  per-hit email path.
+- `notify.py` sends at most one email per run -- a digest or a recap, never
+  both, and never one per hit. Don't reintroduce a per-hit email path.
 - `notify.py` persists `seen.json` only *after* the email is actually sent.
   Marking an item alerted is what silences it for 30 days, so saving before
   the send means a dry run or a failed send silently swallows a real find.
-  Never move `save_state` back above `send_email`.
+  Never move `save_state` back above `send_email`. A `DRY_RUN` writes no
+  state on any path, including the silent one.
+- The weekly recap must never mark an item alerted. It is not a find, and
+  marking one would silence a real drop for 30 days; it refreshes
+  `last_price` only, exactly as a silent run does. It is also not a
+  heartbeat -- a run with no hits at all still sends nothing.
 - A coffret/caisse is several bottles, so its price is not comparable to a
   per-bottle reference. `evaluate.py` must keep detecting bundles, applying
   no format multiplier, and always caveating them -- real listings like

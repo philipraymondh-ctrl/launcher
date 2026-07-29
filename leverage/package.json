@@ -8,7 +8,8 @@
     "build": "node bin/deck.js build",
     "validate": "node validate-deck.js",
     "render": "node tools/render.js",
-    "examples": "node tools/build-examples.js"
+    "examples": "node tools/build-examples.js",
+    "check": "npm test && npm run examples"
   },
   "keywords": [],
   "author": "",

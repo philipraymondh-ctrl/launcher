@@ -65,8 +65,19 @@ function fitted(slide, ctx, where, text, box, sizes, opts = {}) {
 
 // The standard slide frame: title, a navy rule under it, and a footer carrying
 // the deck footer text and the slide number.
-function frame(slide, spec, ctx, title) {
+function frame(slide, spec, ctx, title, opts = {}) {
   const H = theme.REGIONS.header;
+  if ((!title || String(title).trim() === '') && opts.titleOptional !== true) {
+    // An untitled content slide is a slide nobody can navigate to in a
+    // scrolled-through deck, and it is almost always a spec still being typed
+    // rather than a decision. Reported, never fatal.
+    //
+    // titleOptional exists for the one component where a blank header is
+    // correct rather than unfinished: a metric slide's number is its title. A
+    // warning that fires on every correct metric slide is noise, and a noisy
+    // warning is an ignored warning.
+    ctx.warn(`${ctx.where}: no title. A content slide without one is unnavigable in a scrolled deck.`);
+  }
   if (title) {
     // The title gets two lines before it shrinks, and shrinking it moves
     // nothing: the body region is fixed, so a long title loses type size
@@ -751,7 +762,7 @@ function stakeholders(slide, spec, ctx) {
 // One number, one claim. The slide that exists because a figure buried in a
 // table does not land and the same figure at 86pt does.
 function metric(slide, spec, ctx) {
-  frame(slide, spec, ctx, ctx.slide.fields.heading || '');
+  frame(slide, spec, ctx, ctx.slide.fields.heading || '', { titleOptional: true });
   const B = theme.REGIONS.body;
   const value = placeholderOr(ctx.slide.title, ctx, `${ctx.where} value`);
   const label = ctx.slide.fields.label || ctx.slide.fields.text || '';

@@ -47,3 +47,15 @@ One line per completed step. Newest at the bottom.
   traversal.
 - Final third: README.md, BASELINE.md, BLOCKED.md (five decisions with defaults,
   not questions) and HANDOVER.md written.
+- Increment 6 (hardening): 111 tests, up from 80. test/cli.test.js drives the
+  CLI as a process (real argv, real exit codes) because every other test calls
+  the library directly and would not notice a CLI that always exits 0.
+  test/robustness.test.js covers what a thumb-typed spec actually contains: a
+  heading with nothing under it yet for all eleven components, Nordic and French
+  names, a pasted URL with no spaces, ragged and header-less tables, and the same
+  spec built twice (determinism, which `validate --spec` depends on).
+- Increment 6 also added an untitled-slide warning, then immediately exempted
+  metric slides from it, because the first version fired on every correct metric
+  slide. A warning that fires on correct output is noise, and noise is how the
+  real warnings stop being read. `npm run check` now runs both halves; it reports
+  111 passing tests, 4 of 4 specs valid, and no warnings on any spec.

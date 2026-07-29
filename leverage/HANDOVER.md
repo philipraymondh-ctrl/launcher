@@ -9,8 +9,9 @@ a second.
 A validator reads the built file back off disk and proves it, on any deck,
 including ones this tool did not build, and it is proven able to fail.
 
-Four example specs of different shapes build and validate clean, 80 tests pass,
-and a GitHub workflow does the same thing without a desktop.
+Four example specs of different shapes build and validate clean, 111 tests pass
+with no warnings anywhere, and a GitHub workflow does the same thing without a
+desktop.
 
 ## 2. What the council chose, and the objection it never resolved
 
@@ -46,8 +47,7 @@ Two vetoes carry recorded dissent, both worth knowing:
 ```bash
 cd leverage
 npm install
-npm test
-npm run examples
+npm run check
 ```
 
 Then look at one:

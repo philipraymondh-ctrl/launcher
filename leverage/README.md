@@ -31,9 +31,11 @@ validate-deck: steering-review.pptx
 ```bash
 cd leverage
 npm install
-npm test          # 80 tests, no network
-npm run examples  # builds and validates every spec in specs/
+npm run check     # 111 tests, then builds and validates every spec in specs/
 ```
+
+`npm test` and `npm run examples` run the two halves separately. Neither touches
+the network.
 
 Node 22, one runtime dependency (pptxgenjs) plus jszip for reading decks back.
 No network calls at build or validate time. No model calls.

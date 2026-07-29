@@ -310,6 +310,15 @@ SHOPS = [
         "price_selector": "span.price",
         "verified": False,
     },
+    {
+        "name": "lavinoterie",
+        "platform": "html",
+        "url": "https://lavinoterie.fr",
+        "item_selector": "div.product",
+        "title_selector": "h2.product-title",
+        "price_selector": "span.price",
+        "verified": False,
+    },
 ]
 
 

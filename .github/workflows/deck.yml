@@ -1,0 +1,96 @@
+name: deck
+
+# Build a deck without a desktop.
+#
+# This exists to answer one specific objection, recorded in
+# leverage/COUNCIL.md: the build runs in a terminal, so if a laptop is in the
+# loop then a phone-typeable spec buys nothing. Two paths remove the laptop:
+#
+#   1. Edit or add a file under leverage/specs/ in the GitHub web editor, which
+#      works on a phone, and push. Every spec is built and validated, and the
+#      decks are attached to the run as an artifact.
+#   2. Run this workflow manually and paste a spec into the "spec" input. Same
+#      build, same validation, same artifact.
+#
+# Either way the run either produces a validated deck or fails and says which
+# check failed. It never uploads a deck that did not validate.
+
+on:
+  push:
+    paths:
+      - 'leverage/**'
+    branches:
+      - '**'
+  workflow_dispatch:
+    inputs:
+      spec:
+        description: 'Paste a spec here to build just that one. Leave blank to build everything in specs/.'
+        required: false
+        type: string
+      name:
+        description: 'Name for the pasted spec, without an extension.'
+        required: false
+        default: 'pasted'
+        type: string
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: leverage
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: leverage/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      # The tests run before any deck is built. They are what makes a PASS from
+      # validate-deck mean anything, so a broken validator must not be able to
+      # bless a deck in the same run.
+      - name: Test
+        run: npm test
+
+      - name: Write the pasted spec
+        if: inputs.spec != ''
+        env:
+          SPEC_BODY: ${{ inputs.spec }}
+          SPEC_NAME: ${{ inputs.name }}
+        # Through the environment, not through string interpolation into a shell
+        # command: the input is arbitrary text and belongs nowhere near a shell
+        # parser.
+        run: |
+          node -e '
+            const fs = require("fs");
+            const path = require("path");
+            const name = (process.env.SPEC_NAME || "pasted")
+              .replace(/[^A-Za-z0-9._-]/g, "-")
+              .replace(/\.+/g, ".")
+              .replace(/^[.-]+/, "") || "pasted";
+            const file = path.join("specs", `${name}.md`);
+            fs.writeFileSync(file, process.env.SPEC_BODY);
+            process.stdout.write(`wrote ${file}, ${process.env.SPEC_BODY.length} chars\n`);
+          '
+
+      - name: Build and validate every spec
+        run: npm run examples
+
+      - name: Attach the decks
+        uses: actions/upload-artifact@v4
+        with:
+          name: decks
+          path: |
+            leverage/out/*.pptx
+            leverage/out/*.manifest.json
+          if-no-files-found: error
+          retention-days: 30

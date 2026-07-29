@@ -70,3 +70,25 @@ slide and field named. A rule in a README is a rule that drifts.
 4. *Replaces cited repeated work* - yes. A1, A2, A3, A4, A8, A9, A10, A12.
 
 Runner-up not promoted. Gate not re-run.
+
+## D8. Drift check at increment 5: none
+
+Re-read SELECTION.md as required. What was picked was a spec compiler plus a
+validator that works on foreign decks. What exists is a spec compiler plus a
+validator that works on foreign decks. No drift.
+
+The one addition beyond the original scope is `.github/workflows/deck.yml`, and
+it is not scope creep: SELECTION.md names the Operator's objection (the build
+needs a terminal, so a laptop is in the loop) as partially answered, with a
+dispatchable build as the answer. This is that answer, and it follows the pattern
+already proven in this repo by `dashboard.py`, which exists so the scraper can be
+operated from a phone (EVIDENCE E1).
+
+## D9. The pasted spec reaches the workflow through the environment, never
+through shell interpolation
+
+`inputs.spec` is arbitrary text from whoever runs the workflow. Interpolating it
+into a `run:` line would put attacker-controlled text through a shell parser. It
+is passed as an env var and read by Node instead, and the file name is
+sanitised to `[A-Za-z0-9._-]` with dot runs collapsed and leading dots stripped,
+verified against `../../etc/passwd` and `..` as inputs.

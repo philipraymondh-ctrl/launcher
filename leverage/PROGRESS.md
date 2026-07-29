@@ -39,3 +39,11 @@ One line per completed step. Newest at the bottom.
   format work the tool replaces, 2.4x on the whole task including thinking, and
   a stated ceiling of 2.9x on the whole task that no version of this tool can
   pass without automating judgment.
+- Increment 5: `.github/workflows/deck.yml`. Two paths that need no desktop:
+  push a spec edited in GitHub's web editor, or dispatch the workflow with a
+  pasted spec. Tests run before any deck is built, and no deck is uploaded
+  unless it validated. This is the direct answer to the Operator's objection in
+  COUNCIL.md. YAML validated; the pasted-name sanitiser tested against path
+  traversal.
+- Final third: README.md, BASELINE.md, BLOCKED.md (five decisions with defaults,
+  not questions) and HANDOVER.md written.

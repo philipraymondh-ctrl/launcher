@@ -30,3 +30,12 @@ One line per completed step. Newest at the bottom.
   roadmap that dropped content when phases were dense. Roadmap now packs phases
   by estimated height rather than five at a time, and exceeding the continuation
   cap fails the build instead of warning over a deck that lost slides.
+- Increment 4: three more example specs (market status pack, capability
+  proposal, a short thumb-typed weekly update) plus `npm run examples`, which
+  builds and validates every spec in specs/. 4 of 4 valid, 172ms total. The
+  appendix acceptance criterion (three specs of different shapes build and
+  validate clean) is met and machine-checked.
+- Phase 5: BASELINE.md written from measured timings, not estimates. 9.5x on the
+  format work the tool replaces, 2.4x on the whole task including thinking, and
+  a stated ceiling of 2.9x on the whole task that no version of this tool can
+  pass without automating judgment.

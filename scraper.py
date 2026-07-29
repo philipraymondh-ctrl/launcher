@@ -228,12 +228,6 @@ SHOPS = [
         "verified": True,
     },
     {
-        "name": "bbn",
-        "platform": "shopify",
-        "url": "https://biobiodynamienature.com",
-        "verified": True,
-    },
-    {
         "name": "purewijnen",
         "platform": "html",
         "url": "https://www.purewijnen.be",

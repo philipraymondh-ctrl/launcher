@@ -113,6 +113,20 @@ function readShapes(xml) {
   return shapes;
 }
 
+// Axis-aligned bounding box of a shape after its own rotation. Office stores
+// rotation in 60000ths of a degree, applied about the shape's centre.
+function boundingBox(sp) {
+  if (!sp.rot) return { x: sp.x, y: sp.y, w: sp.w, h: sp.h };
+  const rad = ((sp.rot / 60000) * Math.PI) / 180;
+  const cos = Math.abs(Math.cos(rad));
+  const sin = Math.abs(Math.sin(rad));
+  const w = sp.w * cos + sp.h * sin;
+  const h = sp.w * sin + sp.h * cos;
+  const cx = sp.x + sp.w / 2;
+  const cy = sp.y + sp.h / 2;
+  return { x: cx - w / 2, y: cy - h / 2, w, h };
+}
+
 function slideParts(zip) {
   return Object.keys(zip.files)
     .filter((n) => /^ppt\/slides\/slide\d+\.xml$/.test(n))
@@ -201,15 +215,19 @@ async function validate(file, opts = {}) {
       const label = `slide ${slideNo} shape ${j + 1}`;
 
       const tol = 0.02;
-      if (sp.x < -tol || sp.y < -tol
-          || sp.x + sp.w > theme.SLIDE.w + tol || sp.y + sp.h > theme.SLIDE.h + tol) {
-        // A rotated shape's box is stored unrotated, so its stored extent can
-        // legitimately reach past the edge. Only flag unrotated shapes.
-        if (!sp.rot) {
-          outOfBounds.push(
-            `${label} at (${sp.x.toFixed(2)}, ${sp.y.toFixed(2)}) size ${sp.w.toFixed(2)}x${sp.h.toFixed(2)}in`,
-          );
-        }
+      // A rotated shape is stored unrotated and spun about its own centre, so
+      // its stored box says nothing about where it lands. Rotate the box and
+      // check that. Skipping rotated shapes instead let a rotated axis label
+      // sit half off the slide and still pass, which LibreOffice then rendered
+      // through the middle of the chart it was labelling.
+      const box = boundingBox(sp);
+      if (box.x < -tol || box.y < -tol
+          || box.x + box.w > theme.SLIDE.w + tol || box.y + box.h > theme.SLIDE.h + tol) {
+        outOfBounds.push(
+          `${label}${sp.rot ? ' (rotated)' : ''} occupies (${box.x.toFixed(2)}, ${box.y.toFixed(2)}) to `
+          + `(${(box.x + box.w).toFixed(2)}, ${(box.y + box.h).toFixed(2)})in on a `
+          + `${theme.SLIDE.w}x${theme.SLIDE.h}in slide`,
+        );
       }
 
       if (sp.paras.length === 0) return;
@@ -368,4 +386,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { validate, printReport, readShapes };
+module.exports = { validate, printReport, readShapes, boundingBox };

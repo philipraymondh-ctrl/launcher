@@ -155,6 +155,19 @@ function bulletList(slide, ctx, where, items, box, opts = {}) {
     [placed, remaining] = splitToFit(items, box, pt, gap, (it, p) => bulletHeight(it, p, textW) + gap);
   }
 
+  // Vertical distribution. A four-bullet list in a 5in region top-aligned
+  // leaves half the slide blank and reads as a draft. Extra space goes into the
+  // gaps rather than into a block floating at the top, up to a cap, because
+  // beyond that the list stops reading as a list.
+  let gapUsed = gap;
+  if (placed.length > 1) {
+    const contentH = placed.reduce((acc, it) => acc + bulletHeight(it, pt, textW), 0);
+    const slack = box.h * 0.94 - contentH - gap * (placed.length - 1);
+    if (slack > 0) {
+      gapUsed = Math.min(gap * 2.6, gap + slack / (placed.length - 1));
+    }
+  }
+
   let y = box.y;
   placed.forEach((item, i) => {
     const h = bulletHeight(item, pt, textW);
@@ -172,7 +185,7 @@ function bulletList(slide, ctx, where, items, box, opts = {}) {
     if (metrics.lineCount(item, textW, pt) > 4) {
       ctx.warn(`${where}: bullet ${i + 1} wraps to ${metrics.lineCount(item, textW, pt)} lines. A bullet that long is a paragraph.`);
     }
-    y += h + gap;
+    y += h + gapUsed;
   });
   return remaining;
 }
@@ -347,10 +360,17 @@ function flow(slide, spec, ctx) {
   const overflow = steps.slice(12);
   const perRow = placed.length <= 6 ? placed.length : Math.ceil(placed.length / 2);
   const rows = Math.ceil(placed.length / perRow);
-  const arrowW = 0.34;
+  const arrowW = 0.42;
   const boxW = (B.w - arrowW * (perRow - 1)) / perRow;
   const rowGap = 0.5;
-  const boxH = Math.min(1.7, (B.h - rowGap * (rows - 1)) / rows);
+  // Height from the content, not from the region. Filling the region gives tall
+  // boxes holding two lines of text at the top, which renders as empty boxes.
+  const textW = boxW - 0.24 - theme.INSET.x * 2;
+  const deepest = placed.reduce(
+    (max, s) => Math.max(max, metrics.lineCount(s, textW, theme.TYPE.body, true)), 1,
+  );
+  const contentH = metrics.linesHeight(deepest, theme.TYPE.body) + 0.62;
+  const boxH = Math.min(Math.max(0.95, contentH), (B.h - rowGap * (rows - 1)) / rows);
   const startY = B.y + (B.h - (boxH * rows + rowGap * (rows - 1))) / 2;
 
   placed.forEach((step, i) => {
@@ -368,13 +388,15 @@ function flow(slide, spec, ctx) {
       x: x + 0.1, y: y + 0.1, w: 0.5, h: 0.3, fontSize: theme.TYPE.micro, color: P.muted, bold: true,
     }));
     fitted(slide, ctx, `${ctx.where} step ${i + 1}`, step,
-      { x: x + 0.12, y: y + 0.42, w: boxW - 0.24, h: boxH - 0.56 },
-      metrics.ladder(theme.TYPE.body, 9), { bold: true, color: P.navy, valign: 'top' });
+      { x: x + 0.12, y: y + 0.4, w: boxW - 0.24, h: boxH - 0.5 },
+      metrics.ladder(theme.TYPE.body, 9), { bold: true, color: P.navy, valign: 'middle' });
 
     const isRowEnd = col === perRow - 1 || i === placed.length - 1;
     if (!isRowEnd) {
-      slide.addShape(ctx.pptx.ShapeType.rect, {
-        x: x + boxW + 0.09, y: y + boxH / 2 - 0.035, w: arrowW - 0.18, h: 0.07,
+      // An actual arrow. A thin navy bar between boxes reads as a divider, which
+      // is the opposite of what a process flow needs to say.
+      slide.addShape(ctx.pptx.ShapeType.rightArrow, {
+        x: x + boxW + 0.1, y: y + boxH / 2 - 0.11, w: arrowW - 0.2, h: 0.22,
         fill: { color: P.navy }, line: { type: 'none' },
       });
     }
@@ -601,7 +623,7 @@ function stakeholders(slide, spec, ctx) {
     return null;
   }
 
-  const axis = 0.5;
+  const axis = 0.46;
   const gridX = B.x + axis;
   const gridY = B.y;
   const gridW = B.w - axis;
@@ -624,14 +646,22 @@ function stakeholders(slide, spec, ctx) {
       fontSize: theme.TYPE.micro, color: P.muted, bold: true,
     }));
   }
-  slide.addText('Influence', textOpts({
-    x: B.x - 0.4, y: gridY, w: gridH, h: 0.34, fontSize: theme.TYPE.micro, color: P.navy,
-    bold: true, rotate: 270, align: 'center',
-  }));
-  slide.addText('Interest', textOpts({
-    x: gridX, y: gridY + gridH + 0.1, w: gridW, h: 0.32, fontSize: theme.TYPE.micro, color: P.navy,
-    bold: true, align: 'center',
-  }));
+  // A rotated shape spins about its own centre, so its x and y are not where it
+  // appears. Place these by the centre the label should end up at, or the box
+  // lands somewhere else entirely: the first version of this put "Influence"
+  // through the middle of the grid it was labelling, and passed validation
+  // because the bounds check ignored rotation. Both are fixed.
+  const axisLabel = (text, cx, cy, rotate) => {
+    const w = 1.5;
+    const h = 0.3;
+    slide.addText(text, textOpts({
+      x: cx - w / 2, y: cy - h / 2, w, h,
+      fontSize: theme.TYPE.micro, color: P.navy, bold: true, align: 'center', valign: 'middle',
+      ...(rotate ? { rotate } : {}),
+    }));
+  };
+  axisLabel('Influence', B.x + axis / 2, gridY + gridH / 2, 270);
+  axisLabel('Interest', gridX + gridW / 2, gridY + gridH + 0.2, 0);
 
   const level = (v) => {
     const s = String(v || '').trim().toLowerCase();

@@ -1,10 +1,14 @@
 {
-  "name": "leverage",
+  "name": "deckwright",
   "version": "1.0.0",
-  "description": "",
+  "description": "A spec compiler for slides: markdown in, standards-clean pptx out, validated by reading the file back.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --test test/*.test.js",
+    "build": "node bin/deck.js build",
+    "validate": "node validate-deck.js",
+    "render": "node tools/render.js",
+    "examples": "node tools/build-examples.js"
   },
   "keywords": [],
   "author": "",
@@ -12,5 +16,9 @@
   "dependencies": {
     "jszip": "^3.10.1",
     "pptxgenjs": "^4.0.1"
+  },
+  "private": true,
+  "bin": {
+    "deck": "./bin/deck.js"
   }
 }

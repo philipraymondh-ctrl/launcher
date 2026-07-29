@@ -21,3 +21,12 @@ One line per completed step. Newest at the bottom.
   their height. All three fixed. The first also exposed a validator gap, which
   now rotates a shape's box before checking bounds. `tools/render.js` makes the
   check repeatable.
+- Increment 3: 80 tests (`npm test`), all passing. The important file is
+  test/validate.test.js, which builds decks that are deliberately wrong in each
+  forbidden way and asserts the named check catches each one, so the validator
+  is known to be able to fail. Three test failures were real findings: a wrong
+  assertion about bold advance widths, an overstated claim in a code comment
+  about what the rotation-aware bounds check can catch (corrected), and a
+  roadmap that dropped content when phases were dense. Roadmap now packs phases
+  by estimated height rather than five at a time, and exceeding the continuation
+  cap fails the build instead of warning over a deck that lost slides.

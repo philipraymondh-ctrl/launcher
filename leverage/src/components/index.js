@@ -415,16 +415,47 @@ function roadmap(slide, spec, ctx) {
     ctx.warn(`${ctx.where}: roadmap has no phases. Add "### Q3 2026 | Phase name" groups.`);
     return null;
   }
-  const placed = phases.slice(0, 5);
-  const overflow = phases.slice(5);
+
+  // How many phases fit is a question about content, not a constant. Five
+  // phases holding eight milestones each gives every band a third of an inch,
+  // one milestone lands, and the other seven go to a continuation slide that
+  // does the same thing again. Pack by estimated height instead, so a dense
+  // roadmap spreads over fewer phases per slide and finishes.
+  const itemW = B.w - 2.13 - theme.INSET.x * 2;
+  const phaseHeight = (p) => {
+    const items = p.items || [];
+    const lines = items.reduce(
+      (acc, it) => acc + metrics.lineCount(it, itemW, theme.TYPE.body), 0,
+    );
+    return 0.62 + metrics.linesHeight(lines, theme.TYPE.body) + items.length * 0.11;
+  };
+  let capacity = 0;
+  let count = 0;
+  for (const p of phases) {
+    const h = phaseHeight(p);
+    if (count > 0 && capacity + h > B.h - 0.2) break;
+    capacity += h;
+    count += 1;
+    if (count === 5) break;
+  }
+  const placed = phases.slice(0, count);
+  const overflow = phases.slice(count);
   const axisX = B.x + 1.85;
   slide.addShape(ctx.pptx.ShapeType.rect, {
     x: axisX, y: B.y + 0.1, w: 0.035, h: B.h - 0.2, fill: { color: P.rule }, line: { type: 'none' },
   });
 
-  const bandH = (B.h - 0.2) / placed.length;
+  // Bands sized in proportion to what each phase holds. Equal bands starve a
+  // dense phase to feed a sparse one.
+  const heights = placed.map(phaseHeight);
+  const hSum = heights.reduce((a, b) => a + b, 0);
+  const bands = heights.map((h) => (h / hSum) * (B.h - 0.2));
+  let bandTop = B.y + 0.1;
+
   placed.forEach((phase, i) => {
-    const y = B.y + 0.1 + i * bandH;
+    const bandH = bands[i];
+    const y = bandTop;
+    bandTop += bandH;
     slide.addShape(ctx.pptx.ShapeType.ellipse, {
       x: axisX - 0.075, y: y + 0.18, w: 0.185, h: 0.185, fill: { color: P.navy }, line: { type: 'none' },
     });

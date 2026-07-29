@@ -216,10 +216,12 @@ async function validate(file, opts = {}) {
 
       const tol = 0.02;
       // A rotated shape is stored unrotated and spun about its own centre, so
-      // its stored box says nothing about where it lands. Rotate the box and
-      // check that. Skipping rotated shapes instead let a rotated axis label
-      // sit half off the slide and still pass, which LibreOffice then rendered
-      // through the middle of the chart it was labelling.
+      // its stored box is not where it lands. Rotate the box, then check that.
+      // Checking the stored box would report a correctly placed rotated label as
+      // out of bounds; skipping rotated shapes misses one that genuinely runs
+      // off the edge. Neither of those catches a rotated label that is on the
+      // slide but in the wrong place: only rendering caught that one, which is
+      // what tools/render.js is for.
       const box = boundingBox(sp);
       if (box.x < -tol || box.y < -tol
           || box.x + box.w > theme.SLIDE.w + tol || box.y + box.h > theme.SLIDE.h + tol) {

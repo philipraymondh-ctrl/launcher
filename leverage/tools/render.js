@@ -8,8 +8,9 @@
 // defects survived a clean `validate-deck` run and were only visible once
 // rendered: a rotated axis label that landed in the middle of the chart it was
 // labelling, process-flow boxes tall enough to look empty, and bullet lists
-// top-aligned in a region twice their height. The first of those also produced a
-// fix to the validator, which now rotates a shape's box before checking bounds.
+// top-aligned in a region twice their height. None of the three is detectable
+// from geometry alone, because every one of those shapes was inside the slide
+// and inside its own box. Rendering is the only check that sees them.
 //
 // Requires LibreOffice with the Impress module, plus pdftoppm from
 // poppler-utils. Neither is a runtime dependency of the deck build: this is a

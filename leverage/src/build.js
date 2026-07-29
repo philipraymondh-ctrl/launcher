@@ -81,9 +81,14 @@ async function build(spec, outPath) {
     if (result.overflow) {
       const depth = slideSpec.continuation + 1;
       if (depth > MAX_CONTINUATIONS) {
-        warnings.push(
-          `${ctx.where}: content still did not fit after ${MAX_CONTINUATIONS} continuation slides. ` +
-            'The remainder was not placed. Split this slide in the spec.',
+        // Dropping content is the one thing this tool must never do quietly, so
+        // hitting the cap fails the build rather than warning. A warning here
+        // would be printed above a deck that silently lost slides, which is
+        // exactly the shape of failure the whole project exists to prevent.
+        throw new Error(
+          `slide ${index} ("${slideSpec.title || slideSpec.type}") still had content left after `
+          + `${MAX_CONTINUATIONS} continuation slides, so the build stopped rather than drop it. `
+          + 'Split this slide in the spec.',
         );
       } else {
         const title = slideSpec.title

@@ -29,6 +29,10 @@ SECTION_ORDER = ["DEAL", "FAIR", "NOREF", "HIGH"]
 RECAP_DAYS = 7
 DIGEST_SUBJECT = "Wine tracker digest"
 RECAP_SUBJECT = "Wine tracker weekly recap"
+# A run a human pressed the button for. It answers whatever the state of the
+# cooldown, because silence from a run you asked for is indistinguishable
+# from a broken one -- and twice now has been read as exactly that.
+ONDEMAND_SUBJECT = "Wine tracker report (you asked)"
 # seen.json is keyed by sha256 hex, so a non-hex key cannot collide with an
 # item, and select_alerts only ever writes keys it computed itself.
 META_KEY = "_meta"
@@ -166,14 +170,21 @@ def _stamp_recap(state, now):
     return state
 
 
-def build_digest_body(alerting_hits, notes=None, recap=False):
+def build_digest_body(alerting_hits, notes=None, recap=False, on_demand=False):
     ordered = []
     for section in SECTION_ORDER:
         ordered.extend(h for h in alerting_hits if h.get("classification") == section)
     shown = ordered[:EMAIL_ROW_CAP]
 
     lines = []
-    if recap:
+    if on_demand:
+        lines += [
+            "You asked for this run, so here is everything currently matched, "
+            "new or not. Nothing below has been marked as alerted, so a real "
+            "find or price drop will still reach you on its own.",
+            "",
+        ]
+    elif recap:
         lines += [
             f"Weekly recap. Nothing new and nothing more than "
             f"{PRICE_DROP_THRESHOLD:.0%} cheaper in the last {RECAP_DAYS} days, so "
@@ -195,7 +206,7 @@ def build_digest_body(alerting_hits, notes=None, recap=False):
         lines.append("")
 
     if len(ordered) > EMAIL_ROW_CAP:
-        kind = "matched" if recap else "alert-worthy"
+        kind = "matched" if (recap or on_demand) else "alert-worthy"
         lines.append(f"... {len(ordered) - EMAIL_ROW_CAP} more {kind} hit(s) omitted; see hits.json")
 
     if has_caveat:
@@ -242,7 +253,7 @@ def write_hits_json(all_hits, path=None):
 
 
 def run_digest(all_hits, dry_run=False, state_path=None, hits_path=None,
-               notes=None, now=None):
+               notes=None, now=None, force=False):
     """Full pipeline: decide alerts, write the full hit set to hits.json,
     send at most one email, and only then persist the cooldown state.
     Returns the list of alerting hits.
@@ -255,11 +266,18 @@ def run_digest(all_hits, dry_run=False, state_path=None, hits_path=None,
     Both are silent misses, which is the failure this scraper exists to
     avoid.
 
-    With nothing to alert on, one of two things happens. Usually: silence,
-    which is a valid run. But if nothing has been emailed for RECAP_DAYS,
-    the run sends a recap of everything currently matched instead --
-    otherwise a correct week of quiet looks exactly like a broken one. A
-    recap marks nothing as alerted; it is not a find.
+    With nothing to alert on, one of three things happens. Usually: silence,
+    which is a valid run. If nothing has been emailed for RECAP_DAYS, the run
+    sends a recap of everything currently matched instead -- otherwise a
+    correct week of quiet looks exactly like a broken one. And if `force` is
+    set -- a run a human explicitly started -- it always reports, cooldown or
+    no cooldown, even when there is nothing at all to show. That last case is
+    the one place an empty table beats silence: the alternative is a button
+    that looks broken every time there is no news.
+
+    Neither the recap nor the forced report marks anything as alerted. They
+    are not finds, and marking one would silence a real price drop for 30
+    days.
     """
     now = now or datetime.now(timezone.utc)
     state = load_state(state_path)
@@ -268,6 +286,9 @@ def run_digest(all_hits, dry_run=False, state_path=None, hits_path=None,
 
     if alerting:
         body, subject = build_digest_body(alerting, notes), DIGEST_SUBJECT
+    elif force:
+        body = build_digest_body(all_hits, notes, on_demand=True)
+        subject = ONDEMAND_SUBJECT
     elif all_hits and recap_due(state, now):
         body, subject = build_digest_body(all_hits, notes, recap=True), RECAP_SUBJECT
     else:
@@ -290,6 +311,9 @@ def run_digest(all_hits, dry_run=False, state_path=None, hits_path=None,
     save_state(_stamp_recap(updated_state, now), state_path)
     if alerting:
         print(f"Sent digest email with {len(alerting)} alert-worthy hit(s).")
+    elif force:
+        print(f"Run requested by hand; reported {len(all_hits)} currently "
+              f"matched hit(s), nothing marked as alerted.")
     else:
         print(f"Nothing new for {RECAP_DAYS} days; sent a recap of "
               f"{len(all_hits)} currently matched hit(s).")

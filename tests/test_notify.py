@@ -548,3 +548,139 @@ def test_a_dry_run_with_nothing_to_say_writes_no_state(tmp_path, monkeypatch):
 
     assert alerting == []
     assert notify.load_state(state_path) == state
+
+
+# --- a run the owner asked for must always answer -------------------------------
+#
+# The failure this fixes, from the log of a button press:
+#
+#   51 raw producer match(es) this run.
+#   No newly alert-worthy hits this run (cooldown or no change) -- silent run
+#   is valid.
+#
+# Correct, and useless. The hourly schedule should stay quiet when there is no
+# news, but a human who presses "Run scraper" and gets nothing back cannot
+# tell that from expired credentials, and has twice now concluded the thing
+# had stopped working.
+
+
+def all_quiet(hit):
+    """Everything alerted recently, and the weekly recap not due either --
+    the exact state in which a button press currently says nothing."""
+    return seeded_state(hit, alerted_days_ago=1, recap_days_ago=1)
+
+
+def test_a_run_the_owner_asked_for_always_reports(tmp_path, monkeypatch):
+    send = Recorder()
+    monkeypatch.setattr(notify, "send_email", send)
+    hit = make_hit(classification="FAIR")
+    state_path, hits_path = tmp_path / "seen.json", tmp_path / "hits.json"
+    state_path.write_text(json.dumps(all_quiet(hit)))
+
+    alerting = notify.run_digest([hit], state_path=state_path,
+                                 hits_path=hits_path, force=True)
+
+    assert alerting == [], "a forced report is not a set of new finds"
+    assert len(send.calls) == 1
+    assert hit["cuvee"] in send.bodies[0]
+
+
+def test_the_same_state_stays_silent_on_a_scheduled_run(tmp_path, monkeypatch):
+    """The other half: hourly runs must not start emailing every hour."""
+    send = Recorder()
+    monkeypatch.setattr(notify, "send_email", send)
+    hit = make_hit(classification="FAIR")
+    state_path, hits_path = tmp_path / "seen.json", tmp_path / "hits.json"
+    state_path.write_text(json.dumps(all_quiet(hit)))
+
+    notify.run_digest([hit], state_path=state_path, hits_path=hits_path)
+
+    assert send.calls == []
+
+
+def test_a_forced_report_marks_nothing_alerted(tmp_path, monkeypatch):
+    """Same rule as the recap: it is not a find, and marking one would
+    silence a real price drop for 30 days."""
+    send = Recorder()
+    monkeypatch.setattr(notify, "send_email", send)
+    hit = make_hit(classification="FAIR")
+    state_path, hits_path = tmp_path / "seen.json", tmp_path / "hits.json"
+    before = all_quiet(hit)
+    state_path.write_text(json.dumps(before))
+
+    notify.run_digest([hit], state_path=state_path, hits_path=hits_path, force=True)
+
+    entry = notify.load_state(state_path)[notify.item_key(hit)]
+    assert entry["last_alerted_at"] == before[notify.item_key(hit)]["last_alerted_at"]
+
+
+def test_a_forced_report_answers_even_with_nothing_to_show(tmp_path, monkeypatch):
+    """The one place silence is worse than an empty table. A scheduled run
+    with no hits still sends nothing; a run someone asked for says so."""
+    send = Recorder()
+    monkeypatch.setattr(notify, "send_email", send)
+    state_path, hits_path = tmp_path / "seen.json", tmp_path / "hits.json"
+
+    notify.run_digest([], state_path=state_path, hits_path=hits_path, force=True,
+                      notes={"Watched but found nowhere": ["Ganevat"]})
+
+    assert len(send.calls) == 1
+    assert "Ganevat" in send.bodies[0]
+
+
+def test_a_forced_report_says_which_kind_of_email_it_is(tmp_path, monkeypatch):
+    send = Recorder()
+    monkeypatch.setattr(notify, "send_email", send)
+    hit = make_hit(classification="FAIR")
+    state_path, hits_path = tmp_path / "seen.json", tmp_path / "hits.json"
+    state_path.write_text(json.dumps(all_quiet(hit)))
+
+    notify.run_digest([hit], state_path=state_path, hits_path=hits_path, force=True)
+
+    subject, body = send.calls[0]
+    assert subject == notify.ONDEMAND_SUBJECT
+    assert subject not in (notify.DIGEST_SUBJECT, notify.RECAP_SUBJECT)
+    assert "asked for" in body.lower() or "on demand" in body.lower()
+
+
+def test_a_forced_run_with_real_news_sends_the_digest_not_two_emails(tmp_path, monkeypatch):
+    send = Recorder()
+    monkeypatch.setattr(notify, "send_email", send)
+    state_path, hits_path = tmp_path / "seen.json", tmp_path / "hits.json"
+
+    notify.run_digest([make_hit(classification="DEAL")], state_path=state_path,
+                      hits_path=hits_path, force=True)
+
+    assert len(send.calls) == 1
+    assert send.calls[0][0] == notify.DIGEST_SUBJECT
+
+
+def test_a_forced_report_resets_the_weekly_clock(tmp_path, monkeypatch):
+    """It is an email the owner received, so the recap should not follow it
+    a day later."""
+    send = Recorder()
+    monkeypatch.setattr(notify, "send_email", send)
+    hit = make_hit(classification="FAIR")
+    state_path, hits_path = tmp_path / "seen.json", tmp_path / "hits.json"
+    state_path.write_text(json.dumps(
+        seeded_state(hit, alerted_days_ago=1, recap_days_ago=30)))
+
+    notify.run_digest([hit], state_path=state_path, hits_path=hits_path, force=True)
+    notify.run_digest([hit], state_path=state_path, hits_path=hits_path)
+
+    assert len(send.calls) == 1
+
+
+def test_a_forced_dry_run_still_sends_nothing(tmp_path, monkeypatch):
+    send = Recorder()
+    monkeypatch.setattr(notify, "send_email", send)
+    hit = make_hit(classification="FAIR")
+    state_path, hits_path = tmp_path / "seen.json", tmp_path / "hits.json"
+    state = all_quiet(hit)
+    state_path.write_text(json.dumps(state))
+
+    notify.run_digest([hit], dry_run=True, state_path=state_path,
+                      hits_path=hits_path, force=True)
+
+    assert send.calls == []
+    assert notify.load_state(state_path) == state

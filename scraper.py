@@ -24,6 +24,10 @@ import notify
 import textnorm
 
 DRY_RUN = os.environ.get("DRY_RUN") == "1"
+# Set by the workflow when a human dispatched the run rather than the hourly
+# schedule. A scheduled run with no news is right to stay quiet; a run
+# somebody pressed a button for has to answer, or the button looks broken.
+FORCE_REPORT = os.environ.get("FORCE_REPORT") == "1"
 
 # Catalogues are paged. Without walking the pages we only ever see the
 # newest ~250 products, so a producer sitting deeper in the catalogue
@@ -968,7 +972,7 @@ def main():
     if not DRY_RUN:
         market.save_observations(store)
 
-    notify.run_digest(evaluated, dry_run=DRY_RUN, notes={
+    notify.run_digest(evaluated, dry_run=DRY_RUN, force=FORCE_REPORT, notes={
         "Shops that returned nothing": silent_shops,
         "Matched but sold out everywhere": sold_out_only,
         "Watched but found nowhere": unseen,

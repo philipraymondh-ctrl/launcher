@@ -63,6 +63,11 @@ jobs:
           # A dry run prints the digest and deliberately persists nothing,
           # so previewing a run cannot put real finds into cooldown.
           DRY_RUN: ${{ (inputs.dry_run && '1') || '' }}
+          # Only when a human started this run. The hourly schedule stays
+          # quiet unless there is news; a run started from the dashboard
+          # always reports what it can currently see, because silence from a
+          # run you asked for reads as a broken scraper -- it did, twice.
+          FORCE_REPORT: ${{ (github.event_name == 'workflow_dispatch' && '1') || '' }}
         run: python scraper.py
 
       - name: Upload hits.json artifact

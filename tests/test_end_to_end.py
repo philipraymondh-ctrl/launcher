@@ -298,3 +298,45 @@ def test_the_recap_does_not_silence_a_later_real_find(pipeline):
     pipeline(cheaper)
     assert len(pipeline.sent) == 3
     assert pipeline.subjects[-1] == notify.DIGEST_SUBJECT
+
+
+# --- 12. a run the owner started -----------------------------------------------
+
+def test_a_hand_started_run_reports_even_when_nothing_is_new(pipeline):
+    """Two button presses in a row found 51 matches and emailed nothing,
+    which read as a dead scraper. The hourly schedule stays quiet; a run
+    somebody asked for answers."""
+    pipeline(BASIC)
+    assert len(pipeline.sent) == 1
+
+    pipeline(BASIC)                      # scheduled: nothing new, silent
+    assert len(pipeline.sent) == 1
+
+    pipeline(BASIC, force=True)          # the button
+    assert len(pipeline.sent) == 2
+    assert pipeline.subjects[-1] == notify.ONDEMAND_SUBJECT
+    assert "Zzz Domaine" in rows(pipeline.sent[-1])
+
+
+def test_a_hand_started_run_does_not_consume_the_cooldown(pipeline):
+    """It must not silence a genuine drop that lands afterwards."""
+    pipeline(BASIC)
+    pipeline(BASIC, force=True)
+
+    cheaper = dict(BASIC)
+    cheaper["https://shopify.test"] = shopify(
+        [product("Zzz Domaine Chardonnay 2020", 30)])
+    pipeline(cheaper)
+
+    assert len(pipeline.sent) == 3
+    assert pipeline.subjects[-1] == notify.DIGEST_SUBJECT
+
+
+def test_a_hand_started_run_with_nothing_at_all_still_answers(pipeline):
+    pipeline({
+        "https://shopify.test": shopify([product("Someone Else Chardonnay", 20)]),
+        "https://woo.test": woo([]),
+        "https://html.test": "<html><body><p>rien</p></body></html>",
+    }, force=True)
+    assert len(pipeline.sent) == 1
+    assert "found nowhere" in pipeline.sent[-1]

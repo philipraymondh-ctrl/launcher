@@ -28,10 +28,11 @@ def pipeline(monkeypatch, tmp_path):
 
     monkeypatch.setattr(notify, "send_email", fake_send)
 
-    def run(bodies, dry_run=False, max_requests=1000, fail_hosts=()):
+    def run(bodies, dry_run=False, max_requests=1000, fail_hosts=(), force=False):
         client = FakeCrawler(bodies, max_requests=max_requests, fail_hosts=fail_hosts)
         monkeypatch.setattr(crawler, "Crawler", lambda *a, **k: client)
         monkeypatch.setattr(scraper, "DRY_RUN", dry_run)
+        monkeypatch.setattr(scraper, "FORCE_REPORT", force)
         scraper.main()
         return client
 

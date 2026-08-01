@@ -91,7 +91,10 @@ concern, wired together by `scraper.py`:
    that's a valid, successful run. But a whole *week* of them looks exactly
    like broken credentials from the inbox, so after `RECAP_DAYS` with no
    email at all the run sends one recap of everything currently matched
-   (`_meta.last_recap_at` in `seen.json`, reset by any email). The full
+   (`_meta.last_recap_at` in `seen.json`, reset by any email). A run a
+   *human* started reports unconditionally -- the workflow sets
+   `FORCE_REPORT=1` on `workflow_dispatch` only -- because silence from a
+   run you pressed a button for reads as a dead scraper, and twice did. The full
    evaluated hit set always goes to `hits.json` (uploaded as the workflow
    artifact) even when the email itself is empty or capped at 40 rows.
 
@@ -266,8 +269,15 @@ HTTP header or printed.
   `check_shop`, never by the parser -- the probe counts parsed products to
   decide whether an adapter works, so a shop whose stock is out today must
   not read as broken. Silence from an API is not "sold out".
-- `notify.py` sends at most one email per run -- a digest or a recap, never
-  both, and never one per hit. Don't reintroduce a per-hit email path.
+- `notify.py` sends at most one email per run -- a digest, a recap, or an
+  on-demand report, never two of them, and never one per hit. Don't
+  reintroduce a per-hit email path.
+- A hand-started run always answers. `FORCE_REPORT` is set by the workflow
+  for `workflow_dispatch` and nothing else: the hourly schedule stays quiet
+  without news, but a dispatched run emails everything currently matched
+  even when the list is empty -- that empty table is the only way to tell
+  "nothing new" from "credentials expired" from a button. It marks nothing
+  as alerted, exactly like the recap, and `DRY_RUN` still overrides it.
 - `notify.py` persists `seen.json` only *after* the email is actually sent.
   Marking an item alerted is what silences it for 30 days, so saving before
   the send means a dry run or a failed send silently swallows a real find.

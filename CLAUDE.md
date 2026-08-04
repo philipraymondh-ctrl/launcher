@@ -301,6 +301,14 @@ HTTP header or printed.
   for a night, and an hourly red run teaches you to ignore red runs.
   Producers matched at no shop are named too: an alias typo makes a
   producer vanish from every shop at once, which is otherwise invisible.
+- The run stops itself on wall clock as well as on requests. A cold-cache
+  crawl of 22 polite shops took 8m38s against a 10-minute job timeout, and
+  every shop added shrinks that margin; a job killed at the ceiling loses
+  the whole crawl -- no `hits.json`, no email, a red run and no
+  explanation. `MAX_RUN_SECONDS` (default 900) breaks the shop loop, names
+  the shops not reached, and lets the run report what it has.
+  `timeout-minutes` in the workflow is only the outer backstop and must stay
+  well clear of it.
 - `shop_order()` rotates SHOPS by the hour. The budget is global and was
   spent in list order, so the moment it binds it is always the same tail
   that goes unfetched -- systematic, not random. Both "not reached this

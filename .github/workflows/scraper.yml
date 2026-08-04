@@ -22,7 +22,10 @@ on:
 jobs:
   scrape:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    # A cold-cache crawl of 22 polite shops took 8m38s against the old
+    # 10-minute ceiling. The scraper stops itself at MAX_RUN_SECONDS and still
+    # reports; this is only the outer backstop, so it sits well clear of it.
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
 

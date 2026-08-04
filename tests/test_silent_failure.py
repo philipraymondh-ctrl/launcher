@@ -201,3 +201,43 @@ def test_the_budget_message_names_the_shops_actually_skipped(pipeline, capsys):
     if fetched:
         first = fetched[0].split("]")[0].lstrip("[")
         assert first not in named
+
+
+# --- E. running out of wall clock, cleanly ------------------------------------
+#
+# A cold-cache run of 22 shops took 8m38s against a 10-minute job timeout
+# (run 30930725045). Politeness is the cost -- 3s+ per host, per request -- so
+# the margin shrinks with every shop added. A job killed at the ceiling loses
+# the whole crawl: no hits.json, no email, a red run and no explanation. The
+# request budget already knows how to stop cleanly and name what it missed;
+# the clock has to do the same.
+
+def test_a_run_that_is_out_of_time_stops_cleanly(pipeline, capsys):
+    pipeline(BASIC, max_run_seconds=0.001)
+    out = capsys.readouterr().out
+    assert "out of time" in out.lower()
+    assert "not reached this run" in out
+
+
+def test_running_out_of_time_still_reports_what_was_found(pipeline):
+    """Whatever was gathered before the clock ran out is still a real find,
+    and must still reach the inbox."""
+    pipeline(BASIC)                                   # everything, normally
+    assert len(pipeline.sent) == 1
+    hits = json.loads((pipeline.tmp / "hits.json").read_text())
+    assert hits, "the baseline run found nothing, so this proves nothing"
+
+
+def test_a_run_that_is_out_of_time_writes_hits_json(pipeline):
+    pipeline(BASIC, max_run_seconds=0.001)
+    assert (pipeline.tmp / "hits.json").exists()
+
+
+def test_a_normal_run_is_not_cut_short(pipeline, capsys):
+    pipeline(BASIC)
+    assert "out of time" not in capsys.readouterr().out.lower()
+
+
+def test_no_limit_means_no_limit(pipeline, capsys):
+    pipeline(BASIC, max_run_seconds=0)
+    assert "out of time" not in capsys.readouterr().out.lower()

@@ -12,6 +12,7 @@ MAX_REQUESTS_PER_RUN, FRESH.
 import datetime as dt
 import os
 import re
+import time
 from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
@@ -28,6 +29,14 @@ DRY_RUN = os.environ.get("DRY_RUN") == "1"
 # schedule. A scheduled run with no news is right to stay quiet; a run
 # somebody pressed a button for has to answer, or the button looks broken.
 FORCE_REPORT = os.environ.get("FORCE_REPORT") == "1"
+
+# Politeness is the cost of this crawl: 3s plus jitter per host, per request.
+# A cold-cache run of 22 shops took 8m38s against the workflow's 10-minute job
+# timeout, and every shop added shrinks that margin. A job killed at the
+# ceiling loses everything -- no hits.json, no email, a red run and no
+# explanation -- so the run stops itself first and says which shops it did not
+# reach, exactly as it does when the request budget binds. 0 disables it.
+MAX_RUN_SECONDS = float(os.environ.get("MAX_RUN_SECONDS", "900"))
 
 # Catalogues are paged. Without walking the pages we only ever see the
 # newest ~250 products, so a producer sitting deeper in the catalogue
@@ -875,7 +884,16 @@ def main():
     # Rotated so a binding budget does not starve the same tail every hour.
     order = shop_order(SHOPS)
 
+    started = time.monotonic()
     for i, shop in enumerate(order):
+        if MAX_RUN_SECONDS > 0 and time.monotonic() - started >= MAX_RUN_SECONDS:
+            remaining = [s["name"] for s in order[i:] if s.get("verified", True)]
+            print(
+                f"Out of time after {MAX_RUN_SECONDS:.0f}s; stopping cleanly so the "
+                f"run still reports. Shops not reached this run: {', '.join(remaining)}"
+            )
+            break
+
         if not shop.get("verified", True):
             skipped_count += 1
             print(f"[{shop['name']}] skipped: unverified placeholder, needs shop-adapter confirmation")

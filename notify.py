@@ -170,7 +170,8 @@ def _stamp_recap(state, now):
     return state
 
 
-def build_digest_body(alerting_hits, notes=None, recap=False, on_demand=False):
+def build_digest_body(alerting_hits, notes=None, recap=False, on_demand=False,
+                      tables=None):
     ordered = []
     for section in SECTION_ORDER:
         ordered.extend(h for h in alerting_hits if h.get("classification") == section)
@@ -214,6 +215,14 @@ def build_digest_body(alerting_hits, notes=None, recap=False, on_demand=False):
 
     # Notes are how a silent failure reaches the person rather than only the
     # run log. Rendered only when non-empty, so a clean run gains nothing.
+    # A table is rendered a row per line, unlike a note, which is a
+    # comma-joined list. Same mechanism otherwise: nothing renders when empty.
+    for heading, rows in (tables or {}).items():
+        if rows:
+            lines.append("")
+            lines.append(heading)
+            lines.extend(rows)
+
     for heading, names in (notes or {}).items():
         if names:
             lines.append("")
@@ -253,7 +262,7 @@ def write_hits_json(all_hits, path=None):
 
 
 def run_digest(all_hits, dry_run=False, state_path=None, hits_path=None,
-               notes=None, now=None, force=False):
+               notes=None, now=None, force=False, tables=None):
     """Full pipeline: decide alerts, write the full hit set to hits.json,
     send at most one email, and only then persist the cooldown state.
     Returns the list of alerting hits.
@@ -285,12 +294,14 @@ def run_digest(all_hits, dry_run=False, state_path=None, hits_path=None,
     write_hits_json(all_hits, hits_path)
 
     if alerting:
-        body, subject = build_digest_body(alerting, notes), DIGEST_SUBJECT
+        body = build_digest_body(alerting, notes, tables=tables)
+        subject = DIGEST_SUBJECT
     elif force:
-        body = build_digest_body(all_hits, notes, on_demand=True)
+        body = build_digest_body(all_hits, notes, on_demand=True, tables=tables)
         subject = ONDEMAND_SUBJECT
     elif all_hits and recap_due(state, now):
-        body, subject = build_digest_body(all_hits, notes, recap=True), RECAP_SUBJECT
+        body = build_digest_body(all_hits, notes, recap=True, tables=tables)
+        subject = RECAP_SUBJECT
     else:
         # Nothing was alerted, so nothing is being silenced; persisting here
         # just refreshes last_price for future drop comparisons.

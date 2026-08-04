@@ -10,9 +10,11 @@ Env vars consumed by the crawl layer (see crawler.py): CONTACT_URL,
 MAX_REQUESTS_PER_RUN, FRESH.
 """
 import datetime as dt
+import json
 import os
 import re
 import time
+from pathlib import Path
 from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
@@ -37,6 +39,68 @@ FORCE_REPORT = os.environ.get("FORCE_REPORT") == "1"
 # explanation -- so the run stops itself first and says which shops it did not
 # reach, exactly as it does when the request budget binds. 0 disables it.
 MAX_RUN_SECONDS = float(os.environ.get("MAX_RUN_SECONDS", "900"))
+
+# One row per live shop: what we read, what was buyable, and who we matched.
+# "Does this match the shop's real selection?" is the question that decides
+# whether a shop is worth keeping, and until this table it could only be
+# answered by reading a run log line by line.
+COVERAGE_PATH = Path(os.environ.get(
+    "COVERAGE_OUTPUT_PATH", Path(__file__).parent / "coverage.json"))
+COVERAGE_COLUMNS = ["SHOP", "PLATFORM", "STATUS", "PRODUCTS", "IN STOCK",
+                    "SOLD OUT", "HITS", "PRODUCERS"]
+
+
+def coverage_row(shop, result=None, status="ok"):
+    """One shop's line in the table. `result` is None when the fetch failed,
+    which still gets a row -- a shop missing from the table entirely is how
+    "we never looked" hides."""
+    products = result.products_parsed if result is not None else 0
+    sold_out = len(result.sold_out) if result is not None else 0
+    hits = list(result) if result is not None else []
+    producers = sorted({h["producer"] for h in hits}
+                       | {h["producer"] for h in (result.sold_out if result else [])})
+    if result is not None and result.truncated:
+        status = "TRUNCATED"
+    return {
+        "shop": shop["name"],
+        "platform": shop["platform"],
+        "status": status,
+        "products": products,
+        "in_stock": products - sold_out,
+        "sold_out": sold_out,
+        "hits": len(hits),
+        "producers": producers,
+    }
+
+
+def coverage_table(rows):
+    """The table as lines of text, aligned, for the log and the email."""
+    if not rows:
+        return []
+    cells = [[r["shop"], r["platform"], r["status"], str(r["products"]),
+              str(r["in_stock"]), str(r["sold_out"]), str(r["hits"]),
+              ", ".join(r["producers"]) or "-"] for r in rows]
+    widths = [max(len(c[i]) for c in [COVERAGE_COLUMNS] + cells)
+              for i in range(len(COVERAGE_COLUMNS))]
+    # Numbers right, names left: a column of counts is read by comparing them.
+    align = [False, False, False, True, True, True, True, False]
+
+    def line(values):
+        return " | ".join(
+            v.rjust(w) if right else v.ljust(w)
+            for v, w, right in zip(values, widths, align)
+        ).rstrip()
+
+    out = [line(COVERAGE_COLUMNS), "-" * len(line(COVERAGE_COLUMNS))]
+    out += [line(c) for c in cells]
+    totals = (f"{len(rows)} live shop(s), {sum(r['products'] for r in rows)} "
+              f"product(s) read, {sum(r['hits'] for r in rows)} hit(s)")
+    truncated = [r["shop"] for r in rows if r["status"] == "TRUNCATED"]
+    if truncated:
+        totals += (f". TRUNCATED at {', '.join(truncated)} -- their catalogue is "
+                   f"bigger than what was read")
+    out += ["", totals]
+    return out
 
 # Catalogues are paged. Without walking the pages we only ever see the
 # newest ~250 products, so a producer sitting deeper in the catalogue
@@ -548,7 +612,7 @@ def _paged(shop, crawler_client, url, params_for_page, page_size, extract):
     a limit is hit. Returns whatever was collected -- a partial catalogue is
     still real data, but truncation is logged loudly because it can turn a
     genuine hit into a silent miss."""
-    items = []
+    items, truncated = [], False
     for page in range(1, MAX_PAGES_PER_SHOP + 1):
         try:
             resp = crawler_client.get(url, params=params_for_page(page))
@@ -557,6 +621,7 @@ def _paged(shop, crawler_client, url, params_for_page, page_size, extract):
                 f"[{shop['name']}] request budget exhausted after page {page - 1}; "
                 f"catalogue TRUNCATED, later pages not checked"
             )
+            truncated = True
             break
         resp.raise_for_status()
         records = extract(resp.json())
@@ -570,7 +635,8 @@ def _paged(shop, crawler_client, url, params_for_page, page_size, extract):
             f"[{shop['name']}] hit MAX_PAGES_PER_SHOP ({MAX_PAGES_PER_SHOP}); "
             f"catalogue TRUNCATED, later pages not checked"
         )
-    return items
+        truncated = True
+    return ParsedItems(items, truncated=truncated)
 
 
 def in_stock(explicit, text):
@@ -744,13 +810,14 @@ def fetch_html(shop, crawler_client):
     # "next page" link against the product set would never match, and a
     # self-referential pager would walk until the budget ran out.
     items, seen_urls, visited, page_url, how = [], set(), {start}, start, None
-    first_html, first_url = "", start
+    first_html, first_url, truncated = "", start, False
     for page in range(1, MAX_PAGES_PER_SHOP + 1):
         try:
             resp = crawler_client.get(page_url)
         except crawler.BudgetExceeded:
             print(f"[{shop['name']}] request budget exhausted after page {page - 1}; "
                   f"catalogue TRUNCATED, later pages not checked")
+            truncated = True
             break
         resp.raise_for_status()
         if not resp.text.strip():
@@ -775,6 +842,7 @@ def fetch_html(shop, crawler_client):
     else:
         print(f"[{shop['name']}] hit MAX_PAGES_PER_SHOP ({MAX_PAGES_PER_SHOP}); "
               f"catalogue may be TRUNCATED")
+        truncated = True
 
     if not items and first_html:
         items = _fetch_via_producer_index(shop, first_html, first_url, crawler_client)
@@ -783,7 +851,7 @@ def fetch_html(shop, crawler_client):
     if items and how == "auto":
         print(f"[{shop['name']}] no configured selector matched; "
               f"read {len(items)} product(s) by auto-detection")
-    return items
+    return ParsedItems(items, truncated=truncated)
 
 
 FETCHERS = {
@@ -791,6 +859,22 @@ FETCHERS = {
     "woocommerce": fetch_woocommerce,
     "html": fetch_html,
 }
+
+
+class ParsedItems(list):
+    """The listings a fetcher read, plus whether the catalogue ran out or we
+    did.
+
+    A `list` subclass for the same reason `ShopResult` is one: every caller
+    and every test treats this as the list of items, and "we stopped before
+    the shop did" is a fact about the fetch rather than a member of the
+    payload. It is also the one number that decides whether a shop's row in
+    the coverage table can be compared to its real selection at all.
+    """
+
+    def __init__(self, items=(), truncated=False):
+        super().__init__(items)
+        self.truncated = truncated
 
 
 class ShopResult(list):
@@ -815,11 +899,13 @@ class ShopResult(list):
     because a shop like mareehaute parses 3481 products.
     """
 
-    def __init__(self, hits=(), products_parsed=0, sold_out=(), near_tokens=()):
+    def __init__(self, hits=(), products_parsed=0, sold_out=(), near_tokens=(),
+                 truncated=False):
         super().__init__(hits)
         self.products_parsed = products_parsed
         self.sold_out = list(sold_out)
         self.near_tokens = set(near_tokens)
+        self.truncated = truncated
 
 
 def shop_order(shops, now=None):
@@ -869,12 +955,14 @@ def check_shop(shop, crawler_client):
     if skipped:
         print(f"[{shop['name']}] skipped {skipped} sold-out listing(s)")
     return ShopResult(hits, products_parsed=len(items),
-                      sold_out=sold_out, near_tokens=near_tokens)
+                      sold_out=sold_out, near_tokens=near_tokens,
+                      truncated=getattr(items, "truncated", False))
 
 
 def main():
     crawler_client = crawler.Crawler()
     all_hits = []
+    coverage = []
     sold_out_shops = {}      # producer -> shops that had it, out of stock
     near_corpus = {}         # shop -> words close to a watched alias
     error_count = 0
@@ -909,6 +997,7 @@ def main():
 
         try:
             hits = check_shop(shop, crawler_client)
+            coverage.append(coverage_row(shop, hits))
             all_hits.extend(hits)
             for row in hits.sold_out:
                 sold_out_shops.setdefault(row["producer"], set()).add(row["shop"])
@@ -923,12 +1012,15 @@ def main():
             print(f"[{shop['name']}] ok, {len(hits)} hit(s) from {parsed} product(s)")
         except EmptyResponseError:
             error_count += 1
+            coverage.append(coverage_row(shop, status="empty response"))
             print(f"[{shop['name']}] empty response (likely JS-rendered storefront)")
         except crawler.Disallowed as e:
             error_count += 1
+            coverage.append(coverage_row(shop, status="robots.txt"))
             print(f"[{shop['name']}] robots.txt disallows this path, skipped: {e}")
         except crawler.CircuitOpen as e:
             error_count += 1
+            coverage.append(coverage_row(shop, status="circuit open"))
             print(f"[{shop['name']}] circuit breaker open for this host, skipped: {e}")
         except crawler.BudgetExceeded:
             remaining = [s["name"] for s in order[i:] if s.get("verified", True)]
@@ -939,10 +1031,20 @@ def main():
             break
         except crawler.UpstreamError as e:
             error_count += 1
+            coverage.append(coverage_row(shop, status="unreachable"))
             print(f"[{shop['name']}] unreachable: {e}")
         except Exception as e:
             error_count += 1
+            coverage.append(coverage_row(shop, status="parse error"))
             print(f"[{shop['name']}] parse error: {e}")
+
+    table = coverage_table(sorted(coverage, key=lambda r: -r["products"]))
+    print()
+    for line in table:
+        print(line)
+    print()
+    if not DRY_RUN:
+        COVERAGE_PATH.write_text(json.dumps(coverage, indent=2, sort_keys=True))
 
     print(f"{len(all_hits)} raw producer match(es) this run.")
     if silent_shops:
@@ -996,7 +1098,8 @@ def main():
     if not DRY_RUN:
         market.save_observations(store)
 
-    notify.run_digest(evaluated, dry_run=DRY_RUN, force=FORCE_REPORT, notes={
+    notify.run_digest(evaluated, dry_run=DRY_RUN, force=FORCE_REPORT,
+                      tables={"Shop coverage": table}, notes={
         "Shops that returned nothing": silent_shops,
         "Matched but sold out everywhere": sold_out_only,
         "Watched but found nowhere": unseen,

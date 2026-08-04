@@ -104,8 +104,10 @@ def test_a_producer_matched_nowhere_at_all_is_still_named(pipeline):
 def test_a_producer_in_stock_somewhere_is_in_neither_note(pipeline):
     pipeline(BASIC)
     body = pipeline.sent[-1]
-    assert "found nowhere" not in body
-    assert "sold out" not in body.lower()
+    # The note headings, not the words: the coverage table has a SOLD OUT
+    # column on every run.
+    assert "Watched but found nowhere" not in body
+    assert "Matched but sold out everywhere" not in body
 
 
 def test_the_run_log_says_both_things_too(pipeline, capsys):
@@ -347,3 +349,96 @@ def test_the_five_lines_the_live_run_printed_are_all_gone():
             "Domaine Calice": ["domaine du calice", "du calice", "calice"],
         })
     assert got == []
+
+
+# --- C. the coverage table ------------------------------------------------------
+#
+# "Does what we read match what the shop actually sells?" was only answerable
+# by reading a run log line by line. It is the question that decides whether a
+# shop is worth having, so the run states it: one row per live shop, and a
+# TRUNCATED marker when the walk stopped before the catalogue did.
+
+def test_a_run_reports_a_row_per_live_shop(pipeline, capsys):
+    pipeline(BASIC)
+    out = capsys.readouterr().out
+    table = out.split("SHOP", 1)[1]
+    for name in ("zzz-shopify", "zzz-woo", "zzz-html"):
+        assert name in table
+    assert "zzz-dark" not in table, "an unverified shop is not live"
+
+
+def test_the_row_carries_products_stock_and_producers(pipeline, capsys):
+    pipeline(BASIC)
+    row = next(l for l in capsys.readouterr().out.splitlines() if "zzz-shopify" in l
+               and "|" in l)
+    assert "1" in row                      # one product parsed
+    assert "Zzz Domaine" in row            # and which producer it matched
+
+
+def test_sold_out_counts_show_up_in_the_table(pipeline, capsys):
+    pipeline(ALL_SOLD_OUT)
+    rows = [l for l in capsys.readouterr().out.splitlines() if "|" in l]
+    shopify_row = next(l for l in rows if "zzz-shopify" in l)
+    assert "1" in shopify_row, "the sold-out listing was still parsed"
+
+
+def test_the_table_reaches_the_email(pipeline):
+    pipeline(BASIC)
+    body = pipeline.sent[-1]
+    assert "Shop coverage" in body
+    assert "zzz-shopify" in body
+    # One row per line, not a comma-joined blob.
+    coverage = body.split("Shop coverage", 1)[1]
+    assert coverage.count("\n") >= 3
+
+
+def test_a_shop_whose_walk_stopped_early_is_marked_truncated(monkeypatch, watching):
+    """The single most important cell: a shop whose walk stopped before its
+    catalogue did is not a shop whose selection we have seen."""
+    monkeypatch.setattr(scraper, "MAX_PAGES_PER_SHOP", 1)
+    monkeypatch.setattr(scraper, "SHOPIFY_PAGE_SIZE", 1)
+    client = FakeCrawler({"https://shopify.test": shopify(
+        [product("Zzz Domaine Chardonnay 2020", 60)])})
+
+    result = scraper.check_shop(SHOPS[0], client)
+
+    assert result.truncated, "a full last page means there is more we did not read"
+    assert scraper.coverage_row(SHOPS[0], result)["status"] == "TRUNCATED"
+
+
+def test_a_shop_read_to_the_end_is_not_marked_truncated(watching):
+    result = scraper.check_shop(SHOPS[0], FakeCrawler(BASIC))
+    assert not result.truncated
+    assert scraper.coverage_row(SHOPS[0], result)["status"] == "ok"
+
+
+def test_the_table_says_which_catalogues_were_cut_short():
+    rows = [
+        {"shop": "big", "platform": "shopify", "status": "TRUNCATED",
+         "products": 5000, "in_stock": 4000, "sold_out": 1000, "hits": 2,
+         "producers": ["Ganevat"]},
+        {"shop": "small", "platform": "html", "status": "ok", "products": 12,
+         "in_stock": 12, "sold_out": 0, "hits": 0, "producers": []},
+    ]
+    table = "\n".join(scraper.coverage_table(rows))
+    assert "TRUNCATED at big" in table
+    assert "5012 product(s) read" in table
+    assert "2 live shop(s)" in table
+
+
+def test_an_unreachable_shop_still_gets_a_row(pipeline, capsys):
+    pipeline(BASIC, fail_hosts=("woo.test",))
+    rows = [l for l in capsys.readouterr().out.splitlines() if "zzz-woo" in l and "|" in l]
+    assert rows, "a shop that failed is missing from the table entirely"
+    assert "unreachable" in rows[0]
+
+
+def test_coverage_is_written_for_the_artifact(pipeline):
+    import json as _json
+    pipeline(BASIC)
+    rows = _json.loads((pipeline.tmp / "coverage.json").read_text())
+    by_shop = {r["shop"]: r for r in rows}
+    assert by_shop["zzz-shopify"]["products"] == 1
+    assert by_shop["zzz-shopify"]["in_stock"] == 1
+    assert by_shop["zzz-shopify"]["producers"] == ["Zzz Domaine"]
+    assert by_shop["zzz-html"]["products"] == 3

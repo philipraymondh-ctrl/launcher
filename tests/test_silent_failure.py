@@ -195,7 +195,9 @@ def test_the_budget_message_names_the_shops_actually_skipped(pipeline, capsys):
     pipeline(BASIC, max_requests=1)
     out = capsys.readouterr().out
     assert "not reached this run" in out
-    named = out.split("not reached this run:", 1)[1]
+    # The message is a single line, and the coverage table further down names
+    # every shop -- so slice the line, not the remainder of the output.
+    named = out.split("not reached this run:", 1)[1].splitlines()[0]
     # The shop that was actually fetched must not be listed as unreached.
     fetched = [line for line in out.splitlines() if "] ok," in line]
     if fetched:
@@ -212,8 +214,21 @@ def test_the_budget_message_names_the_shops_actually_skipped(pipeline, capsys):
 # request budget already knows how to stop cleanly and name what it missed;
 # the clock has to do the same.
 
-def test_a_run_that_is_out_of_time_stops_cleanly(pipeline, capsys):
-    pipeline(BASIC, max_run_seconds=0.001)
+class JumpingClock:
+    """Every reading is a minute later than the last, so "out of time" is a
+    fact rather than a race against the test runner."""
+
+    def __init__(self, step=60):
+        self.step, self.now = step, 0.0
+
+    def __call__(self):
+        self.now += self.step
+        return self.now
+
+
+def test_a_run_that_is_out_of_time_stops_cleanly(pipeline, capsys, monkeypatch):
+    monkeypatch.setattr(scraper.time, "monotonic", JumpingClock())
+    pipeline(BASIC, max_run_seconds=30)
     out = capsys.readouterr().out
     assert "out of time" in out.lower()
     assert "not reached this run" in out
@@ -228,8 +243,9 @@ def test_running_out_of_time_still_reports_what_was_found(pipeline):
     assert hits, "the baseline run found nothing, so this proves nothing"
 
 
-def test_a_run_that_is_out_of_time_writes_hits_json(pipeline):
-    pipeline(BASIC, max_run_seconds=0.001)
+def test_a_run_that_is_out_of_time_writes_hits_json(pipeline, monkeypatch):
+    monkeypatch.setattr(scraper.time, "monotonic", JumpingClock())
+    pipeline(BASIC, max_run_seconds=30)
     assert (pipeline.tmp / "hits.json").exists()
 
 

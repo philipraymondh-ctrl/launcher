@@ -301,6 +301,16 @@ HTTP header or printed.
   for a night, and an hourly red run teaches you to ignore red runs.
   Producers matched at no shop are named too: an alias typo makes a
   producer vanish from every shop at once, which is otherwise invisible.
+- Every run states its coverage: one row per live shop with products read,
+  in stock, sold out, hits and the producers matched, in the log, in every
+  email and in `coverage.json` (uploaded with the artifact). It exists to
+  answer "does what we read match what the shop actually sells", which was
+  previously only answerable by reading a log line by line. A shop that
+  failed still gets a row -- a shop missing from the table entirely is how
+  "we never looked" hides. `STATUS` is `TRUNCATED` when the walk stopped
+  before the catalogue did (`ParsedItems.truncated`, set by `_paged` and
+  `fetch_html`), and that is the one cell that decides whether the row can
+  be compared with the shop's real selection at all.
 - The run stops itself on wall clock as well as on requests. A cold-cache
   crawl of 22 polite shops took 8m38s against a 10-minute job timeout, and
   every shop added shrinks that margin; a job killed at the ceiling loses

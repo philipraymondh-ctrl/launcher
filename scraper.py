@@ -316,12 +316,9 @@ SHOPS = [
     },
     {
         "name": "lavinoterie",
-        "platform": "html",
+        "platform": "shopify",
         "url": "https://lavinoterie.fr",
-        "item_selector": "div.product",
-        "title_selector": "h2.product-title",
-        "price_selector": "span.price",
-        "verified": False,
+        "verified": True,
     },
     {
         "name": "pangee",
@@ -330,7 +327,7 @@ SHOPS = [
         "item_selector": "div.product",
         "title_selector": "h2.product-title",
         "price_selector": "span.price",
-        "verified": False,
+        "verified": True,
     },
 ]
 

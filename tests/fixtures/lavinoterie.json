@@ -1,0 +1,1597 @@
+{
+  "_fixture_note": "Real response from this shop, trimmed for the repo: 25 of 250 products, keeping every tracked-producer match (6) plus a sample. Captured by probe.py --apply.",
+  "products": [
+    {
+      "id": 6111131435163,
+      "title": "C\u00f4tes du Jura Chardonnay \"En Billat\"",
+      "handle": "chardonnay-en-billat-labet",
+      "body_html": "<p class=\"p1\">\u26a0\ufe0f <b>Attention</b> \u26a0\ufe0f <b>Cette cuv\u00e9e est disponible uniquement sur demande. Contactez-nous pour passer commande.</b></p>\n<p class=\"p1\"><span class=\"s1\">\u26a0\ufe0f</span> <b>Attention</b> <span class=\"s1\">\u26a0\ufe0f</span> <b>This cuvee is available by request only. Contact us to place an order.</b></p>",
+      "published_at": "2026-05-31T13:29:20+02:00",
+      "created_at": "2021-01-20T11:12:04+01:00",
+      "updated_at": "2026-08-04T18:42:13+02:00",
+      "vendor": "Domaine Labet",
+      "product_type": "Vin Blanc",
+      "tags": [
+        "Agriculture Biodynamique",
+        "Agriculture Biologique",
+        "Vin Nature"
+      ],
+      "variants": [
+        {
+          "id": 57670334316876,
+          "title": "Assemblage 2020/2023",
+          "option1": "Assemblage 2020/2023",
+          "option2": null,
+          "option3": null,
+          "sku": "2430000048005",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "75.00",
+          "grams": 1000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 6111131435163,
+          "created_at": "2026-05-30T13:15:45+02:00",
+          "updated_at": "2026-08-04T18:42:13+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 74016492486988,
+          "created_at": "2026-05-31T13:28:55+02:00",
+          "position": 1,
+          "updated_at": "2026-05-31T13:29:00+02:00",
+          "product_id": 6111131435163,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0512/6612/5979/files/ChardonnayEnBillat2020_2023CotesdujuraDomaineLabet.png?v=1780226940",
+          "width": 2304,
+          "height": 4096
+        },
+        {
+          "id": 74016492519756,
+          "created_at": "2026-05-31T13:28:55+02:00",
+          "position": 2,
+          "updated_at": "2026-05-31T13:29:00+02:00",
+          "product_id": 6111131435163,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0512/6612/5979/files/ChardonnayEnBillat2020_2023CotesdujuraDomaineLabet..png?v=1780226940",
+          "width": 2304,
+          "height": 4096
+        }
+      ],
+      "options": [
+        {
+          "name": "Mill\u00e9sime",
+          "position": 1,
+          "values": [
+            "Assemblage 2020/2023"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 7572070727921,
+      "title": "Marc du Jura",
+      "handle": "1984",
+      "body_html": "",
+      "published_at": "2026-05-31T13:25:55+02:00",
+      "created_at": "2022-02-11T15:10:47+01:00",
+      "updated_at": "2026-08-04T18:42:13+02:00",
+      "vendor": "Domaine Labet",
+      "product_type": "Eau de vie",
+      "tags": [
+        "Agriculture Biodynamique",
+        "Agriculture Biologique",
+        "Vin Nature"
+      ],
+      "variants": [
+        {
+          "id": 51873358446924,
+          "title": "2015",
+          "option1": "2015",
+          "option2": null,
+          "option3": null,
+          "sku": "2430010027229",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "69.00",
+          "grams": 1000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 7572070727921,
+          "created_at": "2025-01-29T15:03:46+01:00",
+          "updated_at": "2026-08-04T18:42:13+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 74016472367436,
+          "created_at": "2026-05-31T13:25:30+02:00",
+          "position": 1,
+          "updated_at": "2026-05-31T13:25:38+02:00",
+          "product_id": 7572070727921,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0512/6612/5979/files/MarcduJura2015DomaineLabet_be826840-24d6-4543-bd16-00290bcdbfd2.png?v=1780226738",
+          "width": 2304,
+          "height": 4096
+        },
+        {
+          "id": 74016472400204,
+          "created_at": "2026-05-31T13:25:30+02:00",
+          "position": 2,
+          "updated_at": "2026-05-31T13:25:36+02:00",
+          "product_id": 7572070727921,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0512/6612/5979/files/MarcduJura2015DomaineLabet.png?v=1780226736",
+          "width": 2304,
+          "height": 4096
+        }
+      ],
+      "options": [
+        {
+          "name": "Mill\u00e9sime",
+          "position": 1,
+          "values": [
+            "2015"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15785958834508,
+      "title": "Vin de France Gamay \"Le bois d'Alix\"",
+      "handle": "vin-de-france-gamay-le-bois-dalix",
+      "body_html": "<p class=\"p1\">\u26a0\ufe0f <b>Attention</b> \u26a0\ufe0f <b>Cette cuv\u00e9e est disponible uniquement sur demande. Contactez-nous pour passer commande.</b></p>\n<p class=\"p1\"><span class=\"s1\">\u26a0\ufe0f</span> <b>Attention</b> <span class=\"s1\">\u26a0\ufe0f</span> <b>This cuvee is available by request only. Contact us to place an order.</b></p>",
+      "published_at": "2026-05-31T13:21:34+02:00",
+      "created_at": "2026-05-30T13:23:18+02:00",
+      "updated_at": "2026-08-04T18:42:13+02:00",
+      "vendor": "Domaine Labet",
+      "product_type": "Vin Rouge",
+      "tags": [
+        "Agriculture Biodynamique",
+        "Agriculture Biologique",
+        "Vin Nature"
+      ],
+      "variants": [
+        {
+          "id": 57670352077132,
+          "title": "2024",
+          "option1": "2024",
+          "option2": null,
+          "option3": null,
+          "sku": "2430440047989",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "49.00",
+          "grams": 1000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15785958834508,
+          "created_at": "2026-05-30T13:23:18+02:00",
+          "updated_at": "2026-08-04T18:42:13+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 74016446808396,
+          "created_at": "2026-05-31T13:21:00+02:00",
+          "position": 1,
+          "updated_at": "2026-05-31T13:21:05+02:00",
+          "product_id": 15785958834508,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0512/6612/5979/files/VindeFranceGamayBoixd_alixDomaineLabet.png?v=1780226465",
+          "width": 2304,
+          "height": 4096
+        },
+        {
+          "id": 74016446841164,
+          "created_at": "2026-05-31T13:21:00+02:00",
+          "position": 2,
+          "updated_at": "2026-05-31T13:21:06+02:00",
+          "product_id": 15785958834508,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0512/6612/5979/files/VindeFranceGamayBoixd_alixDomaineLabet_95807d60-ab0b-408a-ad65-59f41d61ca17.png?v=1780226466",
+          "width": 2304,
+          "height": 4096
+        }
+      ],
+      "options": [
+        {
+          "name": "Mill\u00e9sime",
+          "position": 1,
+          "values": [
+            "2024"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15785955787084,
+      "title": "Vin de France Gamay \"La croix hatty\"",
+      "handle": "vin-de-france-gamay-la-croix-hatty",
+      "body_html": "<p class=\"p1\">\u26a0\ufe0f <b>Attention</b> \u26a0\ufe0f <b>Cette cuv\u00e9e est disponible uniquement sur demande. Contactez-nous pour passer commande.</b></p>\n<p class=\"p1\"><span class=\"s1\">\u26a0\ufe0f</span> <b>Attention</b> <span class=\"s1\">\u26a0\ufe0f</span> <b>This cuvee is available by request only. Contact us to place an order.</b></p>",
+      "published_at": "2026-05-31T13:20:36+02:00",
+      "created_at": "2026-05-30T13:19:57+02:00",
+      "updated_at": "2026-08-04T18:42:13+02:00",
+      "vendor": "Domaine Labet",
+      "product_type": "Vin Rouge",
+      "tags": [
+        "Agriculture Biodynamique",
+        "Agriculture Biologique",
+        "Vin Nature"
+      ],
+      "variants": [
+        {
+          "id": 57670344507724,
+          "title": "2024",
+          "option1": "2024",
+          "option2": null,
+          "option3": null,
+          "sku": "2430440047996",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "49.00",
+          "grams": 1000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15785955787084,
+          "created_at": "2026-05-30T13:19:57+02:00",
+          "updated_at": "2026-08-04T18:42:13+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 74016442351948,
+          "created_at": "2026-05-31T13:19:52+02:00",
+          "position": 1,
+          "updated_at": "2026-05-31T13:19:57+02:00",
+          "product_id": 15785955787084,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0512/6612/5979/files/VindeFranceGamayLaCroixHattyDomaineLabet.png?v=1780226397",
+          "width": 2304,
+          "height": 4096
+        },
+        {
+          "id": 74016442384716,
+          "created_at": "2026-05-31T13:19:52+02:00",
+          "position": 2,
+          "updated_at": "2026-05-31T13:19:57+02:00",
+          "product_id": 15785955787084,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0512/6612/5979/files/VindeFranceGamayLaCroixHattyDomaineLabet_9bded561-9f86-4fb6-9f8d-1343d1115ef1.png?v=1780226397",
+          "width": 2304,
+          "height": 4096
+        }
+      ],
+      "options": [
+        {
+          "name": "Mill\u00e9sime",
+          "position": 1,
+          "values": [
+            "2024"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15785947398476,
+      "title": "C\u00f4tes du Jura \"Vin jaune\" Cuv\u00e9e n\u00b01",
+      "handle": "cotes-du-jura-vin-jaune-cuvee-n-1",
+      "body_html": "<p class=\"p1\">\u26a0\ufe0f <b>Attention</b> \u26a0\ufe0f <b>Cette cuv\u00e9e est disponible uniquement sur demande. Contactez-nous pour passer commande.</b></p>\n<p class=\"p1\"><span class=\"s1\">\u26a0\ufe0f</span> <b>Attention</b> <span class=\"s1\">\u26a0\ufe0f</span> <b>This cuvee is available by request only. Contact us to place an order.</b></p>",
+      "published_at": "2026-05-31T13:18:56+02:00",
+      "created_at": "2026-05-30T13:08:57+02:00",
+      "updated_at": "2026-08-04T18:42:13+02:00",
+      "vendor": "Domaine Labet",
+      "product_type": "Vin Jaune",
+      "tags": [
+        "Agriculture Biodynamique",
+        "Agriculture Biologique",
+        "Vin Nature"
+      ],
+      "variants": [
+        {
+          "id": 57670316753228,
+          "title": "2018",
+          "option1": "2018",
+          "option2": null,
+          "option3": null,
+          "sku": "2430040048027",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "129.00",
+          "grams": 1000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15785947398476,
+          "created_at": "2026-05-30T13:09:55+02:00",
+          "updated_at": "2026-08-04T18:42:13+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 74016434717004,
+          "created_at": "2026-05-31T13:18:02+02:00",
+          "position": 1,
+          "updated_at": "2026-05-31T13:18:07+02:00",
+          "product_id": 15785947398476,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0512/6612/5979/files/VinJaune2018CotesdujuraDomaineLabet_47b12844-e5d3-42b1-91fb-97a4bd1fba51.png?v=1780226287",
+          "width": 2304,
+          "height": 4096
+        },
+        {
+          "id": 74016434749772,
+          "created_at": "2026-05-31T13:18:02+02:00",
+          "position": 2,
+          "updated_at": "2026-05-31T13:18:07+02:00",
+          "product_id": 15785947398476,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0512/6612/5979/files/VinJaune2018CotesdujuraDomaineLabet.png?v=1780226287",
+          "width": 2304,
+          "height": 4096
+        }
+      ],
+      "options": [
+        {
+          "name": "Mill\u00e9sime",
+          "position": 1,
+          "values": [
+            "2018"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 8359987151180,
+      "title": "C\u00f4tes du Jura \" Les Grandes Teppes \"",
+      "handle": "cotes-du-jura-les-grandes-teppes",
+      "body_html": "",
+      "published_at": "2026-04-10T16:27:52+02:00",
+      "created_at": "2023-04-06T11:51:23+02:00",
+      "updated_at": "2026-08-04T18:42:13+02:00",
+      "vendor": "Domaine Ganevat",
+      "product_type": "Vin Blanc",
+      "tags": [
+        "Agriculture Biodynamique",
+        "Agriculture Biologique",
+        "Vin Nature"
+      ],
+      "variants": [
+        {
+          "id": 57231240266060,
+          "title": "2009",
+          "option1": "2009",
+          "option2": null,
+          "option3": null,
+          "sku": "2430190028221",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "199.00",
+          "grams": 1000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 8359987151180,
+          "created_at": "2026-04-10T16:28:07+02:00",
+          "updated_at": "2026-08-04T18:42:13+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 71617712030028,
+          "created_at": "2026-04-10T16:33:26+02:00",
+          "position": 1,
+          "updated_at": "2026-04-10T16:33:32+02:00",
+          "product_id": 8359987151180,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0512/6612/5979/files/Cotesdujuralesgrandesteppesdomaineganevat_363551d5-71b6-4db4-aafa-150fe55ba28f.png?v=1775831612",
+          "width": 2304,
+          "height": 4096
+        },
+        {
+          "id": 71617712062796,
+          "created_at": "2026-04-10T16:33:26+02:00",
+          "position": 2,
+          "updated_at": "2026-04-10T16:33:32+02:00",
+          "product_id": 8359987151180,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0512/6612/5979/files/Cotesdujuralesgrandesteppesdomaineganevat.png?v=1775831612",
+          "width": 2304,
+          "height": 4096
+        }
+      ],
+      "options": [
+        {
+          "name": "Mill\u00e9sime",
+          "position": 1,
+          "values": [
+            "2009"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15941893030220,
+      "title": "Saint James \"10 ans\" 2015",
+      "handle": "saint-james-10-ans-2015",
+      "body_html": "",
+      "published_at": "2026-07-31T14:47:29+02:00",
+      "created_at": "2026-07-31T14:47:27+02:00",
+      "updated_at": "2026-08-04T18:42:13+02:00",
+      "vendor": "Saint James",
+      "product_type": "Rhum Ambr\u00e9",
+      "tags": [],
+      "variants": [
+        {
+          "id": 58264592679244,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "2430000048678",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "65.00",
+          "grams": 1000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15941893030220,
+          "created_at": "2026-07-31T14:47:27+02:00",
+          "updated_at": "2026-08-04T18:42:13+02:00"
+        }
+      ],
+      "images": [],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15473713643852,
+      "title": "C\u00f4tes du Jura savagnin \"Les soupois\"",
+      "handle": "cotes-du-jura-savagnin-les-soupois",
+      "body_html": "",
+      "published_at": "2026-07-31T11:39:08+02:00",
+      "created_at": "2025-12-21T15:17:57+01:00",
+      "updated_at": "2026-08-04T18:42:13+02:00",
+      "vendor": "Domaine Buronfosse",
+      "product_type": "Vin Blanc",
+      "tags": [
+        "Agriculture Biodynamique",
+        "Agriculture Biologique",
+        "Vin Nature"
+      ],
+      "variants": [
+        {
+          "id": 56299483300172,
+          "title": "2022",
+          "option1": "2022",
+          "option2": null,
+          "option3": null,
+          "sku": "2430080045130",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "35.00",
+          "grams": 1000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15473713643852,
+          "created_at": "2025-12-21T15:19:21+01:00",
+          "updated_at": "2026-08-04T18:42:13+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 68593269637452,
+          "created_at": "2025-12-21T16:10:00+01:00",
+          "position": 1,
+          "updated_at": "2025-12-21T16:10:05+01:00",
+          "product_id": 15473713643852,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0512/6612/5979/files/CotesduJuraLesSoupoisBuronfosse_66884b48-576a-4f99-ab60-10800a8fadb9.png?v=1766329805",
+          "width": 2268,
+          "height": 4032
+        },
+        {
+          "id": 68593269670220,
+          "created_at": "2025-12-21T16:10:00+01:00",
+          "position": 2,
+          "updated_at": "2025-12-21T16:10:05+01:00",
+          "product_id": 15473713643852,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0512/6612/5979/files/CotesduJuraLesSoupoisBuronfosse.png?v=1766329805",
+          "width": 2268,
+          "height": 4032
+        }
+      ],
+      "options": [
+        {
+          "name": "Mill\u00e9sime",
+          "position": 1,
+          "values": [
+            "2022"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 6590746820763,
+      "title": "C\u00f4tes du Jura \"Les Ammonites\"",
+      "handle": "1312",
+      "body_html": "",
+      "published_at": "2026-07-31T11:37:59+02:00",
+      "created_at": "2021-03-16T15:31:56+01:00",
+      "updated_at": "2026-08-04T18:42:13+02:00",
+      "vendor": "Domaine Buronfosse",
+      "product_type": "Vin Blanc",
+      "tags": [
+        "Agriculture Biodynamique",
+        "Agriculture Biologique",
+        "Vin Nature"
+      ],
+      "variants": [
+        {
+          "id": 58262928523596,
+          "title": "2022",
+          "option1": "2022",
+          "option2": null,
+          "option3": null,
+          "sku": "2430080027280",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "30.00",
+          "grams": 1000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 6590746820763,
+          "created_at": "2026-07-31T11:37:25+02:00",
+          "updated_at": "2026-08-04T18:42:13+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 68593133060428,
+          "created_at": "2025-12-21T16:01:57+01:00",
+          "position": 1,
+          "updated_at": "2025-12-21T16:02:05+01:00",
+          "product_id": 6590746820763,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0512/6612/5979/files/CotesduJuraLesAmmonitesBuronfosse_f460f183-55b6-45db-96bf-e692f4c9d2c6.png?v=1766329325",
+          "width": 2268,
+          "height": 4032
+        },
+        {
+          "id": 68593133093196,
+          "created_at": "2025-12-21T16:01:57+01:00",
+          "position": 2,
+          "updated_at": "2025-12-21T16:02:02+01:00",
+          "product_id": 6590746820763,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0512/6612/5979/files/CotesduJuraLesAmmonitesBuronfosse.png?v=1766329322",
+          "width": 2268,
+          "height": 4032
+        }
+      ],
+      "options": [
+        {
+          "name": "Mill\u00e9sime",
+          "position": 1,
+          "values": [
+            "2022"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15095394566476,
+      "title": "Bourgogne aligot\u00e9 \"Assemblage perp\u00e9tuel\"",
+      "handle": "bourgogne-aligote-assemblage-perpetuel",
+      "body_html": "",
+      "published_at": "2026-07-24T16:18:02+02:00",
+      "created_at": "2025-09-19T14:29:16+02:00",
+      "updated_at": "2026-08-04T18:42:13+02:00",
+      "vendor": "Robert Denogent",
+      "product_type": "Vin Blanc",
+      "tags": [
+        "Agriculture Biodynamique",
+        "Agriculture Biologique",
+        "Vin Nature"
+      ],
+      "variants": [
+        {
+          "id": 53399828103500,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "2430000043451",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "21.00",
+          "grams": 1000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15095394566476,
+          "created_at": "2025-09-19T14:29:16+02:00",
+          "updated_at": "2026-08-04T18:42:13+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 66155706057036,
+          "created_at": "2025-09-19T15:59:23+02:00",
+          "position": 1,
+          "updated_at": "2025-09-19T15:59:28+02:00",
+          "product_id": 15095394566476,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0512/6612/5979/files/BourgognealigoteDomaineRobertDenogent.png?v=1758290368",
+          "width": 2268,
+          "height": 4032
+        },
+        {
+          "id": 66155706089804,
+          "created_at": "2025-09-19T15:59:23+02:00",
+          "position": 2,
+          "updated_at": "2025-09-19T15:59:28+02:00",
+          "product_id": 15095394566476,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0512/6612/5979/files/BourgognealigoteDomaineRobertDenogent_ea429b2d-684f-4b7c-ae11-4c1452ed434e.png?v=1758290368",
+          "width": 2268,
+          "height": 4032
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15005517676876,
+      "title": "Chartreuse Verte \"Liqueur d'elixir 1605\" JEROBOAM",
+      "handle": "chartreuse-verte-liqueur-delixir-1605-jeroboam",
+      "body_html": "",
+      "published_at": "2026-07-24T16:16:23+02:00",
+      "created_at": "2025-08-01T19:31:25+02:00",
+      "updated_at": "2026-08-04T18:42:13+02:00",
+      "vendor": "Les p\u00e8res Chartreux",
+      "product_type": "chartreuse",
+      "tags": [],
+      "variants": [
+        {
+          "id": 58128199319884,
+          "title": "2026",
+          "option1": "2026",
+          "option2": null,
+          "option3": null,
+          "sku": "2430270042178",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "450.00",
+          "grams": 6000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15005517676876,
+          "created_at": "2026-07-17T11:25:10+02:00",
+          "updated_at": "2026-08-04T18:42:13+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 64561141645644,
+          "created_at": "2025-08-02T15:36:57+02:00",
+          "position": 1,
+          "updated_at": "2025-08-02T15:37:03+02:00",
+          "product_id": 15005517676876,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0512/6612/5979/files/Chartreuseverte1605jeroboam.png?v=1754141823",
+          "width": 2268,
+          "height": 4032
+        }
+      ],
+      "options": [
+        {
+          "name": "Ann\u00e9e de mise en bouteille",
+          "position": 1,
+          "values": [
+            "2026"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 9149642965324,
+      "title": "Chartreuse \"Jaune\" JEROBOAM",
+      "handle": "chartreuse-jaune-mise-2024-jeroboam",
+      "body_html": "",
+      "published_at": "2026-07-24T16:16:22+02:00",
+      "created_at": "2024-07-13T10:49:11+02:00",
+      "updated_at": "2026-08-04T18:42:13+02:00",
+      "vendor": "Les p\u00e8res Chartreux",
+      "product_type": "Liqueur",
+      "tags": [],
+      "variants": [
+        {
+          "id": 58128254140748,
+          "title": "2026",
+          "option1": "2026",
+          "option2": null,
+          "option3": null,
+          "sku": "2430270042130",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "350.00",
+          "grams": 4000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 9149642965324,
+          "created_at": "2026-07-17T11:39:04+02:00",
+          "updated_at": "2026-08-04T18:42:13+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 50680073060684,
+          "created_at": "2023-08-16T16:27:52+02:00",
+          "position": 1,
+          "updated_at": "2023-08-16T16:27:56+02:00",
+          "product_id": 9149642965324,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0512/6612/5979/files/chartreusejaunejeroboammise2023.png?v=1692196076",
+          "width": 960,
+          "height": 1280
+        }
+      ],
+      "options": [
+        {
+          "name": "Ann\u00e9e de mise en bouteille",
+          "position": 1,
+          "values": [
+            "2026"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 9149640769868,
+      "title": "Chartreuse \"Verte\" JEROBOAM",
+      "handle": "chartreuse-verte-mise-2024-jeroboam",
+      "body_html": "",
+      "published_at": "2026-07-24T16:16:21+02:00",
+      "created_at": "2024-07-13T10:46:02+02:00",
+      "updated_at": "2026-08-04T18:42:13+02:00",
+      "vendor": "Les p\u00e8res Chartreux",
+      "product_type": "Liqueur",
+      "tags": [],
+      "variants": [
+        {
+          "id": 58128268132684,
+          "title": "2026",
+          "option1": "2026",
+          "option2": null,
+          "option3": null,
+          "sku": "2430270042116",
+          "requires_shipping": false,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "350.00",
+          "grams": 4000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 9149640769868,
+          "created_at": "2026-07-17T11:43:45+02:00",
+          "updated_at": "2026-08-04T18:42:13+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 50679994646860,
+          "created_at": "2023-08-16T16:22:51+02:00",
+          "position": 1,
+          "updated_at": "2023-08-16T16:22:54+02:00",
+          "product_id": 9149640769868,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0512/6612/5979/files/chartreusevertejeroboammise2023.png?v=1692195774",
+          "width": 960,
+          "height": 1280
+        }
+      ],
+      "options": [
+        {
+          "name": "Ann\u00e9e de mise en bouteille",
+          "position": 1,
+          "values": [
+            "2026"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 9149634412876,
+      "title": "Chartreuse \"Liqueur du 9\u00e8me centenaire\"",
+      "handle": "chartreuse-liqueur-du-9eme-centenaire-mise-2024",
+      "body_html": "",
+      "published_at": "2026-07-24T16:16:21+02:00",
+      "created_at": "2024-07-13T10:23:38+02:00",
+      "updated_at": "2026-08-04T18:42:13+02:00",
+      "vendor": "Les p\u00e8res Chartreux",
+      "product_type": "Liqueur",
+      "tags": [],
+      "variants": [
+        {
+          "id": 58128241819980,
+          "title": "2026",
+          "option1": "2026",
+          "option2": null,
+          "option3": null,
+          "sku": "2430270042154",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "105.00",
+          "grams": 1000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 9149634412876,
+          "created_at": "2026-07-17T11:34:56+02:00",
+          "updated_at": "2026-08-04T18:42:13+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 55334210601292,
+          "created_at": "2024-07-13T10:21:41+02:00",
+          "position": 1,
+          "updated_at": "2024-07-13T10:21:45+02:00",
+          "product_id": 9149634412876,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0512/6612/5979/files/chartreuse_liqueur_du_9eme_centenaire-Photoroom.png?v=1720858905",
+          "width": 1500,
+          "height": 2000
+        },
+        {
+          "id": 55334210666828,
+          "created_at": "2024-07-13T10:21:48+02:00",
+          "position": 2,
+          "updated_at": "2024-07-13T10:21:52+02:00",
+          "product_id": 9149634412876,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0512/6612/5979/files/chartreuse_liqueur_du_9eme_centenaire_back-Photoroom.png?v=1720858912",
+          "width": 1500,
+          "height": 2000
+        }
+      ],
+      "options": [
+        {
+          "name": "Ann\u00e9e de mise en bouteille",
+          "position": 1,
+          "values": [
+            "2026"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 8873933635916,
+      "title": "Chartreuse Jaune \"Cuv\u00e9e des meilleurs ouvriers de france sommeliers\"",
+      "handle": "chartreuse-jaune-cuvee-des-meilleurs-ouvriers-de-france-sommeliers-mise-2024",
+      "body_html": "",
+      "published_at": "2026-07-24T16:16:20+02:00",
+      "created_at": "2024-02-22T14:30:11+01:00",
+      "updated_at": "2026-08-04T18:42:13+02:00",
+      "vendor": "Les p\u00e8res Chartreux",
+      "product_type": "chartreuse",
+      "tags": [],
+      "variants": [
+        {
+          "id": 58128171139404,
+          "title": "2026",
+          "option1": "2026",
+          "option2": null,
+          "option3": null,
+          "sku": "2430270042192",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "79.00",
+          "grams": 1000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 8873933635916,
+          "created_at": "2026-07-17T11:17:46+02:00",
+          "updated_at": "2026-08-04T18:42:13+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 53018700415308,
+          "created_at": "2024-02-22T18:05:14+01:00",
+          "position": 1,
+          "updated_at": "2024-02-22T18:05:18+01:00",
+          "product_id": 8873933635916,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0512/6612/5979/files/ChartreuseMOF-Photoroom.png?v=1708621518",
+          "width": 1125,
+          "height": 2000
+        },
+        {
+          "id": 53018701463884,
+          "created_at": "2024-02-22T18:05:20+01:00",
+          "position": 2,
+          "updated_at": "2024-02-22T18:05:23+01:00",
+          "product_id": 8873933635916,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0512/6612/5979/files/ChartreuseMOF2024-Photoroom.png?v=1708621523",
+          "width": 1125,
+          "height": 2000
+        }
+      ],
+      "options": [
+        {
+          "name": "Ann\u00e9e de mise en bouteille",
+          "position": 1,
+          "values": [
+            "2026"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 6111121866907,
+      "title": "Chartreuse Jaune \"VEP\"",
+      "handle": "chartreuse-vep-jaune",
+      "body_html": "<span data-mce-fragment=\"1\">\"VEP\" Vieillissement Exceptionnellement Prolong\u00e9, liqueur issue de l'assemblage de 130 plantes et fleurs.</span>",
+      "published_at": "2026-07-24T16:16:19+02:00",
+      "created_at": "2021-01-20T11:10:47+01:00",
+      "updated_at": "2026-08-04T18:42:13+02:00",
+      "vendor": "Les p\u00e8res Chartreux",
+      "product_type": "Liqueur",
+      "tags": [],
+      "variants": [
+        {
+          "id": 58128293888332,
+          "title": "2026",
+          "option1": "2026",
+          "option2": null,
+          "option3": null,
+          "sku": "2430270041447",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "400.00",
+          "grams": 2000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 6111121866907,
+          "created_at": "2026-07-17T11:50:03+02:00",
+          "updated_at": "2026-08-04T18:42:13+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 61426295112012,
+          "created_at": "2025-04-29T17:48:57+02:00",
+          "position": 1,
+          "updated_at": "2025-04-29T17:49:01+02:00",
+          "product_id": 6111121866907,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0512/6612/5979/files/ChartreuseVEPJaune2025.png?v=1745941741",
+          "width": 1125,
+          "height": 2000
+        }
+      ],
+      "options": [
+        {
+          "name": "Ann\u00e9e de mise en bouteille",
+          "position": 1,
+          "values": [
+            "2026"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 6111121834139,
+      "title": "Chartreuse Verte \"VEP\"",
+      "handle": "chartreuse-vep-verte",
+      "body_html": "\"VEP\" Vieillissement Exceptionnellement Prolong\u00e9, liqueur issue de l'assemblage de 130 plantes.",
+      "published_at": "2026-07-24T16:16:19+02:00",
+      "created_at": "2021-01-20T11:10:46+01:00",
+      "updated_at": "2026-08-04T18:42:13+02:00",
+      "vendor": "Les p\u00e8res Chartreux",
+      "product_type": "chartreuse",
+      "tags": [],
+      "variants": [
+        {
+          "id": 58128281239884,
+          "title": "2026",
+          "option1": "2026",
+          "option2": null,
+          "option3": null,
+          "sku": "2430500040752",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "359.00",
+          "grams": 2000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 6111121834139,
+          "created_at": "2026-07-17T11:48:19+02:00",
+          "updated_at": "2026-08-04T18:42:13+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 53018819264844,
+          "created_at": "2024-02-22T18:14:20+01:00",
+          "position": 1,
+          "updated_at": "2024-02-22T18:14:23+01:00",
+          "product_id": 6111121834139,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0512/6612/5979/files/ChartreuseVerteVEP2024-Photoroom.png?v=1708622063",
+          "width": 1125,
+          "height": 2000
+        },
+        {
+          "id": 53018823164236,
+          "created_at": "2024-02-22T18:14:30+01:00",
+          "position": 2,
+          "updated_at": "2024-02-22T18:14:34+01:00",
+          "product_id": 6111121834139,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0512/6612/5979/files/ChartreuseVerteVEP2024.-Photoroom.png?v=1708622074",
+          "width": 1125,
+          "height": 2000
+        }
+      ],
+      "options": [
+        {
+          "name": "Mise en Bouteille",
+          "position": 1,
+          "values": [
+            "2026"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 6111141298331,
+      "title": "Sancerre \"La Grande C\u00f4te\"",
+      "handle": "sancerre-la-grande-cote-f-cotat",
+      "body_html": "",
+      "published_at": "2026-07-22T11:38:42+02:00",
+      "created_at": "2021-01-20T11:13:21+01:00",
+      "updated_at": "2026-08-04T18:42:13+02:00",
+      "vendor": "Domaine Pascal Cotat",
+      "product_type": "Vin Blanc",
+      "tags": [
+        "Agriculture Raisonn\u00e9e"
+      ],
+      "variants": [
+        {
+          "id": 58180240769356,
+          "title": "2024",
+          "option1": "2024",
+          "option2": null,
+          "option3": null,
+          "sku": "2430440048122",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "74.00",
+          "grams": 1000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 6111141298331,
+          "created_at": "2026-07-22T11:38:34+02:00",
+          "updated_at": "2026-08-04T18:42:13+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 75680763937100,
+          "created_at": "2026-07-22T16:08:05+02:00",
+          "position": 1,
+          "updated_at": "2026-07-22T16:08:10+02:00",
+          "product_id": 6111141298331,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0512/6612/5979/files/SancerreLagrandecotePascalCotat.png?v=1784729290",
+          "width": 2304,
+          "height": 4096
+        },
+        {
+          "id": 75680763969868,
+          "created_at": "2026-07-22T16:08:05+02:00",
+          "position": 2,
+          "updated_at": "2026-07-22T16:08:10+02:00",
+          "product_id": 6111141298331,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0512/6612/5979/files/SancerreLagrandecotePascalCotat_56dae754-14ae-48a0-911b-88567d90c978.png?v=1784729290",
+          "width": 2304,
+          "height": 4096
+        }
+      ],
+      "options": [
+        {
+          "name": "Mill\u00e9sime",
+          "position": 1,
+          "values": [
+            "2024"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15910914130252,
+      "title": "Bourgogne Aligot\u00e9 \"La graveli\u00e8re\"",
+      "handle": "bourgogne-aligote-la-graveliere",
+      "body_html": "",
+      "published_at": "2026-07-17T17:30:02+02:00",
+      "created_at": "2026-07-17T17:30:02+02:00",
+      "updated_at": "2026-08-04T18:42:13+02:00",
+      "vendor": "Ma\u00ef Roblin Bazin",
+      "product_type": "Vin Blanc",
+      "tags": [
+        "Agriculture Biodynamique",
+        "Agriculture Biologique",
+        "Vin Nature"
+      ],
+      "variants": [
+        {
+          "id": 58133973991756,
+          "title": "2025",
+          "option1": "2025",
+          "option2": null,
+          "option3": null,
+          "sku": "2430450048648",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "39.00",
+          "grams": 1000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15910914130252,
+          "created_at": "2026-07-17T17:30:02+02:00",
+          "updated_at": "2026-08-04T18:42:13+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 75602651775308,
+          "created_at": "2026-07-17T17:42:20+02:00",
+          "position": 1,
+          "updated_at": "2026-07-17T17:42:25+02:00",
+          "product_id": 15910914130252,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0512/6612/5979/files/BourgogneAligote_LesGravelieresMaiRoblinBazin.png?v=1784302945",
+          "width": 2304,
+          "height": 4096
+        }
+      ],
+      "options": [
+        {
+          "name": "Mill\u00e9sime",
+          "position": 1,
+          "values": [
+            "2025"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15910882083148,
+      "title": "Bourgogne Aligot\u00e9 \"Les champs pertuis\"",
+      "handle": "bourgogne-aligote-les-champs-pertuis",
+      "body_html": "",
+      "published_at": "2026-07-17T17:26:39+02:00",
+      "created_at": "2026-07-17T17:26:38+02:00",
+      "updated_at": "2026-08-04T18:42:13+02:00",
+      "vendor": "Ma\u00ef Roblin Bazin",
+      "product_type": "Vin Blanc",
+      "tags": [
+        "Agriculture Biodynamique",
+        "Agriculture Biologique",
+        "Vin Nature"
+      ],
+      "variants": [
+        {
+          "id": 58133663547724,
+          "title": "2025",
+          "option1": "2025",
+          "option2": null,
+          "option3": null,
+          "sku": "2430450048655",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "44.00",
+          "grams": 1000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15910882083148,
+          "created_at": "2026-07-17T17:26:38+02:00",
+          "updated_at": "2026-08-04T18:42:13+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 75602642141516,
+          "created_at": "2026-07-17T17:41:38+02:00",
+          "position": 1,
+          "updated_at": "2026-07-17T17:41:43+02:00",
+          "product_id": 15910882083148,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0512/6612/5979/files/BourgogneAligote_LeschampspertuisMaiRoblinBazin.png?v=1784302903",
+          "width": 2304,
+          "height": 4096
+        }
+      ],
+      "options": [
+        {
+          "name": "Mill\u00e9sime",
+          "position": 1,
+          "values": [
+            "2025"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15910806061388,
+      "title": "Vin de France \"Coramb\u00e9\"",
+      "handle": "vin-de-france-corambe",
+      "body_html": "",
+      "published_at": "2026-07-17T17:19:10+02:00",
+      "created_at": "2026-07-17T17:19:09+02:00",
+      "updated_at": "2026-08-04T18:42:13+02:00",
+      "vendor": "Ma\u00ef Roblin Bazin",
+      "product_type": "Vin Rouge",
+      "tags": [
+        "Agriculture Biodynamique",
+        "Agriculture Biologique",
+        "Vin Nature"
+      ],
+      "variants": [
+        {
+          "id": 58133139390796,
+          "title": "2025",
+          "option1": "2025",
+          "option2": null,
+          "option3": null,
+          "sku": "2430450048662",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "40.00",
+          "grams": 1000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15910806061388,
+          "created_at": "2026-07-17T17:19:09+02:00",
+          "updated_at": "2026-08-04T18:42:13+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 75602633032012,
+          "created_at": "2026-07-17T17:40:59+02:00",
+          "position": 1,
+          "updated_at": "2026-07-17T17:41:04+02:00",
+          "product_id": 15910806061388,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0512/6612/5979/files/VindeFrance_CorambeMaiRoblinBazin.png?v=1784302864",
+          "width": 2304,
+          "height": 4096
+        }
+      ],
+      "options": [
+        {
+          "name": "Mill\u00e9sime",
+          "position": 1,
+          "values": [
+            "2025"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 8613256823116,
+      "title": "Champagne extra-brut \"Les Couarres\"",
+      "handle": "champagne-extra-brut-les-couarres",
+      "body_html": "",
+      "published_at": "2026-07-17T15:12:20+02:00",
+      "created_at": "2023-06-10T16:35:52+02:00",
+      "updated_at": "2026-08-04T18:42:13+02:00",
+      "vendor": "Maison Chartogne-Taillet",
+      "product_type": "Champagne",
+      "tags": [],
+      "variants": [
+        {
+          "id": 58130047172940,
+          "title": "2022",
+          "option1": "2022",
+          "option2": null,
+          "option3": null,
+          "sku": "2430080029338",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "98.00",
+          "grams": 1000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 8613256823116,
+          "created_at": "2026-07-17T15:10:08+02:00",
+          "updated_at": "2026-08-04T18:42:13+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 75598800683340,
+          "created_at": "2026-07-17T15:29:22+02:00",
+          "position": 1,
+          "updated_at": "2026-07-17T15:29:27+02:00",
+          "product_id": 8613256823116,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0512/6612/5979/files/ChampagneLesCouarresChartognetaillet_92f030a3-0052-4b34-b107-872ff945abbc.png?v=1784294967",
+          "width": 2304,
+          "height": 4096
+        },
+        {
+          "id": 75598800716108,
+          "created_at": "2026-07-17T15:29:22+02:00",
+          "position": 2,
+          "updated_at": "2026-07-17T15:29:28+02:00",
+          "product_id": 8613256823116,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0512/6612/5979/files/ChampagneLesCouarresChartognetaillet_30f970d2-66a2-45c6-a3bb-110cb400501c.png?v=1784294968",
+          "width": 2304,
+          "height": 4096
+        }
+      ],
+      "options": [
+        {
+          "name": "Mill\u00e9sime",
+          "position": 1,
+          "values": [
+            "2022"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15910258049356,
+      "title": "Champagne Extra-Brut \"Heurtebise\"",
+      "handle": "champagne-extra-brut-heurtebise",
+      "body_html": "",
+      "published_at": "2026-07-17T15:06:22+02:00",
+      "created_at": "2026-07-17T15:06:21+02:00",
+      "updated_at": "2026-08-04T18:42:13+02:00",
+      "vendor": "Maison Chartogne-Taillet",
+      "product_type": "Champagne",
+      "tags": [],
+      "variants": [
+        {
+          "id": 58130038260044,
+          "title": "2022",
+          "option1": "2022",
+          "option2": null,
+          "option3": null,
+          "sku": "2430080040975",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "98.00",
+          "grams": 1000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15910258049356,
+          "created_at": "2026-07-17T15:06:21+02:00",
+          "updated_at": "2026-08-04T18:42:13+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 75598797013324,
+          "created_at": "2026-07-17T15:28:35+02:00",
+          "position": 1,
+          "updated_at": "2026-07-17T15:28:40+02:00",
+          "product_id": 15910258049356,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0512/6612/5979/files/ChampagneHeurtebiseChartognetaillet.png?v=1784294920",
+          "width": 2304,
+          "height": 4096
+        },
+        {
+          "id": 75598797046092,
+          "created_at": "2026-07-17T15:28:35+02:00",
+          "position": 2,
+          "updated_at": "2026-07-17T15:28:40+02:00",
+          "product_id": 15910258049356,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0512/6612/5979/files/ChampagneHeurtebiseChartognetaillet_6736c201-7c77-4cfa-8d56-869b648db6d0.png?v=1784294920",
+          "width": 2304,
+          "height": 4096
+        }
+      ],
+      "options": [
+        {
+          "name": "Mill\u00e9sime",
+          "position": 1,
+          "values": [
+            "2022"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 9016813945164,
+      "title": "Vin de France \"Un R de Ch'nin\"",
+      "handle": "vin-de-france-un-r-de-chnin",
+      "body_html": "",
+      "published_at": "2026-07-17T14:47:28+02:00",
+      "created_at": "2024-05-17T14:46:03+02:00",
+      "updated_at": "2026-08-04T18:42:13+02:00",
+      "vendor": "Clos de la Barthassade",
+      "product_type": "Vin Blanc",
+      "tags": [
+        "Agriculture Biodynamique",
+        "Agriculture Biologique"
+      ],
+      "variants": [
+        {
+          "id": 58129929830732,
+          "title": "2024",
+          "option1": "2024",
+          "option2": null,
+          "option3": null,
+          "sku": "2430440035580",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "30.00",
+          "grams": 1000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 9016813945164,
+          "created_at": "2026-07-17T14:47:01+02:00",
+          "updated_at": "2026-08-04T18:42:13+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 75598855405900,
+          "created_at": "2026-07-17T15:35:51+02:00",
+          "position": 1,
+          "updated_at": "2026-07-17T15:35:56+02:00",
+          "product_id": 9016813945164,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0512/6612/5979/files/VindefranceUnRdech_ninClosdelabarthasade_142c077e-f215-4e7c-9fee-20a4b78480be.png?v=1784295356",
+          "width": 2304,
+          "height": 4096
+        },
+        {
+          "id": 75598855438668,
+          "created_at": "2026-07-17T15:35:51+02:00",
+          "position": 2,
+          "updated_at": "2026-07-17T15:35:57+02:00",
+          "product_id": 9016813945164,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0512/6612/5979/files/VindefranceUnRdech_ninClosdelabarthasade.png?v=1784295357",
+          "width": 2304,
+          "height": 4096
+        }
+      ],
+      "options": [
+        {
+          "name": "Mill\u00e9sime",
+          "position": 1,
+          "values": [
+            "2024"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15910032474444,
+      "title": "Chartreuse Jaune \"Cuv\u00e9e des meilleurs ouvriers de france sommeliers\" JEROBOAM",
+      "handle": "chartreuse-jaune-cuvee-des-meilleurs-ouvriers-de-france-sommeliers-jeroboam",
+      "body_html": "",
+      "published_at": "2026-07-17T11:21:53+02:00",
+      "created_at": "2026-07-17T11:21:52+02:00",
+      "updated_at": "2026-08-04T18:42:13+02:00",
+      "vendor": "Les p\u00e8res Chartreux",
+      "product_type": "chartreuse",
+      "tags": [],
+      "variants": [
+        {
+          "id": 58128188735820,
+          "title": "2026",
+          "option1": "2026",
+          "option2": null,
+          "option3": null,
+          "sku": "2430270042185",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "450.00",
+          "grams": 6000,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 15910032474444,
+          "created_at": "2026-07-17T11:21:52+02:00",
+          "updated_at": "2026-08-04T18:42:13+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 75598789509452,
+          "created_at": "2026-07-17T15:27:25+02:00",
+          "position": 1,
+          "updated_at": "2026-07-17T15:27:30+02:00",
+          "product_id": 15910032474444,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0512/6612/5979/files/ChartreuseMOFJeroboam.png?v=1784294850",
+          "width": 2304,
+          "height": 4096
+        }
+      ],
+      "options": [
+        {
+          "name": "Ann\u00e9e de mise en bouteille",
+          "position": 1,
+          "values": [
+            "2026"
+          ]
+        }
+      ]
+    }
+  ]
+}

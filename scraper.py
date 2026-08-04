@@ -323,6 +323,15 @@ SHOPS = [
         "price_selector": "span.price",
         "verified": False,
     },
+    {
+        "name": "pangee",
+        "platform": "html",
+        "url": "https://la-pangee.com/fr",
+        "item_selector": "div.product",
+        "title_selector": "h2.product-title",
+        "price_selector": "span.price",
+        "verified": False,
+    },
 ]
 
 

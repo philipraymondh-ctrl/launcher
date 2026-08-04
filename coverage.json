@@ -1,0 +1,38 @@
+[
+  {
+    "hits": 1,
+    "in_stock": 1,
+    "platform": "shopify",
+    "producers": [
+      "Zzz Domaine"
+    ],
+    "products": 1,
+    "shop": "zzz-shopify",
+    "sold_out": 0,
+    "status": "ok"
+  },
+  {
+    "hits": 1,
+    "in_stock": 1,
+    "platform": "woocommerce",
+    "producers": [
+      "Zzz Negoce"
+    ],
+    "products": 1,
+    "shop": "zzz-woo",
+    "sold_out": 0,
+    "status": "ok"
+  },
+  {
+    "hits": 3,
+    "in_stock": 3,
+    "platform": "html",
+    "producers": [
+      "Zzz Other"
+    ],
+    "products": 3,
+    "shop": "zzz-html",
+    "sold_out": 0,
+    "status": "ok"
+  }
+]

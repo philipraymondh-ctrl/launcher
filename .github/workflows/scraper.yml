@@ -81,4 +81,5 @@ jobs:
           path: |
             hits.json
             observations.json
+            coverage.json
           retention-days: 30

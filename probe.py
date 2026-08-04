@@ -104,8 +104,38 @@ DIAGNOSTIC_CAP = 300_000
 
 
 def _page_slug(url):
-    path = urlparse(url).path.strip("/") or "index"
-    return re.sub(r"[^a-z0-9]+", "-", path.lower()).strip("-")[:48]
+    parts = urlparse(url)
+    path = parts.path.strip("/") or "index"
+    # The query belongs in the slug for the same reason the host does:
+    # /webshop and /webshop?format=json are two different answers to two
+    # different questions, and slugging only the path filed both under
+    # "webshop" -- the second silently overwriting the first.
+    if parts.query:
+        path = f"{path}-{parts.query}"
+    return re.sub(r"[^a-z0-9]+", "-", path.lower()).strip("-")[:64]
+
+
+def looks_like_json(body):
+    return body.lstrip()[:1] in ("{", "[")
+
+
+# Scripts are most of a page's bytes and none of its structure -- except when
+# they are the only place the structure lives. A Squarespace commerce page
+# renders its prices from Static.SQUARESPACE_CONTEXT, and many themes emit
+# JSON-LD Product blocks while their visible markup says nothing. Stripping
+# every script destroyed exactly the evidence needed to write the parser:
+# purovino's capture recorded "4 currency-adjacent prices" in its header and
+# then contained not one currency marker.
+DATA_SCRIPT_MARKERS = ("SQUARESPACE_CONTEXT", "__NEXT_DATA__", "__NUXT__",
+                       "window.ShopifyAnalytics", "dataLayer.push")
+DATA_SCRIPT_CAP = 20_000
+
+
+def _is_data_script(tag):
+    if (tag.get("type") or "").lower() in ("application/ld+json", "application/json"):
+        return True
+    body = tag.string or ""
+    return any(marker in body for marker in DATA_SCRIPT_MARKERS)
 
 
 def save_diagnostic_page(name, url, body):
@@ -115,21 +145,33 @@ def save_diagnostic_page(name, url, body):
     storage that the dev sandbox has no route to, so the only way this
     evidence reaches the person writing the parser is through git. Scripts
     and styles are stripped -- they are most of the bytes and none of the
-    structure.
+    structure -- except the ones that carry data rather than behaviour.
     """
-    soup = BeautifulSoup(body, "html.parser")
-    for tag in soup(["script", "style", "noscript", "svg"]):
-        tag.decompose()
-    trimmed = soup.prettify()[:DIAGNOSTIC_CAP]
     DIAGNOSTIC_DIR.mkdir(parents=True, exist_ok=True)
-    # The host belongs in the name. Slugging only the path meant every
-    # shop's landing page was "capture.index.html", so capturing four sites
-    # in one run left one file: three overwrote each other silently, which
-    # cost a round trip to discover.
     host = urlparse(url).netloc.replace(".", "-")
-    (DIAGNOSTIC_DIR / f"{name}.{host}.{_page_slug(url)}.html").write_text(
+    stem = f"{name}.{host}.{_page_slug(url)}"
+
+    # A JSON body put through an HTML parser comes out as one text node with
+    # its own punctuation re-escaped: unreadable, and unusable as a fixture.
+    # Save it as it arrived.
+    if looks_like_json(body):
+        (DIAGNOSTIC_DIR / f"{stem}.json").write_text(body[:DIAGNOSTIC_CAP])
+        return
+
+    soup = BeautifulSoup(body, "html.parser")
+    for tag in soup(["style", "noscript", "svg"]):
+        tag.decompose()
+    for tag in soup("script"):
+        if _is_data_script(tag):
+            tag.string = (tag.string or "")[:DATA_SCRIPT_CAP]
+        else:
+            tag.decompose()
+    trimmed = soup.prettify()[:DIAGNOSTIC_CAP]
+    (DIAGNOSTIC_DIR / f"{stem}.html").write_text(
         f"<!-- {url}\n     {describe_unparsed(body)}\n"
-        f"     Scripts/styles stripped, capped at {DIAGNOSTIC_CAP} bytes.\n"
+        f"     Styles and behaviour-only scripts stripped, data scripts kept\n"
+        f"     (capped at {DATA_SCRIPT_CAP} bytes each); file capped at\n"
+        f"     {DIAGNOSTIC_CAP} bytes.\n"
         f"     Diagnostic only: delete once this shop parses. -->\n" + trimmed
     )
 

@@ -417,6 +417,62 @@ def test_each_unparsed_page_is_kept_separately(monkeypatch, tmp_path):
     ]
 
 
+def test_two_answers_from_one_path_are_kept_separately(monkeypatch, tmp_path):
+    """/webshop and /webshop?format=json are the two halves of a Squarespace
+    diagnosis -- the HTML you can see and the JSON you want instead. Slugging
+    only the path filed both under "webshop", so the second silently replaced
+    the first: the same overwrite the host was added to the name to stop."""
+    monkeypatch.setattr(probe, "DIAGNOSTIC_DIR", tmp_path)
+    probe.save_diagnostic_page("zzzshop", "https://zzz.example/webshop", "<html></html>")
+    probe.save_diagnostic_page("zzzshop", "https://zzz.example/webshop?format=json",
+                               '{"items": []}')
+    assert sorted(p.name for p in tmp_path.iterdir() if p.is_file()) == [
+        "zzzshop.zzz-example.webshop-format-json.json",
+        "zzzshop.zzz-example.webshop.html",
+    ]
+
+
+def test_a_json_body_is_saved_as_it_arrived(monkeypatch, tmp_path):
+    """Put through an HTML parser a JSON body comes back as one text node with
+    its punctuation re-escaped -- unreadable, and unusable as a fixture."""
+    monkeypatch.setattr(probe, "DIAGNOSTIC_DIR", tmp_path)
+    payload = '{"items": [{"title": "Vin jaune", "price": "129,00 €"}]}'
+    probe.save_diagnostic_page("zzzshop", "https://zzz.example/c?format=json", payload)
+    saved = next(p for p in tmp_path.iterdir() if p.is_file())
+    assert saved.suffix == ".json"
+    assert json.loads(saved.read_text())["items"][0]["title"] == "Vin jaune"
+
+
+def test_a_script_that_carries_the_prices_is_kept(monkeypatch, tmp_path):
+    """purovino's capture recorded "4 currency-adjacent prices" in its header
+    and then held not one currency marker: a Squarespace commerce page renders
+    its prices from Static.SQUARESPACE_CONTEXT, and stripping every script
+    threw away the only evidence a parser could be written from."""
+    monkeypatch.setattr(probe, "DIAGNOSTIC_DIR", tmp_path)
+    body = (
+        "<html><head>"
+        "<script>Static.SQUARESPACE_CONTEXT = {\"price\": \"20,00 €\"};</script>"
+        "<script type=\"application/ld+json\">{\"@type\": \"Product\"}</script>"
+        "<script src='https://cdn.example/behaviour.js'></script>"
+        "<script>window.addEventListener('load', spin);</script>"
+        "</head><body><p>rien</p></body></html>"
+    )
+    probe.save_diagnostic_page("zzzshop", "https://zzz.example/webshop", body)
+    kept = next(p for p in tmp_path.iterdir() if p.is_file()).read_text()
+    assert "SQUARESPACE_CONTEXT" in kept and "20,00" in kept
+    assert '"@type": "Product"' in kept
+    assert "behaviour.js" not in kept and "addEventListener" not in kept
+
+
+def test_a_kept_data_script_cannot_blow_up_the_capture(monkeypatch, tmp_path):
+    """The point of stripping scripts is that they are most of the bytes."""
+    monkeypatch.setattr(probe, "DIAGNOSTIC_DIR", tmp_path)
+    huge = "SQUARESPACE_CONTEXT = " + "x" * (probe.DATA_SCRIPT_CAP * 3)
+    probe.save_diagnostic_page("zzzshop", "https://zzz.example/", f"<script>{huge}</script>")
+    saved = next(p for p in tmp_path.iterdir() if p.is_file()).read_text()
+    assert probe.DATA_SCRIPT_CAP <= len(saved) <= probe.DATA_SCRIPT_CAP + 2000
+
+
 def test_diagnostics_never_land_in_the_repo_during_tests():
     """The directory is committed, so a leaked test file gets pushed."""
     stray = Path(__file__).parent.parent / "probe_pages" / "testshop.html"

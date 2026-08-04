@@ -381,13 +381,14 @@ def test_zero_product_html_page_is_saved_for_selector_work(isolated_output):
 
 
 def test_a_guessed_catalog_path_does_not_replace_the_search():
-    """It goes first, but the rest of the list must still be tried -- short
+    """It goes early, but the rest of the list must still be tried -- short
     -circuiting here meant the shop catalogue discovery was written for only
-    ever tried its one guessed path."""
+    ever tried its one guessed path. The landing page precedes it, because
+    that is where the shop's own menu lives."""
     shop = dict(a_shop(), catalog_path="vins.php")
     urls = [url for _, url, _, _ in probe.candidate_endpoints(shop)]
     html_urls = [u for u in urls if "products.json" not in u and "wp-json" not in u]
-    assert html_urls[0].endswith("/vins.php")
+    assert html_urls[1].endswith("/vins.php")
     assert len(html_urls) > 1, "no other catalogue paths were tried"
     assert any(u.endswith("/boutique") for u in html_urls)
 
@@ -552,11 +553,12 @@ def test_the_api_endpoints_come_first():
     assert platforms[:2] == ["shopify", "woocommerce"]
 
 
-def test_a_recorded_catalogue_path_is_tried_first_among_the_guesses():
+def test_a_recorded_catalogue_path_is_tried_right_after_the_landing_page():
     shop = {"name": "s", "url": "https://s.test", "platform": "html",
             "catalog_path": "domaines.php"}
     html_urls = [e[1] for e in probe.candidate_endpoints(shop) if e[0] == "html"]
-    assert html_urls[0].endswith("domaines.php")
+    assert html_urls[0] == "https://s.test", "the menu page must come first"
+    assert html_urls[1].endswith("domaines.php")
 
 
 # --- the richest catalogue wins, and the menu is part of the search ------------
@@ -654,9 +656,10 @@ def test_a_thin_page_is_still_better_than_nothing():
     assert result.get("thin") is True
 
 
-def test_a_paginating_catalogue_ends_the_search():
-    """Politeness costs 3s a request, so a page that is plainly the catalogue
-    -- rich *and* running on to another page -- stops the probe there."""
+def test_a_paginating_catalogue_wins():
+    """No HTML page ends the search any more -- every candidate is weighed and
+    the best wins, because accepting one early is how a wrong recorded path
+    kept confirming itself. The cost is bounded by the candidate list."""
     shop = {"name": "big", "platform": "html", "url": "https://big.test",
             "verified": False}
     client = MapCrawler({
@@ -667,7 +670,8 @@ def test_a_paginating_catalogue_ends_the_search():
     result = probe.probe_shop(shop, client)
 
     assert result["products_parsed"] >= 60
-    assert len(client.asked) <= 5, f"kept guessing after finding a catalogue: {client.asked}"
+    assert not result.get("thin")
+    assert len(client.asked) <= probe.MAX_CATALOGUE_GUESSES + autoselect.MAX_CATALOGUE_LINKS + 2
 
 
 def test_a_single_page_catalogue_costs_the_whole_search():
@@ -805,3 +809,48 @@ def test_one_rich_catalogue_records_no_list():
 
     assert result["catalog_path"] == "vins"
     assert not result.get("catalog_paths")
+
+
+# --- a recorded path must not short-circuit its own re-examination ------------
+#
+# Three probes in a row left winenot on s/3/vin-effervescent and pangee on
+# /nouveaux-produits. The recorded path is tried first -- deliberately -- and
+# a rich paginating page is accepted on the spot, so the landing page was
+# never fetched and its menu never read. A wrong path perpetuated itself, and
+# each new probe confirmed it.
+
+def test_a_recorded_path_does_not_stop_the_menu_being_read():
+    shop = {"name": "pangee", "platform": "html", "url": "https://pangee.test",
+            "catalog_path": "nouveaux-produits", "verified": True}
+    client = MapCrawler({
+        "https://pangee.test": (
+            '<html><body><nav><a href="/25-vins">Tous les vins</a></nav></body></html>'),
+        # The recorded page: rich and paginating, so the old rule took it.
+        "https://pangee.test/nouveaux-produits": paginated(36, "/nouveaux-produits?p=2"),
+        "https://pangee.test/nouveaux-produits?p=2": paginated(36, "/nouveaux-produits?p=3"),
+        # The real catalogue, richer still.
+        "https://pangee.test/25-vins": paginated(48, "/25-vins?p=2"),
+        "https://pangee.test/25-vins?p=2": paginated(48, "/25-vins?p=3"),
+    })
+
+    result = probe.probe_shop(shop, client)
+
+    assert "https://pangee.test" in client.asked, "the landing page was never read"
+    assert result["catalog_path"] == "25-vins", (
+        f"kept {result['catalog_path']} without looking at the menu")
+
+
+def test_a_recorded_path_still_wins_when_it_is_the_best():
+    """Re-probing a correctly configured shop must not wander off."""
+    shop = {"name": "good", "platform": "html", "url": "https://good.test",
+            "catalog_path": "vins", "verified": True}
+    client = MapCrawler({
+        "https://good.test": '<html><body><nav><a href="/promotions">Promos</a></nav></body></html>',
+        "https://good.test/vins": paginated(50, "/vins?p=2"),
+        "https://good.test/vins?p=2": paginated(50, "/vins?p=3"),
+        "https://good.test/promotions": catalogue_page(10),
+    })
+
+    result = probe.probe_shop(shop, client)
+
+    assert result["catalog_path"] == "vins"

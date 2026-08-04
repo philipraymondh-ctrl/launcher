@@ -222,10 +222,14 @@ HTTP header or printed.
   when `verified: true`; an unverified one ranks below observed data on
   purpose, because a guessed number produces a confident wrong verdict
   where no number produces an honest `NOREF`.
-- The probe picks the catalogue by evidence, not by being first. A page is
-  taken as the catalogue only when it is rich *and* paginates
-  (`GOOD_CATALOGUE_AT`, plus a "next" link); otherwise every candidate is
-  tried and the best `(paginates, count)` wins. Product count alone chose
+- The probe never accepts an HTML page on the spot. Every candidate is
+  fetched and weighed, and the best `(paginates, count)` wins -- the landing
+  page always going first, because that is where the shop's menu lives.
+  Short-circuiting on "this looks like a catalogue" meant a recorded
+  `catalog_path` (tried early by design) was taken before the menu had been
+  read, so a wrong path confirmed itself on every re-probe: three runs left
+  winenot on its sparkling-wine filter. A JSON platform still ends the
+  search, because `/products.json` either is the catalogue or is not there. Product count alone chose
   pangee's "new arrivals" strip over its catalogue and winenot's
   sparkling-wine filter over nine region categories -- a strip is one page, a
   catalogue runs to twenty. When several categories each hold part of the

@@ -55,12 +55,9 @@ EMPTY_PAGE = {"shopify": '{"products": []}', "woocommerce": "[]", "html": ""}
 
 # Enough of a failing body to tell a bot-block page from an API change.
 BODY_SNIPPET = 400
-# At or above this many products a page is plainly the catalogue, so the
-# search ends there -- politeness costs 3s a request. Below it the page is
-# recorded and the search continues, and the richest page found wins. The
-# previous rule accepted the first page over a threshold of 12, which is how
-# pangee's twelve-product shop window was verified as its catalogue by one
-# product, and how winenot ended up live with three.
+# Below this many products the page that won is still worth flagging as thin:
+# it parsed, so the shop is not dark, but it is unlikely to be the whole
+# catalogue.
 GOOD_CATALOGUE_AT = 24
 # A page has to hold at least this much to count as one of several
 # catalogues worth recording.
@@ -244,7 +241,13 @@ def candidate_endpoints(shop):
     # catalogue discovery was written for only ever tried its guessed path.
     # The hourly run still fetches the single recorded page; only the probe
     # explores.
-    candidates = ([shop["catalog_path"]] if shop.get("catalog_path") else []) + autoselect.CATALOGUE_PATHS
+    # The landing page first, always: it is where the shop's own menu lives,
+    # and nothing may be accepted before that menu has been read. Putting a
+    # recorded catalog_path ahead of it let a wrong path confirm itself on
+    # every re-probe. The recorded path comes next, then the guesses.
+    recorded = [shop[k] for k in ("catalog_path",) if shop.get(k)]
+    recorded += list(shop.get("catalog_paths") or [])
+    candidates = [""] + recorded + [p for p in autoselect.CATALOGUE_PATHS if p]
     seen, paths = set(), []
     for path in candidates:
         url = urljoin(base + "/", path) if path else shop["url"]
@@ -412,7 +415,14 @@ def probe_shop(shop, crawler_client):
             continue
 
         paginates = bool(autoselect.find_next_page(body, url)) if platform == "html" else False
-        if platform == "html" and not (paginates and len(items) >= GOOD_CATALOGUE_AT):
+        # No HTML page is ever accepted on the spot -- every candidate is
+        # weighed and the best wins. Short-circuiting on "this looks like a
+        # catalogue" meant a recorded catalog_path, which is tried early by
+        # design, was taken before the shop's menu had been read: a wrong
+        # path confirmed itself on every re-probe, three times over for
+        # winenot and pangee. A JSON platform still ends the search, because
+        # /products.json either is the catalogue or is not there.
+        if platform == "html":
             # A landing page's "featured wines" strip parses fine and is not
             # the catalogue. Note it and keep looking; fall back to it only
             # if nothing richer turns up.
@@ -481,7 +491,7 @@ def probe_shop(shop, crawler_client):
             saved_as=str(saved.relative_to(OUTPUT_DIR.parent)),
             truncated=False,
             catalog_path=_relative_path(shop, best_html["url"]),
-            thin=True,
+            thin=best_html["count"] < GOOD_CATALOGUE_AT,
         )
         if len(catalogues) > 1:
             # No page held the whole catalogue, so record the ones that each

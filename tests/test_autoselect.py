@@ -598,13 +598,18 @@ def test_shallower_paths_come_first():
 
 
 def test_the_real_vinnouveau_menu_yields_its_categories_first():
-    """Against the page as captured, not a synthetic menu."""
+    """Against the page as captured, not a synthetic menu.
+
+    The parent category comes first because the menu lists it first; the
+    region categories that follow are its children, so recording them too is
+    redundant rather than wrong -- products are deduplicated by URL, and the
+    path count is capped."""
     from pathlib import Path
     html = (Path(__file__).parent.parent / "probe_pages"
             / "capture.index.html").read_text(encoding="utf-8", errors="replace")
     found = autoselect.find_catalogue_links(html, "https://vinnouveau.fr")
-    assert found[:2] == ["https://vinnouveau.fr/12-vins-francais",
-                         "https://vinnouveau.fr/14-vins-etrangers"]
+    assert found[0] == "https://vinnouveau.fr/12-vins-francais"
+    assert not any("/accueil/" in u for u in found), "a bottle is not a catalogue"
 
 
 def test_the_real_pangee_menu_yields_its_wine_categories():

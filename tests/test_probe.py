@@ -3,6 +3,7 @@ from pathlib import Path
 
 import pytest
 
+import autoselect
 import crawler
 import probe
 import scraper
@@ -653,9 +654,26 @@ def test_a_thin_page_is_still_better_than_nothing():
     assert result.get("thin") is True
 
 
-def test_a_clear_catalogue_is_accepted_without_exhausting_the_guesses():
+def test_a_paginating_catalogue_ends_the_search():
     """Politeness costs 3s a request, so a page that is plainly the catalogue
-    ends the search."""
+    -- rich *and* running on to another page -- stops the probe there."""
+    shop = {"name": "big", "platform": "html", "url": "https://big.test",
+            "verified": False}
+    client = MapCrawler({
+        "https://big.test": paginated(60, "/?page=2"),
+        "https://big.test/?page=2": paginated(60, "/?page=3"),
+    })
+
+    result = probe.probe_shop(shop, client)
+
+    assert result["products_parsed"] >= 60
+    assert len(client.asked) <= 5, f"kept guessing after finding a catalogue: {client.asked}"
+
+
+def test_a_single_page_catalogue_costs_the_whole_search():
+    """The deliberate other side of that trade: 60 products on one page with
+    no "next" cannot be told from a large shop window without looking, so the
+    probe looks -- bounded by the candidate list, not unbounded."""
     shop = {"name": "big", "platform": "html", "url": "https://big.test",
             "verified": False}
     client = MapCrawler({"https://big.test": catalogue_page(60)})
@@ -663,4 +681,127 @@ def test_a_clear_catalogue_is_accepted_without_exhausting_the_guesses():
     result = probe.probe_shop(shop, client)
 
     assert result["products_parsed"] == 60
-    assert len(client.asked) <= 4, f"kept guessing after finding a catalogue: {client.asked}"
+    assert len(client.asked) <= probe.MAX_CATALOGUE_GUESSES + autoselect.MAX_CATALOGUE_LINKS + 2
+
+
+# --- a paginating catalogue beats a fuller shop window ------------------------
+#
+# The first menu-following probe chose pangee's /nouveaux-produits (36
+# products on one page) over its catalogue, and winenot's sparkling-wine
+# filter (12) over nine region categories. Page-one product count is a poor
+# proxy for catalogue size: a "new arrivals" strip is one page, a catalogue
+# runs to twenty.
+
+def paginated(count, next_url):
+    cells = "".join(
+        f'<div><a href="/p/x{i}">Ganevat Cuvee {i}</a><span>{40 + i},00 &euro;</span></div>'
+        for i in range(count)
+    )
+    return (f'<html><body><div class="grid">{cells}</div>'
+            f'<a rel="next" href="{next_url}">Suivant</a></body></html>')
+
+
+def test_a_page_that_paginates_wins_over_a_bigger_one_that_does_not():
+    shop = {"name": "pangee", "platform": "html", "url": "https://pangee.test",
+            "verified": False}
+    client = MapCrawler({
+        "https://pangee.test": (
+            '<html><body><nav>'
+            '<a href="/nouveaux-produits">Nouveaux produits</a>'
+            '<a href="/25-vins">Tous les vins</a>'
+            '</nav></body></html>'),
+        # More products on page one, but that is all there is.
+        "https://pangee.test/nouveaux-produits": catalogue_page(36),
+        # Fewer on page one, but it runs on.
+        "https://pangee.test/25-vins": paginated(20, "/25-vins?page=2"),
+        "https://pangee.test/25-vins?page=2": paginated(20, "/25-vins?page=3"),
+    })
+
+    result = probe.probe_shop(shop, client)
+
+    assert result["catalog_path"] == "25-vins", (
+        f"chose {result['catalog_path']} with {result['products_parsed']} products")
+
+
+def test_a_winner_outside_the_base_path_is_still_recorded():
+    """pangee's base URL is https://la-pangee.com/fr, and the page that won
+    was /nouveaux-produits -- not under it. The recorded path came back None,
+    so the config kept pointing at the landing page while the fixture showed
+    the richer one: a shop whose fixture no longer describes what the run
+    fetches."""
+    shop = {"name": "pangee", "platform": "html",
+            "url": "https://pangee.test/fr", "verified": False}
+    client = MapCrawler({
+        "https://pangee.test/fr": (
+            '<html><body><nav><a href="/vins-tous">Tous les vins</a>'
+            '</nav></body></html>'),
+        "https://pangee.test/vins-tous": catalogue_page(40),
+    })
+
+    result = probe.probe_shop(shop, client)
+
+    assert result["products_parsed"] == 40
+    assert result["catalog_path"], "the winning page was not recorded at all"
+    assert "vins-tous" in result["catalog_path"]
+
+
+# --- a catalogue split across regions -----------------------------------------
+#
+# winenot.fr's menu (tests/fixtures/winenot.html, as captured) offers
+# /12-alsace, /14-beaujolais, /16-bourgogne, /17-champagne, /19-jura,
+# /20-languedoc, /21-loire, /23-rhone, /26-sud-ouest -- and no "all wines"
+# page. Recording one of them reads one region; recording the sparkling-wine
+# filter, which is what happened, reads neither.
+
+def test_region_categories_are_recognised_as_catalogues():
+    html = """<html><body>
+      <a href="/12-alsace">Alsace</a>
+      <a href="/19-jura">Jura</a>
+      <a href="/21-loire">Loire</a>
+      <a href="/mon-compte">Mon compte</a>
+    </body></html>"""
+    found = autoselect.find_catalogue_links(html, "https://winenot.test/")
+    for region in ("12-alsace", "19-jura", "21-loire"):
+        assert f"https://winenot.test/{region}" in found, region
+    assert not any("compte" in u for u in found)
+
+
+def test_several_categories_are_recorded_when_no_page_holds_them_all():
+    shop = {"name": "winenot", "platform": "html", "url": "https://winenot.test",
+            "verified": False}
+    client = MapCrawler({
+        "https://winenot.test": (
+            '<html><body><nav>'
+            '<a href="/19-jura">Jura</a><a href="/21-loire">Loire</a>'
+            '<a href="/s/3/vin-effervescent">Vin effervescent</a>'
+            '</nav></body></html>'),
+        "https://winenot.test/19-jura": paginated(20, "/19-jura?page=2"),
+        "https://winenot.test/19-jura?page=2": paginated(20, "/19-jura?page=3"),
+        "https://winenot.test/21-loire": paginated(18, "/21-loire?page=2"),
+        "https://winenot.test/21-loire?page=2": paginated(18, "/21-loire?page=3"),
+        "https://winenot.test/s/3/vin-effervescent": catalogue_page(12),
+    })
+
+    result = probe.probe_shop(shop, client)
+
+    assert result["status"] == "ok"
+    paths = result.get("catalog_paths") or []
+    assert "19-jura" in paths and "21-loire" in paths, paths
+    assert not any("effervescent" in p for p in paths), \
+        "a single-page filter was recorded as a catalogue"
+
+
+def test_one_rich_catalogue_records_no_list():
+    """A shop with a real "all wines" page needs one path, not a list."""
+    shop = {"name": "one", "platform": "html", "url": "https://one.test",
+            "verified": False}
+    client = MapCrawler({
+        "https://one.test": '<html><body><a href="/vins">Tous les vins</a></body></html>',
+        "https://one.test/vins": paginated(40, "/vins?page=2"),
+        "https://one.test/vins?page=2": paginated(40, "/vins?page=3"),
+    })
+
+    result = probe.probe_shop(shop, client)
+
+    assert result["catalog_path"] == "vins"
+    assert not result.get("catalog_paths")

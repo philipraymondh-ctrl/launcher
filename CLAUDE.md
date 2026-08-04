@@ -45,7 +45,15 @@ concern, wired together by `scraper.py`:
    `find_next_page` (`rel="next"`, then "next"/"suivant" links). Returns
    `[]` rather than guessing when a page has no repeated priced structure.
    An optional `catalog_path` on a SHOPS entry points at the catalogue when
-   the landing page isn't it.
+   the landing page isn't it, and `catalog_paths` (a list) exists because
+   winenot.fr and vinnouveau.fr keep their wines under region categories
+   (`/12-alsace`, `/19-jura`, `/21-loire`) with no "all wines" page at all --
+   one path there reads one region, which is how winenot came to be
+   configured to read its sparkling-wine filter and nothing else. Every entry
+   is walked, products are deduplicated by URL across them, and
+   `MAX_PAGES_PER_SHOP` bounds the shop rather than each category.
+   `find_catalogue_links` derives all of this from the shop's own navigation,
+   because no list of guessed paths knows what a shop calls its catalogue.
 4. **`market.py`** — where reference prices come from. One typed number
    per producer cannot describe a producer selling a negoce cuvee at EUR 30
    and a domaine vin jaune at EUR 250, and the typing grows with producers
@@ -214,6 +222,14 @@ HTTP header or printed.
   when `verified: true`; an unverified one ranks below observed data on
   purpose, because a guessed number produces a confident wrong verdict
   where no number produces an honest `NOREF`.
+- The probe picks the catalogue by evidence, not by being first. A page is
+  taken as the catalogue only when it is rich *and* paginates
+  (`GOOD_CATALOGUE_AT`, plus a "next" link); otherwise every candidate is
+  tried and the best `(paginates, count)` wins. Product count alone chose
+  pangee's "new arrivals" strip over its catalogue and winenot's
+  sparkling-wine filter over nine region categories -- a strip is one page, a
+  catalogue runs to twenty. When several categories each hold part of the
+  catalogue and none holds all of it, they are recorded as `catalog_paths`.
 - A new HTML shop does not get hand-written selectors by default. Let
   `autoselect` try first; only write per-shop selectors when the probe
   shows it genuinely cannot read that page. Selectors are a maintenance

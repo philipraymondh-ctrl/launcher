@@ -303,6 +303,13 @@ CATALOGUE_WORDS = (
     "cave", "caves", "catalogue", "catalog", "produits", "products",
     "collection", "collections", "selection", "assortiment", "winkel",
     "promos", "promotions", "nos-vins", "les-vins",
+    # French wine regions. winenot.fr and vinnouveau.fr split their
+    # catalogues across these with no "all wines" page, so without them the
+    # menu offers no catalogue at all -- and the probe settles for whatever
+    # filter page happens to parse.
+    "alsace", "beaujolais", "bordeaux", "bourgogne", "bugey", "champagne",
+    "corse", "jura", "languedoc", "loire", "provence", "rhone", "roussillon",
+    "savoie", "sud-ouest", "auvergne", "gascogne", "cotes", "vallee",
 )
 # Pages that are never a catalogue however they are worded. A cart link is
 # the reason "0,00 EUR" once reached a digest as a permanent DEAL.

@@ -210,10 +210,18 @@ SHOPS = [
         "verified": True,
     },
     {
+        # Its region categories (/12-alsace, /19-jura, ...) carry no products:
+        # 456KB of HTML with 21 prices and five product links, so the grid is
+        # rendered client-side. The routes that do parse are its colour and
+        # type filters, and six of them cover the catalogue. Probe run
+        # 30946131912 established that -- see probe_pages/capture.winenot-fr.*.
         "name": "winenot",
         "platform": "html",
         "url": "https://winenot.fr",
-        "catalog_path": "s/3/vin-effervescent",
+        "catalog_paths": [
+            "s/2/rouge", "s/1/blanc", "s/5/rose",
+            "s/3/vin-effervescent", "s/4/vin-moelleux", "s/34/vin-mute",
+        ],
         "item_selector": "div.product",
         "title_selector": "h2.product-title",
         "price_selector": "span.price",

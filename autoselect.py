@@ -386,7 +386,21 @@ def find_catalogue_links(html, base_url, exclude=()):
     # Stable: document order breaks ties, so a shop's own menu ordering still
     # decides between two equally promising categories.
     found.sort(key=rank)
-    return found[:MAX_CATALOGUE_LINKS]
+
+    # Sample both kinds. winenot.fr lists 17 numbered categories whose pages
+    # carry no products at all, and the routes that do parse are its filters
+    # -- one of which is every colour and type at once. Ranked behind the
+    # categories and cut by the cap, they were never tried, so the cap turned
+    # a preference into an exclusion.
+    preferred = [u for u in found if not any(m in urlparse(u).path
+                                             for m in SECOND_CHOICE)]
+    fallback = [u for u in found if u not in preferred]
+    half = MAX_CATALOGUE_LINKS // 2
+    picked = preferred[:max(half, MAX_CATALOGUE_LINKS - len(fallback))]
+    picked += fallback[:MAX_CATALOGUE_LINKS - len(picked)]
+    # A shop with only one kind still fills the list.
+    picked += [u for u in found if u not in picked][:MAX_CATALOGUE_LINKS - len(picked)]
+    return picked[:MAX_CATALOGUE_LINKS]
 
 
 def find_next_page(html, current_url):

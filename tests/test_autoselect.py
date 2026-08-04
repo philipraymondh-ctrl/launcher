@@ -648,7 +648,7 @@ def test_the_real_winenot_menu_reaches_its_regions():
             / "winenot.html").read_text(encoding="utf-8", errors="replace")
     found = autoselect.find_catalogue_links(html, "https://winenot.fr")
     regions = [u for u in found if any(
-        r in u for r in ("alsace", "jura", "loire", "bourgogne", "champagne"))]
+        r in u for r in ("alsace", "languedoc", "loire", "bordeaux", "beaujolais"))]
     assert len(regions) >= 4, f"regions missing from {found}"
     assert found[0].split("/")[-1][0].isdigit(), f"a promo page came first: {found}"
 
@@ -663,3 +663,51 @@ def test_the_real_pangee_menu_prefers_its_wine_category():
     # numbered categories -- far enough down that it does not make the cut.
     promo = "https://la-pangee.com/nouveaux-produits"
     assert promo not in found or found.index(promo) > 0
+
+
+# --- sample both kinds of candidate -------------------------------------------
+#
+# winenot.fr's region categories parse to zero products -- its 456KB pages
+# carry 21 prices and five product links, so the grid is not in the HTML. The
+# pages that *do* parse are its filter routes, and one of them,
+# /s/35/blanc-rouge-rose-vin-effervescent-vin-moelleux-vin-mute, is every
+# colour and type at once: the whole catalogue on one paginated route. With 17
+# numbered categories ranked ahead of it and a cap of ten, it was never tried.
+
+def test_both_categories_and_filters_are_sampled():
+    """Ranking says which kind is more promising; the cap must not make that
+    ranking an exclusion."""
+    from pathlib import Path
+    html = (Path(__file__).parent.parent / "probe_pages"
+            / "capture.winenot-fr.index.html").read_text(encoding="utf-8",
+                                                         errors="replace")
+    found = autoselect.find_catalogue_links(html, "https://winenot.fr")
+
+    numbered = [u for u in found if autoselect.NUMBERED_CATEGORY.search(u)]
+    filters = [u for u in found if "/s/" in u]
+    assert numbered, "the shop's categories were dropped"
+    assert filters, "the only pages that parse on this shop were never offered"
+    assert len(found) <= autoselect.MAX_CATALOGUE_LINKS
+    # Preference is preserved: a category still comes before a filter.
+    assert found.index(numbered[0]) < found.index(filters[0])
+
+
+def test_filter_routes_are_reached_even_behind_seventeen_categories():
+    """Not a promise about *which* filter -- winenot lists 28 of them and the
+    cap is ten. Which is why winenot carries explicit catalog_paths: the probe
+    proved its categories hold no products, and a generic sampler cannot be
+    expected to guess that /s/35/blanc-rouge-rose-... is everything at once."""
+    from pathlib import Path
+    html = (Path(__file__).parent.parent / "probe_pages"
+            / "capture.winenot-fr.index.html").read_text(encoding="utf-8",
+                                                         errors="replace")
+    found = autoselect.find_catalogue_links(html, "https://winenot.fr")
+    assert sum(1 for u in found if "/s/" in u) >= 2
+
+
+def test_one_kind_of_candidate_still_fills_the_list():
+    """A shop with only categories should still get ten of them, not five."""
+    many = "".join(f'<a href="/{i}-jura">Jura {i}</a>' for i in range(20))
+    found = autoselect.find_catalogue_links(
+        f"<html><body>{many}</body></html>", "https://shop.test/")
+    assert len(found) == autoselect.MAX_CATALOGUE_LINKS

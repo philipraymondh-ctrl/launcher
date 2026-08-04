@@ -210,9 +210,18 @@ SHOPS = [
         "verified": True,
     },
     {
+        # Its region categories (/12-alsace, /19-jura, ...) carry no products:
+        # 456KB of HTML with 21 prices and five product links, so the grid is
+        # rendered client-side. The routes that do parse are its colour and
+        # type filters, and six of them cover the catalogue. Probe run
+        # 30946131912 established that -- see probe_pages/capture.winenot-fr.*.
         "name": "winenot",
         "platform": "html",
         "url": "https://winenot.fr",
+        "catalog_paths": [
+            "s/2/rouge", "s/1/blanc", "s/5/rose",
+            "s/3/vin-effervescent", "s/4/vin-moelleux", "s/34/vin-mute",
+        ],
         "item_selector": "div.product",
         "title_selector": "h2.product-title",
         "price_selector": "span.price",
@@ -232,6 +241,7 @@ SHOPS = [
         "name": "vinnouveau",
         "platform": "html",
         "url": "https://vinnouveau.fr",
+        "catalog_path": "12-vins-francais",
         "item_selector": "div.product",
         "title_selector": "h2.product-title",
         "price_selector": "span.price",
@@ -397,6 +407,7 @@ SHOPS = [
         "name": "pangee",
         "platform": "html",
         "url": "https://la-pangee.com/fr",
+        "catalog_path": "https://la-pangee.com/nouveaux-produits",
         "item_selector": "div.product",
         "title_selector": "h2.product-title",
         "price_selector": "span.price",
@@ -797,21 +808,35 @@ def _fetch_via_producer_index(shop, index_html, index_url, crawler_client):
     return items
 
 
-def fetch_html(shop, crawler_client):
-    """Walk an HTML catalogue, following its own "next page" link.
+def catalogue_starts(shop):
+    """Where to begin reading this shop's catalogue.
 
-    A shop may list nothing on its landing page, so `catalog_path` points
-    at the catalogue when the two differ (leszinzinsduvin serves its wines
-    from /vins.php).
+    `catalog_paths` (a list) exists because winenot.fr and vinnouveau.fr keep
+    their wines under region categories -- /12-alsace, /19-jura, /21-loire --
+    with no "all wines" page, so one path can only ever read one region. That
+    is how winenot came to be configured to read its sparkling-wine filter
+    and nothing else. Each entry may be a path or an absolute URL; urljoin
+    passes an absolute URL through untouched.
     """
-    start = urljoin(shop["url"] + "/", shop["catalog_path"]) if shop.get("catalog_path") else shop["url"]
+    base = shop["url"].rstrip("/") + "/"
+    paths = shop.get("catalog_paths") or (
+        [shop["catalog_path"]] if shop.get("catalog_path") else [])
+    if not paths:
+        return [shop["url"]]
+    return [urljoin(base, p) for p in paths]
 
-    # Product URLs and page URLs are different namespaces -- checking a
-    # "next page" link against the product set would never match, and a
-    # self-referential pager would walk until the budget ran out.
-    items, seen_urls, visited, page_url, how = [], set(), {start}, start, None
-    first_html, first_url, truncated = "", start, False
-    for page in range(1, MAX_PAGES_PER_SHOP + 1):
+
+def _walk_pages(shop, crawler_client, start, pages_left, seen_urls):
+    """Follow one catalogue's own "next page" links.
+
+    Returns (pages fetched, truncated, items, first page's html). `seen_urls`
+    is shared across catalogues so a bottle listed in two categories is read
+    once.
+    """
+    items, visited, page_url, how = [], {start}, start, None
+    first_html, truncated, fetched = "", False, 0
+
+    for page in range(1, pages_left + 1):
         try:
             resp = crawler_client.get(page_url)
         except crawler.BudgetExceeded:
@@ -819,14 +844,15 @@ def fetch_html(shop, crawler_client):
                   f"catalogue TRUNCATED, later pages not checked")
             truncated = True
             break
+        fetched += 1
         resp.raise_for_status()
         if not resp.text.strip():
-            if page == 1:
+            if page == 1 and start == shop["url"]:
                 raise EmptyResponseError(shop["name"])
             break
 
         if page == 1:
-            first_html, first_url = resp.text, page_url
+            first_html = resp.text
         page_items, how = _parse_html_page(shop, resp.text, page_url)
         fresh = [i for i in page_items if i["url"] not in seen_urls]
         if not fresh:
@@ -843,6 +869,39 @@ def fetch_html(shop, crawler_client):
         print(f"[{shop['name']}] hit MAX_PAGES_PER_SHOP ({MAX_PAGES_PER_SHOP}); "
               f"catalogue may be TRUNCATED")
         truncated = True
+
+    return fetched, truncated, items, first_html, how
+
+
+def fetch_html(shop, crawler_client):
+    """Walk an HTML catalogue -- or several, when a shop splits its wines
+    across region categories -- following each one's "next page" link.
+
+    A shop may list nothing on its landing page, so `catalog_path` /
+    `catalog_paths` point at the catalogue when the two differ
+    (leszinzinsduvin serves its wines from /vins.php).
+    """
+    starts = catalogue_starts(shop)
+    items, seen_urls, how = [], set(), None
+    first_html, first_url, truncated = "", starts[0], False
+    # One page budget for the shop, not one per category: nine paginating
+    # regions must not cost nine times the requests.
+    pages_left = MAX_PAGES_PER_SHOP
+
+    for start in starts:
+        if pages_left <= 0:
+            truncated = True
+            print(f"[{shop['name']}] page budget spent before reaching {start}; "
+                  f"catalogue TRUNCATED")
+            break
+        fetched, page_truncated, page_items, page_html, page_how = _walk_pages(
+            shop, crawler_client, start, pages_left, seen_urls)
+        pages_left -= fetched
+        truncated = truncated or page_truncated
+        items.extend(page_items)
+        how = how or page_how
+        if page_html and not first_html:
+            first_html, first_url = page_html, start
 
     if not items and first_html:
         items = _fetch_via_producer_index(shop, first_html, first_url, crawler_client)

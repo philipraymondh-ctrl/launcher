@@ -573,3 +573,83 @@ def test_the_cart_widget_that_caused_this_is_not_a_product():
         html, "https://x.test/", scraper.PRICE_PATTERN, scraper.parse_price)]
     assert not any("commande" in u for u in urls)
     assert len(urls) == 3
+
+
+# --- a catalogue split across categories --------------------------------------
+#
+# winenot.fr and vinnouveau.fr are PrestaShops whose wines live under region
+# categories -- /12-alsace, /19-jura, /21-loire -- with no "all wines" page.
+# One catalog_path can only ever read one region, which is how winenot ended
+# up configured to read its sparkling-wine filter and nothing else.
+
+def region_page(region, count, next_url=None):
+    cells = "".join(
+        f'<div><a href="/{region}/{i}-wine.html">Ganevat {region} {i}</a>'
+        f'<span>{30 + i},00 &euro;</span></div>'
+        for i in range(count)
+    )
+    nxt = f'<a rel="next" href="{next_url}">Suivant</a>' if next_url else ""
+    return f'<html><body><div class="grid">{cells}</div>{nxt}</body></html>'
+
+
+def test_every_configured_catalogue_path_is_walked():
+    from canned_shop import FakeCrawler
+
+    shop = {"name": "winenot", "platform": "html", "url": "https://winenot.test",
+            "catalog_paths": ["19-jura", "21-loire"],
+            "item_selector": "div.product", "title_selector": "h2.product-title",
+            "price_selector": "span.price", "verified": True}
+    client = FakeCrawler({
+        "https://winenot.test/19-jura": region_page("jura", 4),
+        "https://winenot.test/21-loire": region_page("loire", 3),
+    })
+
+    items = scraper.fetch_html(shop, client)
+
+    urls = [i["url"] for i in items]
+    assert len(items) == 7, f"read {len(items)}: {urls}"
+    assert any("jura" in u for u in urls) and any("loire" in u for u in urls)
+
+
+def test_the_same_bottle_in_two_categories_is_read_once():
+    from canned_shop import FakeCrawler
+
+    shop = {"name": "s", "platform": "html", "url": "https://s.test",
+            "catalog_paths": ["a", "b"], "item_selector": "div.product",
+            "title_selector": "h2.product-title", "price_selector": "span.price",
+            "verified": True}
+    both = region_page("shared", 3)
+    client = FakeCrawler({"https://s.test/a": both, "https://s.test/b": both})
+
+    assert len(scraper.fetch_html(shop, client)) == 3
+
+
+def test_a_single_catalog_path_still_works():
+    from canned_shop import FakeCrawler
+
+    shop = {"name": "s", "platform": "html", "url": "https://s.test",
+            "catalog_path": "vins", "item_selector": "div.product",
+            "title_selector": "h2.product-title", "price_selector": "span.price",
+            "verified": True}
+    client = FakeCrawler({"https://s.test/vins": region_page("vins", 5)})
+    assert len(scraper.fetch_html(shop, client)) == 5
+
+
+def test_the_page_budget_is_shared_across_categories(monkeypatch):
+    """MAX_PAGES_PER_SHOP bounds the shop, not each category, or a shop with
+    nine paginating regions costs nine times the budget."""
+    from canned_shop import FakeCrawler
+
+    monkeypatch.setattr(scraper, "MAX_PAGES_PER_SHOP", 3)
+    shop = {"name": "s", "platform": "html", "url": "https://s.test",
+            "catalog_paths": ["a", "b", "c", "d"], "item_selector": "div.product",
+            "title_selector": "h2.product-title", "price_selector": "span.price",
+            "verified": True}
+    # Four products each: autoselect needs a repeated structure (MIN_BLOCKS)
+    # before it will call a page a listing at all.
+    pages = {f"https://s.test/{p}": region_page(p, 4) for p in "abcd"}
+    client = FakeCrawler(pages)
+
+    scraper.fetch_html(shop, client)
+
+    assert client.request_count <= 3

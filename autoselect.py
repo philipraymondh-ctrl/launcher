@@ -296,6 +296,113 @@ def is_out_of_stock(text, normalize_fn=None):
 NEXT_WORDS = {"next", "suivant", "suivante", "volgende", "weiter", "›", "»", "→", ">"}
 
 
+# Words a shop uses for the page that lists its wines, in the four languages
+# these shops actually use. Matched against a link's text and its href.
+CATALOGUE_WORDS = (
+    "vins", "vin", "wines", "wine", "wijnen", "weine", "boutique", "shop",
+    "cave", "caves", "catalogue", "catalog", "produits", "products",
+    "collection", "collections", "selection", "assortiment", "winkel",
+    "promos", "promotions", "nos-vins", "les-vins",
+    # French wine regions. winenot.fr and vinnouveau.fr split their
+    # catalogues across these with no "all wines" page, so without them the
+    # menu offers no catalogue at all -- and the probe settles for whatever
+    # filter page happens to parse.
+    "alsace", "beaujolais", "bordeaux", "bourgogne", "bugey", "champagne",
+    "corse", "jura", "languedoc", "loire", "provence", "rhone", "roussillon",
+    "savoie", "sud-ouest", "auvergne", "gascogne", "cotes", "vallee",
+)
+# Pages that are never a catalogue however they are worded. A cart link is
+# the reason "0,00 EUR" once reached a digest as a permanent DEAL.
+NOT_CATALOGUE_WORDS = (
+    "panier", "cart", "winkelwagen", "compte", "account", "login", "connexion",
+    "blog", "actualite", "actualites", "news", "journal", "contact", "cgv",
+    "mentions", "legal", "livraison", "shipping", "faq", "about", "apropos",
+    "a-propos", "newsletter", "checkout", "commande", "wishlist", "search",
+    "recherche", "gift", "cadeau",
+)
+MAX_CATALOGUE_LINKS = 10
+# French shops number their categories -- /12-alsace, /19-jura, /25-vins --
+# which is the strongest available signal that a link is a category rather
+# than a promo strip or a filter.
+NUMBERED_CATEGORY = re.compile(r"/\d+-[a-z]")
+# Real pages, but slices of the catalogue rather than the catalogue: a "new
+# arrivals" strip, a promo list, a CMS page, a colour/type filter. Ranked
+# last, never excluded -- for a shop with nothing better they are what there
+# is.
+SECOND_CHOICE = ("nouveaux-produits", "nouveautes", "promotions", "promos",
+                 "/content/", "/s/")
+
+
+def find_catalogue_links(html, base_url, exclude=()):
+    """Candidate catalogue URLs taken from the page's own navigation.
+
+    A fixed list of guessed paths cannot know that a shop calls its
+    catalogue `/la-cave` or `/notre-selection`, but the shop's own menu says
+    so in its links. Same-host only, cart/account/blog/legal pages excluded,
+    Anything already read as a product on this page is excluded, and
+    shallower paths come first: a category lives near the root
+    (`/12-vins-francais`) while a bottle lives under one
+    (`/accueil/4437-zulu-vin-de-france-rouge-magnum.html`), and both contain
+    "vin". At 3s a request the bottles would crowd out the categories.
+    """
+    soup = BeautifulSoup(html, "html.parser")
+    base_host = urlparse(base_url).netloc
+    landing = {base_url.rstrip("/"), base_url.rstrip("/") + "/"}
+
+    excluded = {u.rstrip("/") for u in exclude}
+    found = []
+    for anchor in soup.find_all("a", href=True):
+        url = urljoin(base_url, anchor["href"])
+        parsed = urlparse(url)
+        if parsed.netloc != base_host or parsed.scheme not in ("http", "https"):
+            continue
+        if url in landing or url.rstrip("/") in landing:
+            continue
+        haystack = _strip_accents(f"{anchor.get_text(' ', strip=True)} {parsed.path}")
+        haystack = re.sub(r"[^a-z0-9]+", " ", haystack)
+        words = set(haystack.split())
+        if words & set(NOT_CATALOGUE_WORDS):
+            continue
+        if not words & set(CATALOGUE_WORDS):
+            continue
+        if url.rstrip("/") in excluded:
+            continue
+        if url not in found:
+            found.append(url)
+
+    def rank(url):
+        path = urlparse(url).path
+        return (
+            # A slice of the catalogue is a last resort, not a first guess.
+            any(marker in path for marker in SECOND_CHOICE),
+            # A numbered category is the catalogue as the shop files it.
+            not NUMBERED_CATEGORY.search(path),
+            # A bottle's own page sits under a category; a category sits at
+            # the root.
+            len([p for p in path.strip("/").split("/") if p]),
+            path.endswith(".html"),
+        )
+
+    # Stable: document order breaks ties, so a shop's own menu ordering still
+    # decides between two equally promising categories.
+    found.sort(key=rank)
+
+    # Sample both kinds. winenot.fr lists 17 numbered categories whose pages
+    # carry no products at all, and the routes that do parse are its filters
+    # -- one of which is every colour and type at once. Ranked behind the
+    # categories and cut by the cap, they were never tried, so the cap turned
+    # a preference into an exclusion.
+    preferred = [u for u in found if not any(m in urlparse(u).path
+                                             for m in SECOND_CHOICE)]
+    fallback = [u for u in found if u not in preferred]
+    half = MAX_CATALOGUE_LINKS // 2
+    picked = preferred[:max(half, MAX_CATALOGUE_LINKS - len(fallback))]
+    picked += fallback[:MAX_CATALOGUE_LINKS - len(picked)]
+    # A shop with only one kind still fills the list.
+    picked += [u for u in found if u not in picked][:MAX_CATALOGUE_LINKS - len(picked)]
+    return picked[:MAX_CATALOGUE_LINKS]
+
+
 def find_next_page(html, current_url):
     """The next catalogue page, or None.
 

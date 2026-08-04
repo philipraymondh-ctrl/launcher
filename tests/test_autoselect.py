@@ -488,3 +488,226 @@ def test_a_card_with_only_an_image_and_a_price_still_gets_a_name():
 def test_a_real_title_is_never_replaced_by_the_slug():
     items = find(WOOCOMMERCE)
     assert items[0]["title"] == "Poulprix 2024 Ganevat"
+
+
+# --- finding the catalogue from the shop's own menu ---------------------------
+#
+# Four HTML shops sat verified but nearly empty: winenot 3 products,
+# vinnouveau 8, pangee 12, against catalogues that are obviously larger. Two
+# causes, both here. The probe guessed catalogue paths from a fixed list, which
+# cannot know that a shop calls its catalogue /la-cave or /notre-selection --
+# but the shop's own navigation says so. And it accepted the first page that
+# parsed at all, so a "featured wines" strip on the landing page won.
+
+NAV = """
+<html><body>
+  <nav>
+    <a href="/">Accueil</a>
+    <a href="/la-cave">La cave</a>
+    <a href="/nos-vins?page=1">Nos vins</a>
+    <a href="/panier">Mon panier</a>
+    <a href="/mon-compte">Mon compte</a>
+    <a href="/blog/2024/vendanges">Le blog</a>
+    <a href="/contact">Contact</a>
+    <a href="/cgv">CGV</a>
+    <a href="https://instagram.com/shop">Instagram</a>
+  </nav>
+</body></html>
+"""
+
+
+def test_catalogue_links_come_from_the_menu():
+    found = autoselect.find_catalogue_links(NAV, "https://shop.test/")
+    assert "https://shop.test/la-cave" in found
+    assert "https://shop.test/nos-vins?page=1" in found
+
+
+def test_the_cart_and_the_blog_are_not_catalogues():
+    found = autoselect.find_catalogue_links(NAV, "https://shop.test/")
+    for path in ("/panier", "/mon-compte", "/blog", "/contact", "/cgv"):
+        assert not any(path in url for url in found), path
+
+
+def test_another_domain_is_never_followed():
+    found = autoselect.find_catalogue_links(NAV, "https://shop.test/")
+    assert not any("instagram" in url for url in found)
+
+
+def test_the_landing_page_itself_is_not_offered_again():
+    found = autoselect.find_catalogue_links(NAV, "https://shop.test/")
+    assert "https://shop.test/" not in found
+    assert "https://shop.test" not in found
+
+
+def test_catalogue_links_are_capped_and_deduped():
+    many = "".join(
+        f'<a href="/vins-{i}">Nos vins {i}</a>' for i in range(40)
+    ) + '<a href="/vins-1">Nos vins 1 again</a>'
+    found = autoselect.find_catalogue_links(f"<html><body>{many}</body></html>",
+                                            "https://shop.test/")
+    assert len(found) == len(set(found))
+    assert len(found) <= autoselect.MAX_CATALOGUE_LINKS
+
+
+def test_dutch_and_english_menus_count_too():
+    html = """<html><body>
+      <a href="/wijnen">Alle wijnen</a>
+      <a href="/collections/all">Shop all wines</a>
+      <a href="/winkelwagen">Winkelwagen</a>
+    </body></html>"""
+    found = autoselect.find_catalogue_links(html, "https://shop.test/")
+    assert "https://shop.test/wijnen" in found
+    assert "https://shop.test/collections/all" in found
+    assert not any("winkelwagen" in u for u in found)
+
+
+# --- a product page is not a catalogue ----------------------------------------
+#
+# vinnouveau's real landing page (probe_pages/capture.index.html) offers
+# /12-vins-francais -- its top category -- alongside
+# /accueil/4437-zulu-vin-de-france-rouge-l-estanyol-2014-magnum.html, a single
+# bottle. Both contain "vin", and at 3s a request the bottles crowd out the
+# categories.
+
+PRODUCTS_AND_CATEGORIES = """
+<html><body>
+  <a href="/accueil/4437-zulu-vin-de-france-rouge-magnum.html">Zulu Vin de France</a>
+  <a href="/12-vins-francais">Vins Français</a>
+  <a href="/sud-ouest-rouge/5507-simon-busser-vin-de-france.html">Simon Busser</a>
+  <a href="/18-jura">Jura</a>
+</body></html>
+"""
+
+
+def test_a_page_already_read_as_a_product_is_not_a_catalogue_candidate():
+    parsed = ["https://shop.test/accueil/4437-zulu-vin-de-france-rouge-magnum.html"]
+    found = autoselect.find_catalogue_links(
+        PRODUCTS_AND_CATEGORIES, "https://shop.test/", exclude=parsed)
+    assert parsed[0] not in found
+
+
+def test_shallower_paths_come_first():
+    """A category lives near the root; a bottle lives under one. (A region
+    name like /18-jura is not catalogue vocabulary and is not offered at all
+    -- the parent category is what a scraper wants anyway.)"""
+    found = autoselect.find_catalogue_links(
+        PRODUCTS_AND_CATEGORIES, "https://shop.test/")
+    assert found[0] == "https://shop.test/12-vins-francais"
+    deep = "https://shop.test/sud-ouest-rouge/5507-simon-busser-vin-de-france.html"
+    assert found.index(deep) > 0
+
+
+def test_the_real_vinnouveau_menu_yields_its_categories_first():
+    """Against the page as captured, not a synthetic menu.
+
+    The parent category comes first because the menu lists it first; the
+    region categories that follow are its children, so recording them too is
+    redundant rather than wrong -- products are deduplicated by URL, and the
+    path count is capped."""
+    from pathlib import Path
+    html = (Path(__file__).parent.parent / "probe_pages"
+            / "capture.index.html").read_text(encoding="utf-8", errors="replace")
+    found = autoselect.find_catalogue_links(html, "https://vinnouveau.fr")
+    assert found[0] == "https://vinnouveau.fr/12-vins-francais"
+    assert not any("/accueil/" in u for u in found), "a bottle is not a catalogue"
+
+
+def test_the_real_pangee_menu_yields_its_wine_categories():
+    from pathlib import Path
+    html = (Path(__file__).parent.parent / "probe_pages"
+            / "capture.fr.html").read_text(encoding="utf-8", errors="replace")
+    found = autoselect.find_catalogue_links(html, "https://la-pangee.com/fr")
+    assert "https://la-pangee.com/fr/25-vins" in found
+
+
+# --- ranking: a category beats a filter, a filter beats a promo ----------------
+#
+# Two probes in a row recorded winenot's s/3/vin-effervescent (sparkling only)
+# and pangee's /nouveaux-produits (new arrivals). Both shops' menus offer the
+# real thing -- /19-jura and friends, /fr/25-vins -- but they appear later in
+# the document than the promos and filters, so a cap of six cut them off.
+# French shops number their categories: /12-alsace, /25-vins, /19-jura.
+
+def test_a_numbered_category_outranks_a_promo_page():
+    html = """<html><body>
+      <a href="/nouveaux-produits">Nouveaux produits</a>
+      <a href="/promotions">Promotions</a>
+      <a href="/content/9-nos-caves">Nos caves</a>
+      <a href="/s/3/vin-effervescent">Vin effervescent</a>
+      <a href="/25-vins">Tous les vins</a>
+    </body></html>"""
+    found = autoselect.find_catalogue_links(html, "https://shop.test/")
+    assert found[0] == "https://shop.test/25-vins", found
+
+
+def test_the_real_winenot_menu_reaches_its_regions():
+    """The page as captured lists nine region categories after four promo and
+    filter links."""
+    from pathlib import Path
+    html = (Path(__file__).parent.parent / "tests" / "fixtures"
+            / "winenot.html").read_text(encoding="utf-8", errors="replace")
+    found = autoselect.find_catalogue_links(html, "https://winenot.fr")
+    regions = [u for u in found if any(
+        r in u for r in ("alsace", "languedoc", "loire", "bordeaux", "beaujolais"))]
+    assert len(regions) >= 4, f"regions missing from {found}"
+    assert found[0].split("/")[-1][0].isdigit(), f"a promo page came first: {found}"
+
+
+def test_the_real_pangee_menu_prefers_its_wine_category():
+    from pathlib import Path
+    html = (Path(__file__).parent.parent / "probe_pages"
+            / "capture.fr.html").read_text(encoding="utf-8", errors="replace")
+    found = autoselect.find_catalogue_links(html, "https://la-pangee.com/fr")
+    assert found[0] == "https://la-pangee.com/fr/25-vins", found
+    # The new-arrivals page it kept choosing is now outranked by the shop's
+    # numbered categories -- far enough down that it does not make the cut.
+    promo = "https://la-pangee.com/nouveaux-produits"
+    assert promo not in found or found.index(promo) > 0
+
+
+# --- sample both kinds of candidate -------------------------------------------
+#
+# winenot.fr's region categories parse to zero products -- its 456KB pages
+# carry 21 prices and five product links, so the grid is not in the HTML. The
+# pages that *do* parse are its filter routes, and one of them,
+# /s/35/blanc-rouge-rose-vin-effervescent-vin-moelleux-vin-mute, is every
+# colour and type at once: the whole catalogue on one paginated route. With 17
+# numbered categories ranked ahead of it and a cap of ten, it was never tried.
+
+def test_both_categories_and_filters_are_sampled():
+    """Ranking says which kind is more promising; the cap must not make that
+    ranking an exclusion."""
+    from pathlib import Path
+    html = (Path(__file__).parent.parent / "probe_pages"
+            / "capture.winenot-fr.index.html").read_text(encoding="utf-8",
+                                                         errors="replace")
+    found = autoselect.find_catalogue_links(html, "https://winenot.fr")
+
+    numbered = [u for u in found if autoselect.NUMBERED_CATEGORY.search(u)]
+    filters = [u for u in found if "/s/" in u]
+    assert numbered, "the shop's categories were dropped"
+    assert filters, "the only pages that parse on this shop were never offered"
+    assert len(found) <= autoselect.MAX_CATALOGUE_LINKS
+    # Preference is preserved: a category still comes before a filter.
+    assert found.index(numbered[0]) < found.index(filters[0])
+
+
+def test_filter_routes_are_reached_even_behind_seventeen_categories():
+    """Not a promise about *which* filter -- winenot lists 28 of them and the
+    cap is ten. Which is why winenot carries explicit catalog_paths: the probe
+    proved its categories hold no products, and a generic sampler cannot be
+    expected to guess that /s/35/blanc-rouge-rose-... is everything at once."""
+    from pathlib import Path
+    html = (Path(__file__).parent.parent / "probe_pages"
+            / "capture.winenot-fr.index.html").read_text(encoding="utf-8",
+                                                         errors="replace")
+    found = autoselect.find_catalogue_links(html, "https://winenot.fr")
+    assert sum(1 for u in found if "/s/" in u) >= 2
+
+
+def test_one_kind_of_candidate_still_fills_the_list():
+    """A shop with only categories should still get ten of them, not five."""
+    many = "".join(f'<a href="/{i}-jura">Jura {i}</a>' for i in range(20))
+    found = autoselect.find_catalogue_links(
+        f"<html><body>{many}</body></html>", "https://shop.test/")
+    assert len(found) == autoselect.MAX_CATALOGUE_LINKS

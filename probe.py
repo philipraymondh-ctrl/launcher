@@ -55,8 +55,16 @@ EMPTY_PAGE = {"shopify": '{"products": []}', "woocommerce": "[]", "html": ""}
 
 # Enough of a failing body to tell a bot-block page from an API change.
 BODY_SNIPPET = 400
-# Under this many products an HTML page is a shop window, not a catalogue.
-BETTER_CATALOGUE_AT = 12
+# Below this many products the page that won is still worth flagging as thin:
+# it parsed, so the shop is not dark, but it is unlikely to be the whole
+# catalogue.
+GOOD_CATALOGUE_AT = 24
+# A page has to hold at least this much to count as one of several
+# catalogues worth recording.
+MIN_CATALOGUE_PAGE = 8
+# How many of them to record. Nine regions at twenty pages each would spend
+# a whole run's budget on one shop.
+MAX_CATALOGUE_PATHS = 6
 
 
 class CannedCrawler:
@@ -114,7 +122,12 @@ def save_diagnostic_page(name, url, body):
         tag.decompose()
     trimmed = soup.prettify()[:DIAGNOSTIC_CAP]
     DIAGNOSTIC_DIR.mkdir(parents=True, exist_ok=True)
-    (DIAGNOSTIC_DIR / f"{name}.{_page_slug(url)}.html").write_text(
+    # The host belongs in the name. Slugging only the path meant every
+    # shop's landing page was "capture.index.html", so capturing four sites
+    # in one run left one file: three overwrote each other silently, which
+    # cost a round trip to discover.
+    host = urlparse(url).netloc.replace(".", "-")
+    (DIAGNOSTIC_DIR / f"{name}.{host}.{_page_slug(url)}.html").write_text(
         f"<!-- {url}\n     {describe_unparsed(body)}\n"
         f"     Scripts/styles stripped, capped at {DIAGNOSTIC_CAP} bytes.\n"
         f"     Diagnostic only: delete once this shop parses. -->\n" + trimmed
@@ -228,7 +241,13 @@ def candidate_endpoints(shop):
     # catalogue discovery was written for only ever tried its guessed path.
     # The hourly run still fetches the single recorded page; only the probe
     # explores.
-    candidates = ([shop["catalog_path"]] if shop.get("catalog_path") else []) + autoselect.CATALOGUE_PATHS
+    # The landing page first, always: it is where the shop's own menu lives,
+    # and nothing may be accepted before that menu has been read. Putting a
+    # recorded catalog_path ahead of it let a wrong path confirm itself on
+    # every re-probe. The recorded path comes next, then the guesses.
+    recorded = [shop[k] for k in ("catalog_path",) if shop.get(k)]
+    recorded += list(shop.get("catalog_paths") or [])
+    candidates = [""] + recorded + [p for p in autoselect.CATALOGUE_PATHS if p]
     seen, paths = set(), []
     for path in candidates:
         url = urljoin(base + "/", path) if path else shop["url"]
@@ -284,9 +303,26 @@ def probe_shop(shop, crawler_client):
         "attempts": [],
         "catalog_path": shop.get("catalog_path"),
     }
-    best_html = {"count": 0, "body": None, "url": None, "items": []}
+    # (paginates, count). Page-one product count alone chose pangee's
+    # "new arrivals" strip over its catalogue and winenot's sparkling-wine
+    # filter over nine region categories: a strip is one page, a catalogue
+    # runs to twenty, and the "next" link is free to check.
+    best_html = {"rank": (False, 0), "count": 0, "body": None, "url": None,
+                 "items": []}
+    # Every page that looked like a real catalogue. A shop whose wines live
+    # under nine region categories has no single page to record, and picking
+    # one reads one region.
+    catalogues = []
 
-    for platform, url, params, kind in candidate_endpoints(shop):
+    # A list rather than a loop over a fixed sequence: the first HTML body
+    # fetched contributes its own navigation links to the search, because no
+    # guessed path list knows that a shop calls its catalogue "/la-cave".
+    queue = list(candidate_endpoints(shop))
+    seen_urls = {c[1] for c in queue}
+    followed_menu = False
+
+    while queue:
+        platform, url, params, kind = queue.pop(0)
         attempt = {"platform": platform, "url": url}
         try:
             response = crawler_client.get(url, params=params)
@@ -326,6 +362,20 @@ def probe_shop(shop, crawler_client):
             continue
 
         items, parse_error = try_parse(platform, shop, response, live=crawler_client)
+
+        if platform == "html" and not followed_menu:
+            # Before the "parsed nothing" exits below: a landing page may be
+            # pure navigation, and that page's menu is the whole reason we
+            # can find a catalogue nobody configured. Products already read
+            # here are excluded -- a bottle's page is not a catalogue.
+            followed_menu = True
+            for link in autoselect.find_catalogue_links(
+                    body, shop["url"],
+                    exclude=[i.get("url", "") for i in (items or [])]):
+                if link not in seen_urls:
+                    seen_urls.add(link)
+                    queue.append(("html", link, None, "html"))
+
         if parse_error:
             # Record what actually came back. Without this a failure like
             # vinopura's ("not JSON") is undiagnosable from the report --
@@ -364,15 +414,31 @@ def probe_shop(shop, crawler_client):
                 save_diagnostic_page(shop["name"], url, body)
             continue
 
-        if platform == "html" and len(items) < BETTER_CATALOGUE_AT:
+        paginates = bool(autoselect.find_next_page(body, url)) if platform == "html" else False
+        # No HTML page is ever accepted on the spot -- every candidate is
+        # weighed and the best wins. Short-circuiting on "this looks like a
+        # catalogue" meant a recorded catalog_path, which is tried early by
+        # design, was taken before the shop's menu had been read: a wrong
+        # path confirmed itself on every re-probe, three times over for
+        # winenot and pangee. A JSON platform still ends the search, because
+        # /products.json either is the catalogue or is not there.
+        if platform == "html":
             # A landing page's "featured wines" strip parses fine and is not
             # the catalogue. Note it and keep looking; fall back to it only
             # if nothing richer turns up.
-            attempt["outcome"] = f"parsed {len(items)} product(s) -- looks like a shop window, not a catalogue"
+            attempt["outcome"] = (
+                f"parsed {len(items)} product(s)"
+                f"{', paginates' if paginates else ', single page'}"
+                f" -- keeping it in case nothing better turns up"
+            )
             attempt["products"] = len(items)
+            attempt["paginates"] = paginates
             result["attempts"].append(attempt)
-            if len(items) > best_html["count"]:
-                best_html.update(count=len(items), body=body, url=url, items=items)
+            if paginates and len(items) >= MIN_CATALOGUE_PAGE:
+                catalogues.append((len(items), url))
+            if (paginates, len(items)) > best_html["rank"]:
+                best_html.update(rank=(paginates, len(items)), count=len(items),
+                                 body=body, url=url, items=items)
             continue
 
         ext = "json" if kind == "json" else "html"
@@ -425,15 +491,33 @@ def probe_shop(shop, crawler_client):
             saved_as=str(saved.relative_to(OUTPUT_DIR.parent)),
             truncated=False,
             catalog_path=_relative_path(shop, best_html["url"]),
-            thin=True,
+            thin=best_html["count"] < GOOD_CATALOGUE_AT,
         )
+        if len(catalogues) > 1:
+            # No page held the whole catalogue, so record the ones that each
+            # held part of it -- richest first, capped.
+            ordered = [u for _, u in sorted(catalogues, reverse=True)]
+            result["catalog_paths"] = [
+                _relative_path(shop, u) or "" for u in ordered[:MAX_CATALOGUE_PATHS]
+            ]
+            result["products_parsed"] = sum(c for c, _ in catalogues)
     return result
 
 
 def _relative_path(shop, url):
-    """The catalogue path to record, relative to the shop's base URL."""
+    """The catalogue path to record, relative to the shop's base URL.
+
+    A page outside that base is recorded as an absolute URL rather than
+    discarded: pangee's base is /fr and the catalogue it offers is
+    /nouveaux-produits, so returning None left the config pointing at the
+    landing page while the saved fixture showed the richer one -- a shop
+    whose fixture no longer describes what the run fetches. `fetch_html`
+    urljoins this, and urljoin passes an absolute URL straight through.
+    """
     base = shop["url"].rstrip("/") + "/"
-    return url[len(base):] if url.startswith(base) and url != base else None
+    if url == base or url == base.rstrip("/"):
+        return None
+    return url[len(base):] if url.startswith(base) else url
 
 
 # --- turning a probe result into committed config ----------------------------
@@ -501,17 +585,24 @@ def apply_result(result, src):
     else:
         block = re.sub(r'\n[ \t]*"(?:item|title|price)_selector": "[^"]*",', "", block)
 
+    # Record where the catalogue actually was, so the hourly run fetches the
+    # right page(s) instead of rediscovering them every time. A list when the
+    # shop splits its wines across region categories with no page holding all
+    # of them, a single path otherwise.
+    paths = result.get("catalog_paths")
     path = result.get("catalog_path")
-    if platform == "html" and path:
-        # Record where the catalogue actually was, so the hourly run fetches
-        # one page instead of rediscovering it every time.
-        if '"catalog_path"' in block:
-            block = re.sub(r'("catalog_path": ")[^"]*(")',
-                           lambda m: m.group(1) + path + m.group(2), block, count=1)
-        else:
-            block = re.sub(r'(\n[ \t]*"url": "[^"]*",\n)',
-                           lambda m: m.group(1) + f'        "catalog_path": "{path}",\n',
-                           block, count=1)
+    if platform == "html" and (paths or path):
+        literal = (
+            '"catalog_paths": [' + ", ".join(f'"{p}"' for p in paths) + "],"
+            if paths else f'"catalog_path": "{path}",'
+        )
+        # Whichever form the entry carried, replace it with the new one.
+        if re.search(r'"catalog_paths?": ', block):
+            block = re.sub(r'[ \t]*"catalog_path": "[^"]*",\n', "", block)
+            block = re.sub(r'[ \t]*"catalog_paths": \[[^\]]*\],\n', "", block)
+        block = re.sub(r'(\n[ \t]*"url": "[^"]*",\n)',
+                       lambda m: m.group(1) + f"        {literal}\n",
+                       block, count=1)
 
     block = re.sub(r'("verified": )False', lambda m: m.group(1) + "True", block, count=1)
     return src[:span[0]] + block + src[span[1]:], True

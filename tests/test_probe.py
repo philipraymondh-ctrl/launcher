@@ -3,6 +3,7 @@ from pathlib import Path
 
 import pytest
 
+import autoselect
 import crawler
 import probe
 import scraper
@@ -380,13 +381,14 @@ def test_zero_product_html_page_is_saved_for_selector_work(isolated_output):
 
 
 def test_a_guessed_catalog_path_does_not_replace_the_search():
-    """It goes first, but the rest of the list must still be tried -- short
+    """It goes early, but the rest of the list must still be tried -- short
     -circuiting here meant the shop catalogue discovery was written for only
-    ever tried its one guessed path."""
+    ever tried its one guessed path. The landing page precedes it, because
+    that is where the shop's own menu lives."""
     shop = dict(a_shop(), catalog_path="vins.php")
     urls = [url for _, url, _, _ in probe.candidate_endpoints(shop)]
     html_urls = [u for u in urls if "products.json" not in u and "wp-json" not in u]
-    assert html_urls[0].endswith("/vins.php")
+    assert html_urls[1].endswith("/vins.php")
     assert len(html_urls) > 1, "no other catalogue paths were tried"
     assert any(u.endswith("/boutique") for u in html_urls)
 
@@ -400,13 +402,18 @@ def test_a_recorded_path_is_not_tried_twice():
 
 def test_each_unparsed_page_is_kept_separately(monkeypatch, tmp_path):
     """One file per shop meant the last failing page overwrote the one that
-    mattered -- the catalogue diagnostic was replaced by the home page."""
+    mattered -- the catalogue diagnostic was replaced by the home page. The
+    host is in the name too: four sites' landing pages all slugged to
+    "index", so capturing four in one run left one file."""
     monkeypatch.setattr(probe, "DIAGNOSTIC_DIR", tmp_path)
     body = "<html><body><p>rien</p></body></html>"
     probe.save_diagnostic_page("zzzshop", "https://zzz.example/vins.php", body)
     probe.save_diagnostic_page("zzzshop", "https://zzz.example/", body)
+    probe.save_diagnostic_page("zzzshop", "https://other.example/", body)
     assert sorted(p.name for p in tmp_path.iterdir() if p.is_file()) == [
-        "zzzshop.index.html", "zzzshop.vins-php.html",
+        "zzzshop.other-example.index.html",
+        "zzzshop.zzz-example.index.html",
+        "zzzshop.zzz-example.vins-php.html",
     ]
 
 
@@ -546,8 +553,304 @@ def test_the_api_endpoints_come_first():
     assert platforms[:2] == ["shopify", "woocommerce"]
 
 
-def test_a_recorded_catalogue_path_is_tried_first_among_the_guesses():
+def test_a_recorded_catalogue_path_is_tried_right_after_the_landing_page():
     shop = {"name": "s", "url": "https://s.test", "platform": "html",
             "catalog_path": "domaines.php"}
     html_urls = [e[1] for e in probe.candidate_endpoints(shop) if e[0] == "html"]
-    assert html_urls[0].endswith("domaines.php")
+    assert html_urls[0] == "https://s.test", "the menu page must come first"
+    assert html_urls[1].endswith("domaines.php")
+
+
+# --- the richest catalogue wins, and the menu is part of the search ------------
+#
+# winenot verified with 3 products, vinnouveau with 8, pangee with exactly 12.
+# The threshold was `len(items) < BETTER_CATALOGUE_AT` with BETTER_CATALOGUE_AT
+# = 12, so pangee's twelve-product shop window was accepted as a catalogue by
+# one product -- and for the other two the probe kept looking but had only a
+# fixed list of guessed paths to look through.
+
+LANDING = """
+<html><body>
+  <nav><a href="/la-cave">La cave</a></nav>
+  <div class="grid">
+    <div><a href="/p/1">Featured One</a><span>20,00 &euro;</span></div>
+    <div><a href="/p/2">Featured Two</a><span>25,00 &euro;</span></div>
+    <div><a href="/p/3">Featured Three</a><span>30,00 &euro;</span></div>
+  </div>
+</body></html>
+"""
+
+
+def catalogue_page(count):
+    cells = "".join(
+        f'<div><a href="/p/c{i}">Ganevat Cuvee {i}</a><span>{40 + i},00 &euro;</span></div>'
+        for i in range(count)
+    )
+    return f'<html><body><div class="grid">{cells}</div></body></html>'
+
+
+class MapCrawler:
+    """Serves a body per exact URL, and 404s anything else -- so what the
+    probe chose to fetch is visible in `self.asked`."""
+
+    def __init__(self, pages):
+        self.pages = pages
+        self.asked = []
+        self.max_requests = 200
+        self.request_count = 0
+        self.skipped_disallowed = []
+
+    def get(self, url, params=None):
+        self.request_count += 1
+        self.asked.append(url)
+        if url in self.pages:
+            return crawler.FetchResult(200, self.pages[url])
+        # status_code matters: a 404 means "not that path", while None means
+        # the host never answered and the probe rightly gives up on it.
+        raise crawler.UpstreamError("HTTP 404", status_code=404)
+
+
+def test_the_probe_follows_the_menu_to_the_real_catalogue():
+    shop = {"name": "winenot", "platform": "html", "url": "https://winenot.test",
+            "verified": False}
+    client = MapCrawler({
+        "https://winenot.test": LANDING,
+        "https://winenot.test/la-cave": catalogue_page(40),
+    })
+
+    result = probe.probe_shop(shop, client)
+
+    assert result["status"] == "ok"
+    assert result["products_parsed"] == 40, "the shop window beat the catalogue"
+    assert result["catalog_path"] == "la-cave"
+    assert "https://winenot.test/la-cave" in client.asked
+
+
+def test_a_twelve_product_shop_window_does_not_win_on_a_boundary():
+    """pangee's landing page parsed exactly twelve, which the old threshold
+    read as a catalogue."""
+    shop = {"name": "pangee", "platform": "html", "url": "https://pangee.test",
+            "verified": False}
+    client = MapCrawler({
+        "https://pangee.test": catalogue_page(12).replace(
+            "</body>", '<a href="/boutique">Boutique</a></body>'),
+        "https://pangee.test/boutique": catalogue_page(30),
+    })
+
+    result = probe.probe_shop(shop, client)
+
+    assert result["products_parsed"] == 30
+    assert result["catalog_path"] == "boutique"
+
+
+def test_a_thin_page_is_still_better_than_nothing():
+    """When the menu leads nowhere, six real products still catch a producer."""
+    shop = {"name": "thin", "platform": "html", "url": "https://thin.test",
+            "verified": False}
+    client = MapCrawler({"https://thin.test": LANDING})
+
+    result = probe.probe_shop(shop, client)
+
+    assert result["status"] == "ok"
+    assert result["products_parsed"] == 3
+    assert result.get("thin") is True
+
+
+def test_a_paginating_catalogue_wins():
+    """No HTML page ends the search any more -- every candidate is weighed and
+    the best wins, because accepting one early is how a wrong recorded path
+    kept confirming itself. The cost is bounded by the candidate list."""
+    shop = {"name": "big", "platform": "html", "url": "https://big.test",
+            "verified": False}
+    client = MapCrawler({
+        "https://big.test": paginated(60, "/?page=2"),
+        "https://big.test/?page=2": paginated(60, "/?page=3"),
+    })
+
+    result = probe.probe_shop(shop, client)
+
+    assert result["products_parsed"] >= 60
+    assert not result.get("thin")
+    assert len(client.asked) <= probe.MAX_CATALOGUE_GUESSES + autoselect.MAX_CATALOGUE_LINKS + 2
+
+
+def test_a_single_page_catalogue_costs_the_whole_search():
+    """The deliberate other side of that trade: 60 products on one page with
+    no "next" cannot be told from a large shop window without looking, so the
+    probe looks -- bounded by the candidate list, not unbounded."""
+    shop = {"name": "big", "platform": "html", "url": "https://big.test",
+            "verified": False}
+    client = MapCrawler({"https://big.test": catalogue_page(60)})
+
+    result = probe.probe_shop(shop, client)
+
+    assert result["products_parsed"] == 60
+    assert len(client.asked) <= probe.MAX_CATALOGUE_GUESSES + autoselect.MAX_CATALOGUE_LINKS + 2
+
+
+# --- a paginating catalogue beats a fuller shop window ------------------------
+#
+# The first menu-following probe chose pangee's /nouveaux-produits (36
+# products on one page) over its catalogue, and winenot's sparkling-wine
+# filter (12) over nine region categories. Page-one product count is a poor
+# proxy for catalogue size: a "new arrivals" strip is one page, a catalogue
+# runs to twenty.
+
+def paginated(count, next_url):
+    cells = "".join(
+        f'<div><a href="/p/x{i}">Ganevat Cuvee {i}</a><span>{40 + i},00 &euro;</span></div>'
+        for i in range(count)
+    )
+    return (f'<html><body><div class="grid">{cells}</div>'
+            f'<a rel="next" href="{next_url}">Suivant</a></body></html>')
+
+
+def test_a_page_that_paginates_wins_over_a_bigger_one_that_does_not():
+    shop = {"name": "pangee", "platform": "html", "url": "https://pangee.test",
+            "verified": False}
+    client = MapCrawler({
+        "https://pangee.test": (
+            '<html><body><nav>'
+            '<a href="/nouveaux-produits">Nouveaux produits</a>'
+            '<a href="/25-vins">Tous les vins</a>'
+            '</nav></body></html>'),
+        # More products on page one, but that is all there is.
+        "https://pangee.test/nouveaux-produits": catalogue_page(36),
+        # Fewer on page one, but it runs on.
+        "https://pangee.test/25-vins": paginated(20, "/25-vins?page=2"),
+        "https://pangee.test/25-vins?page=2": paginated(20, "/25-vins?page=3"),
+    })
+
+    result = probe.probe_shop(shop, client)
+
+    assert result["catalog_path"] == "25-vins", (
+        f"chose {result['catalog_path']} with {result['products_parsed']} products")
+
+
+def test_a_winner_outside_the_base_path_is_still_recorded():
+    """pangee's base URL is https://la-pangee.com/fr, and the page that won
+    was /nouveaux-produits -- not under it. The recorded path came back None,
+    so the config kept pointing at the landing page while the fixture showed
+    the richer one: a shop whose fixture no longer describes what the run
+    fetches."""
+    shop = {"name": "pangee", "platform": "html",
+            "url": "https://pangee.test/fr", "verified": False}
+    client = MapCrawler({
+        "https://pangee.test/fr": (
+            '<html><body><nav><a href="/vins-tous">Tous les vins</a>'
+            '</nav></body></html>'),
+        "https://pangee.test/vins-tous": catalogue_page(40),
+    })
+
+    result = probe.probe_shop(shop, client)
+
+    assert result["products_parsed"] == 40
+    assert result["catalog_path"], "the winning page was not recorded at all"
+    assert "vins-tous" in result["catalog_path"]
+
+
+# --- a catalogue split across regions -----------------------------------------
+#
+# winenot.fr's menu (tests/fixtures/winenot.html, as captured) offers
+# /12-alsace, /14-beaujolais, /16-bourgogne, /17-champagne, /19-jura,
+# /20-languedoc, /21-loire, /23-rhone, /26-sud-ouest -- and no "all wines"
+# page. Recording one of them reads one region; recording the sparkling-wine
+# filter, which is what happened, reads neither.
+
+def test_region_categories_are_recognised_as_catalogues():
+    html = """<html><body>
+      <a href="/12-alsace">Alsace</a>
+      <a href="/19-jura">Jura</a>
+      <a href="/21-loire">Loire</a>
+      <a href="/mon-compte">Mon compte</a>
+    </body></html>"""
+    found = autoselect.find_catalogue_links(html, "https://winenot.test/")
+    for region in ("12-alsace", "19-jura", "21-loire"):
+        assert f"https://winenot.test/{region}" in found, region
+    assert not any("compte" in u for u in found)
+
+
+def test_several_categories_are_recorded_when_no_page_holds_them_all():
+    shop = {"name": "winenot", "platform": "html", "url": "https://winenot.test",
+            "verified": False}
+    client = MapCrawler({
+        "https://winenot.test": (
+            '<html><body><nav>'
+            '<a href="/19-jura">Jura</a><a href="/21-loire">Loire</a>'
+            '<a href="/s/3/vin-effervescent">Vin effervescent</a>'
+            '</nav></body></html>'),
+        "https://winenot.test/19-jura": paginated(20, "/19-jura?page=2"),
+        "https://winenot.test/19-jura?page=2": paginated(20, "/19-jura?page=3"),
+        "https://winenot.test/21-loire": paginated(18, "/21-loire?page=2"),
+        "https://winenot.test/21-loire?page=2": paginated(18, "/21-loire?page=3"),
+        "https://winenot.test/s/3/vin-effervescent": catalogue_page(12),
+    })
+
+    result = probe.probe_shop(shop, client)
+
+    assert result["status"] == "ok"
+    paths = result.get("catalog_paths") or []
+    assert "19-jura" in paths and "21-loire" in paths, paths
+    assert not any("effervescent" in p for p in paths), \
+        "a single-page filter was recorded as a catalogue"
+
+
+def test_one_rich_catalogue_records_no_list():
+    """A shop with a real "all wines" page needs one path, not a list."""
+    shop = {"name": "one", "platform": "html", "url": "https://one.test",
+            "verified": False}
+    client = MapCrawler({
+        "https://one.test": '<html><body><a href="/vins">Tous les vins</a></body></html>',
+        "https://one.test/vins": paginated(40, "/vins?page=2"),
+        "https://one.test/vins?page=2": paginated(40, "/vins?page=3"),
+    })
+
+    result = probe.probe_shop(shop, client)
+
+    assert result["catalog_path"] == "vins"
+    assert not result.get("catalog_paths")
+
+
+# --- a recorded path must not short-circuit its own re-examination ------------
+#
+# Three probes in a row left winenot on s/3/vin-effervescent and pangee on
+# /nouveaux-produits. The recorded path is tried first -- deliberately -- and
+# a rich paginating page is accepted on the spot, so the landing page was
+# never fetched and its menu never read. A wrong path perpetuated itself, and
+# each new probe confirmed it.
+
+def test_a_recorded_path_does_not_stop_the_menu_being_read():
+    shop = {"name": "pangee", "platform": "html", "url": "https://pangee.test",
+            "catalog_path": "nouveaux-produits", "verified": True}
+    client = MapCrawler({
+        "https://pangee.test": (
+            '<html><body><nav><a href="/25-vins">Tous les vins</a></nav></body></html>'),
+        # The recorded page: rich and paginating, so the old rule took it.
+        "https://pangee.test/nouveaux-produits": paginated(36, "/nouveaux-produits?p=2"),
+        "https://pangee.test/nouveaux-produits?p=2": paginated(36, "/nouveaux-produits?p=3"),
+        # The real catalogue, richer still.
+        "https://pangee.test/25-vins": paginated(48, "/25-vins?p=2"),
+        "https://pangee.test/25-vins?p=2": paginated(48, "/25-vins?p=3"),
+    })
+
+    result = probe.probe_shop(shop, client)
+
+    assert "https://pangee.test" in client.asked, "the landing page was never read"
+    assert result["catalog_path"] == "25-vins", (
+        f"kept {result['catalog_path']} without looking at the menu")
+
+
+def test_a_recorded_path_still_wins_when_it_is_the_best():
+    """Re-probing a correctly configured shop must not wander off."""
+    shop = {"name": "good", "platform": "html", "url": "https://good.test",
+            "catalog_path": "vins", "verified": True}
+    client = MapCrawler({
+        "https://good.test": '<html><body><nav><a href="/promotions">Promos</a></nav></body></html>',
+        "https://good.test/vins": paginated(50, "/vins?p=2"),
+        "https://good.test/vins?p=2": paginated(50, "/vins?p=3"),
+        "https://good.test/promotions": catalogue_page(10),
+    })
+
+    result = probe.probe_shop(shop, client)
+
+    assert result["catalog_path"] == "vins"

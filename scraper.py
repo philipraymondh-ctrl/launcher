@@ -399,6 +399,7 @@ SHOPS = [
         "name": "pangee",
         "platform": "html",
         "url": "https://la-pangee.com/fr",
+        "catalog_path": "https://la-pangee.com/nouveaux-produits",
         "item_selector": "div.product",
         "title_selector": "h2.product-title",
         "price_selector": "span.price",

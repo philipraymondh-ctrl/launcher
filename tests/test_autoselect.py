@@ -618,3 +618,48 @@ def test_the_real_pangee_menu_yields_its_wine_categories():
             / "capture.fr.html").read_text(encoding="utf-8", errors="replace")
     found = autoselect.find_catalogue_links(html, "https://la-pangee.com/fr")
     assert "https://la-pangee.com/fr/25-vins" in found
+
+
+# --- ranking: a category beats a filter, a filter beats a promo ----------------
+#
+# Two probes in a row recorded winenot's s/3/vin-effervescent (sparkling only)
+# and pangee's /nouveaux-produits (new arrivals). Both shops' menus offer the
+# real thing -- /19-jura and friends, /fr/25-vins -- but they appear later in
+# the document than the promos and filters, so a cap of six cut them off.
+# French shops number their categories: /12-alsace, /25-vins, /19-jura.
+
+def test_a_numbered_category_outranks_a_promo_page():
+    html = """<html><body>
+      <a href="/nouveaux-produits">Nouveaux produits</a>
+      <a href="/promotions">Promotions</a>
+      <a href="/content/9-nos-caves">Nos caves</a>
+      <a href="/s/3/vin-effervescent">Vin effervescent</a>
+      <a href="/25-vins">Tous les vins</a>
+    </body></html>"""
+    found = autoselect.find_catalogue_links(html, "https://shop.test/")
+    assert found[0] == "https://shop.test/25-vins", found
+
+
+def test_the_real_winenot_menu_reaches_its_regions():
+    """The page as captured lists nine region categories after four promo and
+    filter links."""
+    from pathlib import Path
+    html = (Path(__file__).parent.parent / "tests" / "fixtures"
+            / "winenot.html").read_text(encoding="utf-8", errors="replace")
+    found = autoselect.find_catalogue_links(html, "https://winenot.fr")
+    regions = [u for u in found if any(
+        r in u for r in ("alsace", "jura", "loire", "bourgogne", "champagne"))]
+    assert len(regions) >= 4, f"regions missing from {found}"
+    assert found[0].split("/")[-1][0].isdigit(), f"a promo page came first: {found}"
+
+
+def test_the_real_pangee_menu_prefers_its_wine_category():
+    from pathlib import Path
+    html = (Path(__file__).parent.parent / "probe_pages"
+            / "capture.fr.html").read_text(encoding="utf-8", errors="replace")
+    found = autoselect.find_catalogue_links(html, "https://la-pangee.com/fr")
+    assert found[0] == "https://la-pangee.com/fr/25-vins", found
+    # The new-arrivals page it kept choosing is now outranked by the shop's
+    # numbered categories -- far enough down that it does not make the cut.
+    promo = "https://la-pangee.com/nouveaux-produits"
+    assert promo not in found or found.index(promo) > 0

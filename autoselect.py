@@ -320,7 +320,17 @@ NOT_CATALOGUE_WORDS = (
     "a-propos", "newsletter", "checkout", "commande", "wishlist", "search",
     "recherche", "gift", "cadeau",
 )
-MAX_CATALOGUE_LINKS = 6
+MAX_CATALOGUE_LINKS = 10
+# French shops number their categories -- /12-alsace, /19-jura, /25-vins --
+# which is the strongest available signal that a link is a category rather
+# than a promo strip or a filter.
+NUMBERED_CATEGORY = re.compile(r"/\d+-[a-z]")
+# Real pages, but slices of the catalogue rather than the catalogue: a "new
+# arrivals" strip, a promo list, a CMS page, a colour/type filter. Ranked
+# last, never excluded -- for a shop with nothing better they are what there
+# is.
+SECOND_CHOICE = ("nouveaux-produits", "nouveautes", "promotions", "promos",
+                 "/content/", "/s/")
 
 
 def find_catalogue_links(html, base_url, exclude=()):
@@ -360,13 +370,22 @@ def find_catalogue_links(html, base_url, exclude=()):
         if url not in found:
             found.append(url)
 
-    def depth(url):
-        path = urlparse(url).path.strip("/")
-        return (len([p for p in path.split("/") if p]), path.endswith(".html"))
+    def rank(url):
+        path = urlparse(url).path
+        return (
+            # A slice of the catalogue is a last resort, not a first guess.
+            any(marker in path for marker in SECOND_CHOICE),
+            # A numbered category is the catalogue as the shop files it.
+            not NUMBERED_CATEGORY.search(path),
+            # A bottle's own page sits under a category; a category sits at
+            # the root.
+            len([p for p in path.strip("/").split("/") if p]),
+            path.endswith(".html"),
+        )
 
     # Stable: document order breaks ties, so a shop's own menu ordering still
-    # decides between two equally shallow categories.
-    found.sort(key=depth)
+    # decides between two equally promising categories.
+    found.sort(key=rank)
     return found[:MAX_CATALOGUE_LINKS]
 
 

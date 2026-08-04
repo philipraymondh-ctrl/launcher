@@ -400,13 +400,18 @@ def test_a_recorded_path_is_not_tried_twice():
 
 def test_each_unparsed_page_is_kept_separately(monkeypatch, tmp_path):
     """One file per shop meant the last failing page overwrote the one that
-    mattered -- the catalogue diagnostic was replaced by the home page."""
+    mattered -- the catalogue diagnostic was replaced by the home page. The
+    host is in the name too: four sites' landing pages all slugged to
+    "index", so capturing four in one run left one file."""
     monkeypatch.setattr(probe, "DIAGNOSTIC_DIR", tmp_path)
     body = "<html><body><p>rien</p></body></html>"
     probe.save_diagnostic_page("zzzshop", "https://zzz.example/vins.php", body)
     probe.save_diagnostic_page("zzzshop", "https://zzz.example/", body)
+    probe.save_diagnostic_page("zzzshop", "https://other.example/", body)
     assert sorted(p.name for p in tmp_path.iterdir() if p.is_file()) == [
-        "zzzshop.index.html", "zzzshop.vins-php.html",
+        "zzzshop.other-example.index.html",
+        "zzzshop.zzz-example.index.html",
+        "zzzshop.zzz-example.vins-php.html",
     ]
 
 
@@ -551,3 +556,111 @@ def test_a_recorded_catalogue_path_is_tried_first_among_the_guesses():
             "catalog_path": "domaines.php"}
     html_urls = [e[1] for e in probe.candidate_endpoints(shop) if e[0] == "html"]
     assert html_urls[0].endswith("domaines.php")
+
+
+# --- the richest catalogue wins, and the menu is part of the search ------------
+#
+# winenot verified with 3 products, vinnouveau with 8, pangee with exactly 12.
+# The threshold was `len(items) < BETTER_CATALOGUE_AT` with BETTER_CATALOGUE_AT
+# = 12, so pangee's twelve-product shop window was accepted as a catalogue by
+# one product -- and for the other two the probe kept looking but had only a
+# fixed list of guessed paths to look through.
+
+LANDING = """
+<html><body>
+  <nav><a href="/la-cave">La cave</a></nav>
+  <div class="grid">
+    <div><a href="/p/1">Featured One</a><span>20,00 &euro;</span></div>
+    <div><a href="/p/2">Featured Two</a><span>25,00 &euro;</span></div>
+    <div><a href="/p/3">Featured Three</a><span>30,00 &euro;</span></div>
+  </div>
+</body></html>
+"""
+
+
+def catalogue_page(count):
+    cells = "".join(
+        f'<div><a href="/p/c{i}">Ganevat Cuvee {i}</a><span>{40 + i},00 &euro;</span></div>'
+        for i in range(count)
+    )
+    return f'<html><body><div class="grid">{cells}</div></body></html>'
+
+
+class MapCrawler:
+    """Serves a body per exact URL, and 404s anything else -- so what the
+    probe chose to fetch is visible in `self.asked`."""
+
+    def __init__(self, pages):
+        self.pages = pages
+        self.asked = []
+        self.max_requests = 200
+        self.request_count = 0
+        self.skipped_disallowed = []
+
+    def get(self, url, params=None):
+        self.request_count += 1
+        self.asked.append(url)
+        if url in self.pages:
+            return crawler.FetchResult(200, self.pages[url])
+        # status_code matters: a 404 means "not that path", while None means
+        # the host never answered and the probe rightly gives up on it.
+        raise crawler.UpstreamError("HTTP 404", status_code=404)
+
+
+def test_the_probe_follows_the_menu_to_the_real_catalogue():
+    shop = {"name": "winenot", "platform": "html", "url": "https://winenot.test",
+            "verified": False}
+    client = MapCrawler({
+        "https://winenot.test": LANDING,
+        "https://winenot.test/la-cave": catalogue_page(40),
+    })
+
+    result = probe.probe_shop(shop, client)
+
+    assert result["status"] == "ok"
+    assert result["products_parsed"] == 40, "the shop window beat the catalogue"
+    assert result["catalog_path"] == "la-cave"
+    assert "https://winenot.test/la-cave" in client.asked
+
+
+def test_a_twelve_product_shop_window_does_not_win_on_a_boundary():
+    """pangee's landing page parsed exactly twelve, which the old threshold
+    read as a catalogue."""
+    shop = {"name": "pangee", "platform": "html", "url": "https://pangee.test",
+            "verified": False}
+    client = MapCrawler({
+        "https://pangee.test": catalogue_page(12).replace(
+            "</body>", '<a href="/boutique">Boutique</a></body>'),
+        "https://pangee.test/boutique": catalogue_page(30),
+    })
+
+    result = probe.probe_shop(shop, client)
+
+    assert result["products_parsed"] == 30
+    assert result["catalog_path"] == "boutique"
+
+
+def test_a_thin_page_is_still_better_than_nothing():
+    """When the menu leads nowhere, six real products still catch a producer."""
+    shop = {"name": "thin", "platform": "html", "url": "https://thin.test",
+            "verified": False}
+    client = MapCrawler({"https://thin.test": LANDING})
+
+    result = probe.probe_shop(shop, client)
+
+    assert result["status"] == "ok"
+    assert result["products_parsed"] == 3
+    assert result.get("thin") is True
+
+
+def test_a_clear_catalogue_is_accepted_without_exhausting_the_guesses():
+    """Politeness costs 3s a request, so a page that is plainly the catalogue
+    ends the search."""
+    shop = {"name": "big", "platform": "html", "url": "https://big.test",
+            "verified": False}
+    client = MapCrawler({"https://big.test": catalogue_page(60)})
+
+    result = probe.probe_shop(shop, client)
+
+    assert result["products_parsed"] == 60
+    assert len(client.asked) <= 4, f"kept guessing after finding a catalogue: {client.asked}"

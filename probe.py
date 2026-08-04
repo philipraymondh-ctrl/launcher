@@ -55,8 +55,13 @@ EMPTY_PAGE = {"shopify": '{"products": []}', "woocommerce": "[]", "html": ""}
 
 # Enough of a failing body to tell a bot-block page from an API change.
 BODY_SNIPPET = 400
-# Under this many products an HTML page is a shop window, not a catalogue.
-BETTER_CATALOGUE_AT = 12
+# At or above this many products a page is plainly the catalogue, so the
+# search ends there -- politeness costs 3s a request. Below it the page is
+# recorded and the search continues, and the richest page found wins. The
+# previous rule accepted the first page over a threshold of 12, which is how
+# pangee's twelve-product shop window was verified as its catalogue by one
+# product, and how winenot ended up live with three.
+GOOD_CATALOGUE_AT = 24
 
 
 class CannedCrawler:
@@ -114,7 +119,12 @@ def save_diagnostic_page(name, url, body):
         tag.decompose()
     trimmed = soup.prettify()[:DIAGNOSTIC_CAP]
     DIAGNOSTIC_DIR.mkdir(parents=True, exist_ok=True)
-    (DIAGNOSTIC_DIR / f"{name}.{_page_slug(url)}.html").write_text(
+    # The host belongs in the name. Slugging only the path meant every
+    # shop's landing page was "capture.index.html", so capturing four sites
+    # in one run left one file: three overwrote each other silently, which
+    # cost a round trip to discover.
+    host = urlparse(url).netloc.replace(".", "-")
+    (DIAGNOSTIC_DIR / f"{name}.{host}.{_page_slug(url)}.html").write_text(
         f"<!-- {url}\n     {describe_unparsed(body)}\n"
         f"     Scripts/styles stripped, capped at {DIAGNOSTIC_CAP} bytes.\n"
         f"     Diagnostic only: delete once this shop parses. -->\n" + trimmed
@@ -286,7 +296,15 @@ def probe_shop(shop, crawler_client):
     }
     best_html = {"count": 0, "body": None, "url": None, "items": []}
 
-    for platform, url, params, kind in candidate_endpoints(shop):
+    # A list rather than a loop over a fixed sequence: the first HTML body
+    # fetched contributes its own navigation links to the search, because no
+    # guessed path list knows that a shop calls its catalogue "/la-cave".
+    queue = list(candidate_endpoints(shop))
+    seen_urls = {c[1] for c in queue}
+    followed_menu = False
+
+    while queue:
+        platform, url, params, kind = queue.pop(0)
         attempt = {"platform": platform, "url": url}
         try:
             response = crawler_client.get(url, params=params)
@@ -364,11 +382,23 @@ def probe_shop(shop, crawler_client):
                 save_diagnostic_page(shop["name"], url, body)
             continue
 
-        if platform == "html" and len(items) < BETTER_CATALOGUE_AT:
+        if platform == "html" and not followed_menu:
+            followed_menu = True
+            already_products = [i.get("url", "") for i in items]
+            for link in autoselect.find_catalogue_links(
+                    body, shop["url"], exclude=already_products):
+                if link not in seen_urls:
+                    seen_urls.add(link)
+                    queue.append(("html", link, None, "html"))
+
+        if platform == "html" and len(items) < GOOD_CATALOGUE_AT:
             # A landing page's "featured wines" strip parses fine and is not
             # the catalogue. Note it and keep looking; fall back to it only
             # if nothing richer turns up.
-            attempt["outcome"] = f"parsed {len(items)} product(s) -- looks like a shop window, not a catalogue"
+            attempt["outcome"] = (
+                f"parsed {len(items)} product(s) -- keeping it in case nothing "
+                f"richer turns up"
+            )
             attempt["products"] = len(items)
             result["attempts"].append(attempt)
             if len(items) > best_html["count"]:

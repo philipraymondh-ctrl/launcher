@@ -296,6 +296,73 @@ def is_out_of_stock(text, normalize_fn=None):
 NEXT_WORDS = {"next", "suivant", "suivante", "volgende", "weiter", "›", "»", "→", ">"}
 
 
+# Words a shop uses for the page that lists its wines, in the four languages
+# these shops actually use. Matched against a link's text and its href.
+CATALOGUE_WORDS = (
+    "vins", "vin", "wines", "wine", "wijnen", "weine", "boutique", "shop",
+    "cave", "caves", "catalogue", "catalog", "produits", "products",
+    "collection", "collections", "selection", "assortiment", "winkel",
+    "promos", "promotions", "nos-vins", "les-vins",
+)
+# Pages that are never a catalogue however they are worded. A cart link is
+# the reason "0,00 EUR" once reached a digest as a permanent DEAL.
+NOT_CATALOGUE_WORDS = (
+    "panier", "cart", "winkelwagen", "compte", "account", "login", "connexion",
+    "blog", "actualite", "actualites", "news", "journal", "contact", "cgv",
+    "mentions", "legal", "livraison", "shipping", "faq", "about", "apropos",
+    "a-propos", "newsletter", "checkout", "commande", "wishlist", "search",
+    "recherche", "gift", "cadeau",
+)
+MAX_CATALOGUE_LINKS = 6
+
+
+def find_catalogue_links(html, base_url, exclude=()):
+    """Candidate catalogue URLs taken from the page's own navigation.
+
+    A fixed list of guessed paths cannot know that a shop calls its
+    catalogue `/la-cave` or `/notre-selection`, but the shop's own menu says
+    so in its links. Same-host only, cart/account/blog/legal pages excluded,
+    Anything already read as a product on this page is excluded, and
+    shallower paths come first: a category lives near the root
+    (`/12-vins-francais`) while a bottle lives under one
+    (`/accueil/4437-zulu-vin-de-france-rouge-magnum.html`), and both contain
+    "vin". At 3s a request the bottles would crowd out the categories.
+    """
+    soup = BeautifulSoup(html, "html.parser")
+    base_host = urlparse(base_url).netloc
+    landing = {base_url.rstrip("/"), base_url.rstrip("/") + "/"}
+
+    excluded = {u.rstrip("/") for u in exclude}
+    found = []
+    for anchor in soup.find_all("a", href=True):
+        url = urljoin(base_url, anchor["href"])
+        parsed = urlparse(url)
+        if parsed.netloc != base_host or parsed.scheme not in ("http", "https"):
+            continue
+        if url in landing or url.rstrip("/") in landing:
+            continue
+        haystack = _strip_accents(f"{anchor.get_text(' ', strip=True)} {parsed.path}")
+        haystack = re.sub(r"[^a-z0-9]+", " ", haystack)
+        words = set(haystack.split())
+        if words & set(NOT_CATALOGUE_WORDS):
+            continue
+        if not words & set(CATALOGUE_WORDS):
+            continue
+        if url.rstrip("/") in excluded:
+            continue
+        if url not in found:
+            found.append(url)
+
+    def depth(url):
+        path = urlparse(url).path.strip("/")
+        return (len([p for p in path.split("/") if p]), path.endswith(".html"))
+
+    # Stable: document order breaks ties, so a shop's own menu ordering still
+    # decides between two equally shallow categories.
+    found.sort(key=depth)
+    return found[:MAX_CATALOGUE_LINKS]
+
+
 def find_next_page(html, current_url):
     """The next catalogue page, or None.
 

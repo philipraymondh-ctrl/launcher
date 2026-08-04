@@ -414,3 +414,140 @@ def test_diagnostics_never_land_in_the_repo_during_tests():
     """The directory is committed, so a leaked test file gets pushed."""
     stray = Path(__file__).parent.parent / "probe_pages" / "testshop.html"
     assert not stray.exists(), "a test wrote a diagnostic into the repo"
+
+
+# --- who gets probed: forgiving input, loud mistakes ---------------------------
+#
+# The shop list came from a text box on a phone. "Lapangee, lavinoterie" broke
+# the workflow on the space; and even quoted, "Lapangee" matches no shop --
+# the entry is named "pangee" -- so the probe would have selected nothing and
+# exited 0, reporting success for work it never did.
+
+ROSTER = [
+    {"name": "lavinoterie", "url": "https://lavinoterie.fr", "platform": "shopify",
+     "verified": False},
+    {"name": "pangee", "url": "https://la-pangee.com/fr", "platform": "html",
+     "verified": False},
+    {"name": "mareehaute", "url": "https://www.mareehaute.vin", "platform": "shopify",
+     "verified": True},
+    {"name": "example-shopify-shop", "url": "https://example.example.com",
+     "platform": "shopify", "verified": False},
+]
+
+
+def test_a_comma_and_a_space_are_both_separators():
+    assert probe.parse_names("lavinoterie, pangee") == ["lavinoterie", "pangee"]
+    assert probe.parse_names("lavinoterie,pangee") == ["lavinoterie", "pangee"]
+    assert probe.parse_names(" lavinoterie   pangee ") == ["lavinoterie", "pangee"]
+    assert probe.parse_names("lavinoterie,,  ,pangee") == ["lavinoterie", "pangee"]
+    assert probe.parse_names("") == []
+    assert probe.parse_names(None) == []
+
+
+def test_a_name_is_matched_however_it_was_typed():
+    chosen, unknown = probe.select_shops(ROSTER, only="LaVinoterie, PANGEE")
+    assert [s["name"] for s in chosen] == ["lavinoterie", "pangee"]
+    assert unknown == []
+
+
+def test_a_name_that_matches_nothing_is_reported_not_ignored():
+    """"Lapangee" is not a shop. Silently probing nothing is the failure."""
+    chosen, unknown = probe.select_shops(ROSTER, only="Lapangee, lavinoterie")
+    assert [s["name"] for s in chosen] == ["lavinoterie"]
+    assert unknown == ["Lapangee"]
+
+
+def test_the_examples_are_never_probed():
+    chosen, _ = probe.select_shops(ROSTER)
+    assert "example-shopify-shop" not in [s["name"] for s in chosen]
+
+
+def test_verified_shops_are_left_alone_unless_asked_for():
+    chosen, _ = probe.select_shops(ROSTER)
+    assert [s["name"] for s in chosen] == ["lavinoterie", "pangee"]
+    chosen, _ = probe.select_shops(ROSTER, include_verified=True)
+    assert "mareehaute" in [s["name"] for s in chosen]
+
+
+def test_naming_an_already_verified_shop_still_selects_it():
+    """Asking for a shop by name is asking for it, verified or not --
+    otherwise "probe mareehaute" quietly probes nothing."""
+    chosen, unknown = probe.select_shops(ROSTER, only="mareehaute")
+    assert [s["name"] for s in chosen] == ["mareehaute"]
+    assert unknown == []
+
+
+def test_an_unknown_name_stops_the_run(monkeypatch, capsys):
+    monkeypatch.setattr(probe.scraper, "SHOPS", ROSTER)
+    monkeypatch.setattr("sys.argv", ["probe.py", "--only", "Lapangee"])
+    with pytest.raises(SystemExit) as exc:
+        probe.main()
+    assert exc.value.code != 0
+    out = capsys.readouterr().out + capsys.readouterr().err
+    assert "Lapangee" in out
+    assert "lavinoterie" in out, "the error must name the shops that do exist"
+
+
+def test_selecting_nothing_at_all_stops_the_run(monkeypatch, capsys):
+    """Every shop already verified is a legitimate state, but "probed 0 shops,
+    success" is not a useful answer to a button press."""
+    monkeypatch.setattr(probe.scraper, "SHOPS",
+                        [{"name": "a", "url": "https://a.test", "platform": "html",
+                          "verified": True}])
+    monkeypatch.setattr("sys.argv", ["probe.py"])
+    with pytest.raises(SystemExit) as exc:
+        probe.main()
+    assert exc.value.code != 0
+    assert "include-verified" in capsys.readouterr().out.lower()
+
+
+# --- a read-only probe must say that it saved nothing --------------------------
+
+def test_a_read_only_probe_that_found_shops_says_so_loudly(capsys):
+    results = [
+        {"shop": "lavinoterie", "status": "ok", "products_parsed": 250},
+        {"shop": "purovino", "status": "failed", "products_parsed": 0},
+    ]
+    probe.report_unsaved(results, applied=False)
+    out = capsys.readouterr().out
+    assert "lavinoterie" in out
+    assert "nothing was saved" in out.lower()
+    assert "apply" in out.lower(), "it must name the next step"
+
+
+def test_nothing_to_say_when_nothing_parsed(capsys):
+    probe.report_unsaved([{"shop": "x", "status": "failed", "products_parsed": 0}],
+                         applied=False)
+    assert capsys.readouterr().out == ""
+
+
+def test_nothing_to_say_when_the_findings_were_applied(capsys):
+    probe.report_unsaved([{"shop": "x", "status": "ok", "products_parsed": 9}],
+                         applied=True)
+    assert capsys.readouterr().out == ""
+
+
+# --- the budget must not be spent guessing ------------------------------------
+
+def test_catalogue_guessing_is_capped():
+    """One live probe spent 24 requests on a single shop, all 404, and 107 of
+    150 across eight shops. With eleven unverified shops that budget binds and
+    the last shops go unprobed -- silently, which is the whole problem."""
+    shop = {"name": "s", "url": "https://s.test", "platform": "html"}
+    endpoints = probe.candidate_endpoints(shop)
+    html_attempts = [e for e in endpoints if e[0] == "html"]
+    assert len(html_attempts) <= probe.MAX_CATALOGUE_GUESSES
+    assert len(endpoints) - len(html_attempts) == 2, "both API endpoints still tried"
+
+
+def test_the_api_endpoints_come_first():
+    shop = {"name": "s", "url": "https://s.test", "platform": "html"}
+    platforms = [e[0] for e in probe.candidate_endpoints(shop)]
+    assert platforms[:2] == ["shopify", "woocommerce"]
+
+
+def test_a_recorded_catalogue_path_is_tried_first_among_the_guesses():
+    shop = {"name": "s", "url": "https://s.test", "platform": "html",
+            "catalog_path": "domaines.php"}
+    html_urls = [e[1] for e in probe.candidate_endpoints(shop) if e[0] == "html"]
+    assert html_urls[0].endswith("domaines.php")

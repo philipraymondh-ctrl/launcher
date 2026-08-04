@@ -695,11 +695,16 @@ Hourly, {esc(defaults.get("deal_threshold", "?"))}× reference flags a deal.</di
   <details>
     <summary>Probe options</summary>
     <div class="field">
-      <label for="probe-only">Only these shops (comma-separated, blank = all unverified)</label>
-      <input type="text" id="probe-only" placeholder="lescaves, vinsnaturels">
+      <label for="probe-only">Only these shops (blank = all unverified)</label>
+      <input type="text" id="probe-only" placeholder="lavinoterie, pangee">
+      <div class="sub">Separate with commas or spaces. Use the exact names from
+        the table below -- a name that matches no shop stops the run and says
+        so, rather than probing nothing.</div>
     </div>
     <div class="opts">
-      <label><input type="checkbox" id="probe-apply"> Save fixtures and set <code>verified: true</code> for shops that answer</label>
+      <label><input type="checkbox" id="probe-apply" checked> Save fixtures and set <code>verified: true</code> for shops that answer</label>
+      <div class="sub">Leave this on unless you only want a report. Unticked,
+        a probe can find a working shop and still leave it switched off.</div>
     </div>
   </details>
   <div class="status" id="status" hidden></div>

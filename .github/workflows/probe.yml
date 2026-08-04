@@ -25,9 +25,15 @@ on:
         type: string
         default: "150"
       apply:
-        description: "Save real fixtures and set verified:true for shops that probe OK (commits to main)"
+        # On by default. A read-only probe that finds two working shops and
+        # commits nothing is the failure that kept lavinoterie and pangee
+        # dark for three days after they had already answered cleanly.
+        # Nothing is committed unless the suite passes against the new
+        # fixtures, and only for shops that parsed a real response in this
+        # same run, so the safe default is the useful one.
+        description: "Save real fixtures and set verified:true for shops that probe OK (commits to the branch)"
         type: boolean
-        default: false
+        default: true
 
 permissions:
   contents: write
@@ -54,12 +60,19 @@ jobs:
           # Always hit the network on a probe; a cached body tells us
           # nothing new about whether the endpoint is live right now.
           FRESH: "1"
+          # Through the environment, never spliced into the command line: a
+          # dispatch with "Lapangee, lavinoterie" in this box became two
+          # shell arguments and crashed the run. Quoted below, a space in a
+          # shop list is just a space.
+          ONLY: ${{ inputs.only }}
+          CAPTURE: ${{ inputs.capture }}
+          APPLY: ${{ inputs.apply }}
         run: |
-          ARGS=""
-          [ -n "${{ inputs.only }}" ] && ARGS="$ARGS --only ${{ inputs.only }}"
-          [ -n "${{ inputs.capture }}" ] && ARGS="$ARGS --capture ${{ inputs.capture }}"
-          [ "${{ inputs.apply }}" = "true" ] && ARGS="$ARGS --apply"
-          python probe.py $ARGS
+          args=()
+          if [ -n "$ONLY" ]; then args+=(--only "$ONLY"); fi
+          if [ -n "$CAPTURE" ]; then args+=(--capture "$CAPTURE"); fi
+          if [ "$APPLY" = "true" ]; then args+=(--apply); fi
+          python probe.py "${args[@]}"
 
       - name: Upload probe results
         if: always()

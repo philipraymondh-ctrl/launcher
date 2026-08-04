@@ -148,6 +148,72 @@ def describe_unparsed(body):
     )
 
 
+# How many catalogue paths the probe may guess at, per shop. One live run
+# spent 24 requests on a single shop, every one a 404, and 107 of 150 across
+# eight shops -- so with eleven unverified shops the budget binds and the
+# last shops go unprobed. Which they do quietly, and that is the real cost.
+MAX_CATALOGUE_GUESSES = 8
+
+
+def parse_names(raw):
+    """Shop names as typed into a text box on a phone.
+
+    Commas, spaces or both: "Lapangee, lavinoterie" arrived as two shell
+    arguments once and crashed the run, so neither separator may surprise
+    anyone here either.
+    """
+    return [n for n in re.split(r"[,\s]+", (raw or "").strip()) if n]
+
+
+def select_shops(shops, only=None, include_verified=False):
+    """(shops to probe, names that matched nothing).
+
+    Naming a shop is asking for it, verified or not -- "probe mareehaute"
+    quietly probing nothing is worse than probing a shop twice. A name that
+    matches nothing is returned rather than dropped: it is almost always a
+    typo, and silently probing the empty set looks exactly like success.
+    """
+    # The example-* entries point at reserved .example.com domains that
+    # deliberately do not resolve; probing them just burns requests.
+    real = [s for s in shops if not s["name"].startswith("example-")]
+    wanted = parse_names(only)
+    if not wanted:
+        return [s for s in real if include_verified or not s.get("verified", True)], []
+
+    by_key = {s["name"].casefold(): s for s in real}
+    chosen, unknown = [], []
+    for name in wanted:
+        shop = by_key.get(name.casefold())
+        if shop is None:
+            unknown.append(name)
+        elif shop not in chosen:
+            chosen.append(shop)
+    return chosen, unknown
+
+
+def report_unsaved(results, applied):
+    """A read-only probe that found working shops has to say that it saved
+    nothing.
+
+    lavinoterie and pangee both parsed on 2026-08-04 -- Shopify, 250+
+    products, Ganevat and Labet already on the shelf -- and stayed dark for
+    three more days, because that run was read-only and said so only by
+    omission.
+    """
+    if applied:
+        return
+    ok = [r["shop"] for r in results if r["status"] == "ok"]
+    if not ok:
+        return
+    print()
+    print(f"NOTHING WAS SAVED. {len(ok)} shop(s) answered and parsed cleanly: "
+          f"{', '.join(ok)}.")
+    print("This was a read-only probe, so they are still verified:false and "
+          "still skipped on every run.")
+    print("Re-run the probe with apply ticked to save their fixtures and set "
+          "verified:true.")
+
+
 def candidate_endpoints(shop):
     base = shop["url"].rstrip("/")
     # A shop may list nothing on its landing page. Probing the base URL
@@ -166,9 +232,12 @@ def candidate_endpoints(shop):
     seen, paths = set(), []
     for path in candidates:
         url = urljoin(base + "/", path) if path else shop["url"]
-        if url not in seen:
-            seen.add(url)
-            paths.append(("html", url, None, "html"))
+        if url in seen:
+            continue
+        seen.add(url)
+        paths.append(("html", url, None, "html"))
+        if len(paths) >= MAX_CATALOGUE_GUESSES:
+            break
     return endpoints + paths
 
 
@@ -511,13 +580,18 @@ def main():
             print(f"         {describe_unparsed(resp.text)}")
         return
 
-    shops = [s for s in scraper.SHOPS if args.include_verified or not s.get("verified", True)]
-    # The example-* entries point at reserved .example.com domains that
-    # deliberately do not resolve; probing them just burns requests.
-    shops = [s for s in shops if not s["name"].startswith("example-")]
-    if args.only:
-        wanted = {n.strip() for n in args.only.split(",")}
-        shops = [s for s in shops if s["name"] in wanted]
+    shops, unknown = select_shops(
+        scraper.SHOPS, only=args.only, include_verified=args.include_verified)
+    if unknown:
+        known = ", ".join(sorted(
+            s["name"] for s in scraper.SHOPS if not s["name"].startswith("example-")))
+        print(f"No shop is called {', '.join(repr(n) for n in unknown)}.")
+        print(f"Shops that do exist: {known}")
+        raise SystemExit(2)
+    if not shops:
+        print("Nothing to probe: every shop is already verified. Pass "
+              "--include-verified (or name one) to re-probe.")
+        raise SystemExit(2)
 
     crawler_client = crawler.Crawler()
     print(f"Probing {len(shops)} shop(s) as {crawler_client.user_agent}")
@@ -572,6 +646,8 @@ def main():
                     print(f"    {attempt.get('platform', '?')} <- {snippet[:BODY_SNIPPET]}")
 
     print(f"\nRaw bodies and report.json written to {OUTPUT_DIR}/")
+
+    report_unsaved(results, applied=args.apply)
 
     if args.apply:
         applied, skipped = apply_results(results)

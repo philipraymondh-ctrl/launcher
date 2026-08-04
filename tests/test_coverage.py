@@ -442,3 +442,47 @@ def test_coverage_is_written_for_the_artifact(pipeline):
     assert by_shop["zzz-shopify"]["in_stock"] == 1
     assert by_shop["zzz-shopify"]["producers"] == ["Zzz Domaine"]
     assert by_shop["zzz-html"]["products"] == 3
+
+
+# --- C2. sold out means sold out, not "sold out and one of ours" ---------------
+#
+# The first version of this table read its SOLD OUT column from
+# ShopResult.sold_out, which holds only out-of-stock listings that matched a
+# watched producer. Live, that printed 30 for mareehaute where the run had
+# skipped 2139 -- a 70x understatement, in the one column a person would use to
+# judge whether a shop's numbers look like its real selection.
+
+MIXED_STOCK = {
+    "https://shopify.test": shopify([
+        product("Zzz Domaine Chardonnay 2020", 60, available=False),   # ours, gone
+        product("Someone Else Savagnin", 30, available=False),         # theirs, gone
+        product("Zzz Domaine Savagnin 2019", 70, available=True),      # ours, here
+    ]),
+    "https://woo.test": woo([]),
+    "https://html.test": "<html><body><p>rien</p></body></html>",
+}
+
+
+def test_the_sold_out_column_counts_every_out_of_stock_listing(watching):
+    result = scraper.check_shop(SHOPS[0], FakeCrawler(MIXED_STOCK))
+    row = scraper.coverage_row(SHOPS[0], result)
+
+    assert row["products"] == 3
+    assert row["sold_out"] == 2, "only the watched producer's listing was counted"
+    assert row["in_stock"] == 1
+    assert row["hits"] == 1
+
+
+def test_the_matched_sold_out_rows_are_still_only_ours(watching):
+    """The note names producers, so that list stays filtered to the roster --
+    the two counts answer different questions."""
+    result = scraper.check_shop(SHOPS[0], FakeCrawler(MIXED_STOCK))
+    assert [h["producer"] for h in result.sold_out] == ["Zzz Domaine"]
+    assert result.out_of_stock == 2
+
+
+def test_in_stock_and_sold_out_add_up_to_products(pipeline):
+    import json as _json
+    pipeline(MIXED_STOCK)
+    for row in _json.loads((pipeline.tmp / "coverage.json").read_text()):
+        assert row["in_stock"] + row["sold_out"] == row["products"], row["shop"]

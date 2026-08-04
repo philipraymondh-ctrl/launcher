@@ -55,7 +55,7 @@ def coverage_row(shop, result=None, status="ok"):
     which still gets a row -- a shop missing from the table entirely is how
     "we never looked" hides."""
     products = result.products_parsed if result is not None else 0
-    sold_out = len(result.sold_out) if result is not None else 0
+    sold_out = result.out_of_stock if result is not None else 0
     hits = list(result) if result is not None else []
     producers = sorted({h["producer"] for h in hits}
                        | {h["producer"] for h in (result.sold_out if result else [])})
@@ -900,12 +900,19 @@ class ShopResult(list):
     """
 
     def __init__(self, hits=(), products_parsed=0, sold_out=(), near_tokens=(),
-                 truncated=False):
+                 truncated=False, out_of_stock=0):
         super().__init__(hits)
         self.products_parsed = products_parsed
         self.sold_out = list(sold_out)
         self.near_tokens = set(near_tokens)
         self.truncated = truncated
+        # Two different questions. `sold_out` is the watched producers whose
+        # bottles are gone, which is what the digest note names.
+        # `out_of_stock` is how much of the whole catalogue is unbuyable,
+        # which is what the coverage table needs -- reading the first number
+        # into that column reported 30 of mareehaute's 3496 as sold out when
+        # the true figure was 2139.
+        self.out_of_stock = out_of_stock
 
 
 def shop_order(shops, now=None):
@@ -956,7 +963,8 @@ def check_shop(shop, crawler_client):
         print(f"[{shop['name']}] skipped {skipped} sold-out listing(s)")
     return ShopResult(hits, products_parsed=len(items),
                       sold_out=sold_out, near_tokens=near_tokens,
-                      truncated=getattr(items, "truncated", False))
+                      truncated=getattr(items, "truncated", False),
+                      out_of_stock=skipped)
 
 
 def main():

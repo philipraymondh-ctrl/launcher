@@ -68,8 +68,10 @@ jobs:
 
       - name: Apply the change
         id: apply
+        env:
+          APPLY_KIND: ${{ steps.kind.outputs.kind }}
         run: |
-          python apply_issue.py --kind "${{ steps.kind.outputs.kind }}" --body-file issue_body.md
+          python apply_issue.py --kind "$APPLY_KIND" --body-file issue_body.md
           {
             echo 'summary<<APPLY_EOF'
             cat apply_summary.txt
@@ -86,6 +88,13 @@ jobs:
         run: pytest tests/ -q
 
       - name: Commit to main
+        env:
+          # Both through the environment. The summary is derived from an
+          # issue body, i.e. text from outside, and splicing that into a
+          # shell string is how a stray quote or $(...) would get to run --
+          # the same lesson the github-script step below already carries.
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          APPLY_SUMMARY: ${{ steps.apply.outputs.summary }}
         run: |
           rm -f issue_body.md apply_summary.txt
           if git diff --quiet && git diff --cached --quiet && [ -z "$(git status --porcelain)" ]; then
@@ -96,11 +105,10 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -m "Config change from issue #${{ github.event.issue.number }}
-
-          ${{ steps.apply.outputs.summary }}
-
-          Applied by .github/workflows/apply-config.yml after tests passed."
+          git commit \
+            -m "Config change from issue #${ISSUE_NUMBER}" \
+            -m "${APPLY_SUMMARY}" \
+            -m "Applied by .github/workflows/apply-config.yml after tests passed."
           git push
           echo "committed=true" >> "$GITHUB_ENV"
 

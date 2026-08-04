@@ -301,6 +301,14 @@ HTTP header or printed.
   for a night, and an hourly red run teaches you to ignore red runs.
   Producers matched at no shop are named too: an alias typo makes a
   producer vanish from every shop at once, which is otherwise invisible.
+- The run stops itself on wall clock as well as on requests. A cold-cache
+  crawl of 22 polite shops took 8m38s against a 10-minute job timeout, and
+  every shop added shrinks that margin; a job killed at the ceiling loses
+  the whole crawl -- no `hits.json`, no email, a red run and no
+  explanation. `MAX_RUN_SECONDS` (default 900) breaks the shop loop, names
+  the shops not reached, and lets the run report what it has.
+  `timeout-minutes` in the workflow is only the outer backstop and must stay
+  well clear of it.
 - `shop_order()` rotates SHOPS by the hour. The budget is global and was
   spent in list order, so the moment it binds it is always the same tail
   that goes unfetched -- systematic, not random. Both "not reached this
@@ -314,6 +322,32 @@ HTTP header or printed.
   on a file whose correct resolution is always "regenerate it". Two merges
   stopped on exactly that. No test reads the file from disk -- they render
   through `dashboard.render()` -- so a branch never needs it current.
+- A workflow input never reaches a shell command line. It goes through
+  `env:` and is read as a quoted variable -- `"$ONLY"`, never
+  `--only ${{ inputs.only }}`. A probe dispatched with "Lapangee,
+  lavinoterie" in that box became two shell arguments and crashed the run,
+  and on a public repo the same shape is an injection waiting for a quote.
+  The same goes for `github.event.*` and any `steps.*.outputs.*` derived
+  from them. `tests/test_workflows.py` enforces this, plus two neighbours:
+  every expansion is quoted, and every variable a script reads is defined
+  on *that* step (an `env:` block one step away expands to the empty
+  string, which is how `--kind ""` would have shipped).
+- The probe saves what it finds by default. A read-only probe that reaches
+  two shops, parses their catalogues and commits nothing looks identical to
+  a probe that failed -- it kept lavinoterie and pangee dark for three days
+  after they had already answered. `apply` defaults to true in `probe.yml`
+  and in the dashboard form, and a read-only run that found working shops
+  prints a `NOTHING WAS SAVED` block naming them and the next step. Safety
+  is not lost: `--apply` still only promotes shops that parsed a real
+  response in that same run, and only after the suite passes.
+- `probe.py --only` is forgiving about how names are typed (commas or
+  spaces, any case) and unforgiving about names that do not exist: an
+  unknown name exits non-zero and lists the real ones. Probing the empty
+  set and exiting 0 is the failure mode this replaces.
+- The probe's catalogue-path guessing is capped (`MAX_CATALOGUE_GUESSES`).
+  One live run spent 24 requests on a single shop, all 404, and 107 of 150
+  across eight -- with eleven unverified shops the budget binds and the
+  tail goes unprobed without saying so.
 - The repo is public, so issue forms are untrusted input. `apply_issue.py`
   must keep rejecting quote/backslash injection, non-https URLs and unsafe
   shop names, and `apply-config.yml` must keep its `author_association ==

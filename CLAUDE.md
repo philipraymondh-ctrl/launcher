@@ -175,7 +175,7 @@ shops added from research/guesswork rather than a real observed response
 --apply`, which fetches, parses and flags in a single run against a real
 response; never by hand.
 
-22 shops are currently verified and fetched on every run. Two of them,
+19 shops are currently verified and fetched on every run. Two of them,
 vinovivo and purovino, spent months listed here as "prices are rendered
 client-side" — and that verdict was wrong twice over. The price *was* in
 their HTML; `autoselect._price_nodes` could not see it, because it accepted a
@@ -209,15 +209,21 @@ The four that remain unverified each have a tested reason:
     price wall for guests, not client-side rendering. Its `/fr/vignerons`
     index lists 41 growers and none of them is a producer we watch.
 
-Two verified shops answer HTTP 200 with a bot challenge rather than their
-catalogue, which is why `crawler.Challenged` exists: **vinnaturel.fr** serves
-"One moment, please... Please wait while your request is being verified", and
-**vinopura.nl** serves 221 bytes of meta-refresh to
-`/.well-known/sgcaptcha/`. Both read as healthy for weeks — one as
-"ok, 0 products", the other as a "parse error" — and both went into the 6h
-cache, so each challenge stayed true for six more runs. They now get a
-`blocked` coverage row and a line in the digest. Do not try to get past
-either: a challenge is a shop saying no.
+`crawler.Challenged` exists because a shop can answer HTTP 200 with a bot
+challenge rather than its catalogue: **vinnaturel.fr** serves "One moment,
+please... Please wait while your request is being verified", and vinopura.nl
+served 221 bytes of meta-refresh to `/.well-known/sgcaptcha/` before it was
+removed from the list. Both read as healthy for weeks — one as "ok, 0
+products", the other as a "parse error" — and both went into the 6h cache, so
+each challenge stayed true for six more runs. Such a shop now gets a `blocked`
+coverage row and a line in the digest. Do not try to get past a challenge: it
+is a shop saying no.
+
+Shops leave the list too. vinopura, volatilewines, purovino, biowijnclub and
+vinifine were removed on request; between them they were 726 products and no
+hits, and purovino had only just been made readable. Removing a shop is
+config, not archaeology -- the entry, its fixture and its captures go
+together, and git remembers the rest.
 
 Secrets (`GMAIL_SENDER`, `GMAIL_APP_PASSWORD`, `NOTIFY_EMAIL`) are the
 only external configuration; everything else is in this repo. Those three

@@ -365,51 +365,15 @@ SHOPS = [
         "verified": True,
     },
     {
-        "name": "vinifine",
-        "platform": "woocommerce",
-        "url": "https://www.vinifine.be",
-        "verified": True,
-    },
-    {
         "name": "zuiverwijnen",
         "platform": "shopify",
         "url": "https://zuiverwijnen.nl",
         "verified": True,
     },
     {
-        # Platform guess based on the site's Dutch WooCommerce-default URL
-        # slug ("/product-categorie/"). Weak evidence, still unverified.
-        "name": "vinopura",
-        "platform": "woocommerce",
-        "url": "https://vinopura.nl",
-        "verified": True,
-    },
-    {
-        "name": "volatilewines",
-        "platform": "woocommerce",
-        "url": "https://volatilewines.com",
-        "verified": True,
-    },
-    {
-        "name": "biowijnclub",
-        "platform": "woocommerce",
-        "url": "https://www.biowijnclub.nl",
-        "verified": True,
-    },
-    {
         "name": "puurwijnshop",
         "platform": "shopify",
         "url": "https://www.puurwijn.shop",
-        "verified": True,
-    },
-    {
-        "name": "purovino",
-        "platform": "html",
-        "url": "https://www.purovino.be",
-        "catalog_path": "webshop",
-        "item_selector": "div.product",
-        "title_selector": "h2.product-title",
-        "price_selector": "span.price",
         "verified": True,
     },
     {
@@ -427,6 +391,41 @@ SHOPS = [
         "title_selector": "h2.product-title",
         "price_selector": "span.price",
         "verified": True,
+    },
+    # Private sales of artisan-grower wines, Issy-les-Moulineaux. Its own
+    # URLs (/content/5-notre-concept) are PrestaShop-shaped, but the
+    # platform is the probe's to determine, not mine.
+    {
+        "name": "demainlesvins",
+        "platform": "html",
+        "url": "https://www.demainlesvins.com",
+        "item_selector": "div.product",
+        "title_selector": "h2.product-title",
+        "price_selector": "span.price",
+        "verified": False,
+    },
+    # Nuits-Saint-Georges, 4000+ references, Burgundy-led -- the first shop
+    # on this list where Roumier is a plausible find rather than a hope.
+    {
+        "name": "cavescarriere",
+        "platform": "html",
+        "url": "https://caves-carriere.fr",
+        "item_selector": "div.product",
+        "title_selector": "h2.product-title",
+        "price_selector": "span.price",
+        "verified": False,
+    },
+    # Paris 14e, natural wine since 2006, ~1000 references. Whether it sells
+    # online at all is exactly what the probe is for: the listings that
+    # describe it call it a shop you walk into.
+    {
+        "name": "mifuguemiraisin",
+        "platform": "html",
+        "url": "https://www.mifuguemiraisin.com",
+        "item_selector": "div.product",
+        "title_selector": "h2.product-title",
+        "price_selector": "span.price",
+        "verified": False,
     },
 ]
 

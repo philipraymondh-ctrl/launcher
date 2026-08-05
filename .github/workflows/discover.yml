@@ -1,0 +1,82 @@
+name: Discover Shops
+
+# Manual only. Finds candidate shops and answers the three questions that
+# decide whether one is worth adding -- is it a shop rather than a restaurant,
+# does it ship to Denmark, does it stock anyone we watch. It changes no
+# config: candidates come back as SHOPS entries to paste, and probe.py --apply
+# is still the only thing that verifies a shop.
+on:
+  workflow_dispatch:
+    inputs:
+      urls:
+        description: "Comma-separated candidate shop URLs"
+        type: string
+        default: ""
+      from_page:
+        description: "Assess every outbound host linked from this page (an importer's stockist list)"
+        type: string
+        default: ""
+      producers:
+        description: "Comma-separated producers to search the web for (needs the search secrets)"
+        type: string
+        default: ""
+      limit:
+        description: "Most candidates to assess"
+        type: string
+        default: "20"
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    # Three requests per candidate at 3s+jitter each, plus the shops' own
+    # response times.
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Assess candidates
+        env:
+          # Through the environment and quoted, never spliced into the command
+          # line: a dispatch box is caller-controlled text, and a space in one
+          # already crashed the probe once.
+          URLS: ${{ inputs.urls }}
+          FROM_PAGE: ${{ inputs.from_page }}
+          PRODUCERS: ${{ inputs.producers }}
+          LIMIT: ${{ inputs.limit || '20' }}
+          # Absent, the web-search step is skipped rather than replaced by
+          # scraping a results page. The key travels as a query parameter, so
+          # discover.py redacts any URL it prints -- these run logs are public.
+          SEARCH_API_KEY: ${{ secrets.SEARCH_API_KEY }}
+          SEARCH_ENGINE_ID: ${{ secrets.SEARCH_ENGINE_ID }}
+          MAX_REQUESTS_PER_RUN: "200"
+          FRESH: "1"
+        run: |
+          args=()
+          IFS=',' read -ra items <<< "$URLS"
+          for item in "${items[@]}"; do
+            trimmed="$(echo "$item" | xargs)"
+            if [ -n "$trimmed" ]; then args+=(--url "$trimmed"); fi
+          done
+          IFS=',' read -ra people <<< "$PRODUCERS"
+          for person in "${people[@]}"; do
+            trimmed="$(echo "$person" | xargs)"
+            if [ -n "$trimmed" ]; then args+=(--producer "$trimmed"); fi
+          done
+          if [ -n "$FROM_PAGE" ]; then args+=(--from-page "$FROM_PAGE"); fi
+          args+=(--limit "$LIMIT")
+          python discover.py "${args[@]}"
+
+      - name: Upload the candidate report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: discover-${{ github.run_id }}
+          path: discover_output/
+          retention-days: 30

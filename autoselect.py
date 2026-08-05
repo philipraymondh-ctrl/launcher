@@ -352,6 +352,62 @@ def find_producer_links(html, base_url, match_fn):
     return found
 
 
+# --- how big is this catalogue -----------------------------------------------
+#
+# Every paginating shop says so on page one, which we have already fetched, so
+# this costs nothing. Two idioms cover all of them:
+#
+#   PrestaShop:   "Affichage 1-24 de 2827 article(s)"   -> 24/page, 2827 total
+#   WooCommerce:  "1-10 de 315 resultats"               -> 10/page, 315 total
+#
+# and the shop's own last-page link agrees with ceil(total/per_page) on every
+# real page checked. Without this the walk stops at a fixed cap and reports
+# 480 of vinnouveau's 2827 wines as though 480 were the catalogue.
+COUNTED = (
+    re.compile(r"affichage\s+\d+\s*[-–]\s*(\d+)\s+de\s+(\d+)", re.I),
+    re.compile(r"\b\d+\s*[-–]\s*(\d+)\s+(?:de|of|van)\s+(\d+)\s+r[eé]sultat", re.I),
+)
+LAST_PAGE_LINK = (re.compile(r"[?&]page=(\d+)"), re.compile(r"/page/(\d+)"))
+# Three distinct page numbers means the pager is listing a range rather than
+# just pointing at the next one.
+MIN_PAGER_LINKS = 3
+
+
+def catalogue_size(html):
+    """(total items, per page, pages) as the shop itself reports them, or None.
+
+    The page count is the larger of what the counter implies and what the
+    pager links, because a shop that filters server-side sometimes lists more
+    pages than its own total divided by its page size.
+    """
+    text = " ".join(BeautifulSoup(html, "html.parser").stripped_strings)
+    per_page = total = None
+    for pattern in COUNTED:
+        match = pattern.search(text)
+        if match:
+            per_page, total = int(match.group(1)), int(match.group(2))
+            break
+
+    # The highest page a pager links is only the *last* page when the pager
+    # lists a range. A minimal pager links "next" and nothing else, so its
+    # single ?page=2 says nothing about where the catalogue ends -- reading it
+    # as the length stopped a walk at page two and called that complete.
+    linked = 0
+    for pattern in LAST_PAGE_LINK:
+        found = {int(n) for n in pattern.findall(html)}
+        if len(found) >= MIN_PAGER_LINKS:
+            linked = max(linked, max(found))
+
+    if total and per_page:
+        pages = -(-total // per_page)          # ceil
+        return total, per_page, max(pages, linked)
+    if linked:
+        return None, None, linked
+    # Unknown, which is not the same as one page: the walk goes on following
+    # "next" until the shop stops offering one, bounded only by the net.
+    return None
+
+
 # --- pagination -------------------------------------------------------------
 
 # A listing that says it is sold out is not a find. Alerting on a bottle

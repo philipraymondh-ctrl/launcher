@@ -13,7 +13,7 @@ on:
       max_requests_per_run:
         description: "Override MAX_REQUESTS_PER_RUN for this run"
         type: string
-        default: "160"
+        default: "400"
       dry_run:
         description: "Print the digest instead of emailing it (sends nothing, changes no state)"
         type: boolean
@@ -25,7 +25,7 @@ jobs:
     # A cold-cache crawl of 22 polite shops took 8m38s against the old
     # 10-minute ceiling. The scraper stops itself at MAX_RUN_SECONDS and still
     # reports; this is only the outer backstop, so it sits well clear of it.
-    timeout-minutes: 25
+    timeout-minutes: 70
     steps:
       - uses: actions/checkout@v4
 
@@ -61,7 +61,7 @@ jobs:
           GMAIL_SENDER: ${{ secrets.GMAIL_SENDER }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           NOTIFY_EMAIL: ${{ secrets.NOTIFY_EMAIL }}
-          MAX_REQUESTS_PER_RUN: ${{ inputs.max_requests_per_run || '160' }}
+          MAX_REQUESTS_PER_RUN: ${{ inputs.max_requests_per_run || '400' }}
           FRESH: ${{ (inputs.fresh && '1') || '' }}
           # A dry run prints the digest and deliberately persists nothing,
           # so previewing a run cannot put real finds into cooldown.

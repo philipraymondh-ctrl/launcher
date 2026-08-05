@@ -21,7 +21,8 @@ concern, wired together by `scraper.py`:
    a circuit breaker (3 consecutive failed requests skips that host for
    the rest of the run), conditional requests (ETag/Last-Modified, a 304
    reuses the cached body), a 6h disk cache (bypass with `FRESH=1`), and a
-   hard `MAX_REQUESTS_PER_RUN` budget (default 160, sized to fit
+   hard `MAX_REQUESTS_PER_RUN` budget (default 400, sized to a measured
+   311-request complete pass over every catalogue, and to fit
    `MAX_RUN_SECONDS` at a pessimistic 5.5s per request) that stops the run
    cleanly and logs which shops weren't reached. It also refuses to believe
    a 200 that is a bot challenge: `looks_like_challenge` reads a meta-refresh
@@ -61,8 +62,17 @@ concern, wired together by `scraper.py`:
    (`/12-alsace`, `/19-jura`, `/21-loire`) with no "all wines" page at all --
    one path there reads one region, which is how winenot came to be
    configured to read its sparkling-wine filter and nothing else. Every entry
-   is walked, products are deduplicated by URL across them, and
-   `MAX_PAGES_PER_SHOP` bounds the shop rather than each category.
+   is walked to the end of *itself* -- the page budget is per catalogue, not
+   shared, because sharing it spent every page on the first category -- and
+   products are deduplicated by URL across them. How far to walk is derived
+   from the size each catalogue states on its own page one
+   (`catalogue_size`: "Affichage 1-24 de 2827 article(s)", "1-10 de 315
+   resultats"), which costs nothing because that page is already in hand.
+   `MAX_PAGES_PER_SHOP` is only a net against a pager that generates links
+   for ever. A pager that links *next* and nothing else states no size: three
+   distinct page numbers are required before the highest one is read as the
+   last, or a single `?page=2` stops the walk at two pages and calls it
+   complete.
    `find_catalogue_links` derives all of this from the shop's own navigation,
    because no list of guessed paths knows what a shop calls its catalogue.
 4. **`market.py`** — where reference prices come from. One typed number
@@ -131,6 +141,27 @@ concern, wired together by `scraper.py`:
    currency markers `PRICE_PATTERN` and `market.VINTAGE_RE` use to tell a
    price from a year.
 
+**`discover.py`** answers the three questions that decide whether a shop is
+worth adding, because ten suggested from search snippets failed on questions
+nobody had asked: is it a shop or a restaurant with a wine list (a menu has
+the prices and no product links, which is exactly what `find_products`
+requires, so the existing parser *is* the classifier), does it ship to
+Denmark (`None` is a real answer -- a page that never mentions shipping is
+not a page that refuses), and does it stock a producer we watch (read from
+the listings, never the page text: a blog post about Overnoy is not a bottle
+of Overnoy). Candidates come from `--url`, from `--from-page` (an importer's
+stockist list is the richest source, since these growers are allocated
+through one importer per country), or from a search API whose key lives in
+the environment and is redacted from anything printed. It changes no config:
+it emits `SHOPS` entries with `verified: false`, and `probe.py --apply`
+remains the only thing that verifies a shop.
+
+It is deliberately not an Instagram scraper. Hashtag pages are behind a login
+wall, the Graph API's hashtag search returns only the last 24 hours and does
+not name the account that posted, and automated collection is against Meta's
+terms -- the same reason nothing here fetches Wine-Searcher. A test asserts no
+string the code uses names the host.
+
 Two more files exist for operating it rather than scraping:
 **`probe.py`** detects each shop's real platform from a runner (the dev
 sandbox has no egress); with `--apply` it also saves the real response as
@@ -165,7 +196,7 @@ shops added from research/guesswork rather than a real observed response
 --apply`, which fetches, parses and flags in a single run against a real
 response; never by hand.
 
-22 shops are currently verified and fetched on every run. Two of them,
+19 shops are currently verified and fetched on every run. Two of them,
 vinovivo and purovino, spent months listed here as "prices are rendered
 client-side" — and that verdict was wrong twice over. The price *was* in
 their HTML; `autoselect._price_nodes` could not see it, because it accepted a
@@ -199,15 +230,21 @@ The four that remain unverified each have a tested reason:
     price wall for guests, not client-side rendering. Its `/fr/vignerons`
     index lists 41 growers and none of them is a producer we watch.
 
-Two verified shops answer HTTP 200 with a bot challenge rather than their
-catalogue, which is why `crawler.Challenged` exists: **vinnaturel.fr** serves
-"One moment, please... Please wait while your request is being verified", and
-**vinopura.nl** serves 221 bytes of meta-refresh to
-`/.well-known/sgcaptcha/`. Both read as healthy for weeks — one as
-"ok, 0 products", the other as a "parse error" — and both went into the 6h
-cache, so each challenge stayed true for six more runs. They now get a
-`blocked` coverage row and a line in the digest. Do not try to get past
-either: a challenge is a shop saying no.
+`crawler.Challenged` exists because a shop can answer HTTP 200 with a bot
+challenge rather than its catalogue: **vinnaturel.fr** serves "One moment,
+please... Please wait while your request is being verified", and vinopura.nl
+served 221 bytes of meta-refresh to `/.well-known/sgcaptcha/` before it was
+removed from the list. Both read as healthy for weeks — one as "ok, 0
+products", the other as a "parse error" — and both went into the 6h cache, so
+each challenge stayed true for six more runs. Such a shop now gets a `blocked`
+coverage row and a line in the digest. Do not try to get past a challenge: it
+is a shop saying no.
+
+Shops leave the list too. vinopura, volatilewines, purovino, biowijnclub and
+vinifine were removed on request; between them they were 726 products and no
+hits, and purovino had only just been made readable. Removing a shop is
+config, not archaeology -- the entry, its fixture and its captures go
+together, and git remembers the rest.
 
 Secrets (`GMAIL_SENDER`, `GMAIL_APP_PASSWORD`, `NOTIFY_EMAIL`) are the
 only external configuration; everything else is in this repo. Those three
@@ -352,7 +389,8 @@ HTTP header or printed.
   for a night, and an hourly red run teaches you to ignore red runs.
   Producers matched at no shop are named too: an alias typo makes a
   producer vanish from every shop at once, which is otherwise invisible.
-- Every run states its coverage: one row per live shop with products read,
+- Every run states its coverage: one row per live shop with pages read out of
+  the catalogue's own stated total, products read,
   in stock, sold out, hits and the producers matched, in the log, in every
   email and in `coverage.json` (uploaded with the artifact). It exists to
   answer "does what we read match what the shop actually sells", which was
@@ -362,12 +400,19 @@ HTTP header or printed.
   before the catalogue did (`ParsedItems.truncated`, set by `_paged` and
   `fetch_html`), and that is the one cell that decides whether the row can
   be compared with the shop's real selection at all.
-- The run stops itself on wall clock as well as on requests. A cold-cache
-  crawl of 22 polite shops took 8m38s against a 10-minute job timeout, and
-  every shop added shrinks that margin; a job killed at the ceiling loses
-  the whole crawl -- no `hits.json`, no email, a red run and no
-  explanation. `MAX_RUN_SECONDS` (default 900) breaks the shop loop, names
-  the shops not reached, and lets the run report what it has.
+- The run stops itself on wall clock as well as on requests. Reading all 23
+  shops to the end of their catalogues is 311 requests and ~28 minutes cold
+  (vinnouveau's 118 pages are most of it); a job killed at the runner's
+  ceiling loses the whole crawl -- no `hits.json`, no email, a red run and no
+  explanation. `MAX_RUN_SECONDS` (default 2700) breaks the shop loop, names
+  the shops not reached, and lets the run report what it has. The request
+  budget (400) must still bind *before* the clock, because the clock is only
+  checked between shops and so drops whole shops, where the budget degrades
+  one catalogue and marks it TRUNCATED. `tests/test_budget.py` holds that
+  ordering -- budget inside clock, clock inside `timeout-minutes` -- as a
+  relationship, not as today's numbers. Most runs cost far less than a full
+  pass: a cache hit returns before the budget check, so with a 6h TTL the
+  crawl is paid four times a day.
   `timeout-minutes` in the workflow is only the outer backstop and must stay
   well clear of it.
 - `shop_order()` rotates SHOPS by *hours since the epoch*, not by the hour

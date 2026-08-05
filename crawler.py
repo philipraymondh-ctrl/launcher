@@ -34,7 +34,14 @@ BACKOFF_SCHEDULE = [5, 15, 45]
 MAX_ATTEMPTS = 3
 CIRCUIT_BREAKER_THRESHOLD = 3
 CACHE_TTL_SECONDS = 6 * 3600
-DEFAULT_MAX_REQUESTS_PER_RUN = 120
+# Sized against the wall clock, not picked. Politeness costs
+# MIN_DELAY_SECONDS + JITTER_MAX_SECONDS/2 plus the response itself, so a
+# pessimistic 5.5s per request puts 160 requests at 880s -- just inside
+# scraper.MAX_RUN_SECONDS (900). Past ~163 the clock binds first, and it
+# binds worse: it is only checked between shops, so it drops whole shops
+# where the request budget degrades a single catalogue and says so.
+# tests/test_budget.py keeps that arithmetic true.
+DEFAULT_MAX_REQUESTS_PER_RUN = 160
 DEFAULT_CACHE_DIR = Path(__file__).parent / ".cache"
 
 

@@ -13,7 +13,7 @@ on:
       max_requests_per_run:
         description: "Override MAX_REQUESTS_PER_RUN for this run"
         type: string
-        default: "120"
+        default: "160"
       dry_run:
         description: "Print the digest instead of emailing it (sends nothing, changes no state)"
         type: boolean
@@ -61,7 +61,7 @@ jobs:
           GMAIL_SENDER: ${{ secrets.GMAIL_SENDER }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           NOTIFY_EMAIL: ${{ secrets.NOTIFY_EMAIL }}
-          MAX_REQUESTS_PER_RUN: ${{ inputs.max_requests_per_run || '120' }}
+          MAX_REQUESTS_PER_RUN: ${{ inputs.max_requests_per_run || '160' }}
           FRESH: ${{ (inputs.fresh && '1') || '' }}
           # A dry run prints the digest and deliberately persists nothing,
           # so previewing a run cannot put real finds into cooldown.

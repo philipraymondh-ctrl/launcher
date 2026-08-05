@@ -829,8 +829,8 @@ def _fetch_via_producer_index(shop, index_html, index_url, crawler_client):
     return items
 
 
-def catalogue_starts(shop):
-    """Where to begin reading this shop's catalogue.
+def catalogue_starts(shop, now=None):
+    """Where to begin reading this shop's catalogue, and in what order.
 
     `catalog_paths` (a list) exists because winenot.fr and vinnouveau.fr keep
     their wines under region categories -- /12-alsace, /19-jura, /21-loire --
@@ -838,12 +838,23 @@ def catalogue_starts(shop):
     is how winenot came to be configured to read its sparkling-wine filter
     and nothing else. Each entry may be a path or an absolute URL; urljoin
     passes an absolute URL through untouched.
+
+    The list is rotated by the hour for the same reason `shop_order` rotates
+    SHOPS. One page budget is shared across every category, so a fixed order
+    spends all of it on the first few: winenot read 233 products over 20
+    pages and never once reached its rosé, sparkling, moelleux or muté
+    categories -- not at this budget, and not at any budget, because the
+    order never changed. Rotating costs nothing and makes the rest reachable.
     """
     base = shop["url"].rstrip("/") + "/"
     paths = shop.get("catalog_paths") or (
         [shop["catalog_path"]] if shop.get("catalog_path") else [])
     if not paths:
         return [shop["url"]]
+    if len(paths) > 1:
+        at = now or dt.datetime.now(dt.timezone.utc)
+        offset = int(at.timestamp() // 3600) % len(paths)
+        paths = list(paths[offset:]) + list(paths[:offset])
     return [urljoin(base, p) for p in paths]
 
 
@@ -1017,8 +1028,13 @@ def shop_order(shops, now=None):
     """
     if len(shops) < 2:
         return list(shops)
-    hour = (now or dt.datetime.now(dt.timezone.utc)).hour
-    offset = hour % len(shops)
+    # Hours since the epoch, not the hour of the day: `.hour` only ever takes
+    # 24 values, so with 29 shops the offsets 24-28 never occurred and the
+    # five shops sitting there could never lead a run -- a systematic blind
+    # spot of exactly the kind this function exists to remove. The test that
+    # claimed otherwise ran against a three-shop canned list.
+    at = now or dt.datetime.now(dt.timezone.utc)
+    offset = int(at.timestamp() // 3600) % len(shops)
     return list(shops[offset:]) + list(shops[:offset])
 
 
@@ -1068,6 +1084,7 @@ def main():
     skipped_count = 0
     silent_shops = []
     blocked_shops = []       # answered 200 with a bot challenge, not content
+    unreached = []           # verified shops the run never got to
     verified_names = [s["name"] for s in SHOPS if s.get("verified", True)]
     # Rotated so a binding budget does not starve the same tail every hour.
     order = shop_order(SHOPS)
@@ -1075,7 +1092,8 @@ def main():
     started = time.monotonic()
     for i, shop in enumerate(order):
         if MAX_RUN_SECONDS > 0 and time.monotonic() - started >= MAX_RUN_SECONDS:
-            remaining = [s["name"] for s in order[i:] if s.get("verified", True)]
+            unreached = [s for s in order[i:] if s.get("verified", True)]
+            remaining = [s["name"] for s in unreached]
             print(
                 f"Out of time after {MAX_RUN_SECONDS:.0f}s; stopping cleanly so the "
                 f"run still reports. Shops not reached this run: {', '.join(remaining)}"
@@ -1088,7 +1106,8 @@ def main():
             continue
 
         if crawler_client.request_count >= crawler_client.max_requests:
-            remaining = [s["name"] for s in order[i:] if s.get("verified", True)]
+            unreached = [s for s in order[i:] if s.get("verified", True)]
+            remaining = [s["name"] for s in unreached]
             print(
                 f"MAX_REQUESTS_PER_RUN ({crawler_client.max_requests}) reached; "
                 f"not reached this run: {', '.join(remaining)}"
@@ -1128,7 +1147,8 @@ def main():
             coverage.append(coverage_row(shop, status="circuit open"))
             print(f"[{shop['name']}] circuit breaker open for this host, skipped: {e}")
         except crawler.BudgetExceeded:
-            remaining = [s["name"] for s in order[i:] if s.get("verified", True)]
+            unreached = [s for s in order[i:] if s.get("verified", True)]
+            remaining = [s["name"] for s in unreached]
             print(
                 f"MAX_REQUESTS_PER_RUN ({crawler_client.max_requests}) reached mid-run; "
                 f"not reached this run: {', '.join(remaining)}"
@@ -1142,6 +1162,13 @@ def main():
             error_count += 1
             coverage.append(coverage_row(shop, status="parse error"))
             print(f"[{shop['name']}] parse error: {e}")
+
+    # A shop the run never got to needs a row of its own. Without one it
+    # simply vanishes from the table -- and the table is the one place that
+    # answers "did we look at all", so a missing row is the exact shape of
+    # the failure it was built to expose.
+    for shop in unreached:
+        coverage.append(coverage_row(shop, status="not reached"))
 
     table = coverage_table(sorted(coverage, key=lambda r: -r["products"]))
     print()
@@ -1165,6 +1192,13 @@ def main():
         for p in PRODUCERS if p not in found and p in sold_out_shops
     ]
     unseen = [p for p in PRODUCERS if p not in found and p not in sold_out_shops]
+    # "Found nowhere" means an alias that matches nothing, and it can only
+    # mean that when every shop was actually read. With shops unreached the
+    # same list also holds producers whose shop the run never opened, which
+    # is how a budget cut-off turned into an accusation against the aliases.
+    unseen_title = ("Watched but found nowhere" if not unreached else
+                    f"Watched but found nowhere in the "
+                    f"{len(coverage) - len(unreached)} shop(s) read")
     if sold_out_only:
         print(f"Matched but sold out everywhere ({len(sold_out_only)}): "
               f"{', '.join(sold_out_only)}")
@@ -1208,7 +1242,8 @@ def main():
         "Shops that returned nothing": silent_shops,
         "Blocked by a bot challenge": blocked_shops,
         "Matched but sold out everywhere": sold_out_only,
-        "Watched but found nowhere": unseen,
+        unseen_title: unseen,
+        "Shops not reached this run": [s["name"] for s in unreached],
         "Alias near-misses": misses,
     })
 

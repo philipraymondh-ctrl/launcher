@@ -319,10 +319,11 @@ SHOPS = [
         "name": "purewijnen",
         "platform": "html",
         "url": "https://www.purewijnen.be",
+        "catalog_path": "nl/wijnkaart",
         "item_selector": "div.product",
         "title_selector": "h2.product-title",
         "price_selector": "span.price",
-        "verified": False,
+        "verified": True,
     },
     {
         "name": "naturavin",

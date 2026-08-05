@@ -415,13 +415,14 @@ SHOPS = [
         "price_selector": "span.price",
         "verified": False,
     },
-    # Paris 14e, natural wine since 2006, ~1000 references. Whether it sells
-    # online at all is exactly what the probe is for: the listings that
-    # describe it call it a shop you walk into.
+    # Paris 14e, natural wine since 2006, ~1000 references. Its own domain is
+    # a shopfront with nothing to read -- the webshop is hosted on Hiboutik, a
+    # French point-of-sale SaaS, at mifuguemiraisin.hiboutik.com/shop. Probing
+    # the main domain found nothing for exactly that reason.
     {
         "name": "mifuguemiraisin",
         "platform": "html",
-        "url": "https://www.mifuguemiraisin.com",
+        "url": "https://mifuguemiraisin.hiboutik.com",
         "item_selector": "div.product",
         "title_selector": "h2.product-title",
         "price_selector": "span.price",

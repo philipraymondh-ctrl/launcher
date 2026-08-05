@@ -17,6 +17,7 @@ import hashlib
 import json
 import os
 import random
+import re
 import threading
 import time
 import urllib.robotparser
@@ -64,6 +65,21 @@ class BudgetExceeded(FetchError):
     """MAX_REQUESTS_PER_RUN was reached; this URL was not fetched."""
 
 
+class Challenged(FetchError):
+    """The server answered 200 with a bot-challenge page instead of content.
+
+    vinnaturel.fr returns "One moment, please... Please wait while your
+    request is being verified"; vinopura.nl returns 221 bytes of meta-refresh
+    to /.well-known/sgcaptcha/. Both are HTTP 200, so every layer below this
+    read them as healthy: one shop reported "ok, 0 products" for weeks and
+    the other a "parse error", and the challenge went into the 6h disk cache
+    where it stayed true for six more runs.
+
+    A challenge is not something to get past. It is a shop saying no, and the
+    run's job is to say so out loud.
+    """
+
+
 class UpstreamError(FetchError):
     """The request ultimately failed (network error or non-2xx) after retries.
 
@@ -93,6 +109,49 @@ class FetchResult:
     def raise_for_status(self):
         if self.status_code >= 400:
             raise UpstreamError(f"HTTP {self.status_code}", status_code=self.status_code)
+
+
+# A challenge page is short, says one of a handful of things, and links
+# nowhere. Each half of that matters: the phrases alone would misread a shop
+# whose copy happens to say "just a moment", and a page's own link count is
+# what separates an interstitial from a catalogue. Getting this wrong in the
+# generous direction takes a working shop dark, so both halves are required.
+CHALLENGE_PHRASES = (
+    "one moment, please",
+    "just a moment",
+    "please wait while your request is being verified",
+    "checking your browser",
+    "verifying you are human",
+    "enable javascript and cookies to continue",
+    "attention required",
+)
+# Only ever matched inside a meta-refresh target, never in page text: a blog
+# post about captchas is not a captcha.
+CHALLENGE_REDIRECTS = ("sgcaptcha", "captcha", "/cdn-cgi/challenge", "challenge-platform")
+CHALLENGE_MAX_LINKS = 2
+META_REFRESH = re.compile(
+    r"""<meta[^>]+http-equiv=["']?refresh["']?[^>]+content=["']([^"']+)["']""", re.I)
+
+
+def looks_like_challenge(text):
+    """Why this 200 is not content, or None if it is.
+
+    Deliberately conservative -- a false positive is a working shop reported
+    as blocked, which is worse than the failure it replaces.
+    """
+    body = (text or "")[:20_000]
+    refresh = META_REFRESH.search(body)
+    if refresh:
+        target = refresh.group(1).lower()
+        for marker in CHALLENGE_REDIRECTS:
+            if marker in target:
+                return f"meta-refresh to {marker}"
+    lowered = body.lower()
+    if lowered.count("<a ") <= CHALLENGE_MAX_LINKS:
+        for phrase in CHALLENGE_PHRASES:
+            if phrase in lowered:
+                return f"interstitial saying {phrase!r}"
+    return None
 
 
 def _build_url(url, params):
@@ -244,6 +303,11 @@ class Crawler:
 
         with self._host_locks[host]:
             cached = None if self.fresh else self._read_cache(full_url)
+            # A challenge cached before this check existed would otherwise
+            # keep being served for its full 6h. Treat it as no cache at all
+            # and go ask again -- the shop may have stopped challenging us.
+            if cached and looks_like_challenge(cached.get("text")):
+                cached = None
             if cached and (time.time() - cached["fetched_at"]) < CACHE_TTL_SECONDS:
                 return FetchResult(cached["status_code"], cached["text"], from_cache=True)
 
@@ -263,6 +327,12 @@ class Crawler:
             # backoff sequence is normal politeness, not 3 host failures.
             try:
                 result = self._attempt_with_retries(full_url, host, headers, cached)
+            except Challenged:
+                # A shop that challenges us is refusing, the same as a 403.
+                # Asking again this run is the rude thing to do, so let the
+                # breaker count it and skip the host after three.
+                self._record_failure(host)
+                raise
             except UpstreamError as e:
                 if self._is_host_failure(e.status_code):
                     self._record_failure(host)
@@ -322,6 +392,13 @@ class Crawler:
 
             if resp.status_code >= 400:
                 raise UpstreamError(f"HTTP {resp.status_code}", status_code=resp.status_code)
+
+            # Before the cache write, never after: a cached challenge is a
+            # lie with a six-hour shelf life. Not retried either -- three
+            # goes at a captcha is exactly the behaviour that earns a block.
+            challenge = looks_like_challenge(resp.text)
+            if challenge:
+                raise Challenged(f"{full_url}: {challenge}")
 
             entry = {
                 "status_code": resp.status_code,

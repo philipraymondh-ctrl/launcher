@@ -592,9 +592,28 @@ def near_misses(unseen, corpus, producers=None):
 
 # Matches a number only when a currency marker is directly adjacent, so a
 # bare 4-digit vintage year (e.g. "2018") is never mistaken for a price.
+#
+# The number-then-marker branch carries three guards, all of them scars:
+#
+#  - `(?<![\d.,])` so the tail of a longer number is not read as a price of
+#    its own. Without it, rejecting "2022 €" would just re-match "022 €".
+#  - `(?!(?:19|20)\d{2}(?![.,]\d))` so a vintage immediately followed by the
+#    *next* number's currency symbol is not read as that number's price.
+#    "Ganevat Poulprix 2022 €45,00" parsed as 2022.0, and only French shops
+#    (which write "45,00 €", number first) kept it from ever firing. A
+#    price-shaped vintage with decimals -- "2018,50 €" -- is still a price,
+#    which is why the guard looks past a decimal part.
+#  - a lookahead rather than a consuming group for the marker, so the symbol
+#    stays available to the symbol-first branch. Consuming it meant that
+#    skipping "2022 €" also swallowed the € belonging to "45,00", and the
+#    real price went unread.
+#
+# A genuine EUR 2018 bottle written "2018 €" is lost to this. That is the
+# trade this codebase makes everywhere: no number beats a confident wrong one.
 PRICE_PATTERN = re.compile(
     r"(?:[€$£]\s?(\d{1,4}(?:[.,]\d{2})?))"
-    r"|(?:(\d{1,4}(?:[.,]\d{2})?)\s?(?:€|EUR|USD|\$))",
+    r"|(?:(?<![\d.,])(?!(?:19|20)\d{2}(?![.,]\d))"
+    r"(\d{1,4}(?:[.,]\d{2})?)\s?(?=€|EUR|USD|\$))",
     re.IGNORECASE,
 )
 
@@ -1035,6 +1054,7 @@ def main():
     error_count = 0
     skipped_count = 0
     silent_shops = []
+    blocked_shops = []       # answered 200 with a bot challenge, not content
     verified_names = [s["name"] for s in SHOPS if s.get("verified", True)]
     # Rotated so a binding budget does not starve the same tail every hour.
     order = shop_order(SHOPS)
@@ -1085,6 +1105,11 @@ def main():
             error_count += 1
             coverage.append(coverage_row(shop, status="robots.txt"))
             print(f"[{shop['name']}] robots.txt disallows this path, skipped: {e}")
+        except crawler.Challenged as e:
+            error_count += 1
+            coverage.append(coverage_row(shop, status="blocked"))
+            blocked_shops.append(shop["name"])
+            print(f"[{shop['name']}] blocked by a bot challenge, not read: {e}")
         except crawler.CircuitOpen as e:
             error_count += 1
             coverage.append(coverage_row(shop, status="circuit open"))
@@ -1168,6 +1193,7 @@ def main():
     notify.run_digest(evaluated, dry_run=DRY_RUN, force=FORCE_REPORT,
                       tables={"Shop coverage": table}, notes={
         "Shops that returned nothing": silent_shops,
+        "Blocked by a bot challenge": blocked_shops,
         "Matched but sold out everywhere": sold_out_only,
         "Watched but found nowhere": unseen,
         "Alias near-misses": misses,

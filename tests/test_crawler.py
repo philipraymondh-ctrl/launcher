@@ -349,3 +349,141 @@ def test_no_workflow_puts_an_email_on_the_wire():
         assert "CONTACT_EMAIL" not in path.read_text(), (
             f"{path.name} still injects CONTACT_EMAIL into the crawler"
         )
+
+
+# --- bot challenges: a 200 that is not content -------------------------------
+#
+# Two verified shops were reported healthy for weeks while serving nothing.
+# vinnaturel.fr answers 200 with "One moment, please... Please wait while your
+# request is being verified"; vinopura.nl answers 200 with 221 bytes of
+# meta-refresh to /.well-known/sgcaptcha/. Both went into the 6h disk cache,
+# so each challenge stayed true for six more runs. The captures below are the
+# real bodies, trimmed.
+
+VINNATUREL_CHALLENGE = (
+    '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">'
+    '<title>One moment, please...</title></head><body>'
+    '<div id="outer-container"><div id="container"><div class="throbber"></div>'
+    '<div id="text">Please wait while your request is being verified...</div>'
+    '</div></div></body></html>'
+)
+SGCAPTCHA_CHALLENGE = (
+    '<html><head><link rel="icon" href="data:;">'
+    '<meta http-equiv="refresh" content="0;/.well-known/sgcaptcha/'
+    '?r=%2F&y=ipc:172.182.245.132:1785882854.337"></head></html>'
+)
+A_REAL_SHOP_PAGE = (
+    '<html><body><h1>Nos vins</h1>'
+    + "".join(f'<a href="/vin/{i}">Cuvee {i} 21,50 €</a>' for i in range(12))
+    + '</body></html>'
+)
+
+
+def test_a_challenge_page_is_recognised_for_what_it_is():
+    assert crawler_mod.looks_like_challenge(VINNATUREL_CHALLENGE)
+    assert "sgcaptcha" in crawler_mod.looks_like_challenge(SGCAPTCHA_CHALLENGE)
+
+
+def test_a_real_catalogue_is_never_called_a_challenge():
+    """A false positive takes a working shop dark, which is worse than the
+    failure this replaces."""
+    assert crawler_mod.looks_like_challenge(A_REAL_SHOP_PAGE) is None
+    assert crawler_mod.looks_like_challenge("") is None
+    # The phrases alone must not be enough: a shop whose own copy says
+    # "just a moment" while linking to its catalogue is a shop, not a wall.
+    chatty = ('<html><body><p>Just a moment while we pour...</p>'
+              + "".join(f'<a href="/v/{i}">Cuvee {i} 30,00 €</a>' for i in range(9))
+              + '</body></html>')
+    assert crawler_mod.looks_like_challenge(chatty) is None
+    # And a page that merely writes about captchas is not one.
+    assert crawler_mod.looks_like_challenge(
+        '<html><body><h1>Why we do not use a captcha</h1>'
+        '<a href="/a">a</a><a href="/b">b</a></body></html>') is None
+
+
+def test_a_challenge_raises_instead_of_returning_a_healthy_200(monkeypatch, tmp_cache):
+    def fake_get(url, headers=None, timeout=None):
+        if url.endswith("/robots.txt"):
+            return FakeResp(200, "")
+        return FakeResp(200, VINNATUREL_CHALLENGE)
+
+    monkeypatch.setattr(crawler_mod.requests, "get", fake_get)
+    client = make_crawler(tmp_cache)
+
+    with pytest.raises(crawler_mod.Challenged):
+        client.get("https://challenged.example/")
+
+
+def test_a_challenge_is_never_written_to_the_cache(monkeypatch, tmp_cache):
+    """A cached challenge is a lie with a six-hour shelf life."""
+    def fake_get(url, headers=None, timeout=None):
+        if url.endswith("/robots.txt"):
+            return FakeResp(200, "")
+        return FakeResp(200, SGCAPTCHA_CHALLENGE)
+
+    monkeypatch.setattr(crawler_mod.requests, "get", fake_get)
+    client = make_crawler(tmp_cache)
+    with pytest.raises(crawler_mod.Challenged):
+        client.get("https://challenged.example/shop")
+
+    assert not list(tmp_cache.glob("*.json")) or all(
+        "sgcaptcha" not in p.read_text() for p in tmp_cache.glob("*.json"))
+
+
+def test_a_challenge_already_in_the_cache_is_not_served(monkeypatch, tmp_cache):
+    """Six hours of poison were already in the cache when this shipped."""
+    calls = []
+
+    def fake_get(url, headers=None, timeout=None):
+        calls.append(url)
+        if url.endswith("/robots.txt"):
+            return FakeResp(200, "")
+        return FakeResp(200, A_REAL_SHOP_PAGE)
+
+    monkeypatch.setattr(crawler_mod.requests, "get", fake_get)
+    client = make_crawler(tmp_cache)
+    url = "https://recovered.example/shop"
+    client._write_cache(url, {
+        "status_code": 200, "text": VINNATUREL_CHALLENGE,
+        "etag": None, "last_modified": None, "fetched_at": time_module.time(),
+    })
+
+    result = client.get(url)
+
+    assert "Nos vins" in result.text
+    assert url in calls, "the poisoned cache entry was served instead of refetching"
+
+
+def test_a_challenge_is_not_retried(monkeypatch, tmp_cache):
+    """Three goes at a captcha is what earns a real block."""
+    calls = []
+
+    def fake_get(url, headers=None, timeout=None):
+        calls.append(url)
+        if url.endswith("/robots.txt"):
+            return FakeResp(200, "")
+        return FakeResp(200, VINNATUREL_CHALLENGE)
+
+    monkeypatch.setattr(crawler_mod.requests, "get", fake_get)
+    client = make_crawler(tmp_cache)
+    with pytest.raises(crawler_mod.Challenged):
+        client.get("https://challenged.example/")
+
+    assert len([c for c in calls if "robots" not in c]) == 1
+
+
+def test_a_challenging_host_eventually_trips_the_breaker(monkeypatch, tmp_cache):
+    """A shop that challenges us is refusing, the same as a 403."""
+    def fake_get(url, headers=None, timeout=None):
+        if url.endswith("/robots.txt"):
+            return FakeResp(200, "")
+        return FakeResp(200, VINNATUREL_CHALLENGE)
+
+    monkeypatch.setattr(crawler_mod.requests, "get", fake_get)
+    client = make_crawler(tmp_cache)
+    for i in range(crawler_mod.CIRCUIT_BREAKER_THRESHOLD):
+        with pytest.raises(crawler_mod.Challenged):
+            client.get(f"https://challenged.example/{i}")
+
+    with pytest.raises(crawler_mod.CircuitOpen):
+        client.get("https://challenged.example/anything")

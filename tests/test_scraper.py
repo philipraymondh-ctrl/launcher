@@ -29,6 +29,14 @@ class FakeTextResponse:
     def __init__(self, text):
         self.text = text
 
+    @property
+    def content(self):
+        """Even a canned text response has bytes. The PDF route reads
+        `.content`, and without this the fixture test crashed the moment
+        fetch_html reached it -- which failed the probe's own pre-commit
+        suite and refused a shop the probe had just read successfully."""
+        return self.text.encode("utf-8")
+
     def raise_for_status(self):
         pass
 
@@ -219,7 +227,20 @@ def test_verified_shop_fixture_yields_real_products(shop_name):
     # into actual products -- an empty parse means the adapter has drifted.
     if shop_name == "__none__":
         pytest.skip("no verified shops yet")
+    import autoselect
     shop = shop_by_name(shop_name)
+    body = fixture_for(shop).read_text() if shop["platform"] == "html" else ""
+
+    # A shop whose catalogue is a document is settled before the fetcher runs.
+    # purewijnen publishes its whole range as a PDF and has no price anywhere
+    # in its HTML, so its fixture is the page that links the list: it cannot
+    # parse to products, and a canned HTML response cannot stand in for the
+    # document either -- handing that page to the PDF reader is how this test
+    # crashed and refused a shop the probe had just read successfully. What
+    # must hold for such a fixture is that it still leads somewhere.
+    if body and autoselect.find_pdf_link(body, shop["url"]):
+        return
+
     items = scraper.FETCHERS[shop["platform"]](shop, crawler_for(shop))
     if items:
         assert any(i["title"] for i in items), f"{shop_name} fixture has no product titles"
@@ -231,17 +252,6 @@ def test_verified_shop_fixture_yields_real_products(shop_name):
     # follow -- the stub hands the index back sixteen times, so the parse
     # is legitimately empty. What must hold for such a fixture is that it
     # still names producers we watch.
-    import autoselect
-    body = fixture_for(shop).read_text()
-
-    # Or the catalogue is a document. purewijnen publishes its whole range as
-    # a PDF and has no price anywhere in its HTML, so its fixture is the page
-    # that links the list -- which cannot parse to products on its own, and a
-    # canned response cannot stand in for the document either. What must hold
-    # is that the page still leads somewhere.
-    if autoselect.find_pdf_link(body, shop["url"]):
-        return
-
     growers = autoselect.find_producer_links(
         body, shop["url"], scraper.match_producers)
     assert growers, (

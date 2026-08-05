@@ -32,7 +32,6 @@ limit, backoff, the circuit breaker and the run budget all apply exactly
 as they do in a real scrape.
 """
 import argparse
-import io
 import json
 import os
 import re
@@ -44,6 +43,7 @@ from bs4 import BeautifulSoup
 import apply_issue
 import autoselect
 import crawler
+import pdflist
 import scraper
 
 OUTPUT_DIR = Path(os.environ.get("PROBE_OUTPUT_DIR", Path(__file__).parent / "probe_output"))
@@ -121,20 +121,25 @@ def looks_like_json(body):
 
 
 def pdf_text(blob):
-    """The text of a PDF, page by page, or a reason it could not be read.
+    """The text of a PDF, page by page, or a reason it could not be read."""
+    return pdflist.extract_text(blob)
 
-    Kept here rather than in the fetcher so a capture can show what a shop's
-    PDF actually contains before anybody writes a parser for it."""
-    try:
-        import pypdf
-    except ImportError:                                  # pragma: no cover
-        return None, "pypdf is not installed"
-    try:
-        reader = pypdf.PdfReader(io.BytesIO(blob))
-        pages = [(page.extract_text() or "") for page in reader.pages]
-    except Exception as e:                               # pragma: no cover
-        return None, f"{type(e).__name__}: {e}"
-    return pages, None
+
+# A shop's own document often carries the owner's mailbox and mobile number
+# in its header. They are published by the shop, but copying them into a
+# public repo is gratuitous -- the parser needs the wine rows, not the
+# letterhead -- and the same rule that keeps our own contact off the wire
+# applies to somebody else's.
+CONTACT_PATTERNS = (
+    re.compile(r"[\w.+-]+@[\w-]+\.[\w.]+"),
+    re.compile(r"\b0\d{2,3}[/.\s-]\d{2}[.\s-]?\d{2}[.\s-]?\d{2}\b"),
+)
+
+
+def redact_contacts(text):
+    for pattern in CONTACT_PATTERNS:
+        text = pattern.sub("[redacted]", text)
+    return text
 
 
 def save_diagnostic_text(name, url, text, byte_count, page_count):
@@ -145,7 +150,7 @@ def save_diagnostic_text(name, url, text, byte_count, page_count):
     path.write_text(
         f"# {url}\n# {byte_count} bytes of PDF, {page_count} page(s), extracted "
         f"with pypdf.\n# Diagnostic only: delete once this shop parses.\n\n"
-        + text[:DIAGNOSTIC_CAP]
+        + redact_contacts(text[:DIAGNOSTIC_CAP])
     )
     return path
 

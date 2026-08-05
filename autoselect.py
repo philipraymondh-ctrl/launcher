@@ -247,6 +247,40 @@ def find_products(html, base_url, price_pattern, parse_price, min_blocks=None):
     return items
 
 
+# A shop whose catalogue is a document. The link text says what it is in the
+# shop's own language, and the filename usually repeats it.
+PDF_LIST_WORDS = ("wijnlijst", "wijnkaart", "wine list", "winelist", "carte",
+                  "tarif", "prijslijst", "catalogue", "lijst", "kaart", "liste")
+
+
+def find_pdf_link(html, base_url):
+    """The wine-list PDF on this page, or None.
+
+    Discovered rather than recorded, every run: purewijnen's list is a Drupal
+    attachment whose URL carries a file id and a mangled slug
+    (`wijnlijst_winkel-lpt-desktop-78jpikp-desktop-78jpikp_257.pdf`), so a
+    stored URL would 404 the moment they upload a new edition -- silently,
+    which is the failure mode this project exists to avoid. The page that
+    links it is stable; the file's name is not.
+    """
+    soup = BeautifulSoup(html, "html.parser")
+    candidates = []
+    for anchor in soup.find_all("a", href=True):
+        href = anchor["href"].strip()
+        if ".pdf" not in href.lower():
+            continue
+        label = _strip_accents(
+            f"{anchor.get_text(' ', strip=True)} {anchor.get('title') or ''} {href}")
+        named = any(word in label for word in PDF_LIST_WORDS)
+        candidates.append((named, urljoin(base_url, href)))
+    if not candidates:
+        return None
+    # A shop with several PDFs (a list, a menu, terms) -- prefer one that says
+    # it is a list, and otherwise take the first, which is document order.
+    candidates.sort(key=lambda c: not c[0])
+    return candidates[0][1]
+
+
 # --- finding the catalogue --------------------------------------------------
 
 # A landing page is usually a shop window: a few featured bottles, or none.

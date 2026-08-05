@@ -24,6 +24,7 @@ import crawler
 import evaluate
 import market
 import notify
+import pdflist
 import textnorm
 
 DRY_RUN = os.environ.get("DRY_RUN") == "1"
@@ -420,6 +421,15 @@ SHOPS = [
 
 class EmptyResponseError(Exception):
     """Raised when an HTML shop returns empty/near-empty markup, usually a JS-rendered storefront."""
+
+
+class UnreadableDocumentError(Exception):
+    """A shop's catalogue document arrived but could not be read.
+
+    A scanned wine list extracts to empty pages, and "no entries" from a
+    document is indistinguishable from "this shop stocks nothing" unless it is
+    raised as the failure it is.
+    """
 
 
 # Accent-folding lives in textnorm so the four modules that compare text
@@ -965,6 +975,10 @@ def fetch_html(shop, crawler_client):
             first_html, first_url = page_html, start
 
     if not items and first_html:
+        items = _fetch_via_pdf_list(shop, first_html, first_url, crawler_client)
+        how = "pdf" if items else how
+
+    if not items and first_html:
         items = _fetch_via_producer_index(shop, first_html, first_url, crawler_client)
         how = "index" if items else how
 
@@ -972,6 +986,44 @@ def fetch_html(shop, crawler_client):
         print(f"[{shop['name']}] no configured selector matched; "
               f"read {len(items)} product(s) by auto-detection")
     return ParsedItems(items, truncated=truncated)
+
+
+def _fetch_via_pdf_list(shop, page_html, page_url, crawler_client):
+    """Last resort for a shop whose catalogue is a document.
+
+    purewijnen has no price anywhere in its HTML -- three captured pages, zero
+    currency markers -- and publishes its whole range as a 41-page PDF linked
+    from /nl/wijnkaart. One extra request reads 800+ wines.
+
+    The link is rediscovered every run rather than recorded. Its URL is a
+    Drupal attachment carrying a file id and a mangled slug, so it changes with
+    each new edition; a stored path would 404 the day the list is updated --
+    which, for a list updated often, is most days, and silently.
+    """
+    pdf_url = autoselect.find_pdf_link(page_html, page_url)
+    if not pdf_url:
+        return []
+
+    document = crawler_client.get(pdf_url)
+    document.raise_for_status()
+    pages, why = pdflist.extract_text(document.content)
+    if pages is None:
+        raise UnreadableDocumentError(f"{pdf_url}: {why}")
+
+    text = "\n".join(pages)
+    items = pdflist.parse_wine_list(text, pdf_url)
+    # A scanned list extracts to empty pages, which would read as "this shop
+    # stocks nothing" -- indistinguishable from a shop that really is empty.
+    if pages and not items:
+        raise UnreadableDocumentError(
+            f"{pdf_url}: {len(pages)} page(s) held no readable entries")
+
+    edition = pdflist.list_date(text)
+    sold = sum(1 for i in items if i["in_stock"] is False)
+    print(f"[{shop['name']}] catalogue is a document: {len(pages)} page(s)"
+          f"{' of ' + edition if edition else ''}, {len(items)} entr(ies), "
+          f"{sold} marked sold out")
+    return items
 
 
 FETCHERS = {

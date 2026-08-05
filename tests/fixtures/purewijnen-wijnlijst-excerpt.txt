@@ -1,0 +1,53 @@
+# A trimmed excerpt of purewijnen's real wine-list PDF as pypdf extracts
+# it: the letterhead (whose phone numbers look exactly like prices), the
+# repeated column header, priced entries with mixed decimal separators, SOLD
+# entries for two watched producers, and the multi-vintage shape whose price
+# sits on a line of its own. Contact details are stand-ins of the same shape.
+www.purewijnen.be 
+winkel@example.be 
+ Voorbeeldstraat 2 8560 Moorsele  
+052/12.34.56 
+0470/11.22.33 
+Wijnlijst Augustus 2026 (Deze lijst vervangt alle vorige.) 
+
+Bubbels 
+Naam Streek Beschrijving Jaar Prijs 
+Naam Streek Beschrijving Jaar Prijs 
+Baranco Oscuro 
+Ensayo de burbujas 
+Granada Vigiriega 2011  26.90 
+Bruno & Isabelle Perraud 
+C. Molière, Balance ta bulle 
+VDF Gamay 2021  21.00 
+ 
+Cantillon 
+Gueuze 
+Brussel Gueuze-Lambic 2023  9,50 
+ 
+Cantillon 
+
+Domaine du Calice, Loïc Arbois Savagnin 2022  SOLD 
+
+Sous la maison 
+Domaine du Calice, Loïc 
+Sous le viaduc 
+Arbois Savagnin 2023  SOLD 
+Domaine du Calice, Loïc 
+Icare 
+VDF Chardonnay 2023  SOLD 
+
+Renaud Bruyère-Houillon 
+Blanc 
+Arbois Chardonnay-Savagnin 2019  SOLD 
+Renaud Bruyère-Houillon 
+En Aspis 
+Arbois-Pupillin Ploussard 2020  SOLD 
+Renaud Bruyère-Houillon 
+ 
+Arbois Trousseau 2020  SOLD 
+Stéphane Tissot 
+Les Bruyères 
+Arbois Chardonnay 2022  
+2023 
+59.00
+* 

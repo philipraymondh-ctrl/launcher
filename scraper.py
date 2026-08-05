@@ -1014,8 +1014,15 @@ def fetch_html(shop, crawler_client):
     if items and how == "auto":
         print(f"[{shop['name']}] no configured selector matched; "
               f"read {len(items)} product(s) by auto-detection")
-    return ParsedItems(items, truncated=truncated,
-                       pages_read=pages_read, pages_total=pages_total)
+    # A fraction is only shown when it means what it looks like. pages_read
+    # counts every page across every catalogue this shop has, while a stated
+    # total can only come from the catalogues that state one -- so vinovivo
+    # reported "34/32" (32 pages of /shop plus two portfolio pages that state
+    # nothing) and pangee "27/31" while being complete, because its categories
+    # share bottles and the URL dedupe ends a walk early. Both read as a
+    # shortfall that is not there.
+    return ParsedItems(items, truncated=truncated, pages_read=pages_read,
+                       pages_total=pages_total if len(starts) == 1 else None)
 
 
 def _fetch_via_pdf_list(shop, page_html, page_url, crawler_client):

@@ -514,3 +514,27 @@ def test_a_shop_that_never_says_its_size_still_gets_a_page_count():
     result = scraper.ShopResult([], products_parsed=3496, pages_read=14)
     row = scraper.coverage_row({"name": "mareehaute", "platform": "shopify"}, result)
     assert row["pages"] == "14"
+
+
+def test_a_multi_catalogue_shop_shows_no_misleading_fraction():
+    """pages_read counts pages across every catalogue; a stated total can only
+    come from those that state one. vinovivo reported "34/32" -- 32 pages of
+    /shop plus two portfolio pages -- and pangee "27/31" while complete,
+    because its categories share bottles and the URL dedupe ends a walk early.
+    Both read as a shortfall that was not there."""
+    shop = {"name": "many", "platform": "html", "url": "https://s.test",
+            "catalog_paths": ["a", "b"], "item_selector": "div.product",
+            "title_selector": "h2.product-title", "price_selector": "span.price"}
+    from canned_shop import FakeCrawler
+    pages = {f"https://s.test/{p}": (
+        '<html><body><div class="grid">'
+        + "".join(f'<div><a href="/{p}/{i}.html">Ganevat {p} {i}</a>'
+                  f'<span>{20 + i},00 &euro;</span></div>' for i in range(4))
+        + '</div></body></html>') for p in "ab"}
+    items = scraper.fetch_html(shop, FakeCrawler(pages))
+    assert items.pages_read == 2
+    assert items.pages_total is None
+    row = scraper.coverage_row(shop, scraper.ShopResult(
+        [], products_parsed=8, pages_read=items.pages_read,
+        pages_total=items.pages_total))
+    assert row["pages"] == "2"

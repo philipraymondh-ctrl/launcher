@@ -51,8 +51,48 @@ def _own_text(element):
     return " ".join(t for t in element.find_all(string=True, recursive=False)).strip()
 
 
+# A price cell is short. 80 characters is roomy for "Prix habituel 21,50 €
+# Prix soldé" and far too tight for a paragraph that merely mentions a
+# number -- purovino's "In heel België vanaf 190 Euro" free-shipping line is
+# exactly the prose this keeps out of the grid.
+MAX_PRICE_CELL_CHARS = 80
+
+
 def _price_nodes(soup, price_pattern):
-    return [el for el in soup.find_all(True) if price_pattern.search(_own_text(el))]
+    """Elements holding one price and nothing else.
+
+    `_own_text` alone -- direct-child strings only -- misses every theme that
+    wraps the currency marker in its own tag:
+
+        <span class="amount">12.50<span class="currencySymbol">€</span></span>
+
+    The digits and the marker then live in different elements, so no element's
+    own text is currency-adjacent and the entire grid is invisible. That is
+    WooCommerce's default markup and it is why vinovivo read as a shop with
+    315 products and no prices.
+
+    So: the innermost element whose *full* text carries a price. Innermost,
+    because every ancestor up to <body> also contains that text and the widest
+    of them would drag the whole page in as one product -- finding the right
+    ancestor is _block_for's job, and it needs to start from the cell.
+    """
+    nodes = []
+    for el in soup.find_all(True):
+        text = el.get_text(" ", strip=True)
+        if not price_pattern.search(text):
+            continue
+        # An element with a link inside it is a card, not a price cell.
+        # Without this the "innermost" element can still be the whole tile,
+        # and a producer named in a sidebar attaches to the wrong bottle.
+        if el.find("a") is not None:
+            continue
+        if len(text) > MAX_PRICE_CELL_CHARS:
+            continue
+        if any(price_pattern.search(child.get_text(" ", strip=True) or "")
+               for child in el.find_all(True)):
+            continue
+        nodes.append(el)
+    return nodes
 
 
 # Card layouts often carry the destination in an attribute and let script
@@ -201,7 +241,8 @@ def find_products(html, base_url, price_pattern, parse_price, min_blocks=None):
             # Marked rather than dropped: the probe counts parsed products
             # to decide whether an adapter works, and a shop whose stock
             # happens to be sold out today must not read as broken.
-            "in_stock": not OUT_OF_STOCK.search(_strip_accents(text)),
+            "in_stock": not (OUT_OF_STOCK.search(_strip_accents(text))
+                             or markup_says_sold_out(block)),
         })
     return items
 
@@ -293,7 +334,43 @@ def is_out_of_stock(text, normalize_fn=None):
     return bool(OUT_OF_STOCK.search(_strip_accents(text)))
 
 
+# Some shops say it in the markup and nowhere else. A WooCommerce card is
+# `<li class="product ... outofstock">` whose visible text is identical to an
+# in-stock card's except for the button ("Lire la suite" instead of "Ajouter
+# au panier"), so reading text alone marks every sold-out bottle as buyable --
+# and an alerted bottle is written to seen.json, which is what silences the
+# restock alert for thirty days.
+#
+# Only the block's own class list, never a descendant's: themes ship hidden
+# "sold out" badges inside every card, and believing one would quietly mark a
+# whole catalogue sold out -- a failure that suppresses finds instead of
+# adding noise, so nothing would ever report it.
+OUT_OF_STOCK_CLASSES = {"outofstock", "out-of-stock", "out_of_stock",
+                        "sold-out", "soldout", "epuise"}
+OUT_OF_STOCK_SCHEMA = "schema.org/outofstock"
+
+
+def markup_says_sold_out(block):
+    """Whether the listing's own markup states it is out of stock.
+
+    Only ever used to *add* an out-of-stock verdict, never to overturn one:
+    silence from a theme is not a promise that a bottle is on the shelf.
+    """
+    classes = block.get("class") or []
+    classes = [classes] if isinstance(classes, str) else classes
+    if any(c.lower() in OUT_OF_STOCK_CLASSES for c in classes):
+        return True
+    # An explicit machine-readable statement, wherever it sits in the card.
+    for el in block.find_all(True):
+        for attr in ("href", "content", "itemtype"):
+            if OUT_OF_STOCK_SCHEMA in (el.get(attr) or "").lower():
+                return True
+    return False
+
+
 NEXT_WORDS = {"next", "suivant", "suivante", "volgende", "weiter", "›", "»", "→", ">"}
+# Class tokens for a pager arrow that carries no text at all.
+NEXT_CLASS_TOKENS = {"next", "suivant", "next-page", "pagination-next", "page-next"}
 
 
 # Words a shop uses for the page that lists its wines, in the four languages
@@ -426,6 +503,19 @@ def find_next_page(html, current_url):
         if not label:
             continue
         if label in NEXT_WORDS or any(w in label.split() for w in ("next", "suivant", "suivante")):
+            href = anchor["href"].strip()
+            if href and not NON_PRODUCT_HREF.match(href):
+                return _distinct(urljoin(current_url, href), current_url)
+
+    # Last: the arrow with no words in it. WooCommerce's pager renders
+    # <a class="next page-numbers"><span class="arrow"></span></a> -- no text,
+    # no aria-label, no title, so both passes above see an empty label and
+    # walk past the only link to page 2. Whole-token match on the class, so
+    # "nextgen-gallery" is not a next page.
+    for anchor in soup.find_all("a", href=True):
+        classes = anchor.get("class") or []
+        classes = [classes] if isinstance(classes, str) else classes
+        if any(c.lower() in NEXT_CLASS_TOKENS for c in classes):
             href = anchor["href"].strip()
             if href and not NON_PRODUCT_HREF.match(href):
                 return _distinct(urljoin(current_url, href), current_url)

@@ -858,13 +858,24 @@ def _walk_pages(shop, crawler_client, start, pages_left, seen_urls):
     for page in range(1, pages_left + 1):
         try:
             resp = crawler_client.get(page_url)
+            fetched += 1
+            resp.raise_for_status()
         except crawler.BudgetExceeded:
             print(f"[{shop['name']}] request budget exhausted after page {page - 1}; "
                   f"catalogue TRUNCATED, later pages not checked")
             truncated = True
             break
-        fetched += 1
-        resp.raise_for_status()
+        except crawler.UpstreamError as e:
+            # Page 1 failing is the shop failing, and must surface as such.
+            # A later page failing is how several platforms say "that was the
+            # last one" -- WordPress 404s a paged URL past the end. Raising
+            # here threw away every page already read and reported a shop
+            # that answered every request as unreachable.
+            if page == 1:
+                raise
+            print(f"[{shop['name']}] page {page} returned {e}; treating page "
+                  f"{page - 1} as the last one")
+            break
         if not resp.text.strip():
             if page == 1 and start == shop["url"]:
                 raise EmptyResponseError(shop["name"])

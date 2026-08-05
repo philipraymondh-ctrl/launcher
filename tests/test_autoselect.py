@@ -6,6 +6,8 @@ hand-rolled PHP whose product URLs look like
 case that motivated the module: nine shops serve HTML like this and match
 none of the generic div.product guesses in SHOPS.
 """
+import pytest
+
 import autoselect
 import scraper
 
@@ -711,3 +713,146 @@ def test_one_kind_of_candidate_still_fills_the_list():
     found = autoselect.find_catalogue_links(
         f"<html><body>{many}</body></html>", "https://shop.test/")
     assert len(found) == autoselect.MAX_CATALOGUE_LINKS
+
+
+# --- a price split across tags, a wordless arrow, a 404 at the end -----------
+#
+# Three findings from the same shop. vinovivo.be is WooCommerce 3.4.8 with 315
+# wines, and every one of them was invisible: the price lives in
+# <span class="amount">12.50<span class="currencySymbol">€</span></span>, so no
+# element's *own* text is currency-adjacent and _price_nodes returned nothing.
+# Its pager is an arrow with no text, and WordPress 404s a paged URL past the
+# last page.
+
+SPLIT_PRICE_CARD = """
+<ul class="products">
+  <li class="product instock">
+    <a class="link" href="/product/risveglio-2020">
+      <span class="product-title">Ganevat Risveglio 2020</span>
+      <span class="price"><span class="woocommerce-Price-amount amount">12.50<span
+        class="woocommerce-Price-currencySymbol">&euro;</span></span></span>
+    </a>
+  </li>
+  <li class="product instock">
+    <a class="link" href="/product/apus-2020">
+      <span class="product-title">Ganevat Apus 2020</span>
+      <span class="price"><span class="woocommerce-Price-amount amount">45.00<span
+        class="woocommerce-Price-currencySymbol">&euro;</span></span></span>
+    </a>
+  </li>
+  <li class="product outofstock">
+    <a class="link" href="/product/tocade-2021">
+      <span class="product-title">Ganevat Tocade 2021</span>
+      <span class="price"><span class="woocommerce-Price-amount amount">30.00<span
+        class="woocommerce-Price-currencySymbol">&euro;</span></span></span>
+    </a>
+  </li>
+</ul>
+"""
+
+
+def parse(html, base=BASE):
+    return autoselect.find_products(html, base, scraper.PRICE_PATTERN, scraper.parse_price)
+
+
+def test_a_price_split_across_a_currency_span_is_still_a_price():
+    items = parse(SPLIT_PRICE_CARD)
+    assert [i["price"] for i in items] == [12.50, 45.00, 30.00]
+    # The title is derived; when the card's anchor wraps the price too, it
+    # comes along. What matters is that the wine is named.
+    assert "Ganevat Risveglio 2020" in items[0]["title"]
+
+
+def test_each_split_price_is_its_own_product():
+    """The innermost rule must not climb into a container holding several
+    prices and report the lot as one bottle."""
+    items = parse(f'<div class="grid">{SPLIT_PRICE_CARD}</div>')
+    assert len(items) == 3
+    assert len({i["url"] for i in items}) == 3
+
+
+def test_a_shipping_threshold_in_prose_is_not_a_listing():
+    """purovino's real page says "In heel Belgie vanaf 190 Euro gratis
+    verzending" -- a currency-adjacent number in a paragraph, in a shop whose
+    grid is elsewhere."""
+    prose = (
+        '<html><body><div class="banner"><p>Gratis verzending: in heel Belgie '
+        'vanaf 190 Euro bestellen en wij leveren gratis aan huis, vraag ernaar '
+        'in de winkel of via mail.</p><a href="/webshop">Webshop</a></div>'
+        '</body></html>'
+    )
+    assert parse(prose) == []
+
+
+def test_the_markup_can_say_sold_out_when_the_text_does_not():
+    """A WooCommerce sold-out card reads identically to an in-stock one except
+    for its class list. Believing the text alerts a bottle nobody can buy and
+    writes it to seen.json, which is what kills the restock alert."""
+    items = parse(SPLIT_PRICE_CARD)
+    assert [i["in_stock"] for i in items] == [True, True, False]
+    # products_parsed must not move: the probe counts parsed products to
+    # decide whether an adapter works.
+    assert len(items) == 3
+
+
+def test_a_hidden_sold_out_badge_does_not_condemn_the_whole_catalogue():
+    """Themes ship a hidden badge inside every card. Reading a descendant's
+    class would mark an entire shop sold out -- and because sold-out matches
+    are never alerted, nothing would ever report it."""
+    hidden = SPLIT_PRICE_CARD.replace(
+        '<span class="product-title">',
+        '<span class="sold-out" style="display:none">Uitverkocht badge</span>'
+        '<span class="product-title">')
+    # The badge's own text would be a text-level signal, so strip that too:
+    hidden = hidden.replace(">Uitverkocht badge<", "><")
+    items = parse(hidden)
+    assert [i["in_stock"] for i in items] == [True, True, False]
+
+
+def test_an_arrow_with_no_text_is_still_a_next_page():
+    html = ('<html><body><nav class="woocommerce-pagination"><ul>'
+            '<li><a class="page-numbers" href="/shop/page/2">2</a></li>'
+            '<li><a class="next page-numbers" href="/shop/page/2">'
+            '<span class="arrow"></span></a></li></ul></nav></body></html>')
+    assert autoselect.find_next_page(html, "https://shop.test/shop") == \
+        "https://shop.test/shop/page/2"
+
+
+def test_a_class_that_merely_starts_with_next_is_not_a_pager():
+    html = ('<html><body><a class="nextgen-gallery" href="/gallery">g</a>'
+            '<a class="nextcloud" href="/cloud">c</a></body></html>')
+    assert autoselect.find_next_page(html, BASE) is None
+
+
+class FlakyPagedCrawler(PagedCrawler):
+    """Serves pages, then raises for anything not in the map."""
+
+    def __init__(self, pages, status=404):
+        super().__init__(pages)
+        self.status = status
+
+    def get(self, url, params=None):
+        self.requested.append(url)
+        if url not in self.pages:
+            raise scraper.crawler.UpstreamError(f"HTTP {self.status}",
+                                                status_code=self.status)
+        return scraper.crawler.FetchResult(200, self.pages[url])
+
+
+def test_a_404_past_the_last_page_keeps_the_pages_already_read():
+    """WordPress 404s a paged URL past the end. raise_for_status() sat outside
+    the try, so one 404 discarded all three pages already read and the shop --
+    which had answered every request -- was reported unreachable."""
+    crawler_client = FlakyPagedCrawler({
+        "https://shop.test": page([1, 2, 3], "https://shop.test/?p=2"),
+        "https://shop.test/?p=2": page([4, 5, 6], "https://shop.test/?p=3"),
+    })
+    items = scraper.fetch_html(SHOP, crawler_client)
+    assert len(items) == 6
+    assert items.truncated is False
+
+
+def test_a_404_on_page_one_is_still_the_shop_failing():
+    crawler_client = FlakyPagedCrawler({})
+    with pytest.raises(scraper.crawler.UpstreamError):
+        scraper.fetch_html(SHOP, crawler_client)

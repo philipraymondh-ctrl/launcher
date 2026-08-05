@@ -163,12 +163,13 @@ def hour(h):
 
 
 def test_shop_order_rotates_with_the_hour():
-    names = [s["name"] for s in SHOPS]
+    """Relative, not absolute: the order depends on which hour it is, and
+    pinning "hour 0 is the identity" only ever held by arithmetic luck."""
     at_0 = [s["name"] for s in scraper.shop_order(SHOPS, now=hour(0))]
     at_1 = [s["name"] for s in scraper.shop_order(SHOPS, now=hour(1))]
-    assert at_0 == names
     assert at_1 != at_0
-    assert at_1[0] == names[1]
+    assert at_1[0] == at_0[1]
+    assert sorted(at_1) == sorted(at_0)
 
 
 def test_rotation_never_drops_or_duplicates_a_shop():
@@ -180,6 +181,64 @@ def test_rotation_never_drops_or_duplicates_a_shop():
 def test_every_shop_gets_the_first_slot_within_a_day():
     firsts = {scraper.shop_order(SHOPS, now=hour(h))[0]["name"] for h in range(24)}
     assert firsts == {s["name"] for s in SHOPS}
+
+
+def test_every_real_shop_can_lead_a_run():
+    """Against the real SHOPS, not the three canned ones -- which is why the
+    test above passed while five shops could never lead at all. `hour % 29`
+    only ever produced 24 of the 29 offsets, so biowijnclub, puurwijnshop,
+    purovino, lavinoterie and pangee sat permanently behind the others.
+
+    Asserts the rule (every shop leads within len(SHOPS) hours), not today's
+    roster, so adding a shop cannot turn this into a spurious failure."""
+    real = scraper.SHOPS
+    start = dt.datetime(2026, 8, 5, 0, 0, tzinfo=dt.timezone.utc)
+    firsts = {
+        scraper.shop_order(real, now=start + dt.timedelta(hours=h))[0]["name"]
+        for h in range(len(real))
+    }
+    assert firsts == {s["name"] for s in real}
+
+
+def test_every_category_of_a_split_catalogue_gets_read_eventually():
+    """One page budget is shared across every catalog_paths entry, so a fixed
+    order spends all of it on the first few. winenot read 233 products over
+    20 pages and never once reached rose, effervescent, moelleux or mute --
+    not at this budget, and not at any budget, because the order never moved."""
+    shop = {"name": "many", "url": "https://shop.test",
+            "catalog_paths": ["a", "b", "c", "d", "e", "f"]}
+    start = dt.datetime(2026, 8, 5, 0, 0, tzinfo=dt.timezone.utc)
+    # The measured-best catalogue keeps first place every run -- page 1 is
+    # where new arrivals land. What must not happen is a category being
+    # permanently last, so every other one takes second place in turn.
+    second = {scraper.catalogue_starts(shop, now=start + dt.timedelta(hours=h))[1]
+              for h in range(len(shop["catalog_paths"]))}
+    assert second == {f"https://shop.test/{p}" for p in "bcdef"}
+    for h in range(9):
+        at = start + dt.timedelta(hours=h)
+        assert scraper.catalogue_starts(shop, now=at)[0] == "https://shop.test/a"
+
+
+def test_one_catalogue_recorded_twice_is_fetched_once():
+    """probe.py --apply records a path and its absolute form as two entries:
+    one catalogue, two requests, and with rotation two different orders."""
+    shop = {"name": "dup", "url": "https://vinovivo.be",
+            "catalog_paths": ["shop", "http://vinovivo.be/shop", "shop/"]}
+    assert scraper.catalogue_starts(shop) == ["https://vinovivo.be/shop"]
+
+
+def test_rotating_the_categories_never_drops_one():
+    shop = {"name": "many", "url": "https://shop.test",
+            "catalog_paths": ["a", "b", "c"]}
+    for h in range(6):
+        at = dt.datetime(2026, 8, 5, 0, 0, tzinfo=dt.timezone.utc) + dt.timedelta(hours=h)
+        assert sorted(scraper.catalogue_starts(shop, now=at)) == [
+            "https://shop.test/a", "https://shop.test/b", "https://shop.test/c"]
+
+
+def test_a_single_catalogue_path_is_not_rotated():
+    shop = {"name": "one", "url": "https://shop.test", "catalog_path": "vins"}
+    assert scraper.catalogue_starts(shop) == ["https://shop.test/vins"]
 
 
 def test_a_single_shop_list_is_left_alone():
@@ -203,6 +262,33 @@ def test_the_budget_message_names_the_shops_actually_skipped(pipeline, capsys):
     if fetched:
         first = fetched[0].split("]")[0].lstrip("[")
         assert first not in named
+
+
+def test_a_shop_the_run_never_reached_still_gets_a_row(pipeline, capsys):
+    """The coverage table is the one place that answers "did we look at all",
+    so a shop that vanishes from it is the exact failure the table exists to
+    expose. Reproduced before the fix: at max_requests=1 two of three shops
+    disappeared from the table entirely."""
+    pipeline(BASIC, max_requests=1, force=True)
+    capsys.readouterr()
+    table = pipeline.sent[-1].split("Shop coverage", 1)[1]
+    for shop in SHOPS:
+        if shop.get("verified", True):
+            assert shop["name"] in table, f"{shop['name']} is missing from the table"
+    assert "not reached" in table
+
+
+def test_producers_are_not_blamed_for_shops_the_run_never_opened(pipeline):
+    """"Watched but found nowhere" means an alias that matches nothing, and
+    can only mean that when every shop was read. With the budget binding, the
+    same list also named producers whose shop was never opened -- turning a
+    cut-off into an accusation against the aliases."""
+    pipeline(BASIC, max_requests=1, force=True)
+    body = pipeline.sent[-1]
+    assert "Shops not reached this run" in body
+    assert "Watched but found nowhere\n" not in body
+    assert "found nowhere in the" in body, \
+        "the note must say how many shops it is speaking for"
 
 
 # --- E. running out of wall clock, cleanly ------------------------------------

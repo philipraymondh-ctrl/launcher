@@ -43,6 +43,7 @@ from bs4 import BeautifulSoup
 import apply_issue
 import autoselect
 import crawler
+import pdflist
 import scraper
 
 OUTPUT_DIR = Path(os.environ.get("PROBE_OUTPUT_DIR", Path(__file__).parent / "probe_output"))
@@ -104,8 +105,89 @@ DIAGNOSTIC_CAP = 300_000
 
 
 def _page_slug(url):
-    path = urlparse(url).path.strip("/") or "index"
-    return re.sub(r"[^a-z0-9]+", "-", path.lower()).strip("-")[:48]
+    parts = urlparse(url)
+    path = parts.path.strip("/") or "index"
+    # The query belongs in the slug for the same reason the host does:
+    # /webshop and /webshop?format=json are two different answers to two
+    # different questions, and slugging only the path filed both under
+    # "webshop" -- the second silently overwriting the first.
+    if parts.query:
+        path = f"{path}-{parts.query}"
+    return re.sub(r"[^a-z0-9]+", "-", path.lower()).strip("-")[:64]
+
+
+def looks_like_json(body):
+    return body.lstrip()[:1] in ("{", "[")
+
+
+def pdf_text(blob):
+    """The text of a PDF, page by page, or a reason it could not be read."""
+    return pdflist.extract_text(blob)
+
+
+# A shop's own document often carries the owner's mailbox and mobile number
+# in its header. They are published by the shop, but copying them into a
+# public repo is gratuitous -- the parser needs the wine rows, not the
+# letterhead -- and the same rule that keeps our own contact off the wire
+# applies to somebody else's.
+CONTACT_PATTERNS = (
+    re.compile(r"[\w.+-]+@[\w-]+\.[\w.]+"),
+    re.compile(r"\b0\d{2,3}[/.\s-]\d{2}[.\s-]?\d{2}[.\s-]?\d{2}\b"),
+)
+
+
+def redact_contacts(text):
+    for pattern in CONTACT_PATTERNS:
+        text = pattern.sub("[redacted]", text)
+    return text
+
+
+def save_diagnostic_text(name, url, text, byte_count, page_count):
+    """A PDF's extracted text, committed so a parser can be written from it."""
+    DIAGNOSTIC_DIR.mkdir(parents=True, exist_ok=True)
+    host = urlparse(url).netloc.replace(".", "-")
+    path = DIAGNOSTIC_DIR / f"{name}.{host}.{_page_slug(url)}.txt"
+    path.write_text(
+        f"# {url}\n# {byte_count} bytes of PDF, {page_count} page(s), extracted "
+        f"with pypdf.\n# Diagnostic only: delete once this shop parses.\n\n"
+        + redact_contacts(text[:DIAGNOSTIC_CAP])
+    )
+    return path
+
+
+def describe_price_lines(text):
+    """What a wine-list PDF's text looks like to a price parser.
+
+    The question a capture has to answer before any parsing is written: are
+    the prices currency-marked, or a bare column of numbers? The rule this
+    project enforces everywhere else -- a number is only a price when a
+    currency marker touches it -- decides whether this shop is readable at
+    all, and it can only be checked against the real text.
+    """
+    lines = [ln.strip() for ln in text.splitlines() if ln.strip()]
+    marked = [ln for ln in lines if scraper.PRICE_PATTERN.search(ln)]
+    decimals = [ln for ln in lines if re.search(r"\d+[.,]\d{2}(?!\d)", ln)]
+    return (f"{len(lines)} non-empty line(s), {len(marked)} with a "
+            f"currency-adjacent price, {len(decimals)} with a decimal number")
+
+
+# Scripts are most of a page's bytes and none of its structure -- except when
+# they are the only place the structure lives. A Squarespace commerce page
+# renders its prices from Static.SQUARESPACE_CONTEXT, and many themes emit
+# JSON-LD Product blocks while their visible markup says nothing. Stripping
+# every script destroyed exactly the evidence needed to write the parser:
+# purovino's capture recorded "4 currency-adjacent prices" in its header and
+# then contained not one currency marker.
+DATA_SCRIPT_MARKERS = ("SQUARESPACE_CONTEXT", "__NEXT_DATA__", "__NUXT__",
+                       "window.ShopifyAnalytics", "dataLayer.push")
+DATA_SCRIPT_CAP = 20_000
+
+
+def _is_data_script(tag):
+    if (tag.get("type") or "").lower() in ("application/ld+json", "application/json"):
+        return True
+    body = tag.string or ""
+    return any(marker in body for marker in DATA_SCRIPT_MARKERS)
 
 
 def save_diagnostic_page(name, url, body):
@@ -115,21 +197,33 @@ def save_diagnostic_page(name, url, body):
     storage that the dev sandbox has no route to, so the only way this
     evidence reaches the person writing the parser is through git. Scripts
     and styles are stripped -- they are most of the bytes and none of the
-    structure.
+    structure -- except the ones that carry data rather than behaviour.
     """
-    soup = BeautifulSoup(body, "html.parser")
-    for tag in soup(["script", "style", "noscript", "svg"]):
-        tag.decompose()
-    trimmed = soup.prettify()[:DIAGNOSTIC_CAP]
     DIAGNOSTIC_DIR.mkdir(parents=True, exist_ok=True)
-    # The host belongs in the name. Slugging only the path meant every
-    # shop's landing page was "capture.index.html", so capturing four sites
-    # in one run left one file: three overwrote each other silently, which
-    # cost a round trip to discover.
     host = urlparse(url).netloc.replace(".", "-")
-    (DIAGNOSTIC_DIR / f"{name}.{host}.{_page_slug(url)}.html").write_text(
+    stem = f"{name}.{host}.{_page_slug(url)}"
+
+    # A JSON body put through an HTML parser comes out as one text node with
+    # its own punctuation re-escaped: unreadable, and unusable as a fixture.
+    # Save it as it arrived.
+    if looks_like_json(body):
+        (DIAGNOSTIC_DIR / f"{stem}.json").write_text(body[:DIAGNOSTIC_CAP])
+        return
+
+    soup = BeautifulSoup(body, "html.parser")
+    for tag in soup(["style", "noscript", "svg"]):
+        tag.decompose()
+    for tag in soup("script"):
+        if _is_data_script(tag):
+            tag.string = (tag.string or "")[:DATA_SCRIPT_CAP]
+        else:
+            tag.decompose()
+    trimmed = soup.prettify()[:DIAGNOSTIC_CAP]
+    (DIAGNOSTIC_DIR / f"{stem}.html").write_text(
         f"<!-- {url}\n     {describe_unparsed(body)}\n"
-        f"     Scripts/styles stripped, capped at {DIAGNOSTIC_CAP} bytes.\n"
+        f"     Styles and behaviour-only scripts stripped, data scripts kept\n"
+        f"     (capped at {DATA_SCRIPT_CAP} bytes each); file capped at\n"
+        f"     {DIAGNOSTIC_CAP} bytes.\n"
         f"     Diagnostic only: delete once this shop parses. -->\n" + trimmed
     )
 
@@ -497,8 +591,18 @@ def probe_shop(shop, crawler_client):
             # No page held the whole catalogue, so record the ones that each
             # held part of it -- richest first, capped.
             ordered = [u for _, u in sorted(catalogues, reverse=True)]
+            # One page reached two ways ("shop" and "http://host/shop", or a
+            # trailing slash) was recorded as two catalogues: one page, two
+            # requests every run, and two different rotation orders. The
+            # candidate list dedupes by exact URL, which these are not.
+            deduped, seen_pages = [], set()
+            for url in ordered:
+                key = url.replace("http://", "https://").rstrip("/")
+                if key not in seen_pages:
+                    seen_pages.add(key)
+                    deduped.append(url)
             result["catalog_paths"] = [
-                _relative_path(shop, u) or "" for u in ordered[:MAX_CATALOGUE_PATHS]
+                _relative_path(shop, u) or "" for u in deduped[:MAX_CATALOGUE_PATHS]
             ]
             result["products_parsed"] = sum(c for c, _ in catalogues)
     return result
@@ -662,6 +766,22 @@ def main():
                 resp.raise_for_status()
             except Exception as e:
                 print(f"CAPTURE {url}: {type(e).__name__}: {e}")
+                continue
+            if resp.is_binary:
+                # A PDF is the one body worth committing as text rather than
+                # as itself: the text is what a parser will read, and the
+                # original is someone else's document.
+                pages, why = pdf_text(resp.content)
+                if pages is None:
+                    print(f"CAPTURE {url}: {len(resp.content)} bytes of PDF, "
+                          f"unreadable: {why}")
+                    continue
+                text = "\n\n".join(pages)
+                path = save_diagnostic_text("capture", url, text, len(resp.content),
+                                            len(pages))
+                print(f"CAPTURE {url}: {len(resp.content)} bytes of PDF, "
+                      f"{len(pages)} page(s), {len(text)} chars of text -> {path.name}")
+                print(f"         {describe_price_lines(text)}")
                 continue
             save_diagnostic_page("capture", url, resp.text)
             items = autoselect.find_products(

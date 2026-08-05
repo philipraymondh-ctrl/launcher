@@ -29,6 +29,14 @@ class FakeTextResponse:
     def __init__(self, text):
         self.text = text
 
+    @property
+    def content(self):
+        """Even a canned text response has bytes. The PDF route reads
+        `.content`, and without this the fixture test crashed the moment
+        fetch_html reached it -- which failed the probe's own pre-commit
+        suite and refused a shop the probe had just read successfully."""
+        return self.text.encode("utf-8")
+
     def raise_for_status(self):
         pass
 
@@ -118,6 +126,43 @@ def test_price_parser_ignores_vintage_with_explicit_currency_code():
     assert scraper.parse_price("Chardonnay 2020 210,00 EUR") == pytest.approx(210.0)
 
 
+def test_a_vintage_before_a_symbol_first_price_is_not_the_price():
+    """Every verified HTML shop is French and writes "45,00 €" -- number
+    first. Belgium and the Netherlands write "€45,00", and against that the
+    number-then-marker branch matched the *vintage* plus the following
+    price's symbol: "Ganevat Poulprix 2022 €45,00" parsed as 2022.0.
+
+    market.py keeps observations for 180 days and needs only one other shop
+    to set a reference, so a single poisoned row makes an honest EUR 44
+    bottle elsewhere a DEAL -- and the correction later reads as a 97.8%
+    price drop, which is exactly the news that ignores the cooldown."""
+    assert scraper.parse_price("Ganevat Poulprix 2022 €45,00") == pytest.approx(45.00)
+    assert scraper.parse_price("Riesling 2018 €24,50") == pytest.approx(24.50)
+    assert scraper.parse_price("Overnoy Arbois Pupillin 2015 €125,00") == pytest.approx(125.0)
+
+
+def test_a_year_with_a_currency_marker_and_nothing_else_is_not_a_price():
+    """No number beats a confident wrong one: a real EUR 2018 bottle written
+    "2018 €" is lost to this, and that is the trade."""
+    assert scraper.parse_price("Arbois 2018 €") is None
+    assert scraper.parse_price("2019 EUR") is None
+
+
+def test_a_price_that_looks_like_a_year_is_still_a_price():
+    """The guard looks past a decimal part, so the clavelin at 2018,50 EUR
+    keeps its price. (CLAUDE.md's warning about match_key turning "2018,50 €"
+    into "2018 50" is about the same string from the other direction.)"""
+    assert scraper.parse_price("Vin jaune 2018,50 €") == pytest.approx(2018.50)
+    assert scraper.parse_price("€2018") == pytest.approx(2018.0)
+
+
+def test_rejecting_a_year_does_not_expose_its_own_tail():
+    """Rejecting "2022 €" must not leave "022 €" behind for the next pass to
+    match as EUR 22 -- which is what happens without a left boundary."""
+    assert scraper.parse_price("Poulprix 2022 €") is None
+    assert scraper.PRICE_PATTERN.search("2022 €") is None
+
+
 def test_unverified_shops_are_skipped_by_main(monkeypatch, capsys, tmp_path):
     monkeypatch.setenv("DRY_RUN", "1")
     monkeypatch.setattr(scraper, "DRY_RUN", True)
@@ -182,7 +227,20 @@ def test_verified_shop_fixture_yields_real_products(shop_name):
     # into actual products -- an empty parse means the adapter has drifted.
     if shop_name == "__none__":
         pytest.skip("no verified shops yet")
+    import autoselect
     shop = shop_by_name(shop_name)
+    body = fixture_for(shop).read_text() if shop["platform"] == "html" else ""
+
+    # A shop whose catalogue is a document is settled before the fetcher runs.
+    # purewijnen publishes its whole range as a PDF and has no price anywhere
+    # in its HTML, so its fixture is the page that links the list: it cannot
+    # parse to products, and a canned HTML response cannot stand in for the
+    # document either -- handing that page to the PDF reader is how this test
+    # crashed and refused a shop the probe had just read successfully. What
+    # must hold for such a fixture is that it still leads somewhere.
+    if body and autoselect.find_pdf_link(body, shop["url"]):
+        return
+
     items = scraper.FETCHERS[shop["platform"]](shop, crawler_for(shop))
     if items:
         assert any(i["title"] for i in items), f"{shop_name} fixture has no product titles"
@@ -194,12 +252,11 @@ def test_verified_shop_fixture_yields_real_products(shop_name):
     # follow -- the stub hands the index back sixteen times, so the parse
     # is legitimately empty. What must hold for such a fixture is that it
     # still names producers we watch.
-    import autoselect
     growers = autoselect.find_producer_links(
-        fixture_for(shop).read_text(), shop["url"], scraper.match_producers)
+        body, shop["url"], scraper.match_producers)
     assert growers, (
-        f"{shop_name} is verified but its fixture yields neither products "
-        f"nor links to any producer we watch"
+        f"{shop_name} is verified but its fixture yields no products, no link "
+        f"to any producer we watch, and no catalogue document"
     )
 
 

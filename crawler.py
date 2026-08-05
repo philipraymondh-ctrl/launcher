@@ -13,10 +13,12 @@ adapter first, HTML is the last-resort fallback). One JSON call already
 replaces many page fetches by construction; this layer just makes whichever
 call actually happens polite.
 """
+import base64
 import hashlib
 import json
 import os
 import random
+import re
 import threading
 import time
 import urllib.robotparser
@@ -33,7 +35,14 @@ BACKOFF_SCHEDULE = [5, 15, 45]
 MAX_ATTEMPTS = 3
 CIRCUIT_BREAKER_THRESHOLD = 3
 CACHE_TTL_SECONDS = 6 * 3600
-DEFAULT_MAX_REQUESTS_PER_RUN = 120
+# Sized against the wall clock, not picked. Politeness costs
+# MIN_DELAY_SECONDS + JITTER_MAX_SECONDS/2 plus the response itself, so a
+# pessimistic 5.5s per request puts 160 requests at 880s -- just inside
+# scraper.MAX_RUN_SECONDS (900). Past ~163 the clock binds first, and it
+# binds worse: it is only checked between shops, so it drops whole shops
+# where the request budget degrades a single catalogue and says so.
+# tests/test_budget.py keeps that arithmetic true.
+DEFAULT_MAX_REQUESTS_PER_RUN = 160
 DEFAULT_CACHE_DIR = Path(__file__).parent / ".cache"
 
 
@@ -64,6 +73,21 @@ class BudgetExceeded(FetchError):
     """MAX_REQUESTS_PER_RUN was reached; this URL was not fetched."""
 
 
+class Challenged(FetchError):
+    """The server answered 200 with a bot-challenge page instead of content.
+
+    vinnaturel.fr returns "One moment, please... Please wait while your
+    request is being verified"; vinopura.nl returns 221 bytes of meta-refresh
+    to /.well-known/sgcaptcha/. Both are HTTP 200, so every layer below this
+    read them as healthy: one shop reported "ok, 0 products" for weeks and
+    the other a "parse error", and the challenge went into the 6h disk cache
+    where it stayed true for six more runs.
+
+    A challenge is not something to get past. It is a shop saying no, and the
+    run's job is to say so out loud.
+    """
+
+
 class UpstreamError(FetchError):
     """The request ultimately failed (network error or non-2xx) after retries.
 
@@ -82,10 +106,21 @@ class FetchResult:
     """Uniform response shape regardless of whether it came from the network
     (fresh or after a 304) or was served straight from the disk cache."""
 
-    def __init__(self, status_code, text, from_cache=False):
+    def __init__(self, status_code, text, from_cache=False, content=None):
         self.status_code = status_code
         self.text = text
         self.from_cache = from_cache
+        # Bytes, for the responses that are not text at all. purewijnen keeps
+        # its whole wine list in a PDF, and `resp.text` of a PDF is mojibake.
+        self._content = content
+
+    @property
+    def content(self):
+        return self._content if self._content is not None else self.text.encode("utf-8")
+
+    @property
+    def is_binary(self):
+        return self._content is not None
 
     def json(self):
         return json.loads(self.text)
@@ -93,6 +128,65 @@ class FetchResult:
     def raise_for_status(self):
         if self.status_code >= 400:
             raise UpstreamError(f"HTTP {self.status_code}", status_code=self.status_code)
+
+
+# A challenge page is short, says one of a handful of things, and links
+# nowhere. Each half of that matters: the phrases alone would misread a shop
+# whose copy happens to say "just a moment", and a page's own link count is
+# what separates an interstitial from a catalogue. Getting this wrong in the
+# generous direction takes a working shop dark, so both halves are required.
+CHALLENGE_PHRASES = (
+    "one moment, please",
+    "just a moment",
+    "please wait while your request is being verified",
+    "checking your browser",
+    "verifying you are human",
+    "enable javascript and cookies to continue",
+    "attention required",
+)
+# Only ever matched inside a meta-refresh target, never in page text: a blog
+# post about captchas is not a captcha.
+CHALLENGE_REDIRECTS = ("sgcaptcha", "captcha", "/cdn-cgi/challenge", "challenge-platform")
+CHALLENGE_MAX_LINKS = 2
+META_REFRESH = re.compile(
+    r"""<meta[^>]+http-equiv=["']?refresh["']?[^>]+content=["']([^"']+)["']""", re.I)
+
+
+def looks_like_challenge(text):
+    """Why this 200 is not content, or None if it is.
+
+    Deliberately conservative -- a false positive is a working shop reported
+    as blocked, which is worse than the failure it replaces.
+    """
+    body = (text or "")[:20_000]
+    refresh = META_REFRESH.search(body)
+    if refresh:
+        target = refresh.group(1).lower()
+        for marker in CHALLENGE_REDIRECTS:
+            if marker in target:
+                return f"meta-refresh to {marker}"
+    lowered = body.lower()
+    if lowered.count("<a ") <= CHALLENGE_MAX_LINKS:
+        for phrase in CHALLENGE_PHRASES:
+            if phrase in lowered:
+                return f"interstitial saying {phrase!r}"
+    return None
+
+
+# Bodies that are not text. Cached as base64 rather than through `resp.text`,
+# which would store mojibake and hand the parser something it cannot read.
+BINARY_CONTENT_TYPES = ("application/pdf", "application/octet-stream")
+
+
+def _is_binary_response(resp):
+    content_type = (resp.headers.get("Content-Type") or "").split(";")[0]
+    return content_type.strip().lower() in BINARY_CONTENT_TYPES
+
+
+def _result_from_cache(entry):
+    blob = entry.get("content_b64")
+    return FetchResult(entry["status_code"], entry["text"], from_cache=True,
+                       content=base64.b64decode(blob) if blob else None)
 
 
 def _build_url(url, params):
@@ -244,8 +338,13 @@ class Crawler:
 
         with self._host_locks[host]:
             cached = None if self.fresh else self._read_cache(full_url)
+            # A challenge cached before this check existed would otherwise
+            # keep being served for its full 6h. Treat it as no cache at all
+            # and go ask again -- the shop may have stopped challenging us.
+            if cached and looks_like_challenge(cached.get("text")):
+                cached = None
             if cached and (time.time() - cached["fetched_at"]) < CACHE_TTL_SECONDS:
-                return FetchResult(cached["status_code"], cached["text"], from_cache=True)
+                return _result_from_cache(cached)
 
             if self.request_count >= self.max_requests:
                 self.skipped_budget.append(full_url)
@@ -263,6 +362,12 @@ class Crawler:
             # backoff sequence is normal politeness, not 3 host failures.
             try:
                 result = self._attempt_with_retries(full_url, host, headers, cached)
+            except Challenged:
+                # A shop that challenges us is refusing, the same as a 403.
+                # Asking again this run is the rude thing to do, so let the
+                # breaker count it and skip the host after three.
+                self._record_failure(host)
+                raise
             except UpstreamError as e:
                 if self._is_host_failure(e.status_code):
                     self._record_failure(host)
@@ -294,7 +399,7 @@ class Crawler:
             if resp.status_code == 304 and cached:
                 cached["fetched_at"] = time.time()
                 self._write_cache(full_url, cached)
-                return FetchResult(cached["status_code"], cached["text"], from_cache=True)
+                return _result_from_cache(cached)
 
             if resp.status_code in (429, 503):
                 if attempt < MAX_ATTEMPTS:
@@ -323,14 +428,29 @@ class Crawler:
             if resp.status_code >= 400:
                 raise UpstreamError(f"HTTP {resp.status_code}", status_code=resp.status_code)
 
+            binary = _is_binary_response(resp)
+
+            # Before the cache write, never after: a cached challenge is a
+            # lie with a six-hour shelf life. Not retried either -- three
+            # goes at a captcha is exactly the behaviour that earns a block.
+            # Skipped for a binary body, whose decoded "text" is mojibake and
+            # has no business being pattern-matched.
+            if not binary:
+                challenge = looks_like_challenge(resp.text)
+                if challenge:
+                    raise Challenged(f"{full_url}: {challenge}")
+
             entry = {
                 "status_code": resp.status_code,
-                "text": resp.text,
+                "text": "" if binary else resp.text,
+                "content_b64": (base64.b64encode(resp.content).decode("ascii")
+                                if binary else None),
                 "etag": resp.headers.get("ETag"),
                 "last_modified": resp.headers.get("Last-Modified"),
                 "fetched_at": time.time(),
             }
             self._write_cache(full_url, entry)
-            return FetchResult(resp.status_code, resp.text, from_cache=False)
+            return FetchResult(resp.status_code, entry["text"], from_cache=False,
+                               content=resp.content if binary else None)
 
         raise UpstreamError(str(last_exc) if last_exc else f"exhausted {MAX_ATTEMPTS} attempts")

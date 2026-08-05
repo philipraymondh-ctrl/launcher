@@ -1,311 +1,178 @@
-# Round 2 — ten ideas, a council, three picks
+# Round 3 — the shops that still don't deliver
 
-Written after reading today's live run (`30401865128`) and re-running the
-real captured pages in `probe_pages/` through the current code, so every
-claim below is evidence, not intuition.
+Four council seats (platform archaeologist, crawl-budget architect, red-team
+skeptic, robustness engineer — the last died mid-report to a session limit and
+its ground was covered by the other three), one live coverage run, and one live
+capture probe of nine pages nobody had ever looked at.
 
-## What the evidence says
-
-```
-[mareehaute] skipped 2135 sold-out listing(s)
-[mareehaute] ok, 19 hit(s) from 3481 product(s)
-[leszinzinsduvin] followed 10 producer page(s), 8 listing nothing; 8 product(s), 0 in stock
-55 raw producer match(es) this run.
-Watched but found nowhere (13): Overnoy/Houillon, Domaine des Miroirs/Kagami,
-  Domaine Calice, Thomas Popy, Roumier, Alice Fahrenkrug, Jules Brochet,
-  Bruyere Houillon, Allante et Boulanger, Domaine des Murmures,
-  Tom Gauditiabois, Lattard, Romain Lawson
-```
-
-13 of 16 watched producers "found nowhere" — while one shop alone hid 2135
-sold-out listings, and sold-out listings are dropped in `check_shop`
-*before* `matched_aliases` ever runs. So that line cannot distinguish a
-broken alias from a shelf that is simply empty today. It was added to make
-a broken alias visible; as built it can't.
-
-Two more facts from the captures:
-
-- `probe_pages/purewijnen.index.html` (real) contains
-  `<a href="/nl/renaud-bruyere-houillon">Renaud Bruyère-Houillon</a>` — and
-  `autoselect.find_producer_links` already finds exactly that one link and
-  correctly ignores `Overnoy-Crinquand`. purewijnen is dark for a reason
-  that no longer holds.
-- `probe_pages/capture.domaine-6-193-ganevat-jean-franecois-html.html`
-  (real, leszinzinsduvin's Ganevat page) contains the words "Les vins de
-  Ganevat Jean françois" and then *nothing*: no `vin-NNNN` links, no `€`.
-  The 8-of-10 empty grower pages are real emptiness, not a parse failure.
-  Nothing to fix there.
-
-## The ten ideas
-
-1. **Match sold-out listings too, and say which case it is.** "Found
-   nowhere" today means "found nowhere in stock". Split it into *matched
-   nowhere at all* (alias suspect) and *matched, every listing sold out*
-   (real scarcity) — and name the shops in the second case.
-2. **Separator-insensitive matching.** `normalize()` strips accents and
-   lowercases, nothing else, so `Bruyère-Houillon`, `Allanté & Boulanger`
-   and `l'Allanté` need hand-written alias variants. `PRODUCERS` already
-   carries `overnoy-houillon`, `houillon-overnoy`, `bruyere-houillon` for
-   exactly this, i.e. a maintenance cost per producer per punctuation
-   style.
-3. **Near-miss diagnosis for producers matched nowhere.** Search the run's
-   own text for tokens one edit away from a watched alias, and name them.
-   Turns "found nowhere" from a mystery into "'gauditiabois' vs
-   'gaudiciabois' at cavepurjus".
-4. **Reach purewijnen through the producer index** (evidence above), and
-   record what the other three dark shops actually serve rather than
-   leaving them as "needs work".
-5. **Pin the restock alert.** A listing that was sold out and comes back
-   alerts *by accident*: sold-out items never enter `seen.json`, so
-   `prev is None` and it reads as new. Nothing tests that. The single most
-   valuable alert for allocated wine rests on a side effect.
-6. **Audit the text stock heuristic against platform truth** where a shop
-   gives both, and report disagreements. 61% of mareehaute reads as sold
-   out; if the text backstop over-fires anywhere, real finds vanish.
-7. **Price history in the digest row** ("EUR 45, was EUR 52 on 12 Jul")
-   from `observations.json`.
-8. **Retire the genuinely unreachable shops** (vinscheznous no longer
-   resolves, naturavin 403s) instead of carrying them as pending work.
-9. **Scheduled auto-probe** so platform drift is caught before it zeroes a
-   shop for a week.
-10. **Surface the run's notes on the dashboard** so the phone shows state
-    without waiting for an email.
-
-## The council
-
-**The scraping engineer.** 4 first: coverage is the product. purewijnen
-stocks Bruyère-Houillon *today* and we are not looking. But it needs a
-live probe to confirm, and 2 makes matching work on the page it will find.
-
-**The data skeptic.** 2 is the one that scares me, in both directions.
-Collapsing punctuation widens every alias at once — "Overnoy, Houillon" in
-one text block becomes "overnoy houillon". I want it done as one shared
-comparison rule, not four copies, and I want the namesake cases from
-`probe_pages` in the tests: `Overnoy-Crinquand` and `Renaud
-Bruyère-Houillon` sit in the same real `<ul>` and must land on different
-sides. 6 is my other worry but there is no evidence of harm yet —
-mareehaute is a platform-truth shop, so its 2135 come from `available`,
-not from the heuristic.
-
-**The operator.** 1, 2, 3 and 5 cost zero extra requests: they all read
-data the run already has in memory. 4 costs a probe and a handful of
-grower pages. 9 costs 24 probes a day to detect something the DRIFT line
-already reports for free — no. 7 and 10 are new surface for no new
-knowledge.
-
-**The collector.** I do not care how many products parsed. I care that
-Ganevat and Overnoy exist somewhere I can buy them. 1 is the one that
-changes my behaviour: "sold out at mareehaute and petitescaves" tells me
-where to watch, and it is the difference between "your list is broken" and
-"the wine is gone". 5 protects the only alert I would ever act on
-instantly.
-
-**The test archaeologist.** Every bug in this repo was a silent one, and
-two of these are silent *right now*: the found-nowhere line is misleading
-(1), and the restock alert is an accident nobody asserts (5). Fix the
-first, pin the second in the same change — they are the same seam.
-
-### Verdict
-
-- **A — Coverage honesty (1, with 5 folded in).** Match every parsed
-  listing; split absent from sold-out; name the shops; pin the restock
-  behaviour with a test so recording sold-out state can never silently
-  kill it.
-- **B — One comparison rule, separator-insensitive, plus near-miss
-  diagnosis (2 + 3).**
-- **C — purewijnen through the producer index, and the truth about the
-  other three (4).** Offline: a test over the real captured index. Live: a
-  probe run, which is the only thing allowed to flip `verified`.
-
-Not chosen: 6 (no evidence of harm; mareehaute's count is platform truth),
-7, 8, 9, 10 — all either new surface for no new knowledge, or work the
-DRIFT line and the new recap already do.
+Everything below is either reproduced locally against `probe_pages/` and
+`tests/fixtures/`, or measured on a runner.
 
 ---
 
-# Implementation plan
+## What the evidence actually says
 
-## A. Coverage honesty
+### The bug that reorders the whole plan
 
-- `check_shop` runs `matched_aliases` on **every** parsed item, not only
-  in-stock ones. In-stock matches become hits as today; out-of-stock
-  matches go into a second list.
-- `ShopResult` gains `sold_out` alongside `products_parsed`. Still a
-  `list` subclass, so its fifteen callers keep working.
-- Sold-out matches never become hits: not evaluated, not in `hits.json`,
-  not in the market pool, and above all **not written to `seen.json`** —
-  that last one is what keeps a restock reading as new.
-- `main()` derives three sets: `found` (in stock), `sold_out_only`
-  (matched, nothing in stock), `unseen` (matched nowhere at all). The
-  existing "Watched but found nowhere" note keeps its name and finally
-  means what it says; a new "Matched but sold out everywhere" note names
-  producer → shops.
-- Both notes go to the digest and the recap through the existing `notes`
-  dict, which renders only non-empty blocks.
+`parse_price("Ganevat Poulprix 2022 €45,00")` returns **2022.0**.
 
-## B. One comparison rule
+`PRICE_PATTERN`'s second branch, `(\d{1,4}(?:[.,]\d{2})?)\s?(?:€|EUR|USD|\$)`,
+matches the vintage, the space, and the *following* price's currency symbol.
+It has never fired because every verified HTML shop is French and writes
+`45,00 €` — number first. Symbol-first is Belgian and Dutch usage, and every
+shop this plan would enable is Belgian or Dutch.
 
-- `normalize()` exists **four times** — `scraper`, `market`, `evaluate`,
-  `apply_issue` — each an identical accent-strip-and-lower, each with a
-  comment explaining why it was copied. Changing matching in one of them
-  is how a producer added through the issue form silently never matches.
-  So: one `textnorm.py`, imported by all four (and `autoselect`, which has
-  its own `_strip_accents`).
-- The rule: NFKD, drop combining marks, lowercase, `&` → ` et `, every
-  remaining non-alphanumeric → space, collapse runs of space. Aliases and
-  haystacks both go through it, so `bruyere houillon` matches
-  `Bruyère-Houillon` with no per-producer variant.
-- `PRODUCERS` is left exactly as it is. The redundant hyphen variants are
-  harmless; the point is that the *next* producer needs none.
-- Near-miss: `near_misses(unseen, corpus)` where `corpus` is
-  `{shop: set(tokens)}` accumulated during the run. For each unseen
-  producer, take the tokens of its longest alias with ≥6 characters and
-  report corpus tokens at edit distance 1, sharing the first character,
-  within one character of the same length. Capped, and only computed for
-  producers that matched nothing — usually a handful.
-- It goes in the notes as `Alias near-misses`, worded as a suspicion, not
-  a claim.
+The blast radius is not local. `market.py` keeps observations 180 days and
+`MIN_SHOPS = 1`, so one poisoned observation makes another shop's honest €44
+bottle a DEAL; the correction later reads as a 97.8% price drop, which bypasses
+the cooldown by design. One bad night, two false alerts, six months of poisoned
+reference.
 
-## C. purewijnen
+**A precondition for every other item, not a line item.**
 
-- Offline: trim the real `probe_pages/purewijnen.index.html` into a test
-  fixture and assert `find_producer_links` returns the Bruyère-Houillon
-  link and *not* Overnoy-Crinquand. That is a namesake test on real
-  markup, which is worth more than the synthetic one we have.
-- Live: dispatch `probe.yml` for the four dark shops. Only `probe.py
-  --apply` may set `verified`/replace a fixture, so nothing here flips a
-  shop by hand. If the probe cannot read purewijnen's grower pages, that
-  is the answer and it gets written down instead of implemented around.
+### Two shops are not broken, they are challenged
 
-## Order of work
+The capture probe settled both, and neither diagnosis was on the table:
 
-1. Tests for A and B, run, confirm failure.
-2. `textnorm.py` and the four call sites, then A, then near-miss.
-3. Whole suite green.
-4. Re-read every changed file against this plan.
-5. Live: probe dispatch (C) and a `DRY_RUN` scraper dispatch on this
-   branch, to see the new notes against real catalogues.
+- `vinnaturel.fr` returns **HTTP 200** with `<title>One moment, please...</title>`
+  and "Please wait while your request is being verified..." — a JS bot
+  challenge. Not a dead domain, not an outage, not the wrong TLD.
+- `vinopura.nl` returns **HTTP 200**, 221 bytes, meta-refresh to
+  `/.well-known/sgcaptcha/` — SiteGround's captcha. That, not a Store API
+  change, is the "parse error" in two consecutive runs.
 
-## Risks and containment
+The honest report for both is *blocked*; today it says `ok, 0 products` for one
+and `parse error` for the other. A 200 that is a challenge page is a failure
+class the code has no name for — and it lands in the 6h disk cache, so one
+challenge poisons six runs.
 
-| risk | containment |
-|---|---|
-| collapsing punctuation widens an alias into a namesake | real-markup namesake tests from `probe_pages`; longest-alias rule unchanged |
-| four `normalize`s drift again | one module; a test asserts each caller exposes the same object |
-| sold-out matches leak into hits/state and kill restock alerts | asserted directly: no `seen.json` entry for a sold-out key, and a restock alerts |
-| the new notes make every digest noisy | rendered only when non-empty, exactly like the existing two |
-| near-miss floods the note with noise | only for producers matched nowhere, tokens ≥6 chars, distance 1, capped |
-| `market.cuvee_tokens` behaves differently under the new rule | it splits on whitespace after normalising, so collapsing punctuation to space is what it already wanted; covered by existing market tests |
-| a `ShopResult` field addition breaks a caller | it stays a `list`; `probe.py` reads `products_parsed`, which is unchanged |
+We do not evade challenges. We name them.
 
-## Definition of done
+### One generic parser bug hides a whole shop
 
-- Suite green (357 before this change).
-- No new dependency. One new module, documented in CLAUDE.md.
-- Live run on this branch shows the new notes and no regression in shop
-  coverage.
+`autoselect._price_nodes` accepts an element only when its **own** text carries
+a currency-adjacent price. WooCommerce — and most theme families — render
+`<span class="amount">12.50<span class="currencySymbol">€</span></span>`, so the
+digits and the marker sit in different elements and *no* element qualifies. The
+entire grid is invisible.
 
----
+Measured over all 28 captures: an innermost-full-text rule takes
+`vinovivo.shop.html` from **0 → 10 products** and leaves **24 of 28 files
+byte-identical** (the three other changes are vinovivo's own pages).
 
-# PLAN REVIEW — three corrections found by reading the code first
+That, not selectors and not a platform route, is what makes vinovivo readable.
 
-## R1. Consolidating `normalize` as-is would break vintage parsing
+### What the shops are, on tested evidence
 
-The plan said "one rule, imported everywhere". Checked what
-`market.normalize` actually feeds: `VINTAGE_RE`, whose whole job is to tell
-a vintage from a price using currency markers —
-`(?<![\d€$£.,])(19[5-9]\d|20[0-4]\d)(?![\d.,]*\s*(?:€|eur|usd|\$))`.
-Collapse every non-alphanumeric to a space and `2018,50 €` becomes
-`2018 50`, so the lookahead that currently blocks it sees nothing and the
-price reads as a vintage. That is the repo's oldest rule ("never treat a
-bare 4-digit number as a price") broken from the other end.
+| shop | platform | verdict |
+|---|---|---|
+| vinovivo | WooCommerce 3.4.8 | **readable** once `_price_nodes` and the next-link rule land. `/shop`, 315 products, 10/page, `/shop/page/N` confirmed live on page 2. |
+| purovino | Squarespace Commerce | **readable** via `?format=json`: ~96 items in **one request**, with `title`, `fullUrl`, `variants[].priceMoney.value`, `qtyInStock`. |
+| vinnaturelbe | PrestaShop 1.6 | **unreadable**. The real catalogue (`/fr/categorie/11-acheter-en-ligne`, 61KB, 40 product links) has **zero currency markers**. Price wall or catalogue mode. |
+| purewijnen | Drupal 7, no commerce module | **unreadable**. `/nl/wijnen-bestellen` and `/nl/wijnkaart` both **zero prices**, on top of the grower bio's 0-in-28KB. |
+| leszinzinsduvin | hand-rolled PHP | **already correct**. Prices *are* on the grower pages (`110,00 €` on Labet's); Ganevat simply has no bottles listed. "8 products, all sold out" is the right answer. |
+| naturavin / vinscheznous | — | 403 / no DNS. Unchanged. |
 
-**Corrected:** `textnorm.py` exposes *two* functions, not one.
+Two of those are deletions of a hope, written down as a tested reason. That is
+a result: four shops already carry exactly that.
 
-- `strip_accents(text)` — NFKD, drop combining marks, lowercase. Byte-for-
-  byte what all four copies do today, so importing it changes no
-  behaviour anywhere; it is pure de-duplication.
-- `match_key(text)` — `strip_accents` plus `&` → ` et `, remaining
-  non-alphanumerics → space, runs of space collapsed. Used **only** where
-  a name decides a match.
+### Coverage is worse than the table admits, and the table lies when the budget binds
 
-`market` and `evaluate` keep their current semantics (via
-`strip_accents`); `VINTAGE_RE`, `BUNDLE_RE` and the cru patterns never see
-`match_key`.
-
-## R2. Only two call sites actually need the new rule
-
-Which places compare a *name*? `scraper.matched_aliases` (alias vs listing
-text) and `apply_issue`'s alias derivation (which must agree with it, or a
-producer added through the issue form never matches anything — a silent
-failure with a two-week feedback loop). `market.cuvee_tokens` also
-normalises an alias, but only to strip the producer's name out of a title
-as a best effort; widening it there buys nothing and risks the token
-comparison the module exists for.
-
-**Corrected:** `match_key` at those two sites. A test asserts they agree.
-
-## R3. The near-miss corpus does not need to be a corpus
-
-The plan had `main()` accumulating every token from every shop, then
-filtering after the fact — up to ~10k titles, kept for the one case where
-a producer matched nothing.
-
-**Corrected:** filter at collection. The watched aliases are known up
-front, so a token is only worth keeping if some alias token shares its
-first character and is within one character of its length. That reduces
-the per-shop set to a handful of candidates, and the near-miss pass then
-only has to consider tokens that could possibly be one edit away.
-
-## Unchanged after review
-
-A is exactly as planned: the sold-out path stays out of `hits.json`, out of
-the market pool and out of `seen.json`, and the restock behaviour gets the
-test it never had. C stays a probe's decision, not a hand edit.
-
+- **vinnouveau**: its own page says `Affichage 1-24 de 2827 article(s)` and
+  links `?page=118`. We read 480 — **17%**.
+- **pangee**: still pointed at `/nouveaux-produits` (91) while `/fr/25-vins`
+  holds **791** — the exact "a strip is one page, a catalogue runs to twenty"
+  bug CLAUDE.md says the probe was rewritten to stop making.
+- **winenot**: `fetch_html` spends one shared 20-page budget over
+  `catalogue_starts()` **in fixed list order**, so rosé, sparkling, moelleux and
+  muté have never been read once, at any budget.
+- **`shop_order()`** computes `hour % len(shops)` with 29 shops, so offsets
+  24-28 never occur: five shops can never lead a run. The test that claims
+  otherwise runs against the 3-shop canned list and passes vacuously.
+- **When the budget binds, the digest lies.** Reproduced at `max_requests=1`:
+  unfetched shops vanish from the coverage table entirely and their producers
+  are reported under "Watched but found nowhere" — the one note whose whole
+  purpose is to mean "this alias matches nothing".
 
 ---
 
-# OUTCOME — what the live runs decided
+## The plan
 
-## A and B: verified against real catalogues
+Ordered so each step is safe alone, and nothing that could produce a *wrong*
+number ships before the guard that stops it.
 
-Two `DRY_RUN` dispatches on this branch (runs 30403926578 and 30404303597),
-which fetch for real, send nothing and consume no cooldown.
+1. **Vintage guard on `PRICE_PATTERN`** (blocks everything else). Reject a bare
+   4-digit year in the number-then-symbol branch. Keep `positive_price`. Do not
+   loosen whitespace anywhere.
+2. **Name a challenge page instead of believing it.** `crawler.py` detects an
+   interstitial (meta-refresh to a captcha path; a tiny "verifying your request"
+   body) and raises rather than returning a 200. **Never cache it.** `main()`
+   gets a `blocked (challenge)` status and a digest note. No UA spoofing, no
+   retry-until-through.
+3. **`_price_nodes`: innermost element whose full text holds the price**, with
+   the red-team's three guards — no descendant `<a>`, a length cap so prose is
+   not a price cell, `_block_for`'s climb untouched.
+4. **Stock from markup, not only text.** WooCommerce puts it in the `<li>` class
+   list and the card text is identical either way. Without this, vinovivo's
+   sold-out bottles are alerted *and* written to `seen.json`, which permanently
+   destroys the restock alert. The signal may only ever add out-of-stock, never
+   flip a listing to in stock; `products_parsed` must not change.
+5. **Next page by class token** (`next`, `suivant` as whole tokens): vinovivo's
+   next arrow is an empty `<a class="next page-numbers">`. Validated across 44
+   real pages: 6 correct hits, 0 false positives. **Not** numeric `/page/N`
+   guessing.
+6. **A 404 on page ≥ 2 ends a catalogue; it does not lose one.**
+   `_walk_pages` calls `raise_for_status()` outside its `try`, so one 404
+   discards every page already read and reports the shop `unreachable`.
+7. **Squarespace fetcher for purovino**, reading `variants[].priceMoney.value`
+   (the item-level `priceMoney` is `0.00` — reading it would make every bottle a
+   permanent DEAL), `qtyInStock`, `fullUrl`, `positive_price` on the way out,
+   cursor pagination. Prerequisites: an `EMPTY_PAGE` entry, a `trim_payload`
+   field whitelist (or `websiteSettings` — contact email, address, phone — gets
+   committed to a public repo), and **robots.txt read first**, because
+   `urllib.robotparser` ignores `*` wildcards and Squarespace writes
+   query-string exclusions in exactly that form.
+8. **Tell the truth when the budget binds.** Unreached shops get a
+   `STATUS = not reached` row; "found nowhere" is computed only over shops
+   actually fetched. Precondition for item 9.
+9. **Coverage arithmetic.** Monotonic hour counter in `shop_order` (+ a test
+   over the real `SHOPS`); rotate `catalogue_starts`; derive each catalogue's
+   real size from its own page-1 counter (free) and report
+   `pages_read/pages_total`; `MAX_REQUESTS_PER_RUN` 120 → 160 (the largest that
+   still fits 900s at a pessimistic 5.5s/request; past ~163 the clock binds and
+   the clock drops *whole shops*). `MAX_PAGES_PER_SHOP` stays 20 globally.
+10. **pangee's catalogue through the probe** — `/fr/25-vins`, set by
+    `probe.py --apply` against a real response, never by hand.
+11. **Write the tested verdicts into CLAUDE.md** — one sentence each for
+    purewijnen, vinnaturelbe, vinnaturel, vinopura, naming the page tested and
+    what it held.
 
-```
-Matched but sold out everywhere (1): Domaine des Murmures [mareehaute]
-Watched but found nowhere (12): Overnoy/Houillon, ... Romain Lawson
-Shops that returned nothing (1): vinnaturel
-```
+## Explicitly not doing
 
-Both notes do what they were built for, and "found nowhere" is 12 instead
-of 13 because Murmures is now correctly described as stocked-but-empty.
+- **Looser price-whitespace matching.** Fixes nothing real (0 price nodes before
+  *and* after on vinovivo's actual markup — the problem is a tag boundary, not
+  indentation), only "fixes" our own prettified diagnostic artifact, and turns
+  `Clavelin 2016 EUR 250,00` from an honest `NOREF` into a confident 2016.0.
+- **Numeric pagination discovery** (item 5).
+- **Runtime platform re-detection.** Breaks what `verified` means; 12
+  requests/hour to re-ask what the probe already answers.
+- **Retrying vinopura.** A retry re-reads the poisoned cache entry, and a
+  partial retry launders a truncated catalogue into a "complete" one.
+- **Rotating page-offset cursors.** Unstable sort orders make the window skip
+  and duplicate silently; the notes flap hourly; a new state file is one
+  `git add -A` from being pinned for ever.
+- **Product-page fetching.** 315-330 requests for one shop; `autoselect` on a
+  product page reads the *related-products strip*; `NON_PRODUCT_PATH` does not
+  exclude `?add-to-cart=`, so following discovered links can perform
+  state-changing GETs.
+- **A global `MAX_PAGES_PER_SHOP` raise** without item 8.
 
-The runs also caught two things the fixtures could not, both now fixed with
-tests quoting the evidence:
+## Noted, not scheduled
 
-1. The digest's only DEAL was a shopping cart -- "Voir mon panier", EUR 0,
-   at `/commande`, scored against a EUR 99 reference. A zero is not a price.
-2. The near-miss hint fired on ordinary French, twice: `'pierres'` at five
-   shops, then `'pierra'`, `'pierro'`, `'domain'`, `'malice'` at one shop
-   each. Both ends now have to be words the corpus does *not* show at
-   several shops, and the target floor is seven letters.
-
-A consequence worth stating: with the cart no longer counted, vinnaturel
-parses zero products and appears in the DRIFT note. That is honest -- it
-was never reading that shop's catalogue, only its furniture.
-
-## C: the probe said no, with evidence
-
-Run 30403841248 probed all four dark shops with `--apply` and verified
-none. purewijnen was the promising one -- its landing page really is a
-grower index and `find_producer_links` really does find Renaud
-Bruyère-Houillon in it. So the deciding page was captured directly:
-`probe_pages/capture.nl-renaud-bruyere-houillon.html`, 28KB, **zero
-currency markers**. It is a producer bio with no wine list.
-
-So the producer-index route was never the missing piece for these four, and
-the shops stay unverified. Written into CLAUDE.md with the run ids, because
-"needs a probe" was the standing note for months and this is what a probe
-actually said.
+- `urllib.robotparser` ignores `*` wildcards, so robots compliance is weaker
+  than it looks for query-string rules. Item 7 works around it by hand.
+- `notify.item_key` hashes the raw URL, so a shop with a rotating query
+  parameter would re-alert hourly. Not observed on any current shop.
+- `MIN_SHOPS = 1`: one observation sets a reference. The amplifier behind item 1.
+- `coverage.json` is tracked and holds test rows; `observations.json` is neither
+  tracked nor ignored, and two workflows run `git add -A`.

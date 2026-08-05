@@ -21,8 +21,13 @@ concern, wired together by `scraper.py`:
    a circuit breaker (3 consecutive failed requests skips that host for
    the rest of the run), conditional requests (ETag/Last-Modified, a 304
    reuses the cached body), a 6h disk cache (bypass with `FRESH=1`), and a
-   hard `MAX_REQUESTS_PER_RUN` budget (default 120) that stops the run
-   cleanly and logs which shops weren't reached.
+   hard `MAX_REQUESTS_PER_RUN` budget (default 160, sized to fit
+   `MAX_RUN_SECONDS` at a pessimistic 5.5s per request) that stops the run
+   cleanly and logs which shops weren't reached. It also refuses to believe
+   a 200 that is a bot challenge: `looks_like_challenge` reads a meta-refresh
+   to a captcha path, or one of a handful of interstitial phrases on a page
+   that links nowhere, and raises `Challenged` **before** the cache write,
+   without retrying.
 2. **`scraper.py`** — loops over `SHOPS`, dispatching each to a platform
    fetcher (`fetch_shopify`, `fetch_woocommerce`, `fetch_html`, all taking
    a `Crawler` instance) that returns `{text, title, price, url,
@@ -37,13 +42,19 @@ concern, wired together by `scraper.py`:
    their markup is their own (leszinzinsduvin is hand-rolled PHP serving
    `/vin-<id>-<region>_..._<producer>.html`), and nine bespoke selector
    sets is nine things to maintain that each break silently on a restyle.
-   Instead the structure is derived: find elements whose own text holds a
-   currency-adjacent price, climb to the widest ancestor still describing
-   one product *and* holding a product link, group those by shared parent,
-   and take the busiest group. `fetch_html` uses configured selectors when
-   they match and falls back to this when they don't, walking pages via
-   `find_next_page` (`rel="next"`, then "next"/"suivant" links). Returns
-   `[]` rather than guessing when a page has no repeated priced structure.
+   Instead the structure is derived: find the innermost elements whose text
+   holds a currency-adjacent price and no link (a card is not a price cell),
+   climb to the widest ancestor still describing one product *and* holding a
+   product link, group those by shared parent, and take the busiest group.
+   Innermost-and-full-text, not own-text: WooCommerce and Squarespace both
+   render `<span>12.50<span>€</span></span>`, so an own-text rule sees no
+   price at all and the whole grid is invisible -- which is exactly what hid
+   vinovivo's 315 wines and purovino's 122.
+   `fetch_html` uses configured selectors when they match and falls back to
+   this when they don't, walking pages via `find_next_page` (`rel="next"`,
+   then "next"/"suivant" labels, then a `next`/`suivant` class token for the
+   pager arrow that carries no text at all). Returns `[]` rather than
+   guessing when a page has no repeated priced structure.
    An optional `catalog_path` on a SHOPS entry points at the catalogue when
    the landing page isn't it, and `catalog_paths` (a list) exists because
    winenot.fr and vinnouveau.fr keep their wines under region categories
@@ -154,29 +165,49 @@ shops added from research/guesswork rather than a real observed response
 --apply`, which fetches, parses and flags in a single run against a real
 response; never by hand.
 
-20 shops are currently verified and fetched on every run. The six that are
-not each have a stated reason, none of which is "needs selectors" any more
--- `autoselect` and the producer-index route removed that category:
-  - naturavin blocks us with 403;
-  - vinscheznous no longer resolves;
-  - purewijnen, purovino, vinnaturelbe and vinovivo all serve a listing
-    with product links but no prices in the HTML (vinovivo's index has 330
-    product links and 6 prices), so the price is rendered client-side or
-    lives only on the product page. Reaching them means either running JS
-    or fetching every product page, and the second is hundreds of requests
-    for one shop. `probe_pages/` holds a trimmed copy of each page.
+22 shops are currently verified and fetched on every run. Two of them,
+vinovivo and purovino, spent months listed here as "prices are rendered
+client-side" — and that verdict was wrong twice over. The price *was* in
+their HTML; `autoselect._price_nodes` could not see it, because it accepted a
+price only when one element's own text held both the number and the currency
+marker, and both shops (like most WooCommerce and Squarespace themes) wrap
+the marker in its own tag. The evidence for the old verdict was also drawn
+from the wrong page: "vinovivo's index has 330 product links and 6 prices" is
+true of its *home page*, while `/shop` carries ten priced cards and says
+`1–10 de 315 resultats`. Read a shop's catalogue before concluding anything
+about a shop.
 
-    Probe run 30403841248 re-tested all four and verified none: every
-    catalogue-path guess 404s and each landing page parses to zero
-    products. purewijnen looked like the exception, because its landing page
-    *is* a grower index and `find_producer_links` finds our Renaud
-    Bruyère-Houillon in it (ignoring the Overnoy-Crinquand two lines up --
+The four that remain unverified each have a tested reason:
+  - **naturavin** blocks us with 403;
+  - **vinscheznous** no longer resolves;
+  - **purewijnen** is Drupal 7 (`li.leaf`, `/sites/purewijnen/files/`) with
+    no commerce module, and there is no price anywhere on it to read.
+    Captured and checked: `/nl/wijnen-bestellen` and `/nl/wijnkaart` (the two
+    pages whose names promise a price list) hold **zero currency markers**,
+    as does the grower bio at
+    `probe_pages/capture.nl-renaud-bruyere-houillon.html` — 28KB, not one
+    marker. Its producer index is real, and
+    `find_producer_links` does find our Renaud Bruyère-Houillon in it
+    (ignoring the Overnoy-Crinquand two lines up --
     `tests/fixtures/purewijnen-growers-excerpt.html` keeps that real markup
-    as a namesake test). Following the link settles it:
-    `probe_pages/capture.nl-renaud-bruyere-houillon.html` is a producer bio
-    with no wine list and **not one currency marker in 28KB**. There is
-    nothing on that page to read, so the shop stays unverified -- the
-    producer-index route is not the missing piece for any of these four.
+    as a namesake test), but the link leads to prose;
+  - **vinnaturelbe** is PrestaShop 1.6 whose product miniatures carry a name,
+    a stock line and a "Détails" button and no price at all. Its real
+    catalogue is `/fr/categorie/11-acheter-en-ligne`, and
+    `probe_pages/capture.vin-naturel-be.fr-categorie-11-acheter-en-ligne.html`
+    has 40 product links and **zero currency markers** — catalogue mode, or a
+    price wall for guests, not client-side rendering. Its `/fr/vignerons`
+    index lists 41 growers and none of them is a producer we watch.
+
+Two verified shops answer HTTP 200 with a bot challenge rather than their
+catalogue, which is why `crawler.Challenged` exists: **vinnaturel.fr** serves
+"One moment, please... Please wait while your request is being verified", and
+**vinopura.nl** serves 221 bytes of meta-refresh to
+`/.well-known/sgcaptcha/`. Both read as healthy for weeks — one as
+"ok, 0 products", the other as a "parse error" — and both went into the 6h
+cache, so each challenge stayed true for six more runs. They now get a
+`blocked` coverage row and a line in the digest. Do not try to get past
+either: a challenge is a shop saying no.
 
 Secrets (`GMAIL_SENDER`, `GMAIL_APP_PASSWORD`, `NOTIFY_EMAIL`) are the
 only external configuration; everything else is in this repo. Those three
@@ -339,10 +370,27 @@ HTTP header or printed.
   the shops not reached, and lets the run report what it has.
   `timeout-minutes` in the workflow is only the outer backstop and must stay
   well clear of it.
-- `shop_order()` rotates SHOPS by the hour. The budget is global and was
-  spent in list order, so the moment it binds it is always the same tail
-  that goes unfetched -- systematic, not random. Both "not reached this
-  run" messages must index the rotated order, not `SHOPS`.
+- `shop_order()` rotates SHOPS by *hours since the epoch*, not by the hour
+  of the day. The budget is global and was spent in list order, so the moment
+  it binds it is always the same tail that goes unfetched -- systematic, not
+  random. `hour % len(shops)` looks like it fixes that and does not: with 29
+  shops only 24 offsets ever occur, so five shops could never lead a run.
+  All three "not reached this run" messages must index the rotated order, not
+  `SHOPS` -- there are three, and the pre-fetch budget check is the one that
+  gets forgotten.
+- A shop the run never reached still gets a coverage row (`not reached`), and
+  "watched but found nowhere" is only that when every shop was read.
+  Otherwise a binding budget silently converts "we never looked" into an
+  accusation against the aliases, which is the opposite of what that note is
+  for.
+- `catalogue_starts()` pins the measured-best catalogue first and rotates
+  only the rest. One page budget is shared across every `catalog_paths`
+  entry, so a fixed order spent all of it on the first category -- winenot
+  has never read its rosé, sparkling, moelleux or muté at any budget.
+  Rotating everything is not the fix either: the probe also records pages
+  that merely parsed (a portfolio page, a sub-category), and giving those
+  first place spends the budget on a slice of the shop instead of the whole
+  of it.
 - Catalogues are paged. Any new fetcher must walk pages, not just read the
   first one -- seeing only page one turns a real hit into a silent miss,
   which is the exact failure this project exists to avoid.

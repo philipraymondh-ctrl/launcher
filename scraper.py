@@ -24,6 +24,7 @@ import crawler
 import evaluate
 import market
 import notify
+import pdflist
 import textnorm
 
 DRY_RUN = os.environ.get("DRY_RUN") == "1"
@@ -318,10 +319,11 @@ SHOPS = [
         "name": "purewijnen",
         "platform": "html",
         "url": "https://www.purewijnen.be",
+        "catalog_path": "nl/wijnkaart",
         "item_selector": "div.product",
         "title_selector": "h2.product-title",
         "price_selector": "span.price",
-        "verified": False,
+        "verified": True,
     },
     {
         "name": "naturavin",
@@ -345,10 +347,11 @@ SHOPS = [
         "name": "vinovivo",
         "platform": "html",
         "url": "https://vinovivo.be",
+        "catalog_paths": ["shop", "http://vinovivo.be/shop", "portfolio_page/pack-rosato", "portfolio_page/olivier-boulin-jura-bourgogne"],
         "item_selector": "div.product",
         "title_selector": "h2.product-title",
         "price_selector": "span.price",
-        "verified": False,
+        "verified": True,
     },
     {
         "name": "vinifine",
@@ -392,10 +395,11 @@ SHOPS = [
         "name": "purovino",
         "platform": "html",
         "url": "https://www.purovino.be",
+        "catalog_path": "webshop",
         "item_selector": "div.product",
         "title_selector": "h2.product-title",
         "price_selector": "span.price",
-        "verified": False,
+        "verified": True,
     },
     {
         "name": "lavinoterie",
@@ -407,7 +411,7 @@ SHOPS = [
         "name": "pangee",
         "platform": "html",
         "url": "https://la-pangee.com/fr",
-        "catalog_path": "https://la-pangee.com/nouveaux-produits",
+        "catalog_paths": ["25-vins", "https://la-pangee.com/nouveaux-produits", "nouveaux-produits", "28-beaujolais"],
         "item_selector": "div.product",
         "title_selector": "h2.product-title",
         "price_selector": "span.price",
@@ -418,6 +422,15 @@ SHOPS = [
 
 class EmptyResponseError(Exception):
     """Raised when an HTML shop returns empty/near-empty markup, usually a JS-rendered storefront."""
+
+
+class UnreadableDocumentError(Exception):
+    """A shop's catalogue document arrived but could not be read.
+
+    A scanned wine list extracts to empty pages, and "no entries" from a
+    document is indistinguishable from "this shop stocks nothing" unless it is
+    raised as the failure it is.
+    """
 
 
 # Accent-folding lives in textnorm so the four modules that compare text
@@ -592,9 +605,28 @@ def near_misses(unseen, corpus, producers=None):
 
 # Matches a number only when a currency marker is directly adjacent, so a
 # bare 4-digit vintage year (e.g. "2018") is never mistaken for a price.
+#
+# The number-then-marker branch carries three guards, all of them scars:
+#
+#  - `(?<![\d.,])` so the tail of a longer number is not read as a price of
+#    its own. Without it, rejecting "2022 €" would just re-match "022 €".
+#  - `(?!(?:19|20)\d{2}(?![.,]\d))` so a vintage immediately followed by the
+#    *next* number's currency symbol is not read as that number's price.
+#    "Ganevat Poulprix 2022 €45,00" parsed as 2022.0, and only French shops
+#    (which write "45,00 €", number first) kept it from ever firing. A
+#    price-shaped vintage with decimals -- "2018,50 €" -- is still a price,
+#    which is why the guard looks past a decimal part.
+#  - a lookahead rather than a consuming group for the marker, so the symbol
+#    stays available to the symbol-first branch. Consuming it meant that
+#    skipping "2022 €" also swallowed the € belonging to "45,00", and the
+#    real price went unread.
+#
+# A genuine EUR 2018 bottle written "2018 €" is lost to this. That is the
+# trade this codebase makes everywhere: no number beats a confident wrong one.
 PRICE_PATTERN = re.compile(
     r"(?:[€$£]\s?(\d{1,4}(?:[.,]\d{2})?))"
-    r"|(?:(\d{1,4}(?:[.,]\d{2})?)\s?(?:€|EUR|USD|\$))",
+    r"|(?:(?<![\d.,])(?!(?:19|20)\d{2}(?![.,]\d))"
+    r"(\d{1,4}(?:[.,]\d{2})?)\s?(?=€|EUR|USD|\$))",
     re.IGNORECASE,
 )
 
@@ -808,8 +840,8 @@ def _fetch_via_producer_index(shop, index_html, index_url, crawler_client):
     return items
 
 
-def catalogue_starts(shop):
-    """Where to begin reading this shop's catalogue.
+def catalogue_starts(shop, now=None):
+    """Where to begin reading this shop's catalogue, and in what order.
 
     `catalog_paths` (a list) exists because winenot.fr and vinnouveau.fr keep
     their wines under region categories -- /12-alsace, /19-jura, /21-loire --
@@ -817,13 +849,42 @@ def catalogue_starts(shop):
     is how winenot came to be configured to read its sparkling-wine filter
     and nothing else. Each entry may be a path or an absolute URL; urljoin
     passes an absolute URL through untouched.
+
+    The list is rotated by the hour for the same reason `shop_order` rotates
+    SHOPS. One page budget is shared across every category, so a fixed order
+    spends all of it on the first few: winenot read 233 products over 20
+    pages and never once reached its rosé, sparkling, moelleux or muté
+    categories -- not at this budget, and not at any budget, because the
+    order never changed. Rotating costs nothing and makes the rest reachable.
     """
     base = shop["url"].rstrip("/") + "/"
     paths = shop.get("catalog_paths") or (
         [shop["catalog_path"]] if shop.get("catalog_path") else [])
     if not paths:
         return [shop["url"]]
-    return [urljoin(base, p) for p in paths]
+
+    # The probe records a path and its absolute form as two entries ("shop"
+    # and "http://vinovivo.be/shop"), which is one catalogue and two requests.
+    starts, seen = [], set()
+    for path in paths:
+        url = urljoin(base, path)
+        key = url.replace("http://", "https://").rstrip("/")
+        if key not in seen:
+            seen.add(key)
+            starts.append(url)
+
+    # The first entry is the catalogue the probe measured as best, and it is
+    # read every run: page 1 is where new arrivals land, and that is the news
+    # this scraper exists for. Only the rest rotate -- the probe also records
+    # pages that merely parsed (pangee's "28-beaujolais", vinovivo's
+    # portfolio pages), and rotating those into first place would spend the
+    # shared page budget on a slice of the shop instead of the whole of it.
+    if len(starts) > 2:
+        at = now or dt.datetime.now(dt.timezone.utc)
+        rest = starts[1:]
+        offset = int(at.timestamp() // 3600) % len(rest)
+        starts = starts[:1] + rest[offset:] + rest[:offset]
+    return starts
 
 
 def _walk_pages(shop, crawler_client, start, pages_left, seen_urls):
@@ -839,13 +900,24 @@ def _walk_pages(shop, crawler_client, start, pages_left, seen_urls):
     for page in range(1, pages_left + 1):
         try:
             resp = crawler_client.get(page_url)
+            fetched += 1
+            resp.raise_for_status()
         except crawler.BudgetExceeded:
             print(f"[{shop['name']}] request budget exhausted after page {page - 1}; "
                   f"catalogue TRUNCATED, later pages not checked")
             truncated = True
             break
-        fetched += 1
-        resp.raise_for_status()
+        except crawler.UpstreamError as e:
+            # Page 1 failing is the shop failing, and must surface as such.
+            # A later page failing is how several platforms say "that was the
+            # last one" -- WordPress 404s a paged URL past the end. Raising
+            # here threw away every page already read and reported a shop
+            # that answered every request as unreachable.
+            if page == 1:
+                raise
+            print(f"[{shop['name']}] page {page} returned {e}; treating page "
+                  f"{page - 1} as the last one")
+            break
         if not resp.text.strip():
             if page == 1 and start == shop["url"]:
                 raise EmptyResponseError(shop["name"])
@@ -904,6 +976,10 @@ def fetch_html(shop, crawler_client):
             first_html, first_url = page_html, start
 
     if not items and first_html:
+        items = _fetch_via_pdf_list(shop, first_html, first_url, crawler_client)
+        how = "pdf" if items else how
+
+    if not items and first_html:
         items = _fetch_via_producer_index(shop, first_html, first_url, crawler_client)
         how = "index" if items else how
 
@@ -911,6 +987,44 @@ def fetch_html(shop, crawler_client):
         print(f"[{shop['name']}] no configured selector matched; "
               f"read {len(items)} product(s) by auto-detection")
     return ParsedItems(items, truncated=truncated)
+
+
+def _fetch_via_pdf_list(shop, page_html, page_url, crawler_client):
+    """Last resort for a shop whose catalogue is a document.
+
+    purewijnen has no price anywhere in its HTML -- three captured pages, zero
+    currency markers -- and publishes its whole range as a 41-page PDF linked
+    from /nl/wijnkaart. One extra request reads 800+ wines.
+
+    The link is rediscovered every run rather than recorded. Its URL is a
+    Drupal attachment carrying a file id and a mangled slug, so it changes with
+    each new edition; a stored path would 404 the day the list is updated --
+    which, for a list updated often, is most days, and silently.
+    """
+    pdf_url = autoselect.find_pdf_link(page_html, page_url)
+    if not pdf_url:
+        return []
+
+    document = crawler_client.get(pdf_url)
+    document.raise_for_status()
+    pages, why = pdflist.extract_text(document.content)
+    if pages is None:
+        raise UnreadableDocumentError(f"{pdf_url}: {why}")
+
+    text = "\n".join(pages)
+    items = pdflist.parse_wine_list(text, pdf_url)
+    # A scanned list extracts to empty pages, which would read as "this shop
+    # stocks nothing" -- indistinguishable from a shop that really is empty.
+    if pages and not items:
+        raise UnreadableDocumentError(
+            f"{pdf_url}: {len(pages)} page(s) held no readable entries")
+
+    edition = pdflist.list_date(text)
+    sold = sum(1 for i in items if i["in_stock"] is False)
+    print(f"[{shop['name']}] catalogue is a document: {len(pages)} page(s)"
+          f"{' of ' + edition if edition else ''}, {len(items)} entr(ies), "
+          f"{sold} marked sold out")
+    return items
 
 
 FETCHERS = {
@@ -985,8 +1099,13 @@ def shop_order(shops, now=None):
     """
     if len(shops) < 2:
         return list(shops)
-    hour = (now or dt.datetime.now(dt.timezone.utc)).hour
-    offset = hour % len(shops)
+    # Hours since the epoch, not the hour of the day: `.hour` only ever takes
+    # 24 values, so with 29 shops the offsets 24-28 never occurred and the
+    # five shops sitting there could never lead a run -- a systematic blind
+    # spot of exactly the kind this function exists to remove. The test that
+    # claimed otherwise ran against a three-shop canned list.
+    at = now or dt.datetime.now(dt.timezone.utc)
+    offset = int(at.timestamp() // 3600) % len(shops)
     return list(shops[offset:]) + list(shops[:offset])
 
 
@@ -1035,6 +1154,8 @@ def main():
     error_count = 0
     skipped_count = 0
     silent_shops = []
+    blocked_shops = []       # answered 200 with a bot challenge, not content
+    unreached = []           # verified shops the run never got to
     verified_names = [s["name"] for s in SHOPS if s.get("verified", True)]
     # Rotated so a binding budget does not starve the same tail every hour.
     order = shop_order(SHOPS)
@@ -1042,7 +1163,8 @@ def main():
     started = time.monotonic()
     for i, shop in enumerate(order):
         if MAX_RUN_SECONDS > 0 and time.monotonic() - started >= MAX_RUN_SECONDS:
-            remaining = [s["name"] for s in order[i:] if s.get("verified", True)]
+            unreached = [s for s in order[i:] if s.get("verified", True)]
+            remaining = [s["name"] for s in unreached]
             print(
                 f"Out of time after {MAX_RUN_SECONDS:.0f}s; stopping cleanly so the "
                 f"run still reports. Shops not reached this run: {', '.join(remaining)}"
@@ -1055,7 +1177,8 @@ def main():
             continue
 
         if crawler_client.request_count >= crawler_client.max_requests:
-            remaining = [s["name"] for s in order[i:] if s.get("verified", True)]
+            unreached = [s for s in order[i:] if s.get("verified", True)]
+            remaining = [s["name"] for s in unreached]
             print(
                 f"MAX_REQUESTS_PER_RUN ({crawler_client.max_requests}) reached; "
                 f"not reached this run: {', '.join(remaining)}"
@@ -1085,12 +1208,18 @@ def main():
             error_count += 1
             coverage.append(coverage_row(shop, status="robots.txt"))
             print(f"[{shop['name']}] robots.txt disallows this path, skipped: {e}")
+        except crawler.Challenged as e:
+            error_count += 1
+            coverage.append(coverage_row(shop, status="blocked"))
+            blocked_shops.append(shop["name"])
+            print(f"[{shop['name']}] blocked by a bot challenge, not read: {e}")
         except crawler.CircuitOpen as e:
             error_count += 1
             coverage.append(coverage_row(shop, status="circuit open"))
             print(f"[{shop['name']}] circuit breaker open for this host, skipped: {e}")
         except crawler.BudgetExceeded:
-            remaining = [s["name"] for s in order[i:] if s.get("verified", True)]
+            unreached = [s for s in order[i:] if s.get("verified", True)]
+            remaining = [s["name"] for s in unreached]
             print(
                 f"MAX_REQUESTS_PER_RUN ({crawler_client.max_requests}) reached mid-run; "
                 f"not reached this run: {', '.join(remaining)}"
@@ -1104,6 +1233,13 @@ def main():
             error_count += 1
             coverage.append(coverage_row(shop, status="parse error"))
             print(f"[{shop['name']}] parse error: {e}")
+
+    # A shop the run never got to needs a row of its own. Without one it
+    # simply vanishes from the table -- and the table is the one place that
+    # answers "did we look at all", so a missing row is the exact shape of
+    # the failure it was built to expose.
+    for shop in unreached:
+        coverage.append(coverage_row(shop, status="not reached"))
 
     table = coverage_table(sorted(coverage, key=lambda r: -r["products"]))
     print()
@@ -1127,6 +1263,13 @@ def main():
         for p in PRODUCERS if p not in found and p in sold_out_shops
     ]
     unseen = [p for p in PRODUCERS if p not in found and p not in sold_out_shops]
+    # "Found nowhere" means an alias that matches nothing, and it can only
+    # mean that when every shop was actually read. With shops unreached the
+    # same list also holds producers whose shop the run never opened, which
+    # is how a budget cut-off turned into an accusation against the aliases.
+    unseen_title = ("Watched but found nowhere" if not unreached else
+                    f"Watched but found nowhere in the "
+                    f"{len(coverage) - len(unreached)} shop(s) read")
     if sold_out_only:
         print(f"Matched but sold out everywhere ({len(sold_out_only)}): "
               f"{', '.join(sold_out_only)}")
@@ -1168,8 +1311,10 @@ def main():
     notify.run_digest(evaluated, dry_run=DRY_RUN, force=FORCE_REPORT,
                       tables={"Shop coverage": table}, notes={
         "Shops that returned nothing": silent_shops,
+        "Blocked by a bot challenge": blocked_shops,
         "Matched but sold out everywhere": sold_out_only,
-        "Watched but found nowhere": unseen,
+        unseen_title: unseen,
+        "Shops not reached this run": [s["name"] for s in unreached],
         "Alias near-misses": misses,
     })
 

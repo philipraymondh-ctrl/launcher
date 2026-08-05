@@ -414,6 +414,12 @@ CATALOGUE_WORDS = (
     "cave", "caves", "catalogue", "catalog", "produits", "products",
     "collection", "collections", "selection", "assortiment", "winkel",
     "promos", "promotions", "nos-vins", "les-vins",
+    # A shop whose catalogue is a document names the page for the list, not
+    # for the goods: purewijnen's whole range is a PDF behind /nl/wijnkaart,
+    # and with none of these words in the menu vocabulary the ten links
+    # discovery did offer were all region pages carrying no price at all.
+    "wijnkaart", "wijnlijst", "prijslijst", "kaart", "lijst", "carte",
+    "tarif", "tarifs", "bestellen", "commander", "order",
     # French wine regions. winenot.fr and vinnouveau.fr split their
     # catalogues across these with no "all wines" page, so without them the
     # menu offers no catalogue at all -- and the probe settles for whatever
@@ -481,9 +487,18 @@ def find_catalogue_links(html, base_url, exclude=()):
         if url not in found:
             found.append(url)
 
+    # A page named for the list itself. When a shop keeps its range in a
+    # document, this is the only page that leads anywhere, and it must outrank
+    # the region pages that merely look like catalogues.
+    LIST_PAGE = ("wijnkaart", "wijnlijst", "prijslijst", "tarif", "carte",
+                 "bestellen", "commander")
+
     def rank(url):
         path = urlparse(url).path
         return (
+            # A slice of the catalogue is a last resort, but a list page is a
+            # first one -- ahead of even a numbered category.
+            not any(marker in path for marker in LIST_PAGE),
             # A slice of the catalogue is a last resort, not a first guess.
             any(marker in path for marker in SECOND_CHOICE),
             # A numbered category is the catalogue as the shop files it.

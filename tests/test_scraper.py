@@ -232,11 +232,21 @@ def test_verified_shop_fixture_yields_real_products(shop_name):
     # is legitimately empty. What must hold for such a fixture is that it
     # still names producers we watch.
     import autoselect
+    body = fixture_for(shop).read_text()
+
+    # Or the catalogue is a document. purewijnen publishes its whole range as
+    # a PDF and has no price anywhere in its HTML, so its fixture is the page
+    # that links the list -- which cannot parse to products on its own, and a
+    # canned response cannot stand in for the document either. What must hold
+    # is that the page still leads somewhere.
+    if autoselect.find_pdf_link(body, shop["url"]):
+        return
+
     growers = autoselect.find_producer_links(
-        fixture_for(shop).read_text(), shop["url"], scraper.match_producers)
+        body, shop["url"], scraper.match_producers)
     assert growers, (
-        f"{shop_name} is verified but its fixture yields neither products "
-        f"nor links to any producer we watch"
+        f"{shop_name} is verified but its fixture yields no products, no link "
+        f"to any producer we watch, and no catalogue document"
     )
 
 

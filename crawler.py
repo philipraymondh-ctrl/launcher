@@ -35,14 +35,20 @@ BACKOFF_SCHEDULE = [5, 15, 45]
 MAX_ATTEMPTS = 3
 CIRCUIT_BREAKER_THRESHOLD = 3
 CACHE_TTL_SECONDS = 6 * 3600
-# Sized against the wall clock, not picked. Politeness costs
-# MIN_DELAY_SECONDS + JITTER_MAX_SECONDS/2 plus the response itself, so a
-# pessimistic 5.5s per request puts 160 requests at 880s -- just inside
-# scraper.MAX_RUN_SECONDS (900). Past ~163 the clock binds first, and it
-# binds worse: it is only checked between shops, so it drops whole shops
-# where the request budget degrades a single catalogue and says so.
-# tests/test_budget.py keeps that arithmetic true.
-DEFAULT_MAX_REQUESTS_PER_RUN = 160
+# Sized to read every catalogue to its end, not to a budget. Each shop states
+# its own size on page one, and one complete pass over all 23 verified shops is
+# 311 requests -- vinnouveau's 118 pages being most of it. 400 leaves room for
+# retries and for a shop that grows, and costs 2200s at a pessimistic 5.5s per
+# request, inside scraper.MAX_RUN_SECONDS.
+#
+# The budget must still bind before the wall clock does: the clock is only
+# checked between shops, so when it binds it drops whole shops, where the
+# budget degrades one catalogue and marks the row TRUNCATED.
+# tests/test_budget.py keeps that ordering true.
+#
+# Most runs cost far less than a full pass. A cache hit returns before the
+# budget check, so with a 6h TTL the crawl is only paid four times a day.
+DEFAULT_MAX_REQUESTS_PER_RUN = 400
 DEFAULT_CACHE_DIR = Path(__file__).parent / ".cache"
 
 

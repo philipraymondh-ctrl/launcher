@@ -34,12 +34,12 @@ DRY_RUN = os.environ.get("DRY_RUN") == "1"
 FORCE_REPORT = os.environ.get("FORCE_REPORT") == "1"
 
 # Politeness is the cost of this crawl: 3s plus jitter per host, per request.
-# A cold-cache run of 22 shops took 8m38s against the workflow's 10-minute job
-# timeout, and every shop added shrinks that margin. A job killed at the
-# ceiling loses everything -- no hits.json, no email, a red run and no
-# explanation -- so the run stops itself first and says which shops it did not
-# reach, exactly as it does when the request budget binds. 0 disables it.
-MAX_RUN_SECONDS = float(os.environ.get("MAX_RUN_SECONDS", "900"))
+# Reading all 23 shops to the end of their catalogues is 311 requests, ~28
+# minutes cold. A job killed at the runner's ceiling loses everything -- no
+# hits.json, no email, a red run and no explanation -- so the run stops itself
+# first and says which shops it did not reach, exactly as it does when the
+# request budget binds. 0 disables it.
+MAX_RUN_SECONDS = float(os.environ.get("MAX_RUN_SECONDS", "2700"))
 
 # One row per live shop: what we read, what was buyable, and who we matched.
 # "Does this match the shop's real selection?" is the question that decides
@@ -47,8 +47,8 @@ MAX_RUN_SECONDS = float(os.environ.get("MAX_RUN_SECONDS", "900"))
 # answered by reading a run log line by line.
 COVERAGE_PATH = Path(os.environ.get(
     "COVERAGE_OUTPUT_PATH", Path(__file__).parent / "coverage.json"))
-COVERAGE_COLUMNS = ["SHOP", "PLATFORM", "STATUS", "PRODUCTS", "IN STOCK",
-                    "SOLD OUT", "HITS", "PRODUCERS"]
+COVERAGE_COLUMNS = ["SHOP", "PLATFORM", "STATUS", "PAGES", "PRODUCTS",
+                    "IN STOCK", "SOLD OUT", "HITS", "PRODUCERS"]
 
 
 def coverage_row(shop, result=None, status="ok"):
@@ -62,10 +62,16 @@ def coverage_row(shop, result=None, status="ok"):
                        | {h["producer"] for h in (result.sold_out if result else [])})
     if result is not None and result.truncated:
         status = "TRUNCATED"
+    # "480 products" cannot be compared with a shop's real selection; "20/118
+    # pages" can, and says plainly that the other 98 went unread.
+    read = getattr(result, "pages_read", 0) if result is not None else 0
+    total = getattr(result, "pages_total", None) if result is not None else None
+    pages = f"{read}/{total}" if total else (str(read) if read else "-")
     return {
         "shop": shop["name"],
         "platform": shop["platform"],
         "status": status,
+        "pages": pages,
         "products": products,
         "in_stock": products - sold_out,
         "sold_out": sold_out,
@@ -78,13 +84,13 @@ def coverage_table(rows):
     """The table as lines of text, aligned, for the log and the email."""
     if not rows:
         return []
-    cells = [[r["shop"], r["platform"], r["status"], str(r["products"]),
-              str(r["in_stock"]), str(r["sold_out"]), str(r["hits"]),
-              ", ".join(r["producers"]) or "-"] for r in rows]
+    cells = [[r["shop"], r["platform"], r["status"], r.get("pages", "-"),
+              str(r["products"]), str(r["in_stock"]), str(r["sold_out"]),
+              str(r["hits"]), ", ".join(r["producers"]) or "-"] for r in rows]
     widths = [max(len(c[i]) for c in [COVERAGE_COLUMNS] + cells)
               for i in range(len(COVERAGE_COLUMNS))]
     # Numbers right, names left: a column of counts is read by comparing them.
-    align = [False, False, False, True, True, True, True, False]
+    align = [False, False, False, True, True, True, True, True, False]
 
     def line(values):
         return " | ".join(
@@ -110,7 +116,12 @@ def coverage_table(rows):
 # MAX_REQUESTS_PER_RUN budget still applies on top.
 SHOPIFY_PAGE_SIZE = 250
 WOO_PAGE_SIZE = 100
-MAX_PAGES_PER_SHOP = 20
+# A safety net, not the operating limit. What a catalogue actually costs is
+# derived from the size it states on its own page one (autoselect.catalogue_size,
+# free -- that page is already in hand), so vinnouveau's 118 pages are walked as
+# 118 rather than clipped to a round number that reported 480 of its 2827 wines
+# as though 480 were the catalogue. This only stops a runaway pager.
+MAX_PAGES_PER_SHOP = 150
 
 # ---------------------------------------------------------------------------
 # Producers to watch for. Each canonical name maps to alias substrings that
@@ -655,10 +666,11 @@ def _paged(shop, crawler_client, url, params_for_page, page_size, extract):
     a limit is hit. Returns whatever was collected -- a partial catalogue is
     still real data, but truncation is logged loudly because it can turn a
     genuine hit into a silent miss."""
-    items, truncated = [], False
+    items, truncated, fetched = [], False, 0
     for page in range(1, MAX_PAGES_PER_SHOP + 1):
         try:
             resp = crawler_client.get(url, params=params_for_page(page))
+            fetched += 1
         except crawler.BudgetExceeded:
             print(
                 f"[{shop['name']}] request budget exhausted after page {page - 1}; "
@@ -679,7 +691,7 @@ def _paged(shop, crawler_client, url, params_for_page, page_size, extract):
             f"catalogue TRUNCATED, later pages not checked"
         )
         truncated = True
-    return ParsedItems(items, truncated=truncated)
+    return ParsedItems(items, truncated=truncated, pages_read=fetched)
 
 
 def in_stock(explicit, text):
@@ -896,8 +908,11 @@ def _walk_pages(shop, crawler_client, start, pages_left, seen_urls):
     """
     items, visited, page_url, how = [], {start}, start, None
     first_html, truncated, fetched = "", False, 0
+    stated_pages = None
 
-    for page in range(1, pages_left + 1):
+    page = 0
+    while page < pages_left:
+        page += 1
         try:
             resp = crawler_client.get(page_url)
             fetched += 1
@@ -925,6 +940,15 @@ def _walk_pages(shop, crawler_client, start, pages_left, seen_urls):
 
         if page == 1:
             first_html = resp.text
+            # What this catalogue says it holds. Costs nothing: the page is
+            # already here. A shop that overstates its pager cannot make the
+            # walk longer than the net above.
+            size = autoselect.catalogue_size(resp.text)
+            if size and size[2]:
+                stated_pages = min(size[2], pages_left)
+                if size[0]:
+                    print(f"[{shop['name']}] {start} states {size[0]} product(s) "
+                          f"over {size[2]} page(s)")
         page_items, how = _parse_html_page(shop, resp.text, page_url)
         fresh = [i for i in page_items if i["url"] not in seen_urls]
         if not fresh:
@@ -932,17 +956,21 @@ def _walk_pages(shop, crawler_client, start, pages_left, seen_urls):
         seen_urls.update(i["url"] for i in fresh)
         items.extend(fresh)
 
+        if stated_pages is not None and page >= stated_pages:
+            break
+
         next_url = autoselect.find_next_page(resp.text, page_url)
         if not next_url or next_url in visited:
             break
         visited.add(next_url)
         page_url = next_url
     else:
-        print(f"[{shop['name']}] hit MAX_PAGES_PER_SHOP ({MAX_PAGES_PER_SHOP}); "
-              f"catalogue may be TRUNCATED")
+        # Only reachable when the pager kept offering pages past the limit.
+        print(f"[{shop['name']}] stopped at {pages_left} page(s) of {start}; "
+              f"catalogue TRUNCATED")
         truncated = True
 
-    return fetched, truncated, items, first_html, how
+    return fetched, truncated, items, first_html, how, stated_pages
 
 
 def fetch_html(shop, crawler_client):
@@ -956,19 +984,19 @@ def fetch_html(shop, crawler_client):
     starts = catalogue_starts(shop)
     items, seen_urls, how = [], set(), None
     first_html, first_url, truncated = "", starts[0], False
-    # One page budget for the shop, not one per category: nine paginating
-    # regions must not cost nine times the requests.
-    pages_left = MAX_PAGES_PER_SHOP
+    pages_total = None
+    # A budget per catalogue rather than one shared across all of them. Sharing
+    # it meant winenot spent every page on its first categories and never once
+    # read its rose, sparkling, moelleux or mute; each category states its own
+    # size, so each is walked to the end of itself.
+    pages_read = 0
 
     for start in starts:
-        if pages_left <= 0:
-            truncated = True
-            print(f"[{shop['name']}] page budget spent before reaching {start}; "
-                  f"catalogue TRUNCATED")
-            break
-        fetched, page_truncated, page_items, page_html, page_how = _walk_pages(
-            shop, crawler_client, start, pages_left, seen_urls)
-        pages_left -= fetched
+        fetched, page_truncated, page_items, page_html, page_how, stated = _walk_pages(
+            shop, crawler_client, start, MAX_PAGES_PER_SHOP, seen_urls)
+        pages_read += fetched
+        if stated:
+            pages_total = (pages_total or 0) + stated
         truncated = truncated or page_truncated
         items.extend(page_items)
         how = how or page_how
@@ -986,7 +1014,8 @@ def fetch_html(shop, crawler_client):
     if items and how == "auto":
         print(f"[{shop['name']}] no configured selector matched; "
               f"read {len(items)} product(s) by auto-detection")
-    return ParsedItems(items, truncated=truncated)
+    return ParsedItems(items, truncated=truncated,
+                       pages_read=pages_read, pages_total=pages_total)
 
 
 def _fetch_via_pdf_list(shop, page_html, page_url, crawler_client):
@@ -1045,9 +1074,14 @@ class ParsedItems(list):
     the coverage table can be compared to its real selection at all.
     """
 
-    def __init__(self, items=(), truncated=False):
+    def __init__(self, items=(), truncated=False, pages_read=0, pages_total=None):
         super().__init__(items)
         self.truncated = truncated
+        # How much of the catalogue this was. "480 products" read as the whole
+        # of vinnouveau for weeks while the shop's own page said 2827 over 118
+        # pages -- the count alone cannot tell a complete read from a slice.
+        self.pages_read = pages_read
+        self.pages_total = pages_total
 
 
 class ShopResult(list):
@@ -1073,7 +1107,7 @@ class ShopResult(list):
     """
 
     def __init__(self, hits=(), products_parsed=0, sold_out=(), near_tokens=(),
-                 truncated=False, out_of_stock=0):
+                 truncated=False, out_of_stock=0, pages_read=0, pages_total=None):
         super().__init__(hits)
         self.products_parsed = products_parsed
         self.sold_out = list(sold_out)
@@ -1086,6 +1120,8 @@ class ShopResult(list):
         # into that column reported 30 of mareehaute's 3496 as sold out when
         # the true figure was 2139.
         self.out_of_stock = out_of_stock
+        self.pages_read = pages_read
+        self.pages_total = pages_total
 
 
 def shop_order(shops, now=None):
@@ -1142,7 +1178,9 @@ def check_shop(shop, crawler_client):
     return ShopResult(hits, products_parsed=len(items),
                       sold_out=sold_out, near_tokens=near_tokens,
                       truncated=getattr(items, "truncated", False),
-                      out_of_stock=skipped)
+                      out_of_stock=skipped,
+                      pages_read=getattr(items, "pages_read", 0),
+                      pages_total=getattr(items, "pages_total", None))
 
 
 def main():

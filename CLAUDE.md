@@ -61,8 +61,17 @@ concern, wired together by `scraper.py`:
    (`/12-alsace`, `/19-jura`, `/21-loire`) with no "all wines" page at all --
    one path there reads one region, which is how winenot came to be
    configured to read its sparkling-wine filter and nothing else. Every entry
-   is walked, products are deduplicated by URL across them, and
-   `MAX_PAGES_PER_SHOP` bounds the shop rather than each category.
+   is walked to the end of *itself* -- the page budget is per catalogue, not
+   shared, because sharing it spent every page on the first category -- and
+   products are deduplicated by URL across them. How far to walk is derived
+   from the size each catalogue states on its own page one
+   (`catalogue_size`: "Affichage 1-24 de 2827 article(s)", "1-10 de 315
+   resultats"), which costs nothing because that page is already in hand.
+   `MAX_PAGES_PER_SHOP` is only a net against a pager that generates links
+   for ever. A pager that links *next* and nothing else states no size: three
+   distinct page numbers are required before the highest one is read as the
+   last, or a single `?page=2` stops the walk at two pages and calls it
+   complete.
    `find_catalogue_links` derives all of this from the shop's own navigation,
    because no list of guessed paths knows what a shop calls its catalogue.
 4. **`market.py`** — where reference prices come from. One typed number
@@ -352,7 +361,8 @@ HTTP header or printed.
   for a night, and an hourly red run teaches you to ignore red runs.
   Producers matched at no shop are named too: an alias typo makes a
   producer vanish from every shop at once, which is otherwise invisible.
-- Every run states its coverage: one row per live shop with products read,
+- Every run states its coverage: one row per live shop with pages read out of
+  the catalogue's own stated total, products read,
   in stock, sold out, hits and the producers matched, in the log, in every
   email and in `coverage.json` (uploaded with the artifact). It exists to
   answer "does what we read match what the shop actually sells", which was
@@ -362,12 +372,19 @@ HTTP header or printed.
   before the catalogue did (`ParsedItems.truncated`, set by `_paged` and
   `fetch_html`), and that is the one cell that decides whether the row can
   be compared with the shop's real selection at all.
-- The run stops itself on wall clock as well as on requests. A cold-cache
-  crawl of 22 polite shops took 8m38s against a 10-minute job timeout, and
-  every shop added shrinks that margin; a job killed at the ceiling loses
-  the whole crawl -- no `hits.json`, no email, a red run and no
-  explanation. `MAX_RUN_SECONDS` (default 900) breaks the shop loop, names
-  the shops not reached, and lets the run report what it has.
+- The run stops itself on wall clock as well as on requests. Reading all 23
+  shops to the end of their catalogues is 311 requests and ~28 minutes cold
+  (vinnouveau's 118 pages are most of it); a job killed at the runner's
+  ceiling loses the whole crawl -- no `hits.json`, no email, a red run and no
+  explanation. `MAX_RUN_SECONDS` (default 2700) breaks the shop loop, names
+  the shops not reached, and lets the run report what it has. The request
+  budget (400) must still bind *before* the clock, because the clock is only
+  checked between shops and so drops whole shops, where the budget degrades
+  one catalogue and marks it TRUNCATED. `tests/test_budget.py` holds that
+  ordering -- budget inside clock, clock inside `timeout-minutes` -- as a
+  relationship, not as today's numbers. Most runs cost far less than a full
+  pass: a cache hit returns before the budget check, so with a 6h TTL the
+  crawl is paid four times a day.
   `timeout-minutes` in the workflow is only the outer backstop and must stay
   well clear of it.
 - `shop_order()` rotates SHOPS by *hours since the epoch*, not by the hour

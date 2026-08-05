@@ -692,12 +692,15 @@ def test_a_single_catalog_path_still_works():
     assert len(scraper.fetch_html(shop, client)) == 5
 
 
-def test_the_page_budget_is_shared_across_categories(monkeypatch):
-    """MAX_PAGES_PER_SHOP bounds the shop, not each category, or a shop with
-    nine paginating regions costs nine times the budget."""
+def test_every_category_is_walked_to_its_own_end(monkeypatch):
+    """The page budget is per catalogue, not shared across them.
+
+    Sharing it is why winenot spent all twenty pages on its first categories
+    and never once read its rose, sparkling, moelleux or mute -- at any budget,
+    because the order never changed. Each category states its own size, so each
+    is walked to the end of itself."""
     from canned_shop import FakeCrawler
 
-    monkeypatch.setattr(scraper, "MAX_PAGES_PER_SHOP", 3)
     shop = {"name": "s", "platform": "html", "url": "https://s.test",
             "catalog_paths": ["a", "b", "c", "d"], "item_selector": "div.product",
             "title_selector": "h2.product-title", "price_selector": "span.price",
@@ -707,6 +710,38 @@ def test_the_page_budget_is_shared_across_categories(monkeypatch):
     pages = {f"https://s.test/{p}": region_page(p, 4) for p in "abcd"}
     client = FakeCrawler(pages)
 
-    scraper.fetch_html(shop, client)
+    items = scraper.fetch_html(shop, client)
 
-    assert client.request_count <= 3
+    assert client.request_count == 4, "a category went unread"
+    assert len(items) == 16, "not every category's products were collected"
+
+
+def test_a_runaway_pager_still_stops(monkeypatch):
+    """The net is the only thing between us and a pager that offers page N+1
+    for ever -- a shop whose "next" link is generated rather than counted."""
+    from canned_shop import FakeCrawler
+
+    monkeypatch.setattr(scraper, "MAX_PAGES_PER_SHOP", 5)
+
+    class EndlessPager(FakeCrawler):
+        """Fresh products on every page, and a "next" link for ever -- a pager
+        whose links are generated rather than counted. Repeating the same
+        products instead would stop the walk at page two on URL dedupe, which
+        is a different mechanism and not the one under test."""
+
+        def get(self, url, params=None):
+            self.request_count += 1
+            page = int(url.rsplit("=", 1)[-1]) if "page=" in url else 1
+            body = region_page(f"x{page}", 4).replace(
+                "</body>", f'<a rel="next" href="/x?page={page + 1}">next</a></body>')
+            return scraper.crawler.FetchResult(200, body)
+
+    shop = {"name": "s", "platform": "html", "url": "https://s.test",
+            "catalog_path": "x", "item_selector": "div.product",
+            "title_selector": "h2.product-title", "price_selector": "span.price",
+            "verified": True}
+    client = EndlessPager({})
+    result = scraper.fetch_html(shop, client)
+
+    assert client.request_count == 5
+    assert result.truncated, "a walk cut short by the net must say so"

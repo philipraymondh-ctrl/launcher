@@ -21,7 +21,8 @@ concern, wired together by `scraper.py`:
    a circuit breaker (3 consecutive failed requests skips that host for
    the rest of the run), conditional requests (ETag/Last-Modified, a 304
    reuses the cached body), a 6h disk cache (bypass with `FRESH=1`), and a
-   hard `MAX_REQUESTS_PER_RUN` budget (default 160, sized to fit
+   hard `MAX_REQUESTS_PER_RUN` budget (default 400, sized to a measured
+   311-request complete pass over every catalogue, and to fit
    `MAX_RUN_SECONDS` at a pessimistic 5.5s per request) that stops the run
    cleanly and logs which shops weren't reached. It also refuses to believe
    a 200 that is a bot challenge: `looks_like_challenge` reads a meta-refresh

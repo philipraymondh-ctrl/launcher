@@ -413,7 +413,7 @@ SHOPS = [
         "item_selector": "div.product",
         "title_selector": "h2.product-title",
         "price_selector": "span.price",
-        "verified": False,
+        "verified": True,
     },
     # Paris 14e, natural wine since 2006, ~1000 references. Its own domain is
     # a shopfront with nothing to read -- the webshop is hosted on Hiboutik, a

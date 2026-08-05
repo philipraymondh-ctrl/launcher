@@ -298,6 +298,10 @@ def select_shops(shops, only=None, include_verified=False):
     return chosen, unknown
 
 
+def _short_url(url, limit=70):
+    return url if len(url) <= limit else url[:limit - 3] + "..."
+
+
 def report_unsaved(results, applied):
     """A read-only probe that found working shops has to say that it saved
     nothing.
@@ -875,7 +879,19 @@ def main(argv=None):
             print(f"APPLIED to {len(applied)} shop(s): real fixture saved, platform "
                   f"corrected, verified:true -> {', '.join(applied)}")
         if skipped:
-            print(f"Left unverified ({len(skipped)}): {', '.join(skipped)}")
+            # With the reason, not just the name. A run that says only "left
+            # unverified" sends the next person into a twelve-minute log to
+            # find one line, and three attempts at that is how an afternoon
+            # goes. The last attempt is the one that decided it.
+            print(f"Left unverified ({len(skipped)}):")
+            by_name = {r["shop"]: r for r in results}
+            for name in skipped:
+                result = by_name.get(name, {})
+                attempts = result.get("attempts") or []
+                why = attempts[-1].get("outcome") if attempts else result.get("status", "?")
+                where = attempts[-1].get("url", "") if attempts else ""
+                print(f"    {name}: {why}"
+                      + (f" ({_short_url(where)})" if where else ""))
         print("Run the tests before trusting this; the workflow does that for you.")
 
 

@@ -492,6 +492,29 @@ def test_one_page_reached_two_ways_is_recorded_once():
     assert len(paths) == len(keys), f"one catalogue recorded twice: {paths}"
 
 
+def test_an_unverified_shop_is_reported_with_its_reason(monkeypatch, capsys):
+    """"Left unverified: mifuguemiraisin" sent three separate attempts into a
+    twelve-minute log hunting the one line that said why. The reason is
+    already in the result; it belongs in the summary."""
+    failed = {
+        "shop": "naturavin", "status": "failed", "detected_platform": None,
+        "products_parsed": 0, "producer_hits": [],
+        "attempts": [{"url": "https://naturavin.example/shop",
+                      "outcome": "no connection to the host"}],
+    }
+    monkeypatch.setattr(probe, "probe_shop", lambda shop, client: failed)
+    monkeypatch.setattr(probe.crawler, "Crawler", lambda *a, **k: StubCrawler({}))
+    monkeypatch.setattr(probe, "apply_results", lambda results: ([], ["naturavin"]))
+
+    probe.main(["--only", "naturavin", "--apply"])
+
+    out = capsys.readouterr().out
+    tail = out.split("Left unverified", 1)[1]
+    assert "naturavin" in tail
+    assert "no connection to the host" in tail, \
+        "the summary named the shop but not the reason"
+
+
 def test_capturing_pages_does_not_cancel_the_probe(monkeypatch, tmp_path, capsys):
     """A run given both --capture and --only captured its pages and then
     returned, so the shops it named were never fetched -- and the commit step

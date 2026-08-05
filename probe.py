@@ -738,7 +738,7 @@ def scraper_source_path():
     return Path(scraper.__file__)
 
 
-def main():
+def main(argv=None):
     parser = argparse.ArgumentParser(description="Probe shops' real endpoints.")
     parser.add_argument("--only", help="Comma-separated shop names to probe (default: all unverified)")
     parser.add_argument("--include-verified", action="store_true", help="Also probe already-verified shops")
@@ -751,10 +751,15 @@ def main():
         "--apply", action="store_true",
         help="Save real fixtures, correct platforms and set verified:true for shops probed OK",
     )
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
+    # Capturing does not replace probing. This used to `return` at the end of
+    # the loop, so a run given both --capture and --only captured its pages and
+    # silently probed nothing: the shops named were never fetched, the commit
+    # step said "No shops changed state", and the run reported success. A
+    # dispatch that asks for both work items must do both.
     if args.capture:
         # There is no other way to see a page from here: the sandbox has no
         # egress and run artifacts live behind blob storage it cannot reach.
@@ -789,7 +794,10 @@ def main():
             print(f"CAPTURE {url}: {len(resp.text)} bytes, "
                   f"autoselect reads {len(items)} product(s)")
             print(f"         {describe_unparsed(resp.text)}")
-        return
+        if not args.only and not args.include_verified:
+            # A bare --capture is a diagnostic errand, not a probe of every
+            # unverified shop.
+            return
 
     shops, unknown = select_shops(
         scraper.SHOPS, only=args.only, include_verified=args.include_verified)

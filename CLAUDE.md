@@ -141,6 +141,27 @@ concern, wired together by `scraper.py`:
    currency markers `PRICE_PATTERN` and `market.VINTAGE_RE` use to tell a
    price from a year.
 
+**`discover.py`** answers the three questions that decide whether a shop is
+worth adding, because ten suggested from search snippets failed on questions
+nobody had asked: is it a shop or a restaurant with a wine list (a menu has
+the prices and no product links, which is exactly what `find_products`
+requires, so the existing parser *is* the classifier), does it ship to
+Denmark (`None` is a real answer -- a page that never mentions shipping is
+not a page that refuses), and does it stock a producer we watch (read from
+the listings, never the page text: a blog post about Overnoy is not a bottle
+of Overnoy). Candidates come from `--url`, from `--from-page` (an importer's
+stockist list is the richest source, since these growers are allocated
+through one importer per country), or from a search API whose key lives in
+the environment and is redacted from anything printed. It changes no config:
+it emits `SHOPS` entries with `verified: false`, and `probe.py --apply`
+remains the only thing that verifies a shop.
+
+It is deliberately not an Instagram scraper. Hashtag pages are behind a login
+wall, the Graph API's hashtag search returns only the last 24 hours and does
+not name the account that posted, and automated collection is against Meta's
+terms -- the same reason nothing here fetches Wine-Searcher. A test asserts no
+string the code uses names the host.
+
 Two more files exist for operating it rather than scraping:
 **`probe.py`** detects each shop's real platform from a runner (the dev
 sandbox has no egress); with `--apply` it also saves the real response as

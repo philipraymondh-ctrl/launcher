@@ -32,6 +32,7 @@ limit, backoff, the circuit breaker and the run budget all apply exactly
 as they do in a real scrape.
 """
 import argparse
+import io
 import json
 import os
 import re
@@ -117,6 +118,52 @@ def _page_slug(url):
 
 def looks_like_json(body):
     return body.lstrip()[:1] in ("{", "[")
+
+
+def pdf_text(blob):
+    """The text of a PDF, page by page, or a reason it could not be read.
+
+    Kept here rather than in the fetcher so a capture can show what a shop's
+    PDF actually contains before anybody writes a parser for it."""
+    try:
+        import pypdf
+    except ImportError:                                  # pragma: no cover
+        return None, "pypdf is not installed"
+    try:
+        reader = pypdf.PdfReader(io.BytesIO(blob))
+        pages = [(page.extract_text() or "") for page in reader.pages]
+    except Exception as e:                               # pragma: no cover
+        return None, f"{type(e).__name__}: {e}"
+    return pages, None
+
+
+def save_diagnostic_text(name, url, text, byte_count, page_count):
+    """A PDF's extracted text, committed so a parser can be written from it."""
+    DIAGNOSTIC_DIR.mkdir(parents=True, exist_ok=True)
+    host = urlparse(url).netloc.replace(".", "-")
+    path = DIAGNOSTIC_DIR / f"{name}.{host}.{_page_slug(url)}.txt"
+    path.write_text(
+        f"# {url}\n# {byte_count} bytes of PDF, {page_count} page(s), extracted "
+        f"with pypdf.\n# Diagnostic only: delete once this shop parses.\n\n"
+        + text[:DIAGNOSTIC_CAP]
+    )
+    return path
+
+
+def describe_price_lines(text):
+    """What a wine-list PDF's text looks like to a price parser.
+
+    The question a capture has to answer before any parsing is written: are
+    the prices currency-marked, or a bare column of numbers? The rule this
+    project enforces everywhere else -- a number is only a price when a
+    currency marker touches it -- decides whether this shop is readable at
+    all, and it can only be checked against the real text.
+    """
+    lines = [ln.strip() for ln in text.splitlines() if ln.strip()]
+    marked = [ln for ln in lines if scraper.PRICE_PATTERN.search(ln)]
+    decimals = [ln for ln in lines if re.search(r"\d+[.,]\d{2}(?!\d)", ln)]
+    return (f"{len(lines)} non-empty line(s), {len(marked)} with a "
+            f"currency-adjacent price, {len(decimals)} with a decimal number")
 
 
 # Scripts are most of a page's bytes and none of its structure -- except when
@@ -714,6 +761,22 @@ def main():
                 resp.raise_for_status()
             except Exception as e:
                 print(f"CAPTURE {url}: {type(e).__name__}: {e}")
+                continue
+            if resp.is_binary:
+                # A PDF is the one body worth committing as text rather than
+                # as itself: the text is what a parser will read, and the
+                # original is someone else's document.
+                pages, why = pdf_text(resp.content)
+                if pages is None:
+                    print(f"CAPTURE {url}: {len(resp.content)} bytes of PDF, "
+                          f"unreadable: {why}")
+                    continue
+                text = "\n\n".join(pages)
+                path = save_diagnostic_text("capture", url, text, len(resp.content),
+                                            len(pages))
+                print(f"CAPTURE {url}: {len(resp.content)} bytes of PDF, "
+                      f"{len(pages)} page(s), {len(text)} chars of text -> {path.name}")
+                print(f"         {describe_price_lines(text)}")
                 continue
             save_diagnostic_page("capture", url, resp.text)
             items = autoselect.find_products(

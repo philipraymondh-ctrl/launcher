@@ -13,6 +13,7 @@ adapter first, HTML is the last-resort fallback). One JSON call already
 replaces many page fetches by construction; this layer just makes whichever
 call actually happens polite.
 """
+import base64
 import hashlib
 import json
 import os
@@ -105,10 +106,21 @@ class FetchResult:
     """Uniform response shape regardless of whether it came from the network
     (fresh or after a 304) or was served straight from the disk cache."""
 
-    def __init__(self, status_code, text, from_cache=False):
+    def __init__(self, status_code, text, from_cache=False, content=None):
         self.status_code = status_code
         self.text = text
         self.from_cache = from_cache
+        # Bytes, for the responses that are not text at all. purewijnen keeps
+        # its whole wine list in a PDF, and `resp.text` of a PDF is mojibake.
+        self._content = content
+
+    @property
+    def content(self):
+        return self._content if self._content is not None else self.text.encode("utf-8")
+
+    @property
+    def is_binary(self):
+        return self._content is not None
 
     def json(self):
         return json.loads(self.text)
@@ -159,6 +171,22 @@ def looks_like_challenge(text):
             if phrase in lowered:
                 return f"interstitial saying {phrase!r}"
     return None
+
+
+# Bodies that are not text. Cached as base64 rather than through `resp.text`,
+# which would store mojibake and hand the parser something it cannot read.
+BINARY_CONTENT_TYPES = ("application/pdf", "application/octet-stream")
+
+
+def _is_binary_response(resp):
+    content_type = (resp.headers.get("Content-Type") or "").split(";")[0]
+    return content_type.strip().lower() in BINARY_CONTENT_TYPES
+
+
+def _result_from_cache(entry):
+    blob = entry.get("content_b64")
+    return FetchResult(entry["status_code"], entry["text"], from_cache=True,
+                       content=base64.b64decode(blob) if blob else None)
 
 
 def _build_url(url, params):
@@ -316,7 +344,7 @@ class Crawler:
             if cached and looks_like_challenge(cached.get("text")):
                 cached = None
             if cached and (time.time() - cached["fetched_at"]) < CACHE_TTL_SECONDS:
-                return FetchResult(cached["status_code"], cached["text"], from_cache=True)
+                return _result_from_cache(cached)
 
             if self.request_count >= self.max_requests:
                 self.skipped_budget.append(full_url)
@@ -371,7 +399,7 @@ class Crawler:
             if resp.status_code == 304 and cached:
                 cached["fetched_at"] = time.time()
                 self._write_cache(full_url, cached)
-                return FetchResult(cached["status_code"], cached["text"], from_cache=True)
+                return _result_from_cache(cached)
 
             if resp.status_code in (429, 503):
                 if attempt < MAX_ATTEMPTS:
@@ -400,21 +428,29 @@ class Crawler:
             if resp.status_code >= 400:
                 raise UpstreamError(f"HTTP {resp.status_code}", status_code=resp.status_code)
 
+            binary = _is_binary_response(resp)
+
             # Before the cache write, never after: a cached challenge is a
             # lie with a six-hour shelf life. Not retried either -- three
             # goes at a captcha is exactly the behaviour that earns a block.
-            challenge = looks_like_challenge(resp.text)
-            if challenge:
-                raise Challenged(f"{full_url}: {challenge}")
+            # Skipped for a binary body, whose decoded "text" is mojibake and
+            # has no business being pattern-matched.
+            if not binary:
+                challenge = looks_like_challenge(resp.text)
+                if challenge:
+                    raise Challenged(f"{full_url}: {challenge}")
 
             entry = {
                 "status_code": resp.status_code,
-                "text": resp.text,
+                "text": "" if binary else resp.text,
+                "content_b64": (base64.b64encode(resp.content).decode("ascii")
+                                if binary else None),
                 "etag": resp.headers.get("ETag"),
                 "last_modified": resp.headers.get("Last-Modified"),
                 "fetched_at": time.time(),
             }
             self._write_cache(full_url, entry)
-            return FetchResult(resp.status_code, resp.text, from_cache=False)
+            return FetchResult(resp.status_code, entry["text"], from_cache=False,
+                               content=resp.content if binary else None)
 
         raise UpstreamError(str(last_exc) if last_exc else f"exhausted {MAX_ATTEMPTS} attempts")

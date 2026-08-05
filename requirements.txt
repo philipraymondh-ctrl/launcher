@@ -2,3 +2,5 @@ requests>=2.31
 beautifulsoup4>=4.12
 pytest>=7.4
 PyYAML>=6.0
+# purewijnen publishes its whole wine list as a PDF and nothing else.
+pypdf>=4.0

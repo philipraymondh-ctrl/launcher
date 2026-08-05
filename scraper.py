@@ -851,11 +851,29 @@ def catalogue_starts(shop, now=None):
         [shop["catalog_path"]] if shop.get("catalog_path") else [])
     if not paths:
         return [shop["url"]]
-    if len(paths) > 1:
+
+    # The probe records a path and its absolute form as two entries ("shop"
+    # and "http://vinovivo.be/shop"), which is one catalogue and two requests.
+    starts, seen = [], set()
+    for path in paths:
+        url = urljoin(base, path)
+        key = url.replace("http://", "https://").rstrip("/")
+        if key not in seen:
+            seen.add(key)
+            starts.append(url)
+
+    # The first entry is the catalogue the probe measured as best, and it is
+    # read every run: page 1 is where new arrivals land, and that is the news
+    # this scraper exists for. Only the rest rotate -- the probe also records
+    # pages that merely parsed (pangee's "28-beaujolais", vinovivo's
+    # portfolio pages), and rotating those into first place would spend the
+    # shared page budget on a slice of the shop instead of the whole of it.
+    if len(starts) > 2:
         at = now or dt.datetime.now(dt.timezone.utc)
-        offset = int(at.timestamp() // 3600) % len(paths)
-        paths = list(paths[offset:]) + list(paths[:offset])
-    return [urljoin(base, p) for p in paths]
+        rest = starts[1:]
+        offset = int(at.timestamp() // 3600) % len(rest)
+        starts = starts[:1] + rest[offset:] + rest[:offset]
+    return starts
 
 
 def _walk_pages(shop, crawler_client, start, pages_left, seen_urls):

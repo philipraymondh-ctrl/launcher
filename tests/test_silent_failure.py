@@ -208,9 +208,23 @@ def test_every_category_of_a_split_catalogue_gets_read_eventually():
     shop = {"name": "many", "url": "https://shop.test",
             "catalog_paths": ["a", "b", "c", "d", "e", "f"]}
     start = dt.datetime(2026, 8, 5, 0, 0, tzinfo=dt.timezone.utc)
-    led = {scraper.catalogue_starts(shop, now=start + dt.timedelta(hours=h))[0]
-           for h in range(len(shop["catalog_paths"]))}
-    assert led == {f"https://shop.test/{p}" for p in shop["catalog_paths"]}
+    # The measured-best catalogue keeps first place every run -- page 1 is
+    # where new arrivals land. What must not happen is a category being
+    # permanently last, so every other one takes second place in turn.
+    second = {scraper.catalogue_starts(shop, now=start + dt.timedelta(hours=h))[1]
+              for h in range(len(shop["catalog_paths"]))}
+    assert second == {f"https://shop.test/{p}" for p in "bcdef"}
+    for h in range(9):
+        at = start + dt.timedelta(hours=h)
+        assert scraper.catalogue_starts(shop, now=at)[0] == "https://shop.test/a"
+
+
+def test_one_catalogue_recorded_twice_is_fetched_once():
+    """probe.py --apply records a path and its absolute form as two entries:
+    one catalogue, two requests, and with rotation two different orders."""
+    shop = {"name": "dup", "url": "https://vinovivo.be",
+            "catalog_paths": ["shop", "http://vinovivo.be/shop", "shop/"]}
+    assert scraper.catalogue_starts(shop) == ["https://vinovivo.be/shop"]
 
 
 def test_rotating_the_categories_never_drops_one():

@@ -473,6 +473,25 @@ def test_a_kept_data_script_cannot_blow_up_the_capture(monkeypatch, tmp_path):
     assert probe.DATA_SCRIPT_CAP <= len(saved) <= probe.DATA_SCRIPT_CAP + 2000
 
 
+def test_one_page_reached_two_ways_is_recorded_once():
+    """A probe run recorded vinovivo's catalogue as both "shop" and
+    "http://vinovivo.be/shop": one page, two requests every run, and two
+    different orders once catalogue_starts began rotating them."""
+    shop = a_shop(name="dup", url="https://vinovivo.be")
+    stub = StubCrawler({
+        "/products.json": not_found(),
+        "/wp-json/": not_found(),
+        "https://vinovivo.be": crawler.FetchResult(200, (
+            '<html><body><a href="http://vinovivo.be/shop">Shop</a>'
+            '<a href="/shop/">Boutique</a></body></html>')),
+        "/shop": crawler.FetchResult(200, (FIXTURES / "example-html-shop.html").read_text()),
+    })
+    result = probe.probe_shop(shop, stub)
+    paths = result.get("catalog_paths") or []
+    keys = {p.replace("http://", "https://").rstrip("/").rsplit("/", 1)[-1] for p in paths}
+    assert len(paths) == len(keys), f"one catalogue recorded twice: {paths}"
+
+
 def test_diagnostics_never_land_in_the_repo_during_tests():
     """The directory is committed, so a leaked test file gets pushed."""
     stray = Path(__file__).parent.parent / "probe_pages" / "testshop.html"

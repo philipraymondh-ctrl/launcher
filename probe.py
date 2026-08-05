@@ -539,8 +539,18 @@ def probe_shop(shop, crawler_client):
             # No page held the whole catalogue, so record the ones that each
             # held part of it -- richest first, capped.
             ordered = [u for _, u in sorted(catalogues, reverse=True)]
+            # One page reached two ways ("shop" and "http://host/shop", or a
+            # trailing slash) was recorded as two catalogues: one page, two
+            # requests every run, and two different rotation orders. The
+            # candidate list dedupes by exact URL, which these are not.
+            deduped, seen_pages = [], set()
+            for url in ordered:
+                key = url.replace("http://", "https://").rstrip("/")
+                if key not in seen_pages:
+                    seen_pages.add(key)
+                    deduped.append(url)
             result["catalog_paths"] = [
-                _relative_path(shop, u) or "" for u in ordered[:MAX_CATALOGUE_PATHS]
+                _relative_path(shop, u) or "" for u in deduped[:MAX_CATALOGUE_PATHS]
             ]
             result["products_parsed"] = sum(c for c, _ in catalogues)
     return result

@@ -2,8 +2,19 @@ name: Wine Producer Scraper
 
 on:
   schedule:
-    # Hourly, on the hour, UTC. 24 runs/day.
-    - cron: "0 * * * *"
+    # Every two hours, UTC. It used to say hourly, and GitHub never delivered
+    # that: the real firing times on a public repo have been 20:22, 22:08,
+    # 23:55, 02:24, 05:43, 08:27, 11:17, 13:55 -- gaps of 1.5 to 3 hours,
+    # because scheduled runs are queued at low priority and dropped under
+    # load. Asking for 24 runs to get 10 only adds queue pressure, and each
+    # run now reads every catalogue to its end (11 minutes warm, ~32 cold)
+    # rather than the 5 minutes it cost when the cap was 20 pages. Two hours
+    # is close to what actually arrives, and it halves what we ask for.
+    #
+    # It also sits inside the crawler's 6h cache TTL, so a page fetched in one
+    # run is still fresh for the next: the extra coverage is paid for roughly
+    # four times a day, not every run.
+    - cron: "0 */2 * * *"
   workflow_dispatch:
     inputs:
       fresh:
@@ -18,6 +29,15 @@ on:
         description: "Print the digest instead of emailing it (sends nothing, changes no state)"
         type: boolean
         default: false
+
+# One scrape at a time. A full pass now takes 11-32 minutes, so a delayed
+# schedule can fire the next run while the previous is still crawling: two
+# jobs then compete for a runner, double the requests to every shop, and race
+# on seen.json. Queueing the second is right -- cancelling it would throw away
+# a crawl that is nearly done.
+concurrency:
+  group: wine-scraper
+  cancel-in-progress: false
 
 jobs:
   scrape:

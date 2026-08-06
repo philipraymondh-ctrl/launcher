@@ -177,7 +177,7 @@ the repo. The token that authorises this lives in the browser's
 `wine.html` is generated, never hand-edited -- change `dashboard.py`
 instead.
 
-Runs hourly from `.github/workflows/scraper.yml`, which runs the fixture
+Runs every two hours from `.github/workflows/scraper.yml`, which runs the fixture
 tests first, best-effort persists `seen.json`/`observations.json`/`.cache`
 across runs via `actions/cache`, and uploads `hits.json` plus
 `observations.json` as artifacts.
@@ -400,6 +400,14 @@ HTTP header or printed.
   before the catalogue did (`ParsedItems.truncated`, set by `_paged` and
   `fetch_html`), and that is the one cell that decides whether the row can
   be compared with the shop's real selection at all.
+- The schedule is not a promise GitHub keeps. A public repo's scheduled runs
+  are queued at low priority: `cron: "0 * * * *"` delivered runs at 20:22,
+  22:08, 23:55, 02:24, 05:43, 08:27, 11:17 and 13:55 -- and then two runs were
+  **cancelled without ever being given a runner** (`runner_id: 0`, no logs, a
+  15-minute wait then cancelled), which arrives as a failure email that looks
+  exactly like a broken scraper and is not one. Asking for 24 runs to receive
+  10 only adds queue pressure, so the schedule asks for what it can get, and a
+  `concurrency` group keeps a delayed run from overlapping the next one.
 - The run stops itself on wall clock as well as on requests. Reading all 23
   shops to the end of their catalogues is 311 requests and ~28 minutes cold
   (vinnouveau's 118 pages are most of it); a job killed at the runner's
